@@ -1,0 +1,21 @@
+:root[data-theme="light"]{
+    --primary-color: #FFFFFF;
+    --secondary-color: #F3F4F6;
+    --font-family: 'Helvetica Neue', sans-serif;
+    --font-size-base: 16px;
+    --spacing-unit: 8px;
+    --border-primary: 2px solid #dbd1d1;
+    
+}
+:root[data-theme="dark"]{
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --font-family: 'Helvetica Neue', sans-serif;
+    --font-size-base: 16px;
+    --spacing-unit: 8px;
+}
+
+:root{
+    --fs-xxl: clamp(2.1rem, 2vw + 1.6rem, 3rem);
+    --font: ui-sans-serif, system-ui, "Inter", "Segoe UI", Roboto, Arial, sans-serif
+}
