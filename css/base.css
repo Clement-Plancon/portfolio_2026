@@ -1,0 +1,168 @@
+/* ===========================================
+   Base Styles & Reset
+   =========================================== */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Paper texture background */
+.paper-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.paper-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-bg-primary);
+}
+
+.paper-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--paper-texture);
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+}
+
+/* Paper fold effects - Journal style */
+.paper-fold {
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.paper-fold--left {
+    top: 0;
+    left: 10%;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--color-border) 10%,
+        var(--color-border) 90%,
+        transparent
+    );
+}
+
+.paper-fold--right {
+    top: 0;
+    right: 10%;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--color-border) 10%,
+        var(--color-border) 90%,
+        transparent
+    );
+}
+
+/* Selection */
+::selection {
+    background: var(--color-accent-primary);
+    color: var(--color-bg-primary);
+}
+
+/* Links */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Buttons reset */
+button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Lists */
+ul, ol {
+    list-style: none;
+}
+
+/* Focus styles */
+:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 2px;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: var(--container-xl);
+    margin: 0 auto;
+    padding: 0 var(--space-lg);
+}
+
+.container--narrow {
+    max-width: var(--container-md);
+}
+
+.container--wide {
+    max-width: var(--container-2xl);
+}
+
+/* Section base */
+section {
+    padding: var(--space-5xl) 0;
+    position: relative;
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Hidden based on language */
+[data-lang="fr"] [data-i18n-lang="en"],
+[data-lang="en"] [data-i18n-lang="fr"] {
+    display: none !important;
+}
