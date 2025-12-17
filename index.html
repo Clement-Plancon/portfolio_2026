@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f5f3ef">
+    <meta name="theme-color" content="#f8f9fc">
     <meta name="description" content="Clément Plançon - Ingénieur logiciel fullstack spécialisé en IA. Développement web, applications mobiles et solutions sur mesure.">
 
     <title>Clément Plançon | Ingénieur Logiciel & Expert IA</title>
@@ -24,11 +24,10 @@
 <body>
     <!-- Paper texture background -->
     <div class="paper-bg"></div>
-    <div class="paper-fold paper-fold--left"></div>
-    <div class="paper-fold paper-fold--right"></div>
 
     <!-- Navigation -->
     <nav class="nav">
+        <div class="nav__glass"></div>
         <div class="container">
             <div class="nav__inner">
                 <a href="#" class="nav__logo">Clément <span>P.</span></a>
@@ -41,12 +40,10 @@
                 </div>
 
                 <div class="nav__actions">
-                    <!-- Language toggle -->
                     <button class="nav__btn" data-lang-toggle aria-label="Changer de langue">
                         <span class="lang-text">EN</span>
                     </button>
 
-                    <!-- Theme toggle -->
                     <button class="nav__btn" data-theme-toggle aria-label="Changer de thème">
                         <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
                             <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
@@ -56,10 +53,9 @@
                         </svg>
                     </button>
 
-                    <a href="#contact" class="nav__contact" data-i18n="nav.contact">Contact</a>
+                    <a href="#contact" class="nav__contact"><span data-i18n="nav.contact">Contact</span></a>
                 </div>
 
-                <!-- Mobile toggle -->
                 <button class="nav__toggle" aria-label="Menu" aria-expanded="false">
                     <span></span>
                     <span></span>
@@ -68,7 +64,6 @@
             </div>
         </div>
 
-        <!-- Mobile menu -->
         <div class="nav__menu">
             <button class="nav__menu-close" aria-label="Fermer">&times;</button>
             <a href="#about" class="nav__link" data-i18n="nav.about">À propos</a>
@@ -81,24 +76,30 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero__bg-text">CREATIVE</div>
-
-        <!-- Decorative stamps -->
-        <div class="hero__stamp hero__stamp--1 floating" data-i18n="hero.stamp.available">Disponible</div>
-        <div class="hero__stamp hero__stamp--2 floating--slow" data-i18n="hero.stamp.paris">Paris, FR</div>
-
         <div class="hero__content">
             <div class="hero__tags tags" data-animate="fade-down">
                 <span class="tag">
-                    <span class="tag__icon">💻</span>
+                    <span class="tag__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/>
+                        </svg>
+                    </span>
                     <span data-i18n="hero.tag.dev">Développement</span>
                 </span>
                 <span class="tag">
-                    <span class="tag__icon">📊</span>
+                    <span class="tag__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 21H4.6c-.56 0-.84 0-1.05-.11a1 1 0 01-.44-.44C3 20.24 3 19.96 3 19.4V3"/><path d="M7 14l4-4 4 4 6-6"/>
+                        </svg>
+                    </span>
                     <span data-i18n="hero.tag.data">Data</span>
                 </span>
                 <span class="tag">
-                    <span class="tag__icon">👥</span>
+                    <span class="tag__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                    </span>
                     <span data-i18n="hero.tag.management">Management</span>
                 </span>
             </div>
@@ -136,16 +137,16 @@
     <div class="marquee">
         <div class="marquee__track">
             <div class="marquee__content">
-                <span class="marquee__item"><span>◆</span> Angular</span>
-                <span class="marquee__item"><span>◆</span> Node.js</span>
-                <span class="marquee__item"><span>◆</span> LLM / IA</span>
-                <span class="marquee__item"><span>◆</span> Flutter</span>
-                <span class="marquee__item"><span>◆</span> C#</span>
-                <span class="marquee__item"><span>◆</span> Python</span>
-                <span class="marquee__item"><span>◆</span> UX/UI</span>
-                <span class="marquee__item"><span>◆</span> DevOps</span>
-                <span class="marquee__item"><span>◆</span> PostgreSQL</span>
-                <span class="marquee__item"><span>◆</span> RAG</span>
+                <span class="marquee__item"><span>●</span> Angular</span>
+                <span class="marquee__item"><span>●</span> Node.js</span>
+                <span class="marquee__item"><span>●</span> LLM / IA</span>
+                <span class="marquee__item"><span>●</span> Flutter</span>
+                <span class="marquee__item"><span>●</span> C#</span>
+                <span class="marquee__item"><span>●</span> Python</span>
+                <span class="marquee__item"><span>●</span> UX/UI</span>
+                <span class="marquee__item"><span>●</span> DevOps</span>
+                <span class="marquee__item"><span>●</span> PostgreSQL</span>
+                <span class="marquee__item"><span>●</span> RAG</span>
             </div>
         </div>
     </div>
@@ -156,18 +157,18 @@
             <div class="section-header section-header--left" data-animate="fade-up">
                 <span class="section__number" data-i18n="about.number">01 — À propos</span>
                 <h2 class="section__title">
-                    <span data-i18n="about.title">Expertise technique &</span>
+                    <span data-i18n="about.title">Expertise technique &</span><br>
                     <em data-i18n="about.title.em">vision produit</em>
                 </h2>
             </div>
 
             <div class="about__grid">
                 <div class="about__image" data-animate="fade-right">
-                    <div class="about__image-wrapper image-reveal">
+                    <div class="about__image-wrapper">
                         <div class="about__photo">CP</div>
                     </div>
-                    <div class="about__decoration about__decoration--1 floating" data-i18n="about.decoration.expert">Expert LLM</div>
-                    <div class="about__decoration about__decoration--2 floating--rotate" data-i18n="about.decoration.years">+10 ans exp.</div>
+                    <div class="about__decoration about__decoration--1" data-i18n="about.decoration.expert">Expert LLM</div>
+                    <div class="about__decoration about__decoration--2" data-i18n="about.decoration.years">+10 ans exp.</div>
                 </div>
 
                 <div class="about__content" data-animate="fade-left">
@@ -217,7 +218,11 @@
 
             <div class="skills__grid">
                 <div class="skill-card" data-animate="fade-up" data-animate-delay="1">
-                    <div class="skill-card__icon">🤖</div>
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
+                        </svg>
+                    </div>
                     <h3 class="skill-card__title" data-i18n="skills.ai.title">Intelligence Artificielle</h3>
                     <p class="skill-card__desc" data-i18n="skills.ai.desc">Intégration de modèles de langage dans des applications métier. Agents intelligents, systèmes RAG, assistants contextuels.</p>
                     <div class="skill-card__tags">
@@ -229,7 +234,11 @@
                 </div>
 
                 <div class="skill-card" data-animate="fade-up" data-animate-delay="2">
-                    <div class="skill-card__icon">⚛️</div>
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                    </div>
                     <h3 class="skill-card__title" data-i18n="skills.frontend.title">Développement Frontend</h3>
                     <p class="skill-card__desc" data-i18n="skills.frontend.desc">Applications web complexes et performantes. State management, lazy loading, architecture modulaire.</p>
                     <div class="skill-card__tags">
@@ -241,7 +250,11 @@
                 </div>
 
                 <div class="skill-card" data-animate="fade-up" data-animate-delay="3">
-                    <div class="skill-card__icon">🔧</div>
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>
+                        </svg>
+                    </div>
                     <h3 class="skill-card__title" data-i18n="skills.backend.title">Développement Backend</h3>
                     <p class="skill-card__desc" data-i18n="skills.backend.desc">APIs RESTful robustes et scalables. Architectures microservices, gestion de bases de données.</p>
                     <div class="skill-card__tags">
@@ -253,7 +266,11 @@
                 </div>
 
                 <div class="skill-card" data-animate="fade-up" data-animate-delay="4">
-                    <div class="skill-card__icon">📱</div>
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>
+                        </svg>
+                    </div>
                     <h3 class="skill-card__title" data-i18n="skills.mobile.title">Applications Mobiles</h3>
                     <p class="skill-card__desc" data-i18n="skills.mobile.desc">Apps cross-platform performantes. De la conception à la publication sur les stores.</p>
                     <div class="skill-card__tags">
@@ -265,7 +282,11 @@
                 </div>
 
                 <div class="skill-card" data-animate="fade-up" data-animate-delay="5">
-                    <div class="skill-card__icon">🎨</div>
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/>
+                        </svg>
+                    </div>
                     <h3 class="skill-card__title" data-i18n="skills.design.title">UX/UI Design</h3>
                     <p class="skill-card__desc" data-i18n="skills.design.desc">Interfaces intuitives et esthétiques. Recherche utilisateur, prototypes, design systems.</p>
                     <div class="skill-card__tags">
@@ -277,7 +298,11 @@
                 </div>
 
                 <div class="skill-card" data-animate="fade-up" data-animate-delay="6">
-                    <div class="skill-card__icon">☁️</div>
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                        </svg>
+                    </div>
                     <h3 class="skill-card__title" data-i18n="skills.devops.title">DevOps & Cloud</h3>
                     <p class="skill-card__desc" data-i18n="skills.devops.desc">CI/CD, containerisation, infrastructure as code. Déploiements automatisés et monitoring.</p>
                     <div class="skill-card__tags">
@@ -340,7 +365,13 @@
 
             <div class="projects__grid">
                 <article class="card" data-animate="fade-up" data-animate-delay="1">
-                    <div class="card__image">🧾</div>
+                    <div class="card__image">
+                        <span class="card__image-icon">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                        </span>
+                    </div>
                     <div class="card__content">
                         <span class="card__type" data-i18n="projects.1.type">Mobile App — AI</span>
                         <h3 class="card__title" data-i18n="projects.1.title">QuiPaieQuoi</h3>
@@ -353,7 +384,13 @@
                 </article>
 
                 <article class="card" data-animate="fade-up" data-animate-delay="2">
-                    <div class="card__image">📊</div>
+                    <div class="card__image">
+                        <span class="card__image-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
+                            </svg>
+                        </span>
+                    </div>
                     <div class="card__content">
                         <span class="card__type" data-i18n="projects.2.type">Web App</span>
                         <h3 class="card__title" data-i18n="projects.2.title">Référentiel Indicateurs</h3>
@@ -366,7 +403,13 @@
                 </article>
 
                 <article class="card" data-animate="fade-up" data-animate-delay="3">
-                    <div class="card__image">🔍</div>
+                    <div class="card__image">
+                        <span class="card__image-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                            </svg>
+                        </span>
+                    </div>
                     <div class="card__content">
                         <span class="card__type" data-i18n="projects.3.type">Outil interne</span>
                         <h3 class="card__title" data-i18n="projects.3.title">Veille Stratégique</h3>
@@ -379,7 +422,13 @@
                 </article>
 
                 <article class="card" data-animate="fade-up" data-animate-delay="4">
-                    <div class="card__image">🤖</div>
+                    <div class="card__image">
+                        <span class="card__image-icon">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
+                            </svg>
+                        </span>
+                    </div>
                     <div class="card__content">
                         <span class="card__type" data-i18n="projects.4.type">AI Agent</span>
                         <h3 class="card__title" data-i18n="projects.4.title">Assistant IA Métier</h3>
@@ -396,7 +445,6 @@
 
     <!-- Contact Section -->
     <section class="contact" id="contact">
-        <div class="contact__bg-text">HELLO</div>
         <div class="container">
             <div class="section-header" data-animate="fade-up">
                 <span class="section__number" data-i18n="contact.number">05 — Contact</span>
