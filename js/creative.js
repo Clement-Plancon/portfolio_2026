@@ -10,6 +10,7 @@ const translations = {
         'nav.work': 'Projets',
         'nav.about': 'À propos',
         'nav.skills': 'Compétences',
+        'nav.articles': 'Articles',
         'nav.contact': 'Contact',
 
         // Hero
@@ -94,6 +95,7 @@ const translations = {
         'nav.work': 'Work',
         'nav.about': 'About',
         'nav.skills': 'Skills',
+        'nav.articles': 'Articles',
         'nav.contact': 'Contact',
 
         // Hero
