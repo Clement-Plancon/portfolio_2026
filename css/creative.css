@@ -1402,28 +1402,100 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 @media (max-width: 1024px) {
     .articles-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-6);
     }
 }
 
-@media (max-width: 640px) {
-    .articles-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 768px) {
+    .articles-hero {
+        padding: var(--space-20) 0 var(--space-8);
+    }
+
+    .articles-hero__content {
+        margin-bottom: var(--space-8);
     }
 
     .articles-hero__title {
         font-size: var(--text-4xl);
     }
 
+    .articles-hero__desc {
+        font-size: var(--text-base);
+    }
+
+    .search-box {
+        margin-bottom: var(--space-4);
+    }
+
+    .search-box__input {
+        padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+        font-size: var(--text-base);
+    }
+
+    .search-box__icon {
+        left: var(--space-3);
+        width: 18px;
+        height: 18px;
+    }
+
     .categories {
         justify-content: flex-start;
         overflow-x: auto;
         flex-wrap: nowrap;
-        padding-bottom: var(--space-2);
+        gap: var(--space-2);
+        padding-bottom: var(--space-3);
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .categories::-webkit-scrollbar {
+        display: none;
     }
 
     .category-btn {
         flex-shrink: 0;
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-xs);
+    }
+
+    .articles-section {
+        padding-top: var(--space-4);
+    }
+}
+
+@media (max-width: 640px) {
+    .articles-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    .articles-hero__title {
+        font-size: var(--text-3xl);
+    }
+
+    .article-card__content {
+        padding: var(--space-4);
+    }
+
+    .article-card__title {
+        font-size: var(--text-lg);
+    }
+
+    .article-card__img {
+        height: 150px;
+    }
+
+    .medium-cta {
+        padding: var(--space-12) 0;
+    }
+
+    .medium-cta__title {
+        font-size: var(--text-2xl);
+    }
+
+    .medium-cta__desc {
+        font-size: var(--text-base);
     }
 }
 
