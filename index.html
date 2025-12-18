@@ -3,324 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0a0a">
+    <meta name="theme-color" content="#000091">
     <meta name="description" content="Clément Plançon - Ingénieur logiciel fullstack spécialisé en IA.">
-    <title>Clément Plançon — Creative Developer</title>
+    <title>Clément Plançon — Ingénieur Logiciel</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="css/creative.css">
 </head>
 <body>
-    <!-- Custom Cursor -->
-    <div class="cursor">
-        <div class="cursor__ball cursor__ball--big"></div>
-        <div class="cursor__ball cursor__ball--small"></div>
+    <!-- Cursor -->
+    <div class="cursor" aria-hidden="true">
+        <div class="cursor__dot"></div>
+        <div class="cursor__circle"></div>
     </div>
 
-    <!-- Noise Overlay -->
-    <div class="noise"></div>
+    <!-- Grain -->
+    <div class="grain" aria-hidden="true"></div>
 
-    <!-- Floating Shapes -->
-    <div class="shapes">
-        <div class="shape shape--1"></div>
-        <div class="shape shape--2"></div>
-        <div class="shape shape--3"></div>
-        <div class="shape shape--4"></div>
-        <div class="shape shape--5"></div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="nav">
-        <a href="#" class="nav__logo">
-            <span class="nav__logo-text">CP</span>
-            <span class="nav__logo-dot"></span>
+    <!-- Header -->
+    <header class="header">
+        <a href="#" class="logo">
+            <span class="logo__mark">CP</span>
+            <span class="logo__dot"></span>
         </a>
 
-        <div class="nav__links">
-            <a href="#work" class="nav__link" data-i18n="nav.work">
-                <span class="nav__link-text">Projets</span>
-                <span class="nav__link-num">01</span>
+        <nav class="nav">
+            <a href="#projets" class="nav__link" data-i18n="nav.work">
+                <span class="nav__num">01</span>
+                <span class="nav__text">Projets</span>
             </a>
-            <a href="#about" class="nav__link" data-i18n="nav.about">
-                <span class="nav__link-text">À propos</span>
-                <span class="nav__link-num">02</span>
+            <a href="#apropos" class="nav__link" data-i18n="nav.about">
+                <span class="nav__num">02</span>
+                <span class="nav__text">À propos</span>
             </a>
             <a href="#contact" class="nav__link" data-i18n="nav.contact">
-                <span class="nav__link-text">Contact</span>
-                <span class="nav__link-num">03</span>
+                <span class="nav__num">03</span>
+                <span class="nav__text">Contact</span>
             </a>
-        </div>
+        </nav>
 
-        <div class="nav__actions">
-            <button class="nav__btn" data-lang-toggle aria-label="Language">
-                <span>EN</span>
+        <div class="header__actions">
+            <button class="btn-icon" data-lang-toggle title="Changer de langue">
+                <span>FR</span>
             </button>
-            <button class="nav__btn nav__btn--theme" data-theme-toggle aria-label="Theme">
-                <span class="theme-icon"></span>
+            <button class="btn-icon" data-theme-toggle title="Changer de thème">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
             </button>
         </div>
-    </nav>
+    </header>
 
     <!-- Hero -->
     <section class="hero">
-        <div class="hero__container">
-            <div class="hero__top">
-                <div class="hero__tags">
-                    <span class="tag" data-magnetic>
-                        <span class="tag__inner">Développement</span>
-                    </span>
-                    <span class="tag" data-magnetic>
-                        <span class="tag__inner">Data & IA</span>
-                    </span>
-                    <span class="tag" data-magnetic>
-                        <span class="tag__inner">Management</span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="hero__main">
-                <p class="hero__intro">
-                    <span class="split-text" data-animate="reveal">Je suis Clément Plançon,</span>
-                </p>
-
-                <h1 class="hero__title">
-                    <span class="hero__title-line">
-                        <span class="split-text" data-animate="reveal" data-delay="0.1">Ingénieur</span>
-                    </span>
-                    <span class="hero__title-line hero__title-line--indent">
-                        <span class="split-text" data-animate="reveal" data-delay="0.2">Logiciel</span>
-                        <span class="hero__title-outline split-text" data-animate="reveal" data-delay="0.3">& IA</span>
-                    </span>
-                </h1>
-
-                <div class="hero__marquee">
-                    <div class="marquee__track">
-                        <span class="marquee__text">CREATIVE DEVELOPMENT — FULLSTACK — AI SOLUTIONS — UX DESIGN — </span>
-                        <span class="marquee__text">CREATIVE DEVELOPMENT — FULLSTACK — AI SOLUTIONS — UX DESIGN — </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hero__bottom">
-                <div class="hero__scroll" data-magnetic>
-                    <span class="hero__scroll-text">Scroll</span>
-                    <svg class="hero__scroll-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M19 12l-7 7-7-7"/>
+        <div class="hero__content">
+            <!-- Tags -->
+            <div class="hero__tags">
+                <span class="tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
                     </svg>
-                </div>
+                    <span data-i18n="hero.tag1">Développement</span>
+                </span>
+                <span class="tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    </svg>
+                    <span data-i18n="hero.tag2">Data & IA</span>
+                </span>
+                <span class="tag">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    <span data-i18n="hero.tag3">Management</span>
+                </span>
+            </div>
 
-                <p class="hero__tagline">
-                    <span data-animate="fade">Solutions sur mesure,</span><br>
-                    <span data-animate="fade" data-delay="0.1">boostées par l'IA</span>
+            <!-- Main -->
+            <div class="hero__main">
+                <p class="hero__intro" data-i18n="hero.intro">Je suis Clément Plançon,</p>
+                <h1 class="hero__title">
+                    <span class="hero__title-word" data-i18n="hero.title1">Ingénieur</span>
+                    <span class="hero__title-word hero__title-word--outline" data-i18n="hero.title2">logiciel</span>
+                </h1>
+                <p class="hero__desc" data-i18n="hero.desc">
+                    Je conçois des solutions numériques innovantes,
+                    alliant expertise technique et intelligence artificielle
+                    pour transformer vos idées en produits performants.
                 </p>
             </div>
+
+            <!-- CTA -->
+            <div class="hero__cta">
+                <a href="#contact" class="btn btn--primary">
+                    <span data-i18n="hero.cta">Discutons de votre projet</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#projets" class="btn btn--ghost">
+                    <span data-i18n="hero.cta2">Voir mes réalisations</span>
+                </a>
+            </div>
         </div>
 
+        <!-- Visual -->
         <div class="hero__visual">
-            <div class="hero__circle"></div>
-            <div class="hero__grid"></div>
+            <div class="hero__shape hero__shape--1"></div>
+            <div class="hero__shape hero__shape--2"></div>
+            <div class="hero__shape hero__shape--3"></div>
+            <div class="hero__badge">
+                <span class="hero__badge-text">10+ ans</span>
+                <span class="hero__badge-label">d'expérience</span>
+            </div>
+        </div>
+
+        <!-- Scroll -->
+        <div class="hero__scroll">
+            <span>Scroll</span>
+            <div class="hero__scroll-line"></div>
         </div>
     </section>
 
-    <!-- Work Section -->
-    <section class="work" id="work">
-        <div class="section__header">
-            <span class="section__num">01</span>
-            <h2 class="section__title">
-                <span class="split-text" data-animate="reveal">Projets</span>
-                <span class="section__title-stroke split-text" data-animate="reveal" data-delay="0.1">sélectionnés</span>
-            </h2>
+    <!-- Marquee -->
+    <div class="marquee">
+        <div class="marquee__track">
+            <span class="marquee__item">Angular</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Node.js</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Python</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">LLM & RAG</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Flutter</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">C# .NET</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">UX Design</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Angular</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Node.js</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Python</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">LLM & RAG</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">Flutter</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">C# .NET</span>
+            <span class="marquee__sep">—</span>
+            <span class="marquee__item">UX Design</span>
+            <span class="marquee__sep">—</span>
         </div>
+    </div>
 
-        <div class="work__list">
-            <article class="work__item" data-cursor="view">
-                <a href="#" class="work__link">
-                    <div class="work__num">01</div>
-                    <div class="work__content">
-                        <h3 class="work__title">QuiPaieQuoi</h3>
-                        <p class="work__cat">Mobile App — AI</p>
+    <!-- Projets -->
+    <section class="section projects" id="projets">
+        <div class="container">
+            <header class="section__head">
+                <span class="section__num">01</span>
+                <h2 class="section__title" data-i18n="projects.title">Projets sélectionnés</h2>
+            </header>
+
+            <div class="projects__grid">
+                <article class="project" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">01</span>
                     </div>
-                    <div class="work__img">
-                        <div class="work__img-inner"></div>
+                    <div class="project__content">
+                        <span class="project__cat">Application Mobile — IA</span>
+                        <h3 class="project__title">QuiPaieQuoi</h3>
+                        <p class="project__desc">Application de gestion des dépenses partagées avec reconnaissance automatique des tickets par IA.</p>
                     </div>
-                    <div class="work__arrow">
+                    <a href="#" class="project__link" aria-label="Voir le projet">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
-                    </div>
-                </a>
-            </article>
+                    </a>
+                </article>
 
-            <article class="work__item" data-cursor="view">
-                <a href="#" class="work__link">
-                    <div class="work__num">02</div>
-                    <div class="work__content">
-                        <h3 class="work__title">Référentiel Indicateurs</h3>
-                        <p class="work__cat">Web Application</p>
+                <article class="project" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">02</span>
                     </div>
-                    <div class="work__img">
-                        <div class="work__img-inner"></div>
+                    <div class="project__content">
+                        <span class="project__cat">Application Web</span>
+                        <h3 class="project__title">Référentiel Indicateurs</h3>
+                        <p class="project__desc">Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.</p>
                     </div>
-                    <div class="work__arrow">
+                    <a href="#" class="project__link" aria-label="Voir le projet">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
-                    </div>
-                </a>
-            </article>
+                    </a>
+                </article>
 
-            <article class="work__item" data-cursor="view">
-                <a href="#" class="work__link">
-                    <div class="work__num">03</div>
-                    <div class="work__content">
-                        <h3 class="work__title">Assistant IA Métier</h3>
-                        <p class="work__cat">AI Agent — RAG</p>
+                <article class="project" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">03</span>
                     </div>
-                    <div class="work__img">
-                        <div class="work__img-inner"></div>
+                    <div class="project__content">
+                        <span class="project__cat">Agent IA — RAG</span>
+                        <h3 class="project__title">Assistant IA Métier</h3>
+                        <p class="project__desc">Chatbot intelligent utilisant RAG pour répondre aux questions métiers à partir de la documentation interne.</p>
                     </div>
-                    <div class="work__arrow">
+                    <a href="#" class="project__link" aria-label="Voir le projet">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
-                    </div>
-                </a>
-            </article>
+                    </a>
+                </article>
 
-            <article class="work__item" data-cursor="view">
-                <a href="#" class="work__link">
-                    <div class="work__num">04</div>
-                    <div class="work__content">
-                        <h3 class="work__title">Veille Stratégique</h3>
-                        <p class="work__cat">Internal Tool</p>
+                <article class="project" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">04</span>
                     </div>
-                    <div class="work__img">
-                        <div class="work__img-inner"></div>
+                    <div class="project__content">
+                        <span class="project__cat">Outil Interne</span>
+                        <h3 class="project__title">Veille Stratégique</h3>
+                        <p class="project__desc">Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.</p>
                     </div>
-                    <div class="work__arrow">
+                    <a href="#" class="project__link" aria-label="Voir le projet">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
-                    </div>
-                </a>
-            </article>
-        </div>
-    </section>
-
-    <!-- Skills Marquee -->
-    <section class="skills-marquee">
-        <div class="marquee marquee--reverse">
-            <div class="marquee__track">
-                <span class="marquee__item">Angular</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Node.js</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Python</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">LLM / RAG</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Flutter</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">C# .NET</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">UX Design</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Angular</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Node.js</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Python</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">LLM / RAG</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">Flutter</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">C# .NET</span>
-                <span class="marquee__item">●</span>
-                <span class="marquee__item">UX Design</span>
-                <span class="marquee__item">●</span>
+                    </a>
+                </article>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="about__container">
-            <div class="section__header section__header--left">
+    <!-- À propos -->
+    <section class="section about" id="apropos">
+        <div class="container">
+            <header class="section__head">
                 <span class="section__num">02</span>
-                <h2 class="section__title">
-                    <span class="split-text" data-animate="reveal">À propos</span>
-                </h2>
-            </div>
+                <h2 class="section__title" data-i18n="about.title">À propos</h2>
+            </header>
 
             <div class="about__grid">
-                <div class="about__photo" data-animate="scale">
-                    <div class="about__photo-frame">
+                <div class="about__visual">
+                    <div class="about__portrait">
                         <span class="about__initials">CP</span>
                     </div>
-                    <div class="about__photo-label">
-                        <span>Since 2014</span>
+                    <div class="about__label">
+                        <span>Depuis 2014</span>
                     </div>
                 </div>
 
                 <div class="about__content">
-                    <p class="about__text about__text--large" data-animate="fade">
-                        Ingénieur logiciel spécialisé dans le développement web fullstack,
-                        je combine <em>expertise technique</em> et <em>sensibilité design</em>
-                        pour créer des solutions numériques performantes.
+                    <p class="about__lead" data-i18n="about.lead">
+                        Ingénieur logiciel passionné par l'innovation, je transforme des idées complexes en solutions élégantes et performantes.
                     </p>
-
-                    <p class="about__text" data-animate="fade" data-delay="0.1">
-                        Actuellement Chef adjoint de la section informatique au
-                        Laboratoire de Police Scientifique de Paris, je conçois des
-                        solutions techniques innovantes pour les enquêtes judiciaires.
+                    <p class="about__text" data-i18n="about.text">
+                        Actuellement Chef adjoint de la section informatique au Laboratoire de Police Scientifique de Paris, je conçois des solutions techniques innovantes pour les enquêtes judiciaires. En parallèle, je développe des projets personnels et accompagne des entreprises dans leur transformation numérique.
                     </p>
 
                     <div class="about__stats">
-                        <div class="stat" data-animate="fade" data-delay="0.2">
-                            <span class="stat__num" data-counter="10">10</span>
-                            <span class="stat__label">Années d'exp.</span>
+                        <div class="stat">
+                            <span class="stat__value">10<span class="stat__plus">+</span></span>
+                            <span class="stat__label">Années d'expérience</span>
                         </div>
-                        <div class="stat" data-animate="fade" data-delay="0.3">
-                            <span class="stat__num" data-counter="50">50</span>
-                            <span class="stat__label">Projets</span>
+                        <div class="stat">
+                            <span class="stat__value">50<span class="stat__plus">+</span></span>
+                            <span class="stat__label">Projets réalisés</span>
                         </div>
-                        <div class="stat" data-animate="fade" data-delay="0.4">
-                            <span class="stat__num">∞</span>
+                        <div class="stat">
+                            <span class="stat__value">∞</span>
                             <span class="stat__label">Curiosité</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="about__experience">
-                <h3 class="about__subtitle" data-animate="fade">Parcours</h3>
-
-                <div class="timeline">
-                    <div class="timeline__item" data-animate="fade">
-                        <span class="timeline__date">2022 — Now</span>
-                        <div class="timeline__content">
-                            <h4>Laboratoire Police Scientifique</h4>
+            <!-- Timeline -->
+            <div class="timeline">
+                <h3 class="timeline__title">Parcours</h3>
+                <div class="timeline__list">
+                    <div class="timeline__item">
+                        <div class="timeline__date">2022 — Présent</div>
+                        <div class="timeline__info">
+                            <h4>Laboratoire de Police Scientifique</h4>
                             <p>Chef adjoint IT — Ingénieur SIC</p>
                         </div>
                     </div>
-                    <div class="timeline__item" data-animate="fade" data-delay="0.1">
-                        <span class="timeline__date">2020 — Now</span>
-                        <div class="timeline__content">
+                    <div class="timeline__item">
+                        <div class="timeline__date">2020 — Présent</div>
+                        <div class="timeline__info">
                             <h4>Point Virgule</h4>
-                            <p>Fondateur — Dev Fullstack & IA</p>
+                            <p>Fondateur — Développeur Fullstack & IA</p>
                         </div>
                     </div>
-                    <div class="timeline__item" data-animate="fade" data-delay="0.2">
-                        <span class="timeline__date">2019 — 2022</span>
-                        <div class="timeline__content">
+                    <div class="timeline__item">
+                        <div class="timeline__date">2019 — 2022</div>
+                        <div class="timeline__info">
                             <h4>Ministère de l'Économie</h4>
-                            <p>Analyste Dev — Labo Transformation</p>
+                            <p>Analyste Développeur — Laboratoire de la Transformation</p>
                         </div>
                     </div>
                 </div>
@@ -328,43 +316,35 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="contact__container">
-            <div class="section__header">
+    <!-- Contact -->
+    <section class="section contact" id="contact">
+        <div class="container">
+            <header class="section__head">
                 <span class="section__num">03</span>
-            </div>
+                <h2 class="section__title section__title--large" data-i18n="contact.title">
+                    Un projet en tête ?<br>
+                    <span class="text--accent">Travaillons ensemble.</span>
+                </h2>
+            </header>
 
-            <h2 class="contact__title">
-                <span class="split-text" data-animate="reveal">Un projet ?</span>
-                <span class="contact__title-line">
-                    <span class="split-text" data-animate="reveal" data-delay="0.1">Parlons-en</span>
-                    <span class="contact__arrow">
-                        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 80 L80 20 M80 20 L80 70 M80 20 L30 20"/>
-                        </svg>
-                    </span>
-                </span>
-            </h2>
-
-            <a href="mailto:plancon.clem.pro@gmail.com" class="contact__email" data-magnetic data-cursor="email">
-                <span class="contact__email-text">plancon.clem.pro@gmail.com</span>
+            <a href="mailto:plancon.clem.pro@gmail.com" class="contact__email" data-cursor="email">
+                plancon.clem.pro@gmail.com
             </a>
 
-            <div class="contact__links">
-                <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" class="contact__link" data-magnetic>
+            <div class="contact__socials">
+                <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" class="social">
                     <span>LinkedIn</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M7 17L17 7M17 7H7M17 7V17"/>
                     </svg>
                 </a>
-                <a href="https://github.com" target="_blank" rel="noopener" class="contact__link" data-magnetic>
+                <a href="https://github.com" target="_blank" rel="noopener" class="social">
                     <span>GitHub</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M7 17L17 7M17 7H7M17 7V17"/>
                     </svg>
                 </a>
-                <a href="https://www.behance.net/clmentplanon" target="_blank" rel="noopener" class="contact__link" data-magnetic>
+                <a href="https://www.behance.net/clmentplanon" target="_blank" rel="noopener" class="social">
                     <span>Behance</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M7 17L17 7M17 7H7M17 7V17"/>
@@ -372,14 +352,16 @@
                 </a>
             </div>
         </div>
-
-        <div class="contact__footer">
-            <p>© 2024 Clément Plançon</p>
-            <p>Made with passion</p>
-        </div>
     </section>
 
-    <!-- Scripts -->
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer__inner">
+            <p>© 2024 Clément Plançon</p>
+            <p>Conçu avec passion</p>
+        </div>
+    </footer>
+
     <script src="js/creative.js"></script>
 </body>
 </html>
