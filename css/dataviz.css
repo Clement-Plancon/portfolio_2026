@@ -1,0 +1,728 @@
+/* ===========================================
+   Dataviz Page — Creative Data Visualization Style
+   =========================================== */
+
+:root {
+    --dataviz-1: #6366f1;
+    --dataviz-2: #8b5cf6;
+    --dataviz-3: #06b6d4;
+    --dataviz-4: #10b981;
+    --dataviz-5: #f59e0b;
+    --dataviz-bg: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+[data-theme="dark"] {
+    --dataviz-1: #818cf8;
+    --dataviz-2: #a78bfa;
+    --dataviz-3: #22d3ee;
+    --dataviz-4: #34d399;
+    --dataviz-5: #fbbf24;
+}
+
+/* ===================== BACKGROUND ===================== */
+.dataviz-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.dataviz-bg__grid {
+    position: absolute;
+    inset: 0;
+    color: var(--accent);
+}
+
+.dataviz-bg__nodes {
+    position: absolute;
+    inset: 0;
+}
+
+.dataviz-bg__nodes::before,
+.dataviz-bg__nodes::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--dataviz-1);
+    border-radius: 50%;
+    animation: nodeFloat 20s infinite linear;
+}
+
+.dataviz-bg__nodes::before {
+    top: 20%;
+    left: 10%;
+    box-shadow:
+        calc(100vw * 0.3) calc(100vh * 0.1) 0 var(--dataviz-2),
+        calc(100vw * 0.5) calc(100vh * 0.3) 0 var(--dataviz-3),
+        calc(100vw * 0.7) calc(100vh * 0.15) 0 var(--dataviz-4),
+        calc(100vw * 0.2) calc(100vh * 0.5) 0 var(--dataviz-1),
+        calc(100vw * 0.8) calc(100vh * 0.4) 0 var(--dataviz-2),
+        calc(100vw * 0.4) calc(100vh * 0.7) 0 var(--dataviz-3),
+        calc(100vw * 0.6) calc(100vh * 0.6) 0 var(--dataviz-4),
+        calc(100vw * 0.9) calc(100vh * 0.7) 0 var(--dataviz-1);
+}
+
+.dataviz-bg__nodes::after {
+    top: 60%;
+    left: 30%;
+    animation-delay: -10s;
+    box-shadow:
+        calc(100vw * 0.15) calc(100vh * 0.2) 0 var(--dataviz-3),
+        calc(100vw * 0.45) calc(100vh * 0.1) 0 var(--dataviz-4),
+        calc(100vw * 0.65) calc(100vh * 0.35) 0 var(--dataviz-1),
+        calc(100vw * 0.25) calc(100vh * 0.6) 0 var(--dataviz-2);
+}
+
+@keyframes nodeFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+    25% { transform: translate(10px, -10px) scale(1.2); opacity: 0.6; }
+    50% { transform: translate(-5px, 5px) scale(0.8); opacity: 0.3; }
+    75% { transform: translate(5px, 10px) scale(1.1); opacity: 0.5; }
+}
+
+.dataviz-bg__chart {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.05;
+    filter: blur(80px);
+}
+
+.dataviz-bg__chart--1 {
+    width: 600px;
+    height: 600px;
+    background: var(--dataviz-1);
+    top: -200px;
+    right: -200px;
+    animation: pulse 8s ease-in-out infinite;
+}
+
+.dataviz-bg__chart--2 {
+    width: 400px;
+    height: 400px;
+    background: var(--dataviz-3);
+    bottom: 10%;
+    left: -100px;
+    animation: pulse 10s ease-in-out infinite reverse;
+}
+
+.dataviz-bg__chart--3 {
+    width: 300px;
+    height: 300px;
+    background: var(--dataviz-4);
+    top: 50%;
+    right: 10%;
+    animation: pulse 12s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.05; }
+    50% { transform: scale(1.2); opacity: 0.08; }
+}
+
+/* ===================== HERO ===================== */
+.dataviz-hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: var(--space-24) 0;
+    position: relative;
+}
+
+.dataviz-hero .container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+}
+
+.dataviz-hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--dataviz-bg);
+    border: 1px solid color-mix(in srgb, var(--dataviz-1) 30%, transparent);
+    border-radius: 100px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--dataviz-1);
+    margin-bottom: var(--space-6);
+}
+
+.dataviz-hero__badge-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.dataviz-hero__badge-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: var(--dataviz-1);
+}
+
+.dataviz-hero__title {
+    margin-bottom: var(--space-6);
+}
+
+.dataviz-hero__title-line {
+    display: block;
+    font-size: var(--text-6xl);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+.dataviz-hero__title-line--accent {
+    background: linear-gradient(135deg, var(--dataviz-1), var(--dataviz-2), var(--dataviz-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dataviz-hero__desc {
+    font-size: var(--text-lg);
+    color: var(--text-light);
+    line-height: 1.7;
+    max-width: 500px;
+    margin-bottom: var(--space-10);
+}
+
+.dataviz-hero__stats {
+    display: flex;
+    gap: var(--space-10);
+}
+
+.dataviz-stat {
+    text-align: left;
+}
+
+.dataviz-stat__value {
+    display: block;
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    font-family: 'Space Mono', monospace;
+    background: linear-gradient(135deg, var(--dataviz-1), var(--dataviz-3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: var(--space-1);
+}
+
+.dataviz-stat__label {
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Hero Visual */
+.dataviz-hero__visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dataviz-chart {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.dataviz-chart__donut {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.dataviz-chart__segment {
+    transition: all 0.5s var(--ease);
+    transform-origin: center;
+}
+
+.dataviz-chart:hover .dataviz-chart__segment {
+    filter: brightness(1.1);
+}
+
+.dataviz-chart__center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dataviz-chart__percent {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    font-family: 'Space Mono', monospace;
+}
+
+.dataviz-chart__label {
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ===================== GRID ===================== */
+.dataviz-section {
+    position: relative;
+}
+
+.dataviz-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+}
+
+/* ===================== CARDS ===================== */
+.dataviz-card {
+    position: relative;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--space-4);
+    overflow: hidden;
+    transition: all 0.4s var(--ease);
+    display: flex;
+    flex-direction: column;
+}
+
+.dataviz-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--dataviz-1);
+    box-shadow:
+        0 20px 40px -20px color-mix(in srgb, var(--dataviz-1) 30%, transparent),
+        0 0 0 1px var(--dataviz-1);
+}
+
+.dataviz-card--featured {
+    grid-column: span 2;
+    flex-direction: row;
+}
+
+.dataviz-card--wide {
+    grid-column: span 2;
+}
+
+.dataviz-card__visual {
+    height: 180px;
+    background: linear-gradient(135deg, var(--bg-alt), var(--bg));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6);
+    position: relative;
+    overflow: hidden;
+}
+
+.dataviz-card--featured .dataviz-card__visual {
+    width: 45%;
+    height: auto;
+    min-height: 280px;
+}
+
+/* Chart Types */
+.dataviz-card__chart--bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 100%;
+    padding: var(--space-4) 0;
+}
+
+.dataviz-card__chart--bars span {
+    flex: 1;
+    height: var(--height);
+    background: linear-gradient(to top, var(--dataviz-1), var(--dataviz-2));
+    border-radius: 4px 4px 0 0;
+    animation: barGrow 1s ease-out forwards;
+    transform-origin: bottom;
+    transform: scaleY(0);
+}
+
+.dataviz-card:hover .dataviz-card__chart--bars span {
+    animation: barPulse 0.5s ease-in-out;
+}
+
+@keyframes barGrow {
+    to { transform: scaleY(1); }
+}
+
+@keyframes barPulse {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.1); }
+}
+
+.dataviz-card__chart--bars span:nth-child(1) { animation-delay: 0.1s; }
+.dataviz-card__chart--bars span:nth-child(2) { animation-delay: 0.15s; }
+.dataviz-card__chart--bars span:nth-child(3) { animation-delay: 0.2s; }
+.dataviz-card__chart--bars span:nth-child(4) { animation-delay: 0.25s; }
+.dataviz-card__chart--bars span:nth-child(5) { animation-delay: 0.3s; }
+.dataviz-card__chart--bars span:nth-child(6) { animation-delay: 0.35s; }
+.dataviz-card__chart--bars span:nth-child(7) { animation-delay: 0.4s; }
+
+.dataviz-card__chart--pie {
+    width: 120px;
+    height: 120px;
+}
+
+.dataviz-card__chart--pie svg {
+    width: 100%;
+    height: 100%;
+}
+
+.dataviz-card__chart--line {
+    width: 100%;
+    height: 80px;
+}
+
+.dataviz-card__chart--line svg {
+    width: 100%;
+    height: 100%;
+}
+
+.dataviz-line {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: lineReveal 1.5s ease-out forwards;
+    animation-delay: var(--delay, 0s);
+}
+
+@keyframes lineReveal {
+    to { stroke-dashoffset: 0; }
+}
+
+.dataviz-card__chart--scatter {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.dataviz-card__chart--scatter span {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: var(--size);
+    height: var(--size);
+    background: var(--dataviz-1);
+    border-radius: 50%;
+    transform: scale(0);
+    animation: dotAppear 0.5s ease-out forwards;
+}
+
+.dataviz-card__chart--scatter span:nth-child(odd) { background: var(--dataviz-2); }
+.dataviz-card__chart--scatter span:nth-child(3n) { background: var(--dataviz-3); }
+
+@keyframes dotAppear {
+    to { transform: scale(1); }
+}
+
+.dataviz-card__chart--scatter span:nth-child(1) { animation-delay: 0.1s; }
+.dataviz-card__chart--scatter span:nth-child(2) { animation-delay: 0.15s; }
+.dataviz-card__chart--scatter span:nth-child(3) { animation-delay: 0.2s; }
+.dataviz-card__chart--scatter span:nth-child(4) { animation-delay: 0.25s; }
+.dataviz-card__chart--scatter span:nth-child(5) { animation-delay: 0.3s; }
+.dataviz-card__chart--scatter span:nth-child(6) { animation-delay: 0.35s; }
+.dataviz-card__chart--scatter span:nth-child(7) { animation-delay: 0.4s; }
+.dataviz-card__chart--scatter span:nth-child(8) { animation-delay: 0.45s; }
+.dataviz-card__chart--scatter span:nth-child(9) { animation-delay: 0.5s; }
+
+.dataviz-card__chart--radar {
+    width: 120px;
+    height: 120px;
+}
+
+.dataviz-card__chart--radar svg {
+    width: 100%;
+    height: 100%;
+}
+
+.dataviz-radar {
+    transform-origin: center;
+    animation: radarPulse 2s ease-in-out infinite;
+}
+
+@keyframes radarPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+}
+
+.dataviz-card__chart--heatmap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    width: 120px;
+}
+
+.heatmap-grid span {
+    aspect-ratio: 1;
+    background: var(--dataviz-4);
+    opacity: var(--opacity);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.dataviz-card:hover .heatmap-grid span {
+    transform: scale(1.1);
+}
+
+/* Card Content */
+.dataviz-card__content {
+    padding: var(--space-6);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.dataviz-card__platform {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: var(--space-3);
+}
+
+.dataviz-card__platform svg {
+    width: 16px;
+    height: 16px;
+}
+
+.dataviz-card__title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+    line-height: 1.3;
+}
+
+.dataviz-card__desc {
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+    flex: 1;
+}
+
+.dataviz-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.dataviz-card__tags span {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    padding: var(--space-1) var(--space-3);
+    background: var(--dataviz-bg);
+    color: var(--dataviz-1);
+    border-radius: 100px;
+}
+
+.dataviz-card__arrow {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-10px, 10px);
+    transition: all 0.3s var(--ease);
+}
+
+.dataviz-card__arrow svg {
+    width: 18px;
+    height: 18px;
+    color: var(--dataviz-1);
+}
+
+.dataviz-card:hover .dataviz-card__arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+/* ===================== TOOLS ===================== */
+.dataviz-tools {
+    overflow: hidden;
+}
+
+.tools-marquee {
+    overflow: hidden;
+    padding: var(--space-8) 0;
+}
+
+.tools-marquee__track {
+    display: flex;
+    gap: var(--space-4);
+    width: max-content;
+    animation: toolsScroll 20s linear infinite;
+}
+
+.tool-badge {
+    padding: var(--space-3) var(--space-6);
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: var(--text-base);
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.tool-badge:hover {
+    background: var(--dataviz-1);
+    border-color: var(--dataviz-1);
+    color: white;
+}
+
+@keyframes toolsScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+/* ===================== CTA ===================== */
+.dataviz-cta {
+    background: linear-gradient(135deg, var(--dataviz-1), var(--dataviz-2));
+    position: relative;
+    overflow: hidden;
+}
+
+.dataviz-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(255,255,255,0.05) 0%, transparent 50%);
+}
+
+.dataviz-cta__content {
+    position: relative;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.dataviz-cta__title {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: white;
+    margin-bottom: var(--space-4);
+}
+
+.dataviz-cta__desc {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: var(--space-8);
+}
+
+.dataviz-cta .btn--primary {
+    background: white;
+    color: var(--dataviz-1);
+}
+
+.dataviz-cta .btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 1024px) {
+    .dataviz-hero .container {
+        grid-template-columns: 1fr;
+        gap: var(--space-10);
+    }
+
+    .dataviz-hero__visual {
+        order: -1;
+    }
+
+    .dataviz-chart {
+        width: 250px;
+        height: 250px;
+    }
+
+    .dataviz-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dataviz-card--featured {
+        grid-column: span 2;
+        flex-direction: column;
+    }
+
+    .dataviz-card--featured .dataviz-card__visual {
+        width: 100%;
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dataviz-hero {
+        padding: var(--space-20) 0 var(--space-12);
+    }
+
+    .dataviz-hero__title-line {
+        font-size: var(--text-4xl);
+    }
+
+    .dataviz-hero__stats {
+        gap: var(--space-6);
+    }
+
+    .dataviz-stat__value {
+        font-size: var(--text-2xl);
+    }
+
+    .dataviz-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dataviz-card--featured,
+    .dataviz-card--wide {
+        grid-column: span 1;
+    }
+
+    .dataviz-cta__title {
+        font-size: var(--text-2xl);
+    }
+}
+
+@media (max-width: 640px) {
+    .dataviz-hero__title-line {
+        font-size: var(--text-3xl);
+    }
+
+    .dataviz-chart {
+        width: 200px;
+        height: 200px;
+    }
+
+    .dataviz-hero__stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .dataviz-stat {
+        text-align: center;
+        flex: 1;
+        min-width: 80px;
+    }
+}
