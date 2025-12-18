@@ -31,16 +31,20 @@
         </a>
 
         <nav class="nav">
-            <a href="#projets" class="nav__link" data-i18n="nav.work">
-                <span class="nav__num">01</span>
-                <span class="nav__text">Projets</span>
-            </a>
             <a href="#apropos" class="nav__link" data-i18n="nav.about">
-                <span class="nav__num">02</span>
+                <span class="nav__num">01</span>
                 <span class="nav__text">À propos</span>
             </a>
-            <a href="#contact" class="nav__link" data-i18n="nav.contact">
+            <a href="#competences" class="nav__link" data-i18n="nav.skills">
+                <span class="nav__num">02</span>
+                <span class="nav__text">Compétences</span>
+            </a>
+            <a href="#projets" class="nav__link" data-i18n="nav.work">
                 <span class="nav__num">03</span>
+                <span class="nav__text">Projets</span>
+            </a>
+            <a href="#contact" class="nav__link" data-i18n="nav.contact">
+                <span class="nav__num">04</span>
                 <span class="nav__text">Contact</span>
             </a>
         </nav>
@@ -61,7 +65,6 @@
     <!-- Hero -->
     <section class="hero">
         <div class="hero__content">
-            <!-- Tags -->
             <div class="hero__tags">
                 <span class="tag">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -83,7 +86,6 @@
                 </span>
             </div>
 
-            <!-- Main -->
             <div class="hero__main">
                 <p class="hero__intro" data-i18n="hero.intro">Je suis Clément Plançon,</p>
                 <h1 class="hero__title">
@@ -91,13 +93,10 @@
                     <span class="hero__title-word hero__title-word--outline" data-i18n="hero.title2">logiciel</span>
                 </h1>
                 <p class="hero__desc" data-i18n="hero.desc">
-                    Je conçois des solutions numériques innovantes,
-                    alliant expertise technique et intelligence artificielle
-                    pour transformer vos idées en produits performants.
+                    Je conçois des solutions numériques innovantes, alliant expertise technique et intelligence artificielle pour transformer vos idées en produits performants.
                 </p>
             </div>
 
-            <!-- CTA -->
             <div class="hero__cta">
                 <a href="#contact" class="btn btn--primary">
                     <span data-i18n="hero.cta">Discutons de votre projet</span>
@@ -111,20 +110,18 @@
             </div>
         </div>
 
-        <!-- Visual -->
         <div class="hero__visual">
             <div class="hero__shape hero__shape--1"></div>
             <div class="hero__shape hero__shape--2"></div>
             <div class="hero__shape hero__shape--3"></div>
             <div class="hero__badge">
-                <span class="hero__badge-text">10+ ans</span>
-                <span class="hero__badge-label">d'expérience</span>
+                <span class="hero__badge-text">10+ <span data-i18n="hero.badge.years">ans</span></span>
+                <span class="hero__badge-label" data-i18n="hero.badge.label">d'expérience</span>
             </div>
         </div>
 
-        <!-- Scroll -->
         <div class="hero__scroll">
-            <span>Scroll</span>
+            <span data-i18n="hero.scroll">Scroll</span>
             <div class="hero__scroll-line"></div>
         </div>
     </section>
@@ -163,91 +160,11 @@
         </div>
     </div>
 
-    <!-- Projets -->
-    <section class="section projects" id="projets">
-        <div class="container">
-            <header class="section__head">
-                <span class="section__num">01</span>
-                <h2 class="section__title" data-i18n="projects.title">Projets sélectionnés</h2>
-            </header>
-
-            <div class="projects__grid">
-                <article class="project" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">01</span>
-                    </div>
-                    <div class="project__content">
-                        <span class="project__cat">Application Mobile — IA</span>
-                        <h3 class="project__title">QuiPaieQuoi</h3>
-                        <p class="project__desc">Application de gestion des dépenses partagées avec reconnaissance automatique des tickets par IA.</p>
-                    </div>
-                    <a href="#" class="project__link" aria-label="Voir le projet">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </article>
-
-                <article class="project" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">02</span>
-                    </div>
-                    <div class="project__content">
-                        <span class="project__cat">Application Web</span>
-                        <h3 class="project__title">Référentiel Indicateurs</h3>
-                        <p class="project__desc">Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.</p>
-                    </div>
-                    <a href="#" class="project__link" aria-label="Voir le projet">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </article>
-
-                <article class="project" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">03</span>
-                    </div>
-                    <div class="project__content">
-                        <span class="project__cat">Agent IA — RAG</span>
-                        <h3 class="project__title">Assistant IA Métier</h3>
-                        <p class="project__desc">Chatbot intelligent utilisant RAG pour répondre aux questions métiers à partir de la documentation interne.</p>
-                    </div>
-                    <a href="#" class="project__link" aria-label="Voir le projet">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </article>
-
-                <article class="project" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">04</span>
-                    </div>
-                    <div class="project__content">
-                        <span class="project__cat">Outil Interne</span>
-                        <h3 class="project__title">Veille Stratégique</h3>
-                        <p class="project__desc">Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.</p>
-                    </div>
-                    <a href="#" class="project__link" aria-label="Voir le projet">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </a>
-                </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- À propos -->
+    <!-- À propos (Section 01) -->
     <section class="section about" id="apropos">
         <div class="container">
             <header class="section__head">
-                <span class="section__num">02</span>
+                <span class="section__num">01</span>
                 <h2 class="section__title" data-i18n="about.title">À propos</h2>
             </header>
 
@@ -257,7 +174,7 @@
                         <span class="about__initials">CP</span>
                     </div>
                     <div class="about__label">
-                        <span>Depuis 2014</span>
+                        <span data-i18n="about.since">Depuis 2014</span>
                     </div>
                 </div>
 
@@ -272,43 +189,60 @@
                     <div class="about__stats">
                         <div class="stat">
                             <span class="stat__value">10<span class="stat__plus">+</span></span>
-                            <span class="stat__label">Années d'expérience</span>
+                            <span class="stat__label" data-i18n="about.stat1">Années d'expérience</span>
                         </div>
                         <div class="stat">
                             <span class="stat__value">50<span class="stat__plus">+</span></span>
-                            <span class="stat__label">Projets réalisés</span>
+                            <span class="stat__label" data-i18n="about.stat2">Projets réalisés</span>
                         </div>
                         <div class="stat">
                             <span class="stat__value">∞</span>
-                            <span class="stat__label">Curiosité</span>
+                            <span class="stat__label" data-i18n="about.stat3">Curiosité</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Timeline -->
+            <!-- Timeline / Parcours -->
             <div class="timeline">
-                <h3 class="timeline__title">Parcours</h3>
+                <h3 class="timeline__title" data-i18n="about.experience">Parcours</h3>
+                <p class="timeline__subtitle" data-i18n="about.experience.subtitle">Cliquez sur une expérience pour en savoir plus</p>
+
                 <div class="timeline__list">
-                    <div class="timeline__item">
-                        <div class="timeline__date">2022 — Présent</div>
+                    <div class="timeline__item" data-modal="exp1">
+                        <div class="timeline__date">2022 — <span data-i18n="date.present">Présent</span></div>
                         <div class="timeline__info">
-                            <h4>Laboratoire de Police Scientifique</h4>
-                            <p>Chef adjoint IT — Ingénieur SIC</p>
+                            <h4 data-i18n="exp1.title">Laboratoire de Police Scientifique</h4>
+                            <p data-i18n="exp1.role">Chef adjoint IT — Ingénieur SIC</p>
+                        </div>
+                        <div class="timeline__arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
                         </div>
                     </div>
-                    <div class="timeline__item">
-                        <div class="timeline__date">2020 — Présent</div>
+                    <div class="timeline__item" data-modal="exp2">
+                        <div class="timeline__date">2020 — <span data-i18n="date.present">Présent</span></div>
                         <div class="timeline__info">
-                            <h4>Point Virgule</h4>
-                            <p>Fondateur — Développeur Fullstack & IA</p>
+                            <h4 data-i18n="exp2.title">Point Virgule</h4>
+                            <p data-i18n="exp2.role">Fondateur — Développeur Fullstack & IA</p>
+                        </div>
+                        <div class="timeline__arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
                         </div>
                     </div>
-                    <div class="timeline__item">
+                    <div class="timeline__item" data-modal="exp3">
                         <div class="timeline__date">2019 — 2022</div>
                         <div class="timeline__info">
-                            <h4>Ministère de l'Économie</h4>
-                            <p>Analyste Développeur — Laboratoire de la Transformation</p>
+                            <h4 data-i18n="exp3.title">Ministère de l'Économie</h4>
+                            <p data-i18n="exp3.role">Analyste Développeur — Laboratoire de la Transformation</p>
+                        </div>
+                        <div class="timeline__arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -316,11 +250,199 @@
         </div>
     </section>
 
-    <!-- Contact -->
-    <section class="section contact" id="contact">
+    <!-- Compétences (Section 02) -->
+    <section class="section skills" id="competences">
+        <div class="container">
+            <header class="section__head">
+                <span class="section__num">02</span>
+                <h2 class="section__title" data-i18n="skills.title">Compétences</h2>
+            </header>
+
+            <div class="skills__grid">
+                <div class="skill-card">
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                    </div>
+                    <h3 class="skill-card__title" data-i18n="skills.dev.title">Développement Web</h3>
+                    <p class="skill-card__desc" data-i18n="skills.dev.desc">Applications web modernes avec Angular, React, Node.js. APIs REST et GraphQL.</p>
+                    <div class="skill-card__tags">
+                        <span>Angular</span>
+                        <span>React</span>
+                        <span>Node.js</span>
+                        <span>TypeScript</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                            <polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+                        </svg>
+                    </div>
+                    <h3 class="skill-card__title" data-i18n="skills.ia.title">Intelligence Artificielle</h3>
+                    <p class="skill-card__desc" data-i18n="skills.ia.desc">Intégration de LLM, systèmes RAG, chatbots intelligents et automatisation par IA.</p>
+                    <div class="skill-card__tags">
+                        <span>Python</span>
+                        <span>LangChain</span>
+                        <span>OpenAI</span>
+                        <span>RAG</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                    </div>
+                    <h3 class="skill-card__title" data-i18n="skills.mobile.title">Applications Mobiles</h3>
+                    <p class="skill-card__desc" data-i18n="skills.mobile.desc">Développement cross-platform avec Flutter et Dart. UI/UX mobile natives.</p>
+                    <div class="skill-card__tags">
+                        <span>Flutter</span>
+                        <span>Dart</span>
+                        <span>Firebase</span>
+                        <span>iOS/Android</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                        </svg>
+                    </div>
+                    <h3 class="skill-card__title" data-i18n="skills.data.title">Data & Backend</h3>
+                    <p class="skill-card__desc" data-i18n="skills.data.desc">Architecture backend, bases de données SQL/NoSQL, ETL et analyse de données.</p>
+                    <div class="skill-card__tags">
+                        <span>C# .NET</span>
+                        <span>PostgreSQL</span>
+                        <span>MongoDB</span>
+                        <span>Docker</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                        </svg>
+                    </div>
+                    <h3 class="skill-card__title" data-i18n="skills.ux.title">UX/UI Design</h3>
+                    <p class="skill-card__desc" data-i18n="skills.ux.desc">Conception d'interfaces utilisateur, prototypage et design systems.</p>
+                    <div class="skill-card__tags">
+                        <span>Figma</span>
+                        <span>Design System</span>
+                        <span>Prototyping</span>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-card__icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3 class="skill-card__title" data-i18n="skills.management.title">Management</h3>
+                    <p class="skill-card__desc" data-i18n="skills.management.desc">Gestion d'équipe technique, méthodologies agiles et pilotage de projets.</p>
+                    <div class="skill-card__tags">
+                        <span>Agile/Scrum</span>
+                        <span>Leadership</span>
+                        <span>Gestion de projet</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projets (Section 03) -->
+    <section class="section projects" id="projets">
         <div class="container">
             <header class="section__head">
                 <span class="section__num">03</span>
+                <h2 class="section__title" data-i18n="projects.title">Projets sélectionnés</h2>
+                <p class="section__subtitle" data-i18n="projects.subtitle">Cliquez sur un projet pour voir les détails</p>
+            </header>
+
+            <div class="projects__grid">
+                <article class="project" data-modal="proj1" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">01</span>
+                    </div>
+                    <div class="project__content">
+                        <span class="project__cat" data-i18n="proj1.cat">Application Mobile — IA</span>
+                        <h3 class="project__title" data-i18n="proj1.title">QuiPaieQuoi</h3>
+                        <p class="project__desc" data-i18n="proj1.desc">Application de gestion des dépenses partagées avec reconnaissance automatique des tickets par IA.</p>
+                    </div>
+                    <div class="project__link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                </article>
+
+                <article class="project" data-modal="proj2" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">02</span>
+                    </div>
+                    <div class="project__content">
+                        <span class="project__cat" data-i18n="proj2.cat">Application Web</span>
+                        <h3 class="project__title" data-i18n="proj2.title">Référentiel Indicateurs</h3>
+                        <p class="project__desc" data-i18n="proj2.desc">Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.</p>
+                    </div>
+                    <div class="project__link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                </article>
+
+                <article class="project" data-modal="proj3" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">03</span>
+                    </div>
+                    <div class="project__content">
+                        <span class="project__cat" data-i18n="proj3.cat">Agent IA — RAG</span>
+                        <h3 class="project__title" data-i18n="proj3.title">Assistant IA Métier</h3>
+                        <p class="project__desc" data-i18n="proj3.desc">Chatbot intelligent utilisant RAG pour répondre aux questions métiers à partir de la documentation interne.</p>
+                    </div>
+                    <div class="project__link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                </article>
+
+                <article class="project" data-modal="proj4" data-cursor="view">
+                    <div class="project__img">
+                        <div class="project__img-bg"></div>
+                        <span class="project__num">04</span>
+                    </div>
+                    <div class="project__content">
+                        <span class="project__cat" data-i18n="proj4.cat">Outil Interne</span>
+                        <h3 class="project__title" data-i18n="proj4.title">Veille Stratégique</h3>
+                        <p class="project__desc" data-i18n="proj4.desc">Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.</p>
+                    </div>
+                    <div class="project__link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                        </svg>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact (Section 04) -->
+    <section class="section contact" id="contact">
+        <div class="container">
+            <header class="section__head">
+                <span class="section__num">04</span>
                 <h2 class="section__title section__title--large" data-i18n="contact.title">
                     Un projet en tête ?<br>
                     <span class="text--accent">Travaillons ensemble.</span>
@@ -358,9 +480,24 @@
     <footer class="footer">
         <div class="container footer__inner">
             <p>© 2024 Clément Plançon</p>
-            <p>Conçu avec passion</p>
+            <p data-i18n="footer.made">Conçu avec passion</p>
         </div>
     </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="modal" aria-hidden="true">
+        <div class="modal__backdrop"></div>
+        <div class="modal__container">
+            <button class="modal__close" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+            <div class="modal__content">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
 
     <script src="js/creative.js"></script>
 </body>
