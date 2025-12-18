@@ -11,6 +11,7 @@ const translations = {
         'nav.about': 'À propos',
         'nav.skills': 'Compétences',
         'nav.articles': 'Articles',
+        'nav.dataviz': 'Dataviz',
         'nav.contact': 'Contact',
 
         // Hero
@@ -96,6 +97,7 @@ const translations = {
         'nav.about': 'About',
         'nav.skills': 'Skills',
         'nav.articles': 'Articles',
+        'nav.dataviz': 'Dataviz',
         'nav.contact': 'Contact',
 
         // Hero
@@ -525,6 +527,9 @@ class LanguageToggle {
                 textEl.textContent = t[key];
             }
         });
+
+        // Dispatch language change event for other scripts
+        document.dispatchEvent(new CustomEvent('langChange', { detail: { lang } }));
     }
 }
 
