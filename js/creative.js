@@ -669,12 +669,57 @@ class ScrollAnimations {
     }
 }
 
+// ===================== MOBILE NAV =====================
+class MobileNav {
+    constructor() {
+        this.toggle = document.querySelector('.nav-toggle');
+        this.nav = document.querySelector('.nav');
+        this.body = document.body;
+        this.links = document.querySelectorAll('.nav__link');
+
+        if (!this.toggle || !this.nav) return;
+
+        this.init();
+    }
+
+    init() {
+        this.toggle.addEventListener('click', () => this.toggleNav());
+
+        // Close on link click
+        this.links.forEach(link => {
+            link.addEventListener('click', () => {
+                if (this.nav.classList.contains('active')) {
+                    this.closeNav();
+                }
+            });
+        });
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.nav.classList.contains('active')) {
+                this.closeNav();
+            }
+        });
+    }
+
+    toggleNav() {
+        this.nav.classList.toggle('active');
+        this.body.classList.toggle('nav-open');
+    }
+
+    closeNav() {
+        this.nav.classList.remove('active');
+        this.body.classList.remove('nav-open');
+    }
+}
+
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
     new Cursor();
     new ThemeToggle();
     new LanguageToggle();
     new Modal();
+    new MobileNav();
     new SmoothScroll();
     new ScrollAnimations();
 });
