@@ -14,6 +14,12 @@
     <link rel="stylesheet" href="css/admin.css">
 </head>
 <body class="admin-page">
+    <!-- Cursor -->
+    <div class="cursor" aria-hidden="true">
+        <div class="cursor__dot"></div>
+        <div class="cursor__circle"></div>
+    </div>
+
     <!-- Access Denied Screen (shown for non-localhost) -->
     <div id="accessDenied" class="access-denied" style="display: none;">
         <div class="access-denied__content">
@@ -39,6 +45,14 @@
                 <span class="admin-badge">Admin</span>
             </div>
             <div class="admin-header__right">
+                <button class="btn btn--primary btn--sm" id="publishAllBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <span>Publier les modifications</span>
+                </button>
                 <button class="btn-icon" data-theme-toggle title="Changer de thème">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="5"/>
@@ -51,233 +65,81 @@
         <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-container">
-                <h1 class="admin-title">Créateur de publications</h1>
-                <p class="admin-subtitle">Générez le code HTML pour vos articles Medium et visualisations de données.</p>
-
-                <!-- Tabs -->
-                <div class="admin-tabs">
-                    <button class="admin-tab active" data-tab="article">
+                <!-- Section Tabs -->
+                <div class="admin-section-tabs">
+                    <button class="section-tab active" data-section="articles">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                             <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
                         </svg>
-                        Article Medium
+                        Articles Medium
+                        <span class="section-tab__count" id="articlesCount">0</span>
                     </button>
-                    <button class="admin-tab" data-tab="dataviz">
+                    <button class="section-tab" data-section="dataviz">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M18 20V10M12 20V4M6 20v-6"/>
                         </svg>
                         Dataviz
+                        <span class="section-tab__count" id="datavizCount">0</span>
                     </button>
                 </div>
 
-                <!-- Article Form -->
-                <div class="admin-panel" id="articlePanel">
-                    <form id="articleForm" class="admin-form">
-                        <div class="form-grid">
-                            <div class="form-group form-group--full">
-                                <label for="articleTitle">Titre de l'article *</label>
-                                <input type="text" id="articleTitle" required placeholder="Ex: Comment utiliser GPT-4 pour automatiser vos tâches">
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="articleDesc">Description *</label>
-                                <textarea id="articleDesc" required rows="3" placeholder="Brève description de l'article..."></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="articleCategory">Catégorie *</label>
-                                <select id="articleCategory" required>
-                                    <option value="">Sélectionner...</option>
-                                    <option value="ia">Intelligence Artificielle</option>
-                                    <option value="dev">Développement</option>
-                                    <option value="career">Carrière</option>
-                                    <option value="tools">Outils & Productivité</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="articleDate">Date de publication *</label>
-                                <input type="date" id="articleDate" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="articleReadTime">Temps de lecture (min) *</label>
-                                <input type="number" id="articleReadTime" required min="1" max="60" placeholder="8">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="articleLink">Lien Medium *</label>
-                                <input type="url" id="articleLink" required placeholder="https://medium.com/@...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="articleGradient1">Couleur gradient 1</label>
-                                <div class="color-input">
-                                    <input type="color" id="articleGradient1" value="#667eea">
-                                    <input type="text" id="articleGradient1Text" value="#667eea" maxlength="7">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="articleGradient2">Couleur gradient 2</label>
-                                <div class="color-input">
-                                    <input type="color" id="articleGradient2" value="#764ba2">
-                                    <input type="text" id="articleGradient2Text" value="#764ba2" maxlength="7">
-                                </div>
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="articleTitleEn">Titre (EN)</label>
-                                <input type="text" id="articleTitleEn" placeholder="English title...">
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="articleDescEn">Description (EN)</label>
-                                <textarea id="articleDescEn" rows="2" placeholder="English description..."></textarea>
-                            </div>
+                <!-- Articles Section -->
+                <section class="admin-section" id="articlesSection">
+                    <div class="section-header">
+                        <div>
+                            <h2>Articles Medium</h2>
+                            <p>Gérez vos articles publiés sur Medium</p>
                         </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn--ghost" onclick="resetForm('article')">Réinitialiser</button>
-                            <button type="submit" class="btn btn--primary">
-                                <span>Générer le code</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Dataviz Form -->
-                <div class="admin-panel" id="datavizPanel" style="display: none;">
-                    <form id="datavizForm" class="admin-form">
-                        <div class="form-grid">
-                            <div class="form-group form-group--full">
-                                <label for="datavizTitle">Titre *</label>
-                                <input type="text" id="datavizTitle" required placeholder="Ex: Évolution du marché tech en France">
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="datavizDesc">Description *</label>
-                                <textarea id="datavizDesc" required rows="3" placeholder="Description de la visualisation..."></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="datavizPlatform">Plateforme *</label>
-                                <select id="datavizPlatform" required>
-                                    <option value="">Sélectionner...</option>
-                                    <option value="linkedin">LinkedIn</option>
-                                    <option value="instagram">Instagram</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="datavizChartType">Type de graphique *</label>
-                                <select id="datavizChartType" required>
-                                    <option value="">Sélectionner...</option>
-                                    <option value="bars">Bar Chart</option>
-                                    <option value="pie">Pie Chart</option>
-                                    <option value="line">Line Chart</option>
-                                    <option value="scatter">Scatter Plot</option>
-                                    <option value="radar">Radar Chart</option>
-                                    <option value="heatmap">Heatmap</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="datavizLink">Lien publication *</label>
-                                <input type="url" id="datavizLink" required placeholder="https://linkedin.com/...">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="datavizLayout">Layout</label>
-                                <select id="datavizLayout">
-                                    <option value="normal">Normal</option>
-                                    <option value="featured">Featured (large)</option>
-                                    <option value="wide">Wide</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="datavizTags">Tags (séparés par virgule) *</label>
-                                <input type="text" id="datavizTags" required placeholder="Python, Matplotlib, Emploi">
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="datavizTitleEn">Titre (EN)</label>
-                                <input type="text" id="datavizTitleEn" placeholder="English title...">
-                            </div>
-
-                            <div class="form-group form-group--full">
-                                <label for="datavizDescEn">Description (EN)</label>
-                                <textarea id="datavizDescEn" rows="2" placeholder="English description..."></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn btn--ghost" onclick="resetForm('dataviz')">Réinitialiser</button>
-                            <button type="submit" class="btn btn--primary">
-                                <span>Générer le code</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Output Section -->
-                <div class="admin-output" id="outputSection" style="display: none;">
-                    <div class="output-header">
-                        <h3>Code HTML généré</h3>
-                        <div class="output-actions">
-                            <button class="btn btn--ghost btn--sm" id="copyBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                </svg>
-                                Copier
-                            </button>
-                        </div>
-                    </div>
-                    <pre class="output-code"><code id="outputCode"></code></pre>
-
-                    <!-- Preview -->
-                    <div class="output-preview">
-                        <h4>Aperçu</h4>
-                        <div id="previewContainer" class="preview-container"></div>
+                        <button class="btn btn--primary" id="addArticleBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Nouvel article
+                        </button>
                     </div>
 
-                    <!-- Translations -->
-                    <div class="output-translations" id="translationsSection" style="display: none;">
-                        <div class="output-header">
-                            <h3>Traductions à ajouter (js/creative.js ou js/dataviz.js)</h3>
-                            <button class="btn btn--ghost btn--sm" id="copyTransBtn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                </svg>
-                                Copier
-                            </button>
+                    <!-- Articles List -->
+                    <div class="content-list" id="articlesList">
+                        <div class="content-empty">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            <p>Aucun article</p>
+                            <button class="btn btn--ghost" onclick="document.getElementById('addArticleBtn').click()">Créer le premier article</button>
                         </div>
-                        <pre class="output-code"><code id="translationsCode"></code></pre>
                     </div>
-                </div>
+                </section>
 
-                <!-- Saved Items -->
-                <div class="admin-saved">
-                    <div class="saved-header">
-                        <h3>Brouillons sauvegardés</h3>
-                        <button class="btn btn--ghost btn--sm" id="clearSavedBtn">Tout effacer</button>
+                <!-- Dataviz Section -->
+                <section class="admin-section" id="datavizSection" style="display: none;">
+                    <div class="section-header">
+                        <div>
+                            <h2>Visualisations de données</h2>
+                            <p>Gérez vos dataviz partagées sur les réseaux sociaux</p>
+                        </div>
+                        <button class="btn btn--primary" id="addDatavizBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Nouvelle dataviz
+                        </button>
                     </div>
-                    <div id="savedList" class="saved-list">
-                        <p class="saved-empty">Aucun brouillon sauvegardé</p>
+
+                    <!-- Dataviz List -->
+                    <div class="content-list" id="datavizList">
+                        <div class="content-empty">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 20V10M12 20V4M6 20v-6"/>
+                            </svg>
+                            <p>Aucune dataviz</p>
+                            <button class="btn btn--ghost" onclick="document.getElementById('addDatavizBtn').click()">Créer la première dataviz</button>
+                        </div>
                     </div>
-                </div>
+                </section>
             </div>
         </main>
 
@@ -291,6 +153,317 @@
                 Page accessible uniquement en local
             </p>
         </footer>
+    </div>
+
+    <!-- Article Modal -->
+    <div class="admin-modal" id="articleModal">
+        <div class="admin-modal__backdrop"></div>
+        <div class="admin-modal__container">
+            <div class="admin-modal__header">
+                <h3 id="articleModalTitle">Nouvel article</h3>
+                <button class="admin-modal__close" aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="articleForm" class="admin-modal__body">
+                <input type="hidden" id="articleId">
+                <div class="form-grid">
+                    <div class="form-group form-group--full">
+                        <label for="articleTitle">Titre de l'article *</label>
+                        <input type="text" id="articleTitle" required placeholder="Ex: Comment utiliser GPT-4 pour automatiser vos tâches">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="articleDesc">Description *</label>
+                        <textarea id="articleDesc" required rows="3" placeholder="Brève description de l'article..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleCategory">Catégorie *</label>
+                        <select id="articleCategory" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="ia">Intelligence Artificielle</option>
+                            <option value="dev">Développement</option>
+                            <option value="career">Carrière</option>
+                            <option value="tools">Outils & Productivité</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleDate">Date de publication *</label>
+                        <input type="date" id="articleDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleReadTime">Temps de lecture (min) *</label>
+                        <input type="number" id="articleReadTime" required min="1" max="60" placeholder="8">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleLink">Lien Medium *</label>
+                        <input type="url" id="articleLink" required placeholder="https://medium.com/@...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleGradient1">Couleur gradient 1</label>
+                        <div class="color-input">
+                            <input type="color" id="articleGradient1" value="#667eea">
+                            <input type="text" id="articleGradient1Text" value="#667eea" maxlength="7">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="articleGradient2">Couleur gradient 2</label>
+                        <div class="color-input">
+                            <input type="color" id="articleGradient2" value="#764ba2">
+                            <input type="text" id="articleGradient2Text" value="#764ba2" maxlength="7">
+                        </div>
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="articleTitleEn">Titre (EN)</label>
+                        <input type="text" id="articleTitleEn" placeholder="English title...">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="articleDescEn">Description (EN)</label>
+                        <textarea id="articleDescEn" rows="2" placeholder="English description..."></textarea>
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="articleArchived">
+                            <span>Archivé (non visible sur le site)</span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <div class="admin-modal__footer">
+                <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
+                <button type="submit" form="articleForm" class="btn btn--primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataviz Modal -->
+    <div class="admin-modal" id="datavizModal">
+        <div class="admin-modal__backdrop"></div>
+        <div class="admin-modal__container">
+            <div class="admin-modal__header">
+                <h3 id="datavizModalTitle">Nouvelle dataviz</h3>
+                <button class="admin-modal__close" aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="datavizForm" class="admin-modal__body">
+                <input type="hidden" id="datavizId">
+                <div class="form-grid">
+                    <div class="form-group form-group--full">
+                        <label for="datavizTitle">Titre *</label>
+                        <input type="text" id="datavizTitle" required placeholder="Ex: Évolution du marché tech en France">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="datavizDesc">Description *</label>
+                        <textarea id="datavizDesc" required rows="3" placeholder="Description de la visualisation..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="datavizPlatform">Plateforme *</label>
+                        <select id="datavizPlatform" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="instagram">Instagram</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="datavizChartType">Type de graphique *</label>
+                        <select id="datavizChartType" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="bars">Bar Chart</option>
+                            <option value="pie">Pie Chart</option>
+                            <option value="line">Line Chart</option>
+                            <option value="scatter">Scatter Plot</option>
+                            <option value="radar">Radar Chart</option>
+                            <option value="heatmap">Heatmap</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="datavizLink">Lien publication *</label>
+                        <input type="url" id="datavizLink" required placeholder="https://linkedin.com/...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="datavizLayout">Layout</label>
+                        <select id="datavizLayout">
+                            <option value="normal">Normal</option>
+                            <option value="featured">Featured (large)</option>
+                            <option value="wide">Wide</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="datavizTags">Tags (séparés par virgule) *</label>
+                        <input type="text" id="datavizTags" required placeholder="Python, Matplotlib, Emploi">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="datavizTitleEn">Titre (EN)</label>
+                        <input type="text" id="datavizTitleEn" placeholder="English title...">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="datavizDescEn">Description (EN)</label>
+                        <textarea id="datavizDescEn" rows="2" placeholder="English description..."></textarea>
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="datavizArchived">
+                            <span>Archivé (non visible sur le site)</span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <div class="admin-modal__footer">
+                <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
+                <button type="submit" form="datavizForm" class="btn btn--primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="admin-modal admin-modal--small" id="confirmModal">
+        <div class="admin-modal__backdrop"></div>
+        <div class="admin-modal__container">
+            <div class="admin-modal__header">
+                <h3>Confirmer la suppression</h3>
+                <button class="admin-modal__close" aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="admin-modal__body">
+                <p id="confirmMessage">Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+            </div>
+            <div class="admin-modal__footer">
+                <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
+                <button type="button" class="btn btn--danger" id="confirmDeleteBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Publish Modal -->
+    <div class="admin-modal" id="publishModal">
+        <div class="admin-modal__backdrop"></div>
+        <div class="admin-modal__container">
+            <div class="admin-modal__header">
+                <h3>Publier les modifications</h3>
+                <button class="admin-modal__close" aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="admin-modal__body">
+                <p class="publish-info">Les fichiers suivants seront mis à jour :</p>
+                <ul class="publish-list">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        articles.html
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10M12 20V4M6 20v-6"/>
+                        </svg>
+                        dataviz.html
+                    </li>
+                </ul>
+                <div class="publish-options">
+                    <button class="publish-option" id="downloadFilesBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Télécharger les fichiers</span>
+                        <small>Télécharge un ZIP avec les fichiers modifiés</small>
+                    </button>
+                    <button class="publish-option" id="copyCodeBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        <span>Voir le code généré</span>
+                        <small>Affiche le code à copier manuellement</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Preview Modal -->
+    <div class="admin-modal admin-modal--large" id="codeModal">
+        <div class="admin-modal__backdrop"></div>
+        <div class="admin-modal__container">
+            <div class="admin-modal__header">
+                <h3>Code généré</h3>
+                <button class="admin-modal__close" aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="admin-modal__body">
+                <div class="code-tabs">
+                    <button class="code-tab active" data-code="articles">articles.html</button>
+                    <button class="code-tab" data-code="dataviz">dataviz.html</button>
+                </div>
+                <div class="code-content">
+                    <div class="code-actions">
+                        <button class="btn btn--ghost btn--sm" id="copyCurrentCodeBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            Copier
+                        </button>
+                    </div>
+                    <pre class="code-preview"><code id="codePreview"></code></pre>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/admin.js"></script>
