@@ -30,7 +30,7 @@ const translations = {
 
         // About
         'about.title': 'À propos',
-        'about.since': 'Depuis 2014',
+        'about.since': 'Depuis 2020',
         'about.lead': 'Ingénieur logiciel spécialisé dans le web, je conçois des systèmes numériques pensés pour durer.',
         'about.text': 'Mon travail se situe à l’interface entre développement, compréhension des usages et structuration des systèmes. J’interviens sur des contextes complexes et contraints, où la fiabilité, la clarté et la maintenabilité sont essentielles. Je m’appuie sur une forte acculturation au design (recherche utilisateur, design system, conception par scénarios) et sur l’exploration de la donnée et de la cartographie pour éclairer les choix techniques et rendre l’information plus lisible.',
         'about.stat1': 'Années d\'expérience',
@@ -46,7 +46,7 @@ const translations = {
         'exp2.title': 'Outils Publics',
         'exp2.role': 'Coordinateur technique – Données & développement',
         'exp3.title': 'Ministère de l\'Économie',
-        'exp3.role': 'Analyste Développeur — Laboratoire de la Transformation',
+        'exp3.role': 'Ingénieur logiciel et chef de projet technique  — Laboratoire de la Transformation',
 
         // Skills
         'skills.title': 'Compétences',
@@ -72,9 +72,9 @@ const translations = {
         'proj2.cat': 'Application Web',
         'proj2.title': 'Référentiel Indicateurs',
         'proj2.desc': 'Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.',
-        'proj3.cat': 'Agent IA — RAG',
-        'proj3.title': 'Assistant IA Métier',
-        'proj3.desc': 'Chatbot intelligent utilisant RAG pour répondre aux questions métiers à partir de la documentation interne.',
+        'proj3.cat': 'Recherche utilisateurs & conception de solutions',
+        'proj3.title': 'Conception de logiciel pour les saisines de la Cour des Comptes',
+        'proj3.desc': 'Projet de conception visant à améliorer et structurer les outils liés au traitement des saisines de la Cour des Comptes.',
         'proj4.cat': 'Outil Interne',
         'proj4.title': 'Veille Stratégique',
         'proj4.desc': 'Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.',
@@ -116,9 +116,9 @@ const translations = {
 
         // About
         'about.title': 'About',
-        'about.since': 'Since 2014',
+        'about.since': 'Since 2020',
         'about.lead': 'As a software engineer specializing in web development, I design digital systems built to last.',
-        'about.text': 'Currently Deputy Head of IT at the Paris Forensic Science Laboratory, I design innovative technical solutions for judicial investigations. In parallel, I develop personal projects and support companies in their digital transformation.',
+        'about.text': 'My work lies at the intersection of development, understanding usage, and structuring systems. I work in complex and constrained contexts where reliability, clarity, and maintainability are essential. I draw on my strong background in design (user research, design systems, scenario-based design) and on data exploration and mapping to inform technical choices and make information more readable.',
         'about.stat1': 'Years of experience',
         'about.stat2': 'Projects completed',
         'about.stat3': 'Curiosity',
@@ -132,7 +132,7 @@ const translations = {
         'exp2.title': 'Outils Publics',
         'exp2.role': 'Technical Coordinator – Data & Development',
         'exp3.title': 'Ministry of Economy',
-        'exp3.role': 'Developer Analyst — Transformation Lab',
+        'exp3.role': 'Software Engineer and Technical Project Manager  — Transformation Lab',
 
         // Skills
         'skills.title': 'Skills',
@@ -152,15 +152,15 @@ const translations = {
         // Projects
         'projects.title': 'Selected projects',
         'projects.subtitle': 'Click on a project for details',
-        'proj1.cat': 'Mobile App — AI',
+        'proj1.cat': 'Software design – Ecological transition',
         'proj1.title': 'Bercy Vert',
         'proj1.desc': 'Software design project to support the green and ecological transition process.',
         'proj2.cat': 'Web Application',
         'proj2.title': 'Indicators Dashboard',
         'proj2.desc': 'Platform for centralizing and visualizing business indicators for decision-making.',
-        'proj3.cat': 'AI Agent — RAG',
-        'proj3.title': 'Business AI Assistant',
-        'proj3.desc': 'Intelligent chatbot using RAG to answer business questions from internal documentation.',
+        'proj3.cat': 'User research & solution design',
+        'proj3.title': 'Software design for referrals to the Court of Auditors',
+        'proj3.desc': 'Design project aimed at improving and structuring tools related to the processing of referrals to the Court of Auditors.',
         'proj4.cat': 'Internal Tool',
         'proj4.title': 'Strategic Intelligence',
         'proj4.desc': 'Automated technology and competitive intelligence system with content aggregation and analysis.',
@@ -284,7 +284,7 @@ const modalContent = {
             subtitle: 'Software design – Ecological transition',
             description: "Project to design software to support the Ministry of Economy and Finance's green and ecological transition initiative. The aim was to meet the needs of ministry representatives by centralizing and structuring the actions resulting from the BEGES and SPE measures.",
             features: [
-               'Project scoping and expression of functional requirements in consultation with stakeholders',
+                'Project scoping and expression of functional requirements in consultation with stakeholders',
                 'Definition of the development methodology and structuring of the project cycle',
                 'Multi-group management and expenditure history',
                 'Design and development of the proof of concept interface',
@@ -323,28 +323,26 @@ const modalContent = {
     },
     proj3: {
         fr: {
-            title: 'Assistant IA Métier',
-            subtitle: 'Agent IA — RAG',
-            description: 'Chatbot intelligent basé sur l\'architecture RAG (Retrieval-Augmented Generation) permettant de répondre aux questions des utilisateurs en s\'appuyant sur la documentation interne de l\'entreprise.',
+            title: 'Conception de logiciel pour les saisines de la Cour des Comptes',
+            subtitle: 'Recherche utilisateurs & conception de solutions',
+            description: 'Projet de conception visant à améliorer et structurer les outils liés au traitement des saisines de la Cour des Comptes, en s’appuyant sur une compréhension fine des besoins des usagers et des contraintes institutionnelles.',
             features: [
-                'Recherche sémantique dans la base documentaire',
-                'Réponses contextualisées avec sources citées',
-                'Apprentissage continu et feedback utilisateurs',
-                'Interface conversationnelle intuitive',
-                'Intégration avec les outils existants (Teams, Slack)'
+                'Exploration et analyse des solutions existantes pouvant répondre aux besoins des usagers',
+                'Cadrage technique et identification des pistes de conception logicielle adaptées au contexte',
+                'Accompagnement de l’équipe de designers (User Studio) dans la recherche utilisateur et la conduite des entretiens',
+                'Analyse et synthèse des retours utilisateurs pour orienter les choix de conception et les arbitrages techniques',
             ],
-            technologies: ['Python', 'LangChain', 'OpenAI GPT-4', 'Pinecone', 'FastAPI']
+            technologies: ['UX research', 'Design centré utilisateur', 'Cadrage technique', 'Prototypage', 'Co-conception']
         },
         en: {
-            title: 'Business AI Assistant',
-            subtitle: 'AI Agent — RAG',
-            description: 'Intelligent chatbot based on RAG (Retrieval-Augmented Generation) architecture to answer user questions using internal company documentation.',
+            title: 'Software design for referrals to the Court of Auditors',
+            subtitle: 'User research & solution design',
+            description: 'Design project aimed at improving and structuring tools related to the processing of referrals to the Court of Auditors, based on a detailed understanding of user needs and institutional constraints.',
             features: [
-                'Semantic search in document database',
-                'Contextualized answers with cited sources',
-                'Continuous learning and user feedback',
-                'Intuitive conversational interface',
-                'Integration with existing tools (Teams, Slack)'
+                'Exploration and analysis of existing solutions that could meet user needs',
+                'Technical scoping and identification of software design approaches suited to the context',
+                'Support for the design team (User Studio) in user research and conducting interviews',
+                'Analysis and synthesis of user feedback to guide design choices and technical decisions',
             ],
             technologies: ['Python', 'LangChain', 'OpenAI GPT-4', 'Pinecone', 'FastAPI']
         }

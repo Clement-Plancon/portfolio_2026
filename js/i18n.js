@@ -98,7 +98,7 @@ const translations = {
         'contact.subtitle': "Développeur fullstack, expert IA ou conseil technique — je suis à votre écoute.",
 
         // Footer
-        'footer.copyright': '© 2024 Clément Plançon — Tous droits réservés',
+        'footer.copyright': '© 2025 Clément Plançon — Tous droits réservés',
         'footer.legal': 'Mentions légales',
 
         // Marquee
@@ -131,7 +131,7 @@ const translations = {
         'about.title.em': 'product vision',
         'about.heading': 'Passionate developer, solution creator',
         'about.p1': 'Software engineer specialized in fullstack web development, I combine technical expertise with UX/UI sensibility to create high-performance digital solutions.',
-        'about.p2': 'Currently Deputy Head of IT at the Paris Forensic Science Laboratory, I design innovative technical solutions for judicial investigations.',
+        'about.p2': 'My work lies at the intersection of development, understanding usage, and structuring systems. I work in complex and constrained contexts where reliability, clarity, and maintainability are essential. I draw on my strong background in design (user research, design systems, scenario-based design) and on data exploration and mapping to inform technical choices and make information more readable.',
         'about.p3': 'Trained in design fiction by "Où sont les Dragons" lab and Max Mollon (Sciences Po), I bring a unique forward-thinking approach to my projects.',
         'about.stat.years': 'Years of experience',
         'about.stat.projects': 'Projects completed',
@@ -181,16 +181,16 @@ const translations = {
         'projects.view': 'View project',
         'projects.1.title': 'Bercy Vert',
         'projects.1.type': 'Software design – Ecological transition',
-        'projects.1.desc': 'Scan a bill and split amounts instantly. OCR + RAG LLM for smart recognition.',
+        'projects.1.desc': 'Project to design software to support the green and ecological transition process of the Ministry of Economy and Finance.',
         'projects.2.title': 'Indicators Dashboard',
         'projects.2.type': 'Web App',
         'projects.2.desc': 'Collaborative ministerial indicators tracking tool with interactive visualizations.',
         'projects.3.title': 'Strategic Watch',
         'projects.3.type': 'Internal tool',
         'projects.3.desc': 'Trend analysis tool suite and automated technology monitoring.',
-        'projects.4.title': 'Business AI Assistant',
-        'projects.4.type': 'AI Agent',
-        'projects.4.desc': 'Customized AI agent integrated into client processes to automate repetitive tasks.',
+        'projects.4.title': 'Software design for referrals to the Court of Auditors',
+        'projects.4.type': 'User research & solution design',
+        'projects.4.desc': 'Design project aimed at improving and structuring tools related to the processing of referrals to the Court of Auditors.',
 
         // Contact
         'contact.number': '05 — Contact',
@@ -199,7 +199,7 @@ const translations = {
         'contact.subtitle': "Fullstack developer, AI expert or technical consulting — I'm here for you.",
 
         // Footer
-        'footer.copyright': '© 2024 Clément Plançon — All rights reserved',
+        'footer.copyright': '© 2025 Clément Plançon — All rights reserved',
         'footer.legal': 'Legal',
 
         // Marquee
