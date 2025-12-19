@@ -7,6 +7,7 @@
 const DataStore = {
     ARTICLES_KEY: 'portfolio_articles',
     DATAVIZ_KEY: 'portfolio_dataviz',
+    SEEDED_KEY: 'portfolio_seeded',
 
     getArticles() {
         return JSON.parse(localStorage.getItem(this.ARTICLES_KEY) || '[]');
@@ -26,6 +27,227 @@ const DataStore = {
 
     generateId() {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    },
+
+    // Seed initial data from existing HTML if not already done
+    seedInitialData() {
+        if (localStorage.getItem(this.SEEDED_KEY)) return;
+
+        // Initial articles from articles.html
+        const initialArticles = [
+            {
+                id: 'art1',
+                title: "Comment j'ai intégré ChatGPT dans mon workflow de développement",
+                desc: "Découvrez comment l'IA générative peut transformer votre productivité quotidienne en tant que développeur, avec des exemples concrets et des bonnes pratiques.",
+                category: 'ia',
+                date: '2024-12-15',
+                readTime: '8',
+                link: 'https://medium.com',
+                gradient1: '#667eea',
+                gradient2: '#764ba2',
+                titleEn: "How I integrated ChatGPT into my development workflow",
+                descEn: "Discover how generative AI can transform your daily productivity as a developer, with concrete examples and best practices.",
+                archived: false
+            },
+            {
+                id: 'art2',
+                title: "Architecture Angular : Patterns et bonnes pratiques en 2024",
+                desc: "Un guide complet sur les patterns d'architecture modernes pour Angular, du lazy loading aux standalone components en passant par les signals.",
+                category: 'dev',
+                date: '2024-11-28',
+                readTime: '12',
+                link: 'https://medium.com',
+                gradient1: '#f093fb',
+                gradient2: '#f5576c',
+                titleEn: "Angular Architecture: Patterns and best practices in 2024",
+                descEn: "A complete guide on modern architecture patterns for Angular, from lazy loading to standalone components and signals.",
+                archived: false
+            },
+            {
+                id: 'art3',
+                title: "Construire un chatbot RAG avec LangChain et Pinecone",
+                desc: "Tutorial pas à pas pour créer un assistant IA capable de répondre à des questions en s'appuyant sur votre propre base documentaire.",
+                category: 'ia',
+                date: '2024-11-10',
+                readTime: '15',
+                link: 'https://medium.com',
+                gradient1: '#4facfe',
+                gradient2: '#00f2fe',
+                titleEn: "Building a RAG chatbot with LangChain and Pinecone",
+                descEn: "Step-by-step tutorial to create an AI assistant that can answer questions based on your own document base.",
+                archived: false
+            },
+            {
+                id: 'art4',
+                title: "De développeur à tech lead : les compétences clés",
+                desc: "Retour d'expérience sur la transition du rôle de développeur à celui de manager technique, et les soft skills indispensables.",
+                category: 'career',
+                date: '2024-10-25',
+                readTime: '6',
+                link: 'https://medium.com',
+                gradient1: '#fa709a',
+                gradient2: '#fee140',
+                titleEn: "From developer to tech lead: key skills",
+                descEn: "Feedback on transitioning from developer to technical manager role, and essential soft skills.",
+                archived: false
+            },
+            {
+                id: 'art5',
+                title: "Ma stack d'outils de développement en 2024",
+                desc: "VSCode, extensions, terminal, CLI, et autres outils qui me font gagner des heures chaque semaine.",
+                category: 'tools',
+                date: '2024-10-12',
+                readTime: '10',
+                link: 'https://medium.com',
+                gradient1: '#a8edea',
+                gradient2: '#fed6e3',
+                titleEn: "My development tools stack in 2024",
+                descEn: "VSCode, extensions, terminal, CLI, and other tools that save me hours every week.",
+                archived: false
+            },
+            {
+                id: 'art6',
+                title: "Flutter vs React Native en 2024 : le verdict",
+                desc: "Comparaison objective des deux frameworks de développement mobile cross-platform, avec benchmarks et cas d'usage.",
+                category: 'dev',
+                date: '2024-09-28',
+                readTime: '9',
+                link: 'https://medium.com',
+                gradient1: '#ff9a9e',
+                gradient2: '#fecfef',
+                titleEn: "Flutter vs React Native in 2024: the verdict",
+                descEn: "Objective comparison of both cross-platform mobile development frameworks, with benchmarks and use cases.",
+                archived: false
+            },
+            {
+                id: 'art7',
+                title: "Prompt Engineering : l'art de parler aux LLMs",
+                desc: "Techniques avancées pour obtenir les meilleurs résultats de ChatGPT, Claude, et autres modèles de langage.",
+                category: 'ia',
+                date: '2024-09-15',
+                readTime: '11',
+                link: 'https://medium.com',
+                gradient1: '#a18cd1',
+                gradient2: '#fbc2eb',
+                titleEn: "Prompt Engineering: the art of talking to LLMs",
+                descEn: "Advanced techniques to get the best results from ChatGPT, Claude, and other language models.",
+                archived: false
+            },
+            {
+                id: 'art8',
+                title: "Travailler dans le secteur public comme développeur",
+                desc: "Retour d'expérience sur le métier de développeur dans l'administration publique française : avantages, défis et opportunités.",
+                category: 'career',
+                date: '2024-09-01',
+                readTime: '7',
+                link: 'https://medium.com',
+                gradient1: '#ffecd2',
+                gradient2: '#fcb69f',
+                titleEn: "Working in the public sector as a developer",
+                descEn: "Feedback on working as a developer in French public administration: advantages, challenges and opportunities.",
+                archived: false
+            },
+            {
+                id: 'art9',
+                title: "Docker pour les développeurs : guide de survie",
+                desc: "Les commandes essentielles, les bonnes pratiques, et comment éviter les erreurs courantes avec Docker.",
+                category: 'tools',
+                date: '2024-08-20',
+                readTime: '8',
+                link: 'https://medium.com',
+                gradient1: '#89f7fe',
+                gradient2: '#66a6ff',
+                titleEn: "Docker for developers: survival guide",
+                descEn: "Essential commands, best practices, and how to avoid common mistakes with Docker.",
+                archived: false
+            }
+        ];
+
+        // Initial dataviz from dataviz.html
+        const initialDataviz = [
+            {
+                id: 'dv1',
+                title: "Évolution du marché tech en France",
+                desc: "Analyse des tendances d'emploi dans le secteur technologique français sur 5 ans.",
+                platform: 'linkedin',
+                chartType: 'bars',
+                link: 'https://linkedin.com',
+                layout: 'featured',
+                tags: 'Python, Matplotlib, Emploi',
+                titleEn: "Evolution of the tech market in France",
+                descEn: "Analysis of employment trends in the French tech sector over 5 years.",
+                archived: false
+            },
+            {
+                id: 'dv2',
+                title: "Répartition des langages 2024",
+                desc: "Les langages de programmation les plus utilisés cette année.",
+                platform: 'instagram',
+                chartType: 'pie',
+                link: 'https://instagram.com',
+                layout: 'normal',
+                tags: 'D3.js, Survey',
+                titleEn: "Programming languages distribution 2024",
+                descEn: "The most used programming languages this year.",
+                archived: false
+            },
+            {
+                id: 'dv3',
+                title: "Croissance des startups IA",
+                desc: "Évolution du nombre de startups IA en Europe depuis 2020.",
+                platform: 'linkedin',
+                chartType: 'line',
+                link: 'https://linkedin.com',
+                layout: 'normal',
+                tags: 'Plotly, Startups',
+                titleEn: "AI startups growth",
+                descEn: "Evolution of the number of AI startups in Europe since 2020.",
+                archived: false
+            },
+            {
+                id: 'dv4',
+                title: "Corrélation salaires / expérience",
+                desc: "Analyse de la relation entre années d'expérience et rémunération dans la tech.",
+                platform: 'instagram',
+                chartType: 'scatter',
+                link: 'https://instagram.com',
+                layout: 'wide',
+                tags: 'R, ggplot2, Salaires',
+                titleEn: "Salary / experience correlation",
+                descEn: "Analysis of the relationship between years of experience and compensation in tech.",
+                archived: false
+            },
+            {
+                id: 'dv5',
+                title: "Compétences dev full-stack",
+                desc: "Radar des compétences attendues pour un développeur full-stack en 2024.",
+                platform: 'linkedin',
+                chartType: 'radar',
+                link: 'https://linkedin.com',
+                layout: 'normal',
+                tags: 'Chart.js, Skills',
+                titleEn: "Full-stack dev skills",
+                descEn: "Radar of expected skills for a full-stack developer in 2024.",
+                archived: false
+            },
+            {
+                id: 'dv6',
+                title: "Activité GitHub annuelle",
+                desc: "Heatmap de mes contributions GitHub sur l'année 2024.",
+                platform: 'instagram',
+                chartType: 'heatmap',
+                link: 'https://instagram.com',
+                layout: 'normal',
+                tags: 'GitHub API, Contributions',
+                titleEn: "Annual GitHub activity",
+                descEn: "Heatmap of my GitHub contributions for 2024.",
+                archived: false
+            }
+        ];
+
+        this.saveArticles(initialArticles);
+        this.saveDataviz(initialDataviz);
+        localStorage.setItem(this.SEEDED_KEY, 'true');
     }
 };
 
@@ -804,6 +1026,9 @@ let modalManager;
 document.addEventListener('DOMContentLoaded', () => {
     // Check localhost access first
     new LocalhostGuard();
+
+    // Seed initial data from existing HTML if first visit
+    DataStore.seedInitialData();
 
     // Initialize components
     new Cursor();
