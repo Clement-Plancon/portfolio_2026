@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin — Portfolio Clément Plançon</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/creative.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-page">
+    <!-- Access Denied Screen (shown for non-localhost) -->
+    <div id="accessDenied" class="access-denied" style="display: none;">
+        <div class="access-denied__content">
+            <svg class="access-denied__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M4.93 4.93l14.14 14.14"/>
+            </svg>
+            <h1>Accès refusé</h1>
+            <p>Cette page est uniquement accessible en local.</p>
+            <code>localhost ou 127.0.0.1</code>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div id="adminContent" class="admin-wrapper">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-header__left">
+                <a href="index.html" class="logo">
+                    <span class="logo__mark">CP</span>
+                    <span class="logo__dot"></span>
+                </a>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <div class="admin-header__right">
+                <button class="btn-icon" data-theme-toggle title="Changer de thème">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-container">
+                <h1 class="admin-title">Créateur de publications</h1>
+                <p class="admin-subtitle">Générez le code HTML pour vos articles Medium et visualisations de données.</p>
+
+                <!-- Tabs -->
+                <div class="admin-tabs">
+                    <button class="admin-tab active" data-tab="article">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                        Article Medium
+                    </button>
+                    <button class="admin-tab" data-tab="dataviz">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 20V10M12 20V4M6 20v-6"/>
+                        </svg>
+                        Dataviz
+                    </button>
+                </div>
+
+                <!-- Article Form -->
+                <div class="admin-panel" id="articlePanel">
+                    <form id="articleForm" class="admin-form">
+                        <div class="form-grid">
+                            <div class="form-group form-group--full">
+                                <label for="articleTitle">Titre de l'article *</label>
+                                <input type="text" id="articleTitle" required placeholder="Ex: Comment utiliser GPT-4 pour automatiser vos tâches">
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="articleDesc">Description *</label>
+                                <textarea id="articleDesc" required rows="3" placeholder="Brève description de l'article..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="articleCategory">Catégorie *</label>
+                                <select id="articleCategory" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="ia">Intelligence Artificielle</option>
+                                    <option value="dev">Développement</option>
+                                    <option value="career">Carrière</option>
+                                    <option value="tools">Outils & Productivité</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="articleDate">Date de publication *</label>
+                                <input type="date" id="articleDate" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="articleReadTime">Temps de lecture (min) *</label>
+                                <input type="number" id="articleReadTime" required min="1" max="60" placeholder="8">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="articleLink">Lien Medium *</label>
+                                <input type="url" id="articleLink" required placeholder="https://medium.com/@...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="articleGradient1">Couleur gradient 1</label>
+                                <div class="color-input">
+                                    <input type="color" id="articleGradient1" value="#667eea">
+                                    <input type="text" id="articleGradient1Text" value="#667eea" maxlength="7">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="articleGradient2">Couleur gradient 2</label>
+                                <div class="color-input">
+                                    <input type="color" id="articleGradient2" value="#764ba2">
+                                    <input type="text" id="articleGradient2Text" value="#764ba2" maxlength="7">
+                                </div>
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="articleTitleEn">Titre (EN)</label>
+                                <input type="text" id="articleTitleEn" placeholder="English title...">
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="articleDescEn">Description (EN)</label>
+                                <textarea id="articleDescEn" rows="2" placeholder="English description..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn--ghost" onclick="resetForm('article')">Réinitialiser</button>
+                            <button type="submit" class="btn btn--primary">
+                                <span>Générer le code</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Dataviz Form -->
+                <div class="admin-panel" id="datavizPanel" style="display: none;">
+                    <form id="datavizForm" class="admin-form">
+                        <div class="form-grid">
+                            <div class="form-group form-group--full">
+                                <label for="datavizTitle">Titre *</label>
+                                <input type="text" id="datavizTitle" required placeholder="Ex: Évolution du marché tech en France">
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="datavizDesc">Description *</label>
+                                <textarea id="datavizDesc" required rows="3" placeholder="Description de la visualisation..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="datavizPlatform">Plateforme *</label>
+                                <select id="datavizPlatform" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="instagram">Instagram</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="datavizChartType">Type de graphique *</label>
+                                <select id="datavizChartType" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="bars">Bar Chart</option>
+                                    <option value="pie">Pie Chart</option>
+                                    <option value="line">Line Chart</option>
+                                    <option value="scatter">Scatter Plot</option>
+                                    <option value="radar">Radar Chart</option>
+                                    <option value="heatmap">Heatmap</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="datavizLink">Lien publication *</label>
+                                <input type="url" id="datavizLink" required placeholder="https://linkedin.com/...">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="datavizLayout">Layout</label>
+                                <select id="datavizLayout">
+                                    <option value="normal">Normal</option>
+                                    <option value="featured">Featured (large)</option>
+                                    <option value="wide">Wide</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="datavizTags">Tags (séparés par virgule) *</label>
+                                <input type="text" id="datavizTags" required placeholder="Python, Matplotlib, Emploi">
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="datavizTitleEn">Titre (EN)</label>
+                                <input type="text" id="datavizTitleEn" placeholder="English title...">
+                            </div>
+
+                            <div class="form-group form-group--full">
+                                <label for="datavizDescEn">Description (EN)</label>
+                                <textarea id="datavizDescEn" rows="2" placeholder="English description..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn--ghost" onclick="resetForm('dataviz')">Réinitialiser</button>
+                            <button type="submit" class="btn btn--primary">
+                                <span>Générer le code</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Output Section -->
+                <div class="admin-output" id="outputSection" style="display: none;">
+                    <div class="output-header">
+                        <h3>Code HTML généré</h3>
+                        <div class="output-actions">
+                            <button class="btn btn--ghost btn--sm" id="copyBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                Copier
+                            </button>
+                        </div>
+                    </div>
+                    <pre class="output-code"><code id="outputCode"></code></pre>
+
+                    <!-- Preview -->
+                    <div class="output-preview">
+                        <h4>Aperçu</h4>
+                        <div id="previewContainer" class="preview-container"></div>
+                    </div>
+
+                    <!-- Translations -->
+                    <div class="output-translations" id="translationsSection" style="display: none;">
+                        <div class="output-header">
+                            <h3>Traductions à ajouter (js/creative.js ou js/dataviz.js)</h3>
+                            <button class="btn btn--ghost btn--sm" id="copyTransBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                Copier
+                            </button>
+                        </div>
+                        <pre class="output-code"><code id="translationsCode"></code></pre>
+                    </div>
+                </div>
+
+                <!-- Saved Items -->
+                <div class="admin-saved">
+                    <div class="saved-header">
+                        <h3>Brouillons sauvegardés</h3>
+                        <button class="btn btn--ghost btn--sm" id="clearSavedBtn">Tout effacer</button>
+                    </div>
+                    <div id="savedList" class="saved-list">
+                        <p class="saved-empty">Aucun brouillon sauvegardé</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="admin-footer">
+            <p>Portfolio Admin — Clément Plançon</p>
+            <p class="admin-footer__warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                Page accessible uniquement en local
+            </p>
+        </footer>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
