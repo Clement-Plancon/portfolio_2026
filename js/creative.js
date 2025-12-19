@@ -27,6 +27,9 @@ const translations = {
         'hero.badge.years': 'ans',
         'hero.badge.label': 'd\'expérience',
         'hero.scroll': 'Scroll',
+        'hero.stat1': 'Années d\'expérience',
+        'hero.stat2': 'Projets réalisés',
+        'hero.stat3': 'Technologies maîtrisées',
 
         // About
         'about.title': 'À propos',
@@ -113,6 +116,9 @@ const translations = {
         'hero.badge.years': 'years',
         'hero.badge.label': 'of experience',
         'hero.scroll': 'Scroll',
+        'hero.stat1': 'Years of experience',
+        'hero.stat2': 'Projects completed',
+        'hero.stat3': 'Technologies mastered',
 
         // About
         'about.title': 'About',
@@ -674,6 +680,49 @@ class ScrollAnimations {
     }
 }
 
+// ===================== COUNTER ANIMATION =====================
+class CounterAnimation {
+    constructor() {
+        this.counters = document.querySelectorAll('[data-count]');
+        if (this.counters.length === 0) return;
+        this.init();
+    }
+
+    init() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        this.counters.forEach(counter => observer.observe(counter));
+    }
+
+    animateCounter(el) {
+        const target = parseInt(el.dataset.count, 10);
+        const duration = 2000; // 2 seconds
+        const step = target / (duration / 16); // 60fps
+        let current = 0;
+
+        const update = () => {
+            current += step;
+            if (current < target) {
+                el.textContent = Math.floor(current);
+                requestAnimationFrame(update);
+            } else {
+                el.textContent = target;
+            }
+        };
+
+        update();
+    }
+}
+
 // ===================== MOBILE NAV =====================
 class MobileNav {
     constructor() {
@@ -727,4 +776,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new MobileNav();
     new SmoothScroll();
     new ScrollAnimations();
+    new CounterAnimation();
 });
