@@ -21,7 +21,7 @@ const translations = {
         'hero.intro': 'Je suis Clément Plançon,',
         'hero.title1': 'Ingénieur',
         'hero.title2': 'logiciel',
-        'hero.desc': 'Je conçois des solutions numériques innovantes, alliant expertise technique et intelligence artificielle pour transformer vos idées en produits performants.',
+        'hero.desc': ' Je conçois des solutions numériques innovantes, alliant expertise technique et curiosité pour transformer les idées en produits performants.',
         'hero.cta': 'Discutons de votre projet',
         'hero.cta2': 'Voir mes réalisations',
         'hero.badge.years': 'ans',
@@ -31,8 +31,8 @@ const translations = {
         // About
         'about.title': 'À propos',
         'about.since': 'Depuis 2014',
-        'about.lead': 'Ingénieur logiciel passionné par l\'innovation, je transforme des idées complexes en solutions élégantes et performantes.',
-        'about.text': 'Actuellement Chef adjoint de la section informatique au Laboratoire de Police Scientifique de Paris, je conçois des solutions techniques innovantes pour les enquêtes judiciaires. En parallèle, je développe des projets personnels et accompagne des entreprises dans leur transformation numérique.',
+        'about.lead': 'Ingénieur logiciel spécialisé dans le web, je conçois des systèmes numériques pensés pour durer.',
+        'about.text': 'Mon travail se situe à l’interface entre développement, compréhension des usages et structuration des systèmes. J’interviens sur des contextes complexes et contraints, où la fiabilité, la clarté et la maintenabilité sont essentielles. Je m’appuie sur une forte acculturation au design (recherche utilisateur, design system, conception par scénarios) et sur l’exploration de la donnée et de la cartographie pour éclairer les choix techniques et rendre l’information plus lisible.',
         'about.stat1': 'Années d\'expérience',
         'about.stat2': 'Projets réalisés',
         'about.stat3': 'Curiosité',
@@ -43,15 +43,15 @@ const translations = {
         'date.present': 'Présent',
         'exp1.title': 'Laboratoire de Police Scientifique',
         'exp1.role': 'Chef adjoint IT — Ingénieur SIC',
-        'exp2.title': 'Point Virgule',
-        'exp2.role': 'Fondateur — Développeur Fullstack & IA',
+        'exp2.title': 'Outils Publics',
+        'exp2.role': 'Coordinateur technique – Données & développement',
         'exp3.title': 'Ministère de l\'Économie',
         'exp3.role': 'Analyste Développeur — Laboratoire de la Transformation',
 
         // Skills
         'skills.title': 'Compétences',
         'skills.dev.title': 'Développement Web',
-        'skills.dev.desc': 'Applications web modernes avec Angular, React, Node.js. APIs REST et GraphQL.',
+        'skills.dev.desc': 'Applications web modernes avec React, Node.js. APIs REST et GraphQL.',
         'skills.ia.title': 'Intelligence Artificielle',
         'skills.ia.desc': 'Intégration de LLM, systèmes RAG, chatbots intelligents et automatisation par IA.',
         'skills.mobile.title': 'Applications Mobiles',
@@ -66,9 +66,9 @@ const translations = {
         // Projects
         'projects.title': 'Projets sélectionnés',
         'projects.subtitle': 'Cliquez sur un projet pour voir les détails',
-        'proj1.cat': 'Application Mobile — IA',
-        'proj1.title': 'QuiPaieQuoi',
-        'proj1.desc': 'Application de gestion des dépenses partagées avec reconnaissance automatique des tickets par IA.',
+        'proj1.cat': 'Conception de logiciel – Transition écologique',
+        'proj1.title': 'Bercy Vert',
+        'proj1.desc': 'Projet de conception d’un logiciel destiné à accompagner la démarche de transition verte et écologique.',
         'proj2.cat': 'Application Web',
         'proj2.title': 'Référentiel Indicateurs',
         'proj2.desc': 'Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.',
@@ -107,7 +107,7 @@ const translations = {
         'hero.intro': 'I am Clément Plançon,',
         'hero.title1': 'Software',
         'hero.title2': 'engineer',
-        'hero.desc': 'I design innovative digital solutions, combining technical expertise and artificial intelligence to transform your ideas into high-performance products.',
+        'hero.desc': ' I design innovative digital solutions, combining technical expertise and curiosity to transform ideas into high-performance products.',
         'hero.cta': 'Let\'s discuss your project',
         'hero.cta2': 'See my work',
         'hero.badge.years': 'years',
@@ -117,7 +117,7 @@ const translations = {
         // About
         'about.title': 'About',
         'about.since': 'Since 2014',
-        'about.lead': 'Software engineer passionate about innovation, I transform complex ideas into elegant and efficient solutions.',
+        'about.lead': 'As a software engineer specializing in web development, I design digital systems built to last.',
         'about.text': 'Currently Deputy Head of IT at the Paris Forensic Science Laboratory, I design innovative technical solutions for judicial investigations. In parallel, I develop personal projects and support companies in their digital transformation.',
         'about.stat1': 'Years of experience',
         'about.stat2': 'Projects completed',
@@ -129,15 +129,15 @@ const translations = {
         'date.present': 'Present',
         'exp1.title': 'Paris Forensic Science Laboratory',
         'exp1.role': 'Deputy IT Head — ICT Engineer',
-        'exp2.title': 'Point Virgule',
-        'exp2.role': 'Founder — Fullstack & AI Developer',
+        'exp2.title': 'Outils Publics',
+        'exp2.role': 'Technical Coordinator – Data & Development',
         'exp3.title': 'Ministry of Economy',
         'exp3.role': 'Developer Analyst — Transformation Lab',
 
         // Skills
         'skills.title': 'Skills',
         'skills.dev.title': 'Web Development',
-        'skills.dev.desc': 'Modern web applications with Angular, React, Node.js. REST and GraphQL APIs.',
+        'skills.dev.desc': 'Modern web applications with React, Node.js. REST and GraphQL APIs.',
         'skills.ia.title': 'Artificial Intelligence',
         'skills.ia.desc': 'LLM integration, RAG systems, intelligent chatbots and AI automation.',
         'skills.mobile.title': 'Mobile Applications',
@@ -153,8 +153,8 @@ const translations = {
         'projects.title': 'Selected projects',
         'projects.subtitle': 'Click on a project for details',
         'proj1.cat': 'Mobile App — AI',
-        'proj1.title': 'QuiPaieQuoi',
-        'proj1.desc': 'Shared expense management app with automatic AI-powered receipt recognition.',
+        'proj1.title': 'Bercy Vert',
+        'proj1.desc': 'Software design project to support the green and ecological transition process.',
         'proj2.cat': 'Web Application',
         'proj2.title': 'Indicators Dashboard',
         'proj2.desc': 'Platform for centralizing and visualizing business indicators for decision-making.',
@@ -187,116 +187,108 @@ const modalContent = {
             title: 'Laboratoire de Police Scientifique de Paris',
             subtitle: 'Chef adjoint de la section informatique — Ingénieur SIC',
             period: '2022 — Présent',
-            description: 'Au sein de la Préfecture de Police de Paris, je pilote la transformation numérique du laboratoire et développe des outils innovants pour optimiser les processus d\'investigation.',
+            description: 'Au sein du Laboratoire de police scientifique de Paris, je pilote une équipe de 4 développeurs logiciel.',
             responsibilities: [
-                'Management d\'une équipe de 5 développeurs et techniciens',
-                'Architecture et développement d\'applications métier critiques',
-                'Intégration de solutions d\'IA pour l\'analyse de données',
-                'Gestion du parc informatique et de l\'infrastructure',
-                'Conduite du changement et formation des utilisateurs'
+                "Lead d'une équipe de 4 développeurs (encadrement technique, priorisation, accompagnement)",
+                'Conception et arbitrage des choix techniques, en lien avec les besoins métiers et les contraintes opérationnelles',
+                'Maintien en condition opérationnelle, évolution et fiabilisation d’applications métiers existantes',
+                'Contribution à la structuration des pratiques de développement et des processus techniques',
             ],
-            technologies: ['Angular', 'C# .NET', 'Python', 'PostgreSQL', 'Docker']
+            technologies: ['Docker', 'PHP', 'K8S', 'PostgreSQL']
         },
         en: {
             title: 'Paris Forensic Science Laboratory',
             subtitle: 'Deputy IT Head — ICT Engineer',
             period: '2022 — Present',
-            description: 'Within the Paris Police Prefecture, I lead the digital transformation of the laboratory and develop innovative tools to optimize investigation processes.',
+            description: 'At the Paris Forensic Science Laboratory, I lead a development team of four software developers.',
             responsibilities: [
-                'Managing a team of 5 developers and technicians',
-                'Architecture and development of critical business applications',
-                'Integration of AI solutions for data analysis',
-                'IT infrastructure and asset management',
-                'Change management and user training'
+                "Lead a team of 4 developers (technical supervision, prioritization, support)",
+                "Design and arbitration of technical choices, in line with business needs and operational constraints",
+                "Maintain operational conditions, evolve and improve the reliability of existing business applications",
+                "Contribute to the structuring of development practices and technical processes,"
             ],
-            technologies: ['Angular', 'C# .NET', 'Python', 'PostgreSQL', 'Docker']
+            technologies: ['Docker', 'PHP', 'K8S', 'PostgreSQL']
         }
     },
     exp2: {
         fr: {
-            title: 'Point Virgule',
-            subtitle: 'Fondateur — Développeur Fullstack & IA',
-            period: '2020 — Présent',
-            description: 'Entreprise de développement logiciel et conseil en transformation numérique. J\'accompagne des startups et PME dans la conception et le développement de leurs produits digitaux.',
+            title: 'Outils Publics',
+            subtitle: 'Coordinateur technique – Données & développement',
+            period: '2024 — Présent',
+            description: "Le collectif Outils Publics est spécialisé dans la recherche, l'exploration et création d’outils numériques applicatifs.",
             responsibilities: [
-                'Développement d\'applications web et mobiles sur mesure',
-                'Intégration de solutions d\'intelligence artificielle (LLM, RAG)',
-                'Conseil en architecture technique et stratégie digitale',
-                'Formation et accompagnement des équipes techniques',
-                'Prototypage et POC pour validation de concepts'
+                'Développement de prototypes, outils et visualisations à partir de données publiques',
+                'Structuration des pratiques, des outils et des méthodes techniques',
+                'Interface entre recherche, design et implémentation logicielle',
             ],
-            technologies: ['Angular', 'React', 'Node.js', 'Flutter', 'Python', 'OpenAI']
+            technologies: ['React', 'Node.js', 'Flutter', 'Python']
         },
         en: {
-            title: 'Point Virgule',
-            subtitle: 'Founder — Fullstack & AI Developer',
-            period: '2020 — Present',
-            description: 'Software development and digital transformation consulting company. I support startups and SMEs in designing and developing their digital products.',
+            title: 'Outils Publics',
+            subtitle: 'Technical Coordinator – Data & Development',
+            period: '2024 — Present',
+            description: 'The Outils Publics collective specializes in researching, exploring, and creating digital application tools.',
             responsibilities: [
-                'Custom web and mobile application development',
-                'AI solutions integration (LLM, RAG)',
-                'Technical architecture and digital strategy consulting',
-                'Training and support for technical teams',
-                'Prototyping and POC for concept validation'
+                'Development of prototypes, tools, and visualizations based on public data',
+                'Structuring of practices, tools, and technical methods',
+                'Interface between research, design, and software implementation',
             ],
-            technologies: ['Angular', 'React', 'Node.js', 'Flutter', 'Python', 'OpenAI']
+            technologies: ['React', 'Node.js', 'Flutter', 'Python', 'OpenAI']
         }
     },
     exp3: {
         fr: {
             title: 'Ministère de l\'Économie et des Finances',
-            subtitle: 'Analyste Développeur — Laboratoire de la Transformation',
-            period: '2019 — 2022',
-            description: 'Au sein du Lab de la Transformation Numérique, j\'ai participé à la modernisation des services publics en développant des solutions innovantes et en accompagnant les agents dans l\'adoption de nouveaux outils.',
+            subtitle: 'Ingénieur logiciel et chef de projet technique — Laboratoire de la Transformation',
+            period: '2022 — 2024',
+            description: 'Au sein du Lab de la Transformation, j\'ai participé à la modernisation des services publics en développant des solutions innovantes et en accompagnant les agents dans l\'adoption de nouveaux outils.',
             responsibilities: [
-                'Développement d\'applications internes en Angular et .NET',
-                'Automatisation de processus métier avec RPA',
+                'Développement d\'applications internes en react et next.js',
                 'Analyse des besoins et rédaction de spécifications',
                 'Animation d\'ateliers d\'innovation et de design thinking',
                 'Veille technologique et expérimentation'
             ],
-            technologies: ['Angular', 'C# .NET', 'Power Platform', 'SQL Server', 'Azure']
+            technologies: ['C# .NET', 'Power Platform', 'SQL Server', 'Azure']
         },
         en: {
             title: 'Ministry of Economy and Finance',
-            subtitle: 'Developer Analyst — Digital Transformation Lab',
+            subtitle: 'Software Engineer and Technical Project Manager — Transformation Lab',
             period: '2019 — 2022',
             description: 'Within the Digital Transformation Lab, I participated in modernizing public services by developing innovative solutions and supporting staff in adopting new tools.',
             responsibilities: [
-                'Internal application development in Angular and .NET',
-                'Business process automation with RPA',
-                'Requirements analysis and specification writing',
-                'Innovation and design thinking workshop facilitation',
-                'Technology watch and experimentation'
+                'Development of internal applications in React and Next.js',
+                'Needs analysis and specification writing',
+                'Facilitation of innovation and design thinking workshops',
+                'Technology monitoring and experimentation'
             ],
-            technologies: ['Angular', 'C# .NET', 'Power Platform', 'SQL Server', 'Azure']
+            technologies: ['Next', 'React', 'Power Platform', 'SQL Server', 'Azure']
         }
     },
     // Projects
     proj1: {
         fr: {
-            title: 'QuiPaieQuoi',
-            subtitle: 'Application Mobile — IA',
-            description: 'Application mobile de gestion des dépenses partagées entre amis, colocataires ou collègues. Elle intègre une fonctionnalité de reconnaissance automatique des tickets de caisse grâce à l\'IA.',
+            title: 'Bercy Vert',
+            subtitle: 'Conception de logiciel – Transition écologique',
+            description: 'Projet de conception d’un logiciel destiné à accompagner la démarche de transition verte et écologique du ministère de l’Économie et des Finances. L’objectif était de répondre aux besoins des référents ministériels en centralisant et structurant les actions issues du BEGES et les mesures SPE.',
             features: [
-                'Scan et reconnaissance automatique des tickets par OCR + IA',
-                'Calcul automatique des remboursements optimisés',
+                'Cadrage du projet et expression des besoins fonctionnels en lien avec les parties prenantes',
+                'Définition de la méthodologie de développement et structuration du cycle projet',
                 'Gestion multi-groupes et historique des dépenses',
-                'Notifications et rappels de paiement',
-                'Export des données et statistiques personnelles'
+                'Conception et développement de l’interface du proof of concept',
+                'Recueil, analyse et restitution des retours utilisateurs pour orienter les évolutions du produit'
             ],
             technologies: ['Flutter', 'Dart', 'Firebase', 'Google Vision AI', 'Node.js']
         },
         en: {
-            title: 'QuiPaieQuoi',
-            subtitle: 'Mobile App — AI',
-            description: 'Mobile application for managing shared expenses between friends, roommates or colleagues. It integrates automatic receipt recognition through AI.',
+            title: 'Bercy Vert',
+            subtitle: 'Software design – Ecological transition',
+            description: "Project to design software to support the Ministry of Economy and Finance's green and ecological transition initiative. The aim was to meet the needs of ministry representatives by centralizing and structuring the actions resulting from the BEGES and SPE measures.",
             features: [
-                'Automatic receipt scanning and recognition via OCR + AI',
-                'Optimized reimbursement calculation',
-                'Multi-group management and expense history',
-                'Payment notifications and reminders',
-                'Data export and personal statistics'
+               'Project scoping and expression of functional requirements in consultation with stakeholders',
+                'Definition of the development methodology and structuring of the project cycle',
+                'Multi-group management and expenditure history',
+                'Design and development of the proof of concept interface',
+                'Collection, analysis, and reporting of user feedback to guide product development'
             ],
             technologies: ['Flutter', 'Dart', 'Firebase', 'Google Vision AI', 'Node.js']
         }
@@ -313,7 +305,7 @@ const modalContent = {
                 'Rapports automatisés et export PDF/Excel',
                 'Gestion des droits et périmètres utilisateurs'
             ],
-            technologies: ['Angular', 'Node.js', 'PostgreSQL', 'Chart.js', 'Docker']
+            technologies: ['Next', 'Node.js', 'PostgreSQL', 'Chart.js', 'Docker']
         },
         en: {
             title: 'Indicators Dashboard',
@@ -326,7 +318,7 @@ const modalContent = {
                 'Automated reports and PDF/Excel export',
                 'User rights and scope management'
             ],
-            technologies: ['Angular', 'Node.js', 'PostgreSQL', 'Chart.js', 'Docker']
+            technologies: ['Node.js', 'PostgreSQL', 'Chart.js', 'Docker']
         }
     },
     proj3: {
