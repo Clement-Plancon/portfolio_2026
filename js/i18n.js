@@ -36,7 +36,7 @@ const translations = {
         'about.stat.projects': 'Projets réalisés',
         'about.stat.satisfaction': 'Satisfaction client',
         'about.decoration.expert': 'Expert LLM',
-        'about.decoration.years': '+10 ans exp.',
+        'about.decoration.years': '+5 ans exp.',
 
         // Skills
         'skills.number': '02 — Compétences',
