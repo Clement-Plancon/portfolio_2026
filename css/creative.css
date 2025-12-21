@@ -347,6 +347,324 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     body.nav-open .nav-toggle span:nth-child(3) {
         transform: rotate(-45deg) translate(5px, -5px);
     }
+
+    .nav.active .nav__link:nth-child(6) { transition-delay: 0.35s; }
+    .nav.active .nav__link:nth-child(7) { transition-delay: 0.4s; }
+}
+
+/* ===================== SPECIAL NAV LINKS ===================== */
+
+/* Base styles for special links */
+.nav__link--articles,
+.nav__link--dataviz,
+.nav__link--outils {
+    position: relative;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--space-2);
+    overflow: hidden;
+    gap: var(--space-2);
+}
+
+.nav__link--articles .nav__text,
+.nav__link--dataviz .nav__text,
+.nav__link--outils .nav__text {
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+}
+
+.nav__link-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+    z-index: 1;
+}
+
+/* ===== ARTICLES LINK - Editorial/Literary Style ===== */
+.nav__link--articles {
+    --articles-primary: #667eea;
+    --articles-secondary: #764ba2;
+}
+
+[data-theme="dark"] .nav__link--articles {
+    --articles-primary: #a78bfa;
+    --articles-secondary: #c4b5fd;
+}
+
+.nav__link--articles .nav__link-bg {
+    background: linear-gradient(135deg, var(--articles-primary), var(--articles-secondary));
+}
+
+.nav__link--articles .nav__text {
+    background: linear-gradient(90deg, var(--text), var(--text));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: all 0.4s var(--ease);
+}
+
+.nav__link--articles:hover .nav__text {
+    background: linear-gradient(90deg, var(--articles-primary), var(--articles-secondary), var(--articles-primary));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: articleGradient 2s ease infinite;
+}
+
+@keyframes articleGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.nav__link-icon {
+    position: relative;
+    z-index: 2;
+    width: 16px;
+    height: 16px;
+    opacity: 0;
+    transform: translateX(-10px) rotate(-20deg);
+    transition: all 0.4s var(--ease);
+}
+
+.nav__link-icon svg {
+    width: 100%;
+    height: 100%;
+    color: var(--articles-primary);
+}
+
+.nav__link--articles:hover .nav__link-icon {
+    opacity: 1;
+    transform: translateX(0) rotate(0);
+}
+
+.nav__link--articles::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: var(--space-4);
+    right: var(--space-4);
+    height: 2px;
+    background: linear-gradient(90deg, var(--articles-primary), var(--articles-secondary));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease);
+    z-index: 2;
+}
+
+.nav__link--articles:hover::after {
+    transform: scaleX(1);
+}
+
+/* ===== DATAVIZ LINK - Data Visualization Style ===== */
+.nav__link--dataviz {
+    --dataviz-1: #06b6d4;
+    --dataviz-2: #22d3ee;
+    --dataviz-3: #67e8f9;
+    --dataviz-4: #a5f3fc;
+}
+
+[data-theme="dark"] .nav__link--dataviz {
+    --dataviz-1: #22d3ee;
+    --dataviz-2: #67e8f9;
+    --dataviz-3: #a5f3fc;
+    --dataviz-4: #cffafe;
+}
+
+.nav__link--dataviz .nav__link-bg {
+    background: linear-gradient(135deg, var(--dataviz-1), var(--dataviz-3));
+}
+
+.nav__link--dataviz .nav__text {
+    transition: all 0.3s var(--ease);
+}
+
+.nav__link--dataviz:hover .nav__text {
+    color: var(--dataviz-1);
+}
+
+.nav__link-bars {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+    margin-left: var(--space-1);
+}
+
+.nav__link-bars span {
+    width: 3px;
+    background: var(--dataviz-1);
+    border-radius: 1px;
+    transition: all 0.3s var(--ease);
+}
+
+.nav__link-bars span:nth-child(1) { height: 40%; }
+.nav__link-bars span:nth-child(2) { height: 70%; }
+.nav__link-bars span:nth-child(3) { height: 50%; }
+.nav__link-bars span:nth-child(4) { height: 90%; }
+
+.nav__link--dataviz:hover .nav__link-bars span {
+    animation: barBounce 0.6s ease infinite;
+}
+
+.nav__link--dataviz:hover .nav__link-bars span:nth-child(1) { animation-delay: 0s; }
+.nav__link--dataviz:hover .nav__link-bars span:nth-child(2) { animation-delay: 0.1s; }
+.nav__link--dataviz:hover .nav__link-bars span:nth-child(3) { animation-delay: 0.2s; }
+.nav__link--dataviz:hover .nav__link-bars span:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes barBounce {
+    0%, 100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.4); }
+}
+
+.nav__link--dataviz::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, color-mix(in srgb, var(--dataviz-1) 15%, transparent), transparent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s var(--ease);
+    z-index: 1;
+}
+
+.nav__link--dataviz:hover::before {
+    width: 150px;
+    height: 150px;
+}
+
+/* ===== OUTILS PUBLICS LINK - French Government Style ===== */
+.nav__link--outils {
+    --gouv-bleu: #000091;
+    --gouv-blanc: #ffffff;
+    --gouv-rouge: #e1000f;
+}
+
+[data-theme="dark"] .nav__link--outils {
+    --gouv-bleu: #6a6af4;
+    --gouv-blanc: #f5f5fe;
+    --gouv-rouge: #ff6b6b;
+}
+
+.nav__link--outils .nav__link-bg {
+    background: var(--gouv-bleu);
+}
+
+.nav__link--outils .nav__text {
+    transition: all 0.3s var(--ease);
+}
+
+.nav__link--outils:hover {
+    color: var(--gouv-bleu);
+}
+
+.nav__link-flag {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: 18px;
+    height: 12px;
+    border-radius: 2px;
+    overflow: hidden;
+    opacity: 0.7;
+    transform: scale(0.9);
+    transition: all 0.3s var(--ease);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav__link-flag span {
+    flex: 1;
+    transition: all 0.3s var(--ease);
+}
+
+.nav__link-flag span:nth-child(1) { background: var(--gouv-bleu); }
+.nav__link-flag span:nth-child(2) { background: var(--gouv-blanc); }
+.nav__link-flag span:nth-child(3) { background: var(--gouv-rouge); }
+
+.nav__link--outils:hover .nav__link-flag {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.nav__link--outils::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gouv-bleu) 33%, var(--gouv-blanc) 33% 66%, var(--gouv-rouge) 66%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s var(--ease);
+}
+
+.nav__link--outils:hover::after {
+    transform: scaleX(1);
+}
+
+/* Marianne-inspired border on hover */
+.nav__link--outils::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid transparent;
+    border-radius: var(--space-2);
+    transition: all 0.3s var(--ease);
+    z-index: 1;
+}
+
+.nav__link--outils:hover::before {
+    border-color: var(--gouv-bleu);
+}
+
+/* ===== Mobile Styles for Special Links ===== */
+@media (max-width: 768px) {
+    .nav__link--articles,
+    .nav__link--dataviz,
+    .nav__link--outils {
+        padding: var(--space-3) var(--space-6);
+        border-radius: var(--space-3);
+    }
+
+    .nav__link-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .nav__link-bars {
+        height: 18px;
+    }
+
+    .nav__link-bars span {
+        width: 4px;
+    }
+
+    .nav__link-flag {
+        width: 24px;
+        height: 16px;
+    }
+
+    /* Always show decorations on mobile */
+    .nav__link--articles .nav__link-icon {
+        opacity: 0.7;
+        transform: translateX(0) rotate(0);
+    }
+
+    .nav__link--dataviz .nav__link-bars span {
+        animation: barBounce 1.5s ease infinite;
+    }
+
+    .nav__link--outils .nav__link-flag {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* ===================== HERO ===================== */

@@ -13,6 +13,7 @@ const translations = {
         'nav.articles': 'Articles',
         'nav.dataviz': 'Dataviz',
         'nav.contact': 'Contact',
+        'nav.outils': 'Outils Publics',
 
         // Hero
         'hero.tag1': 'Développement',
@@ -92,7 +93,11 @@ const translations = {
         'modal.close': 'Fermer',
         'modal.technologies': 'Technologies',
         'modal.responsibilities': 'Responsabilités',
-        'modal.features': 'Fonctionnalités'
+        'modal.features': 'Fonctionnalités',
+
+        // Outils
+        'outils.title': 'Outils Publics',
+        'outils.desc': 'Des ressources gratuites et open-source pour les agents du service public et les citoyens.'
     },
     en: {
         // Navigation
@@ -102,6 +107,7 @@ const translations = {
         'nav.articles': 'Articles',
         'nav.dataviz': 'Dataviz',
         'nav.contact': 'Contact',
+        'nav.outils': 'Public Tools',
 
         // Hero
         'hero.tag1': 'Development',
@@ -181,7 +187,11 @@ const translations = {
         'modal.close': 'Close',
         'modal.technologies': 'Technologies',
         'modal.responsibilities': 'Responsibilities',
-        'modal.features': 'Features'
+        'modal.features': 'Features',
+
+        // Outils
+        'outils.title': 'Public Tools',
+        'outils.desc': 'Free and open-source resources for public service agents and citizens.'
     }
 };
 
