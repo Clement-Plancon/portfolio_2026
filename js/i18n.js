@@ -29,14 +29,14 @@ const translations = {
         'about.title': 'Expertise technique &',
         'about.title.em': 'vision produit',
         'about.heading': 'Développeur passionné, créateur de solutions',
-        'about.p1': "Ingénieur logiciel spécialisé dans le développement web fullstack, je combine expertise technique et sensibilité UX/UI pour créer des solutions numériques performantes.",
-        'about.p2': "Actuellement Chef adjoint de la section informatique au Laboratoire de Police Scientifique de Paris, je conçois des solutions techniques innovantes pour les enquêtes judiciaires.",
+        'about.p1': "Ingénieur logiciel spécialisé dans le web, je conçois des systèmes numériques pensés pour durer.",
+        'about.p2': "Mon travail se situe à l’interface entre développement, compréhension des usages et structuration des systèmes. J’interviens sur des contextes complexes et contraints, où la fiabilité, la clarté et la maintenabilité sont essentielles. Je m’appuie sur une forte acculturation au design (recherche utilisateur, design system, conception par scénarios) et sur l’exploration de la donnée et de la cartographie pour éclairer les choix techniques et rendre l’information plus lisible.",
         'about.p3': 'Formé au design fiction par le laboratoire "Où sont les Dragons" et Max Mollon (Sciences Po), j\'apporte une approche prospective unique à mes projets.',
         'about.stat.years': "Années d'expérience",
         'about.stat.projects': 'Projets réalisés',
         'about.stat.satisfaction': 'Satisfaction client',
         'about.decoration.expert': 'Expert LLM',
-        'about.decoration.years': '+10 ans exp.',
+        'about.decoration.years': '+5 ans exp.',
 
         // Skills
         'skills.number': '02 — Compétences',
@@ -64,8 +64,8 @@ const translations = {
         'experience.job1.desc': "Conception de solutions techniques innovantes pour les enquêtes judiciaires. Veille stratégique et structuration des processus.",
         'experience.job1.date': '2022 — Présent',
         'experience.job2.company': 'Point Virgule',
-        'experience.job2.role': 'Fondateur — Dev Fullstack & IA',
-        'experience.job2.desc': "Accompagnement d'entreprises. Spécialisation en IA, agents intelligents et solutions métier sur mesure.",
+        'experience.job2.role': 'Coordinateur technique – Données & développement',
+        'experience.job2.desc': "Le collectif Outils Publics est spécialisé dans la recherche, l'exploration et création d’outils numériques applicatifs.",
         'experience.job2.date': '2020 — Présent',
         'experience.job3.company': "Ministère de l'Économie",
         'experience.job3.role': 'Analyste Dev — Labo Transformation',
@@ -78,9 +78,9 @@ const translations = {
         'projects.title.em': 'concrètes',
         'projects.title.end': ', impact réel',
         'projects.view': 'Voir le projet',
-        'projects.1.title': 'QuiPaieQuoi',
-        'projects.1.type': 'Mobile App — AI',
-        'projects.1.desc': "Scanner une addition et répartir les montants instantanément. OCR + RAG LLM pour une reconnaissance intelligente.",
+        'projects.1.title': 'Bercy Vert',
+        'projects.1.type': 'Conception de logiciel – Transition écologique',
+        'projects.1.desc': "Projet de conception d’un logiciel destiné à accompagner la démarche de transition verte et écologique.",
         'projects.2.title': 'Référentiel Indicateurs',
         'projects.2.type': 'Web App',
         'projects.2.desc': "Outil collaboratif de suivi des indicateurs ministériels avec visualisations interactives.",
@@ -98,7 +98,7 @@ const translations = {
         'contact.subtitle': "Développeur fullstack, expert IA ou conseil technique — je suis à votre écoute.",
 
         // Footer
-        'footer.copyright': '© 2024 Clément Plançon — Tous droits réservés',
+        'footer.copyright': '© 2025 Clément Plançon — Tous droits réservés',
         'footer.legal': 'Mentions légales',
 
         // Marquee
@@ -131,7 +131,7 @@ const translations = {
         'about.title.em': 'product vision',
         'about.heading': 'Passionate developer, solution creator',
         'about.p1': 'Software engineer specialized in fullstack web development, I combine technical expertise with UX/UI sensibility to create high-performance digital solutions.',
-        'about.p2': 'Currently Deputy Head of IT at the Paris Forensic Science Laboratory, I design innovative technical solutions for judicial investigations.',
+        'about.p2': 'My work lies at the intersection of development, understanding usage, and structuring systems. I work in complex and constrained contexts where reliability, clarity, and maintainability are essential. I draw on my strong background in design (user research, design systems, scenario-based design) and on data exploration and mapping to inform technical choices and make information more readable.',
         'about.p3': 'Trained in design fiction by "Où sont les Dragons" lab and Max Mollon (Sciences Po), I bring a unique forward-thinking approach to my projects.',
         'about.stat.years': 'Years of experience',
         'about.stat.projects': 'Projects completed',
@@ -165,7 +165,7 @@ const translations = {
         'experience.job1.desc': 'Design of innovative technical solutions for judicial investigations. Strategic monitoring and process structuring.',
         'experience.job1.date': '2022 — Present',
         'experience.job2.company': 'Point Virgule',
-        'experience.job2.role': 'Founder — Fullstack & AI Dev',
+        'experience.job2.role': 'Technical Coordinator – Data & Development',
         'experience.job2.desc': 'Supporting companies. Specializing in AI, intelligent agents and custom business solutions.',
         'experience.job2.date': '2020 — Present',
         'experience.job3.company': 'Ministry of Economy',
@@ -179,18 +179,18 @@ const translations = {
         'projects.title.em': 'Concrete',
         'projects.title.end': ' solutions, real impact',
         'projects.view': 'View project',
-        'projects.1.title': 'QuiPaieQuoi',
-        'projects.1.type': 'Mobile App — AI',
-        'projects.1.desc': 'Scan a bill and split amounts instantly. OCR + RAG LLM for smart recognition.',
+        'projects.1.title': 'Bercy Vert',
+        'projects.1.type': 'Software design – Ecological transition',
+        'projects.1.desc': 'Project to design software to support the green and ecological transition process of the Ministry of Economy and Finance.',
         'projects.2.title': 'Indicators Dashboard',
         'projects.2.type': 'Web App',
         'projects.2.desc': 'Collaborative ministerial indicators tracking tool with interactive visualizations.',
         'projects.3.title': 'Strategic Watch',
         'projects.3.type': 'Internal tool',
         'projects.3.desc': 'Trend analysis tool suite and automated technology monitoring.',
-        'projects.4.title': 'Business AI Assistant',
-        'projects.4.type': 'AI Agent',
-        'projects.4.desc': 'Customized AI agent integrated into client processes to automate repetitive tasks.',
+        'projects.4.title': 'Software design for referrals to the Court of Auditors',
+        'projects.4.type': 'User research & solution design',
+        'projects.4.desc': 'Design project aimed at improving and structuring tools related to the processing of referrals to the Court of Auditors.',
 
         // Contact
         'contact.number': '05 — Contact',
@@ -199,7 +199,7 @@ const translations = {
         'contact.subtitle': "Fullstack developer, AI expert or technical consulting — I'm here for you.",
 
         // Footer
-        'footer.copyright': '© 2024 Clément Plançon — All rights reserved',
+        'footer.copyright': '© 2025 Clément Plançon — All rights reserved',
         'footer.legal': 'Legal',
 
         // Marquee

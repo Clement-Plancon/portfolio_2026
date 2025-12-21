@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,11 +10,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/creative.css">
     <link rel="stylesheet" href="css/dataviz.css">
 </head>
+
 <body class="dataviz-page">
     <!-- Cursor -->
     <div class="cursor" aria-hidden="true">
@@ -26,10 +30,10 @@
         <svg class="dataviz-bg__grid" width="100%" height="100%">
             <defs>
                 <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
+                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.1" />
                 </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
+            <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
         <div class="dataviz-bg__nodes"></div>
         <div class="dataviz-bg__chart dataviz-bg__chart--1"></div>
@@ -86,6 +90,10 @@
                     <span></span><span></span><span></span>
                 </span>
             </a>
+            <a href="https://outilspublics.netlify.app/" class="nav__link" data-i18n="nav.outilspublics"
+                target="_blank">
+                <span class="nav__text">Outils Publics</span>
+            </a>
         </nav>
 
         <div class="header__actions">
@@ -94,8 +102,9 @@
             </button>
             <button class="btn-icon" data-theme-toggle title="Changer de thème">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    <circle cx="12" cy="12" r="5" />
+                    <path
+                        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                 </svg>
             </button>
             <button class="nav-toggle" aria-label="Menu">
@@ -113,17 +122,19 @@
                 <div class="dataviz-hero__badge">
                     <span class="dataviz-hero__badge-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 20V10M12 20V4M6 20v-6"/>
+                            <path d="M18 20V10M12 20V4M6 20v-6" />
                         </svg>
                     </span>
                     <span data-i18n="dataviz.badge">Data Stories</span>
                 </div>
                 <h1 class="dataviz-hero__title">
                     <span class="dataviz-hero__title-line" data-i18n="dataviz.title1">Visualiser</span>
-                    <span class="dataviz-hero__title-line dataviz-hero__title-line--accent" data-i18n="dataviz.title2">les données</span>
+                    <span class="dataviz-hero__title-line dataviz-hero__title-line--accent"
+                        data-i18n="dataviz.title2">les données</span>
                 </h1>
                 <p class="dataviz-hero__desc" data-i18n="dataviz.desc">
-                    Transformer des données complexes en histoires visuelles captivantes. Découvrez mes créations partagées sur les réseaux sociaux.
+                    Transformer des données complexes en histoires visuelles captivantes. Découvrez mes créations
+                    partagées sur les réseaux sociaux.
                 </p>
 
                 <div class="dataviz-hero__stats">
@@ -145,15 +156,15 @@
             <div class="dataviz-hero__visual">
                 <div class="dataviz-chart">
                     <svg viewBox="0 0 200 200" class="dataviz-chart__donut">
-                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-bg)" stroke-width="20"/>
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-bg)" stroke-width="20" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-1)" stroke-width="20"
-                            stroke-dasharray="150 502" stroke-dashoffset="0" class="dataviz-chart__segment"/>
+                            stroke-dasharray="150 502" stroke-dashoffset="0" class="dataviz-chart__segment" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-2)" stroke-width="20"
-                            stroke-dasharray="100 502" stroke-dashoffset="-150" class="dataviz-chart__segment"/>
+                            stroke-dasharray="100 502" stroke-dashoffset="-150" class="dataviz-chart__segment" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-3)" stroke-width="20"
-                            stroke-dasharray="120 502" stroke-dashoffset="-250" class="dataviz-chart__segment"/>
+                            stroke-dasharray="120 502" stroke-dashoffset="-250" class="dataviz-chart__segment" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-4)" stroke-width="20"
-                            stroke-dasharray="132 502" stroke-dashoffset="-370" class="dataviz-chart__segment"/>
+                            stroke-dasharray="132 502" stroke-dashoffset="-370" class="dataviz-chart__segment" />
                     </svg>
                     <div class="dataviz-chart__center">
                         <span class="dataviz-chart__percent">100%</span>
@@ -170,213 +181,12 @@
             <header class="section__head">
                 <span class="section__num">01</span>
                 <h2 class="section__title" data-i18n="dataviz.grid.title">Créations</h2>
-                <p class="section__subtitle" data-i18n="dataviz.grid.subtitle">Explorez mes visualisations de données partagées sur LinkedIn et Instagram</p>
+                <p class="section__subtitle" data-i18n="dataviz.grid.subtitle">Explorez mes visualisations de données
+                    partagées sur LinkedIn et Instagram</p>
             </header>
 
             <div class="dataviz-grid">
-                <!-- Dataviz 1 -->
-                <a href="https://linkedin.com" target="_blank" rel="noopener" class="dataviz-card dataviz-card--featured">
-                    <div class="dataviz-card__visual">
-                        <div class="dataviz-card__chart dataviz-card__chart--bars">
-                            <span style="--height: 60%"></span>
-                            <span style="--height: 80%"></span>
-                            <span style="--height: 45%"></span>
-                            <span style="--height: 90%"></span>
-                            <span style="--height: 70%"></span>
-                            <span style="--height: 55%"></span>
-                            <span style="--height: 85%"></span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__content">
-                        <span class="dataviz-card__platform">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                            LinkedIn
-                        </span>
-                        <h3 class="dataviz-card__title" data-i18n="dataviz1.title">Évolution du marché tech en France</h3>
-                        <p class="dataviz-card__desc" data-i18n="dataviz1.desc">Analyse des tendances d'emploi dans le secteur technologique français sur 5 ans.</p>
-                        <div class="dataviz-card__tags">
-                            <span>Python</span>
-                            <span>Matplotlib</span>
-                            <span>Emploi</span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </a>
 
-                <!-- Dataviz 2 -->
-                <a href="https://instagram.com" target="_blank" rel="noopener" class="dataviz-card">
-                    <div class="dataviz-card__visual">
-                        <div class="dataviz-card__chart dataviz-card__chart--pie">
-                            <svg viewBox="0 0 100 100">
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--dataviz-1)" stroke-width="20" stroke-dasharray="75 251" transform="rotate(-90 50 50)"/>
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--dataviz-2)" stroke-width="20" stroke-dasharray="50 251" stroke-dashoffset="-75" transform="rotate(-90 50 50)"/>
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--dataviz-3)" stroke-width="20" stroke-dasharray="60 251" stroke-dashoffset="-125" transform="rotate(-90 50 50)"/>
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="var(--dataviz-4)" stroke-width="20" stroke-dasharray="66 251" stroke-dashoffset="-185" transform="rotate(-90 50 50)"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__content">
-                        <span class="dataviz-card__platform">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            Instagram
-                        </span>
-                        <h3 class="dataviz-card__title" data-i18n="dataviz2.title">Répartition des langages 2024</h3>
-                        <p class="dataviz-card__desc" data-i18n="dataviz2.desc">Les langages de programmation les plus utilisés cette année.</p>
-                        <div class="dataviz-card__tags">
-                            <span>D3.js</span>
-                            <span>Survey</span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </a>
-
-                <!-- Dataviz 3 -->
-                <a href="https://linkedin.com" target="_blank" rel="noopener" class="dataviz-card">
-                    <div class="dataviz-card__visual">
-                        <div class="dataviz-card__chart dataviz-card__chart--line">
-                            <svg viewBox="0 0 100 50" preserveAspectRatio="none">
-                                <polyline points="0,40 15,35 30,25 45,30 60,15 75,20 90,10 100,5"
-                                    fill="none" stroke="var(--dataviz-1)" stroke-width="2" class="dataviz-line"/>
-                                <polyline points="0,45 15,40 30,38 45,42 60,35 75,38 90,30 100,25"
-                                    fill="none" stroke="var(--dataviz-2)" stroke-width="2" class="dataviz-line" style="--delay: 0.2s"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__content">
-                        <span class="dataviz-card__platform">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                            LinkedIn
-                        </span>
-                        <h3 class="dataviz-card__title" data-i18n="dataviz3.title">Croissance des startups IA</h3>
-                        <p class="dataviz-card__desc" data-i18n="dataviz3.desc">Évolution du nombre de startups IA en Europe depuis 2020.</p>
-                        <div class="dataviz-card__tags">
-                            <span>Plotly</span>
-                            <span>Startups</span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </a>
-
-                <!-- Dataviz 4 -->
-                <a href="https://instagram.com" target="_blank" rel="noopener" class="dataviz-card dataviz-card--wide">
-                    <div class="dataviz-card__visual">
-                        <div class="dataviz-card__chart dataviz-card__chart--scatter">
-                            <span style="--x: 10%; --y: 30%; --size: 12px"></span>
-                            <span style="--x: 25%; --y: 60%; --size: 18px"></span>
-                            <span style="--x: 40%; --y: 25%; --size: 10px"></span>
-                            <span style="--x: 55%; --y: 70%; --size: 22px"></span>
-                            <span style="--x: 70%; --y: 40%; --size: 14px"></span>
-                            <span style="--x: 85%; --y: 55%; --size: 16px"></span>
-                            <span style="--x: 30%; --y: 80%; --size: 8px"></span>
-                            <span style="--x: 60%; --y: 20%; --size: 20px"></span>
-                            <span style="--x: 80%; --y: 75%; --size: 11px"></span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__content">
-                        <span class="dataviz-card__platform">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            Instagram
-                        </span>
-                        <h3 class="dataviz-card__title" data-i18n="dataviz4.title">Corrélation salaires / expérience</h3>
-                        <p class="dataviz-card__desc" data-i18n="dataviz4.desc">Analyse de la relation entre années d'expérience et rémunération dans la tech.</p>
-                        <div class="dataviz-card__tags">
-                            <span>R</span>
-                            <span>ggplot2</span>
-                            <span>Salaires</span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </a>
-
-                <!-- Dataviz 5 -->
-                <a href="https://linkedin.com" target="_blank" rel="noopener" class="dataviz-card">
-                    <div class="dataviz-card__visual">
-                        <div class="dataviz-card__chart dataviz-card__chart--radar">
-                            <svg viewBox="0 0 100 100">
-                                <polygon points="50,10 90,35 75,85 25,85 10,35" fill="none" stroke="var(--dataviz-bg)" stroke-width="1"/>
-                                <polygon points="50,25 75,40 65,75 35,75 25,40" fill="none" stroke="var(--dataviz-bg)" stroke-width="1"/>
-                                <polygon points="50,40 60,50 55,65 45,65 40,50" fill="none" stroke="var(--dataviz-bg)" stroke-width="1"/>
-                                <polygon points="50,20 80,38 70,80 30,80 20,38" fill="var(--dataviz-1)" fill-opacity="0.3" stroke="var(--dataviz-1)" stroke-width="2" class="dataviz-radar"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__content">
-                        <span class="dataviz-card__platform">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                            LinkedIn
-                        </span>
-                        <h3 class="dataviz-card__title" data-i18n="dataviz5.title">Compétences dev full-stack</h3>
-                        <p class="dataviz-card__desc" data-i18n="dataviz5.desc">Radar des compétences attendues pour un développeur full-stack en 2024.</p>
-                        <div class="dataviz-card__tags">
-                            <span>Chart.js</span>
-                            <span>Skills</span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </a>
-
-                <!-- Dataviz 6 -->
-                <a href="https://instagram.com" target="_blank" rel="noopener" class="dataviz-card">
-                    <div class="dataviz-card__visual">
-                        <div class="dataviz-card__chart dataviz-card__chart--heatmap">
-                            <div class="heatmap-grid">
-                                <span style="--opacity: 0.2"></span>
-                                <span style="--opacity: 0.5"></span>
-                                <span style="--opacity: 0.8"></span>
-                                <span style="--opacity: 0.3"></span>
-                                <span style="--opacity: 0.9"></span>
-                                <span style="--opacity: 0.4"></span>
-                                <span style="--opacity: 0.7"></span>
-                                <span style="--opacity: 0.6"></span>
-                                <span style="--opacity: 0.1"></span>
-                                <span style="--opacity: 0.6"></span>
-                                <span style="--opacity: 0.3"></span>
-                                <span style="--opacity: 0.9"></span>
-                                <span style="--opacity: 0.5"></span>
-                                <span style="--opacity: 0.2"></span>
-                                <span style="--opacity: 0.8"></span>
-                                <span style="--opacity: 0.4"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__content">
-                        <span class="dataviz-card__platform">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                            Instagram
-                        </span>
-                        <h3 class="dataviz-card__title" data-i18n="dataviz6.title">Activité GitHub annuelle</h3>
-                        <p class="dataviz-card__desc" data-i18n="dataviz6.desc">Heatmap de mes contributions GitHub sur l'année 2024.</p>
-                        <div class="dataviz-card__tags">
-                            <span>GitHub API</span>
-                            <span>Contributions</span>
-                        </div>
-                    </div>
-                    <div class="dataviz-card__arrow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </a>
             </div>
         </div>
     </section>
@@ -416,12 +226,14 @@
     <section class="section dataviz-cta">
         <div class="container">
             <div class="dataviz-cta__content">
-                <h2 class="dataviz-cta__title" data-i18n="dataviz.cta.title">Besoin d'une visualisation de données ?</h2>
-                <p class="dataviz-cta__desc" data-i18n="dataviz.cta.desc">Je peux transformer vos données en histoires visuelles impactantes.</p>
+                <h2 class="dataviz-cta__title" data-i18n="dataviz.cta.title">Besoin d'une visualisation de données ?
+                </h2>
+                <p class="dataviz-cta__desc" data-i18n="dataviz.cta.desc">Je peux transformer vos données en histoires
+                    visuelles impactantes.</p>
                 <a href="index.html#contact" class="btn btn--primary">
                     <span data-i18n="dataviz.cta.button">Me contacter</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                        <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                 </a>
             </div>
@@ -431,7 +243,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer__inner">
-            <p>© 2024 Clément Plançon</p>
+            <p>© 2025 Clément Plançon</p>
             <p data-i18n="footer.made">Conçu avec passion</p>
         </div>
     </footer>
@@ -439,4 +251,5 @@
     <script src="js/creative.js"></script>
     <script src="js/dataviz.js"></script>
 </body>
+
 </html>
