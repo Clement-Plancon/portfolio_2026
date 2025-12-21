@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" data-theme="light" data-lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/creative.css">
 </head>
+
 <body>
     <!-- Cursor -->
     <div class="cursor" aria-hidden="true">
@@ -55,6 +59,10 @@
                 <span class="nav__num">06</span>
                 <span class="nav__text">Contact</span>
             </a>
+            <a href="https://outilspublics.netlify.app/" class="nav__link" data-i18n="nav.outilspublics"
+                target="_blank">
+                <span class="nav__text">Outils Publics</span>
+            </a>
         </nav>
 
         <div class="header__actions">
@@ -63,8 +71,9 @@
             </button>
             <button class="btn-icon" data-theme-toggle title="Changer de thème">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    <circle cx="12" cy="12" r="5" />
+                    <path
+                        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                 </svg>
             </button>
             <button class="nav-toggle" aria-label="Menu">
@@ -82,26 +91,32 @@
                 <span class="articles-hero__label" data-i18n="articles.label">Blog & Réflexions</span>
                 <h1 class="articles-hero__title" data-i18n="articles.title">Articles Medium</h1>
                 <p class="articles-hero__desc" data-i18n="articles.desc">
-                    Je partage ici mes réflexions sur le développement, l'intelligence artificielle, et les bonnes pratiques tech.
+                    Je partage ici mes réflexions sur le développement, l'intelligence artificielle, et les bonnes
+                    pratiques tech.
                 </p>
             </div>
 
             <!-- Search & Filters -->
             <div class="articles-filters">
                 <div class="search-box">
-                    <svg class="search-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="M21 21l-4.35-4.35"/>
+                    <svg class="search-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="M21 21l-4.35-4.35" />
                     </svg>
-                    <input type="text" class="search-box__input" id="searchInput" placeholder="Rechercher un article..." data-i18n-placeholder="articles.search">
+                    <input type="text" class="search-box__input" id="searchInput" placeholder="Rechercher un article..."
+                        data-i18n-placeholder="articles.search">
                 </div>
 
                 <div class="categories">
                     <button class="category-btn active" data-category="all" data-i18n="articles.cat.all">Tous</button>
                     <button class="category-btn" data-category="dev" data-i18n="articles.cat.dev">Développement</button>
-                    <button class="category-btn" data-category="ia" data-i18n="articles.cat.ia">Intelligence Artificielle</button>
-                    <button class="category-btn" data-category="career" data-i18n="articles.cat.career">Carrière</button>
-                    <button class="category-btn" data-category="tools" data-i18n="articles.cat.tools">Outils & Productivité</button>
+                    <button class="category-btn" data-category="ia" data-i18n="articles.cat.ia">Intelligence
+                        Artificielle</button>
+                    <button class="category-btn" data-category="career"
+                        data-i18n="articles.cat.career">Carrière</button>
+                    <button class="category-btn" data-category="tools" data-i18n="articles.cat.tools">Outils &
+                        Productivité</button>
                 </div>
             </div>
         </div>
@@ -111,15 +126,15 @@
     <section class="section articles-section">
         <div class="container">
             <div class="articles-grid" id="articlesGrid">
-                
+
             </div>
 
             <!-- No Results -->
             <div class="no-results" id="noResults" style="display: none;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"/>
-                    <path d="M21 21l-4.35-4.35"/>
-                    <path d="M8 8l6 6M14 8l-6 6"/>
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                    <path d="M8 8l6 6M14 8l-6 6" />
                 </svg>
                 <p data-i18n="articles.noresults">Aucun article trouvé pour cette recherche.</p>
             </div>
@@ -131,10 +146,12 @@
         <div class="container">
             <div class="medium-cta__content">
                 <h2 class="medium-cta__title" data-i18n="articles.cta.title">Retrouvez tous mes articles sur Medium</h2>
-                <p class="medium-cta__desc" data-i18n="articles.cta.desc">Suivez-moi pour ne manquer aucun nouveau contenu sur le développement et l'IA.</p>
+                <p class="medium-cta__desc" data-i18n="articles.cta.desc">Suivez-moi pour ne manquer aucun nouveau
+                    contenu sur le développement et l'IA.</p>
                 <a href="https://medium.com/@clement.plancon" target="_blank" rel="noopener" class="btn btn--primary">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-                        <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42zm2.94 0c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75c.66 0 1.19 2.58 1.19 5.75z"/>
+                        <path
+                            d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42zm2.94 0c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75c.66 0 1.19 2.58 1.19 5.75z" />
                     </svg>
                     <span data-i18n="articles.cta.button">Suivre sur Medium</span>
                 </a>
@@ -153,4 +170,5 @@
     <script src="js/creative.js"></script>
     <script src="js/articles.js"></script>
 </body>
+
 </html>
