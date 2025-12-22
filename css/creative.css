@@ -352,318 +352,221 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     .nav.active .nav__link:nth-child(7) { transition-delay: 0.4s; }
 }
 
-/* ===================== SPECIAL NAV LINKS ===================== */
+/* ===================== STYLED NAV LINKS ===================== */
 
-/* Base styles for special links */
-.nav__link--articles,
-.nav__link--dataviz,
-.nav__link--outils {
+/* Base styled link */
+.nav__link--styled {
     position: relative;
     padding: var(--space-2) var(--space-4);
-    border-radius: var(--space-2);
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: var(--text-sm);
+    letter-spacing: 0.02em;
+    transition: all 0.4s var(--ease);
     overflow: hidden;
-    gap: var(--space-2);
 }
 
-.nav__link--articles .nav__text,
-.nav__link--dataviz .nav__text,
-.nav__link--outils .nav__text {
+.nav__styled-text {
     position: relative;
     z-index: 2;
-    font-weight: 600;
+    display: inline-block;
 }
 
-.nav__link-bg {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.3s var(--ease);
-    z-index: 1;
+.nav__external {
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    opacity: 0.5;
+    transition: all 0.3s var(--ease);
 }
 
-/* ===== ARTICLES LINK - Editorial/Literary Style ===== */
+.nav__link--styled:hover .nav__external {
+    opacity: 1;
+    transform: translate(2px, -2px);
+}
+
+/* ===== ARTICLES - Editorial Purple Gradient ===== */
 .nav__link--articles {
-    --articles-primary: #667eea;
-    --articles-secondary: #764ba2;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-[data-theme="dark"] .nav__link--articles {
-    --articles-primary: #a78bfa;
-    --articles-secondary: #c4b5fd;
+.nav__link--articles:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
-.nav__link--articles .nav__link-bg {
-    background: linear-gradient(135deg, var(--articles-primary), var(--articles-secondary));
-}
-
-.nav__link--articles .nav__text {
-    background: linear-gradient(90deg, var(--text), var(--text));
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    transition: all 0.4s var(--ease);
-}
-
-.nav__link--articles:hover .nav__text {
-    background: linear-gradient(90deg, var(--articles-primary), var(--articles-secondary), var(--articles-primary));
+.nav__link--articles .nav__styled-text {
+    background: linear-gradient(90deg, #fff, #e0e7ff, #fff);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: articleGradient 2s ease infinite;
+    animation: shimmer 3s ease-in-out infinite;
 }
 
-@keyframes articleGradient {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-.nav__link-icon {
-    position: relative;
-    z-index: 2;
-    width: 16px;
-    height: 16px;
-    opacity: 0;
-    transform: translateX(-10px) rotate(-20deg);
-    transition: all 0.4s var(--ease);
-}
-
-.nav__link-icon svg {
-    width: 100%;
-    height: 100%;
-    color: var(--articles-primary);
-}
-
-.nav__link--articles:hover .nav__link-icon {
-    opacity: 1;
-    transform: translateX(0) rotate(0);
-}
-
-.nav__link--articles::after {
+.nav__link--articles::before {
     content: '';
     position: absolute;
-    bottom: 4px;
-    left: var(--space-4);
-    right: var(--space-4);
-    height: 2px;
-    background: linear-gradient(90deg, var(--articles-primary), var(--articles-secondary));
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s var(--ease);
-    z-index: 2;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
 }
 
-.nav__link--articles:hover::after {
+.nav__link--articles:hover::before {
+    left: 100%;
+}
+
+[data-theme="dark"] .nav__link--articles {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+[data-theme="dark"] .nav__link--articles:hover {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+}
+
+/* ===== DATAVIZ - Cyan Neon Tech ===== */
+.nav__link--dataviz {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.nav__link--dataviz:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+        0 8px 25px rgba(6, 182, 212, 0.4),
+        0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+.nav__link--dataviz .nav__styled-text {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+}
+
+.nav__link--dataviz::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav__link--dataviz:hover::after {
     transform: scaleX(1);
 }
 
-/* ===== DATAVIZ LINK - Data Visualization Style ===== */
-.nav__link--dataviz {
-    --dataviz-1: #06b6d4;
-    --dataviz-2: #22d3ee;
-    --dataviz-3: #67e8f9;
-    --dataviz-4: #a5f3fc;
-}
-
 [data-theme="dark"] .nav__link--dataviz {
-    --dataviz-1: #22d3ee;
-    --dataviz-2: #67e8f9;
-    --dataviz-3: #a5f3fc;
-    --dataviz-4: #cffafe;
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+    box-shadow:
+        0 4px 15px rgba(34, 211, 238, 0.3),
+        inset 0 0 20px rgba(255,255,255,0.1);
 }
 
-.nav__link--dataviz .nav__link-bg {
-    background: linear-gradient(135deg, var(--dataviz-1), var(--dataviz-3));
+[data-theme="dark"] .nav__link--dataviz:hover {
+    box-shadow:
+        0 8px 25px rgba(34, 211, 238, 0.5),
+        0 0 30px rgba(34, 211, 238, 0.3);
 }
 
-.nav__link--dataviz .nav__text {
-    transition: all 0.3s var(--ease);
+/* ===== OUTILS PUBLICS - French Blue Official ===== */
+.nav__link--outils {
+    background: #000091;
+    color: #fff !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 145, 0.3);
+    border: 2px solid transparent;
 }
 
-.nav__link--dataviz:hover .nav__text {
-    color: var(--dataviz-1);
+.nav__link--outils:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 145, 0.4);
+    border-color: rgba(255,255,255,0.3);
 }
 
-.nav__link-bars {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    height: 14px;
-    margin-left: var(--space-1);
+.nav__link--outils .nav__styled-text {
+    font-weight: 800;
+    letter-spacing: 0.03em;
 }
 
-.nav__link-bars span {
-    width: 3px;
-    background: var(--dataviz-1);
-    border-radius: 1px;
-    transition: all 0.3s var(--ease);
+.nav__link--outils .nav__external {
+    color: #fff;
 }
 
-.nav__link-bars span:nth-child(1) { height: 40%; }
-.nav__link-bars span:nth-child(2) { height: 70%; }
-.nav__link-bars span:nth-child(3) { height: 50%; }
-.nav__link-bars span:nth-child(4) { height: 90%; }
-
-.nav__link--dataviz:hover .nav__link-bars span {
-    animation: barBounce 0.6s ease infinite;
-}
-
-.nav__link--dataviz:hover .nav__link-bars span:nth-child(1) { animation-delay: 0s; }
-.nav__link--dataviz:hover .nav__link-bars span:nth-child(2) { animation-delay: 0.1s; }
-.nav__link--dataviz:hover .nav__link-bars span:nth-child(3) { animation-delay: 0.2s; }
-.nav__link--dataviz:hover .nav__link-bars span:nth-child(4) { animation-delay: 0.3s; }
-
-@keyframes barBounce {
-    0%, 100% { transform: scaleY(1); }
-    50% { transform: scaleY(1.4); }
-}
-
-.nav__link--dataviz::before {
+.nav__link--outils::before {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     width: 0;
     height: 0;
-    background: radial-gradient(circle, color-mix(in srgb, var(--dataviz-1) 15%, transparent), transparent);
+    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: all 0.4s var(--ease);
-    z-index: 1;
+    transition: all 0.4s ease;
 }
 
-.nav__link--dataviz:hover::before {
+.nav__link--outils:hover::before {
     width: 150px;
     height: 150px;
 }
 
-/* ===== OUTILS PUBLICS LINK - French Government Style ===== */
-.nav__link--outils {
-    --gouv-bleu: #000091;
-    --gouv-blanc: #ffffff;
-    --gouv-rouge: #e1000f;
-}
-
 [data-theme="dark"] .nav__link--outils {
-    --gouv-bleu: #6a6af4;
-    --gouv-blanc: #f5f5fe;
-    --gouv-rouge: #ff6b6b;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
-.nav__link--outils .nav__link-bg {
-    background: var(--gouv-bleu);
+[data-theme="dark"] .nav__link--outils:hover {
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
 }
 
-.nav__link--outils .nav__text {
-    transition: all 0.3s var(--ease);
+/* Active state for styled links */
+.nav__link--styled.nav__link--active {
+    transform: scale(1.05);
 }
 
-.nav__link--outils:hover {
-    color: var(--gouv-bleu);
-}
-
-.nav__link-flag {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    width: 18px;
-    height: 12px;
-    border-radius: 2px;
-    overflow: hidden;
-    opacity: 0.7;
-    transform: scale(0.9);
-    transition: all 0.3s var(--ease);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.nav__link-flag span {
-    flex: 1;
-    transition: all 0.3s var(--ease);
-}
-
-.nav__link-flag span:nth-child(1) { background: var(--gouv-bleu); }
-.nav__link-flag span:nth-child(2) { background: var(--gouv-blanc); }
-.nav__link-flag span:nth-child(3) { background: var(--gouv-rouge); }
-
-.nav__link--outils:hover .nav__link-flag {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.nav__link--outils::after {
+.nav__link--styled.nav__link--active::after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gouv-bleu) 33%, var(--gouv-blanc) 33% 66%, var(--gouv-rouge) 66%);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s var(--ease);
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 50%;
 }
 
-.nav__link--outils:hover::after {
-    transform: scaleX(1);
+/* Shimmer animation */
+@keyframes shimmer {
+    0%, 100% { background-position: -100% 0; }
+    50% { background-position: 100% 0; }
 }
 
-/* Marianne-inspired border on hover */
-.nav__link--outils::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 2px solid transparent;
-    border-radius: var(--space-2);
-    transition: all 0.3s var(--ease);
-    z-index: 1;
-}
-
-.nav__link--outils:hover::before {
-    border-color: var(--gouv-bleu);
-}
-
-/* ===== Mobile Styles for Special Links ===== */
+/* ===== Mobile Styles ===== */
 @media (max-width: 768px) {
-    .nav__link--articles,
-    .nav__link--dataviz,
-    .nav__link--outils {
-        padding: var(--space-3) var(--space-6);
-        border-radius: var(--space-3);
+    .nav__link--styled {
+        padding: var(--space-3) var(--space-5);
+        font-size: var(--text-base);
     }
 
-    .nav__link-icon {
-        width: 20px;
-        height: 20px;
+    .nav__link--dataviz .nav__styled-text {
+        font-size: 0.85rem;
     }
 
-    .nav__link-bars {
-        height: 18px;
-    }
-
-    .nav__link-bars span {
-        width: 4px;
-    }
-
-    .nav__link-flag {
-        width: 24px;
-        height: 16px;
-    }
-
-    /* Always show decorations on mobile */
-    .nav__link--articles .nav__link-icon {
-        opacity: 0.7;
-        transform: translateX(0) rotate(0);
-    }
-
-    .nav__link--dataviz .nav__link-bars span {
-        animation: barBounce 1.5s ease infinite;
-    }
-
-    .nav__link--outils .nav__link-flag {
-        opacity: 1;
-        transform: scale(1);
+    .nav__external {
+        width: 14px;
+        height: 14px;
     }
 }
 
