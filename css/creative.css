@@ -354,6 +354,32 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 /* ===================== STYLED NAV LINKS ===================== */
 
+/* Particle animations */
+@keyframes particle-float-1 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-8px, -12px) scale(0); opacity: 0; }
+}
+
+@keyframes particle-float-2 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(10px, -10px) scale(0); opacity: 0; }
+}
+
+@keyframes particle-float-3 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(-5px, -15px) scale(0); opacity: 0; }
+}
+
+@keyframes particle-float-4 {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(12px, -8px) scale(0); opacity: 0; }
+}
+
+@keyframes sparkle-pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
 /* Base - inherit from regular nav links */
 .nav__link--styled {
     display: flex;
@@ -362,6 +388,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     font-size: var(--text-sm);
     font-weight: 600;
     transition: all 0.3s var(--ease);
+    position: relative;
 }
 
 .nav__styled-text {
@@ -381,7 +408,24 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     transform: translate(1px, -1px);
 }
 
-/* ===== ARTICLES - Purple/Violet gradient text ===== */
+/* Particle container */
+.nav__particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.nav__particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ===== ARTICLES - Purple/Violet gradient text with sparkles ===== */
 .nav__link--articles .nav__styled-text {
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
@@ -393,25 +437,21 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     background: linear-gradient(135deg, #764ba2, #667eea);
     -webkit-background-clip: text;
     background-clip: text;
+    text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
 }
 
-.nav__link--articles::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s var(--ease);
-}
+/* Articles particles - purple sparkles */
+.nav__link--articles .nav__particle:nth-child(1) { left: 10%; top: 50%; background: #667eea; }
+.nav__link--articles .nav__particle:nth-child(2) { left: 30%; top: 30%; background: #764ba2; }
+.nav__link--articles .nav__particle:nth-child(3) { left: 50%; top: 60%; background: #a78bfa; }
+.nav__link--articles .nav__particle:nth-child(4) { left: 70%; top: 40%; background: #667eea; }
+.nav__link--articles .nav__particle:nth-child(5) { left: 90%; top: 50%; background: #c4b5fd; }
 
-.nav__link--articles:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-}
+.nav__link--articles:hover .nav__particle:nth-child(1) { animation: particle-float-1 0.6s ease-out forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(2) { animation: particle-float-2 0.5s ease-out 0.05s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(3) { animation: particle-float-3 0.7s ease-out 0.1s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(4) { animation: particle-float-4 0.55s ease-out 0.15s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(5) { animation: particle-float-1 0.65s ease-out 0.08s forwards; }
 
 [data-theme="dark"] .nav__link--articles .nav__styled-text {
     background: linear-gradient(135deg, #a78bfa, #c4b5fd);
@@ -423,13 +463,12 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     background: linear-gradient(135deg, #c4b5fd, #a78bfa);
     -webkit-background-clip: text;
     background-clip: text;
+    text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
 }
 
-[data-theme="dark"] .nav__link--articles::after {
-    background: linear-gradient(90deg, #a78bfa, #c4b5fd);
-}
+[data-theme="dark"] .nav__link--articles .nav__particle { box-shadow: 0 0 6px currentColor; }
 
-/* ===== DATAVIZ - Cyan/Teal gradient text ===== */
+/* ===== DATAVIZ - Cyan/Teal with data particles ===== */
 .nav__link--dataviz .nav__styled-text {
     background: linear-gradient(135deg, #06b6d4, #0891b2);
     -webkit-background-clip: text;
@@ -443,25 +482,22 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     background: linear-gradient(135deg, #0891b2, #06b6d4);
     -webkit-background-clip: text;
     background-clip: text;
+    text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
 }
 
-.nav__link--dataviz::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #06b6d4, #0891b2);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s var(--ease);
-}
+/* Dataviz particles - square data points */
+.nav__link--dataviz .nav__particle { border-radius: 1px; width: 3px; height: 3px; }
+.nav__link--dataviz .nav__particle:nth-child(1) { left: 5%; top: 50%; background: #06b6d4; }
+.nav__link--dataviz .nav__particle:nth-child(2) { left: 25%; top: 20%; background: #22d3ee; }
+.nav__link--dataviz .nav__particle:nth-child(3) { left: 45%; top: 70%; background: #0891b2; }
+.nav__link--dataviz .nav__particle:nth-child(4) { left: 65%; top: 30%; background: #67e8f9; }
+.nav__link--dataviz .nav__particle:nth-child(5) { left: 85%; top: 50%; background: #06b6d4; }
 
-.nav__link--dataviz:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-}
+.nav__link--dataviz:hover .nav__particle:nth-child(1) { animation: particle-float-3 0.5s ease-out forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(2) { animation: particle-float-1 0.6s ease-out 0.03s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(3) { animation: particle-float-4 0.45s ease-out 0.06s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(4) { animation: particle-float-2 0.55s ease-out 0.09s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(5) { animation: particle-float-3 0.5s ease-out 0.12s forwards; }
 
 [data-theme="dark"] .nav__link--dataviz .nav__styled-text {
     background: linear-gradient(135deg, #22d3ee, #67e8f9);
@@ -473,16 +509,16 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     background: linear-gradient(135deg, #67e8f9, #22d3ee);
     -webkit-background-clip: text;
     background-clip: text;
+    text-shadow: 0 0 25px rgba(34, 211, 238, 0.6);
 }
 
-[data-theme="dark"] .nav__link--dataviz::after {
-    background: linear-gradient(90deg, #22d3ee, #67e8f9);
-}
+[data-theme="dark"] .nav__link--dataviz .nav__particle { box-shadow: 0 0 4px currentColor; }
 
-/* ===== OUTILS PUBLICS - French Blue text ===== */
+/* ===== OUTILS PUBLICS - French Blue with tricolor particles ===== */
 .nav__link--outils .nav__styled-text {
     color: #000091;
     font-weight: 700;
+    transition: all 0.3s var(--ease);
 }
 
 .nav__link--outils .nav__external {
@@ -491,25 +527,21 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 .nav__link--outils:hover .nav__styled-text {
     color: #1212ff;
+    text-shadow: 0 0 15px rgba(0, 0, 145, 0.4);
 }
 
-.nav__link--outils::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: #000091;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s var(--ease);
-}
+/* Outils particles - French blue variations */
+.nav__link--outils .nav__particle:nth-child(1) { left: 10%; top: 40%; background: #000091; }
+.nav__link--outils .nav__particle:nth-child(2) { left: 30%; top: 60%; background: #1212ff; }
+.nav__link--outils .nav__particle:nth-child(3) { left: 50%; top: 35%; background: #000091; }
+.nav__link--outils .nav__particle:nth-child(4) { left: 70%; top: 55%; background: #4040ff; }
+.nav__link--outils .nav__particle:nth-child(5) { left: 90%; top: 45%; background: #000091; }
 
-.nav__link--outils:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-}
+.nav__link--outils:hover .nav__particle:nth-child(1) { animation: particle-float-2 0.55s ease-out forwards; }
+.nav__link--outils:hover .nav__particle:nth-child(2) { animation: particle-float-3 0.6s ease-out 0.04s forwards; }
+.nav__link--outils:hover .nav__particle:nth-child(3) { animation: particle-float-1 0.5s ease-out 0.08s forwards; }
+.nav__link--outils:hover .nav__particle:nth-child(4) { animation: particle-float-4 0.65s ease-out 0.12s forwards; }
+.nav__link--outils:hover .nav__particle:nth-child(5) { animation: particle-float-2 0.55s ease-out 0.06s forwards; }
 
 [data-theme="dark"] .nav__link--outils .nav__styled-text {
     color: #818cf8;
@@ -521,16 +553,16 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 [data-theme="dark"] .nav__link--outils:hover .nav__styled-text {
     color: #a5b4fc;
+    text-shadow: 0 0 20px rgba(129, 140, 248, 0.5);
 }
 
-[data-theme="dark"] .nav__link--outils::after {
-    background: #818cf8;
-}
+[data-theme="dark"] .nav__link--outils .nav__particle:nth-child(1) { background: #818cf8; }
+[data-theme="dark"] .nav__link--outils .nav__particle:nth-child(2) { background: #a5b4fc; }
+[data-theme="dark"] .nav__link--outils .nav__particle:nth-child(3) { background: #818cf8; }
+[data-theme="dark"] .nav__link--outils .nav__particle:nth-child(4) { background: #c7d2fe; }
+[data-theme="dark"] .nav__link--outils .nav__particle:nth-child(5) { background: #818cf8; }
 
-/* Active state */
-.nav__link--styled.nav__link--active::after {
-    transform: scaleX(1);
-}
+[data-theme="dark"] .nav__link--outils .nav__particle { box-shadow: 0 0 5px currentColor; }
 
 /* ===== Mobile Styles ===== */
 @media (max-width: 768px) {
@@ -541,6 +573,11 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     .nav__external {
         width: 14px;
         height: 14px;
+    }
+
+    .nav__particle {
+        width: 5px;
+        height: 5px;
     }
 }
 
