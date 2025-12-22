@@ -354,214 +354,188 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 /* ===================== STYLED NAV LINKS ===================== */
 
-/* Base styled link */
+/* Base - inherit from regular nav links */
 .nav__link--styled {
-    position: relative;
-    padding: var(--space-2) var(--space-4);
-    border-radius: 100px;
-    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
     font-size: var(--text-sm);
-    letter-spacing: 0.02em;
-    transition: all 0.4s var(--ease);
-    overflow: hidden;
+    font-weight: 600;
+    transition: all 0.3s var(--ease);
 }
 
 .nav__styled-text {
     position: relative;
-    z-index: 2;
     display: inline-block;
 }
 
 .nav__external {
-    width: 12px;
-    height: 12px;
-    margin-left: 4px;
-    opacity: 0.5;
+    width: 10px;
+    height: 10px;
+    opacity: 0.4;
     transition: all 0.3s var(--ease);
 }
 
 .nav__link--styled:hover .nav__external {
-    opacity: 1;
-    transform: translate(2px, -2px);
+    opacity: 0.8;
+    transform: translate(1px, -1px);
 }
 
-/* ===== ARTICLES - Editorial Purple Gradient ===== */
-.nav__link--articles {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff !important;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.nav__link--articles:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-}
-
+/* ===== ARTICLES - Purple/Violet gradient text ===== */
 .nav__link--articles .nav__styled-text {
-    background: linear-gradient(90deg, #fff, #e0e7ff, #fff);
-    background-size: 200% 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 3s ease-in-out infinite;
 }
 
-.nav__link--articles::before {
+.nav__link--articles:hover .nav__styled-text {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.nav__link--articles::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
+    bottom: -2px;
+    left: 0;
     width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s ease;
+    height: 2px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s var(--ease);
 }
 
-.nav__link--articles:hover::before {
-    left: 100%;
+.nav__link--articles:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
-[data-theme="dark"] .nav__link--articles {
-    background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+[data-theme="dark"] .nav__link--articles .nav__styled-text {
+    background: linear-gradient(135deg, #a78bfa, #c4b5fd);
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
-[data-theme="dark"] .nav__link--articles:hover {
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+[data-theme="dark"] .nav__link--articles:hover .nav__styled-text {
+    background: linear-gradient(135deg, #c4b5fd, #a78bfa);
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
-/* ===== DATAVIZ - Cyan Neon Tech ===== */
-.nav__link--dataviz {
-    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-    color: #fff !important;
-    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+[data-theme="dark"] .nav__link--articles::after {
+    background: linear-gradient(90deg, #a78bfa, #c4b5fd);
 }
 
-.nav__link--dataviz:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow:
-        0 8px 25px rgba(6, 182, 212, 0.4),
-        0 0 20px rgba(6, 182, 212, 0.2);
-}
-
+/* ===== DATAVIZ - Cyan/Teal gradient text ===== */
 .nav__link--dataviz .nav__styled-text {
-    font-family: 'Space Mono', 'Courier New', monospace;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-size: 0.7rem;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+}
+
+.nav__link--dataviz:hover .nav__styled-text {
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
 .nav__link--dataviz::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -2px;
     left: 0;
-    right: 0;
+    width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #fff, transparent);
+    background: linear-gradient(90deg, #06b6d4, #0891b2);
     transform: scaleX(0);
-    transition: transform 0.3s ease;
+    transform-origin: right;
+    transition: transform 0.3s var(--ease);
 }
 
 .nav__link--dataviz:hover::after {
     transform: scaleX(1);
+    transform-origin: left;
 }
 
-[data-theme="dark"] .nav__link--dataviz {
-    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
-    box-shadow:
-        0 4px 15px rgba(34, 211, 238, 0.3),
-        inset 0 0 20px rgba(255,255,255,0.1);
+[data-theme="dark"] .nav__link--dataviz .nav__styled-text {
+    background: linear-gradient(135deg, #22d3ee, #67e8f9);
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
-[data-theme="dark"] .nav__link--dataviz:hover {
-    box-shadow:
-        0 8px 25px rgba(34, 211, 238, 0.5),
-        0 0 30px rgba(34, 211, 238, 0.3);
+[data-theme="dark"] .nav__link--dataviz:hover .nav__styled-text {
+    background: linear-gradient(135deg, #67e8f9, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
-/* ===== OUTILS PUBLICS - French Blue Official ===== */
-.nav__link--outils {
-    background: #000091;
-    color: #fff !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 145, 0.3);
-    border: 2px solid transparent;
+[data-theme="dark"] .nav__link--dataviz::after {
+    background: linear-gradient(90deg, #22d3ee, #67e8f9);
 }
 
-.nav__link--outils:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(0, 0, 145, 0.4);
-    border-color: rgba(255,255,255,0.3);
-}
-
+/* ===== OUTILS PUBLICS - French Blue text ===== */
 .nav__link--outils .nav__styled-text {
-    font-weight: 800;
-    letter-spacing: 0.03em;
+    color: #000091;
+    font-weight: 700;
 }
 
 .nav__link--outils .nav__external {
-    color: #fff;
+    color: #000091;
 }
 
-.nav__link--outils::before {
+.nav__link--outils:hover .nav__styled-text {
+    color: #1212ff;
+}
+
+.nav__link--outils::after {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: radial-gradient(circle, rgba(255,255,255,0.15), transparent);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: all 0.4s ease;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #000091;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s var(--ease);
 }
 
-.nav__link--outils:hover::before {
-    width: 150px;
-    height: 150px;
+.nav__link--outils:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
-[data-theme="dark"] .nav__link--outils {
-    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+[data-theme="dark"] .nav__link--outils .nav__styled-text {
+    color: #818cf8;
 }
 
-[data-theme="dark"] .nav__link--outils:hover {
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+[data-theme="dark"] .nav__link--outils .nav__external {
+    color: #818cf8;
 }
 
-/* Active state for styled links */
-.nav__link--styled.nav__link--active {
-    transform: scale(1.05);
+[data-theme="dark"] .nav__link--outils:hover .nav__styled-text {
+    color: #a5b4fc;
 }
 
+[data-theme="dark"] .nav__link--outils::after {
+    background: #818cf8;
+}
+
+/* Active state */
 .nav__link--styled.nav__link--active::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 6px;
-    height: 6px;
-    background: currentColor;
-    border-radius: 50%;
-}
-
-/* Shimmer animation */
-@keyframes shimmer {
-    0%, 100% { background-position: -100% 0; }
-    50% { background-position: 100% 0; }
+    transform: scaleX(1);
 }
 
 /* ===== Mobile Styles ===== */
 @media (max-width: 768px) {
     .nav__link--styled {
-        padding: var(--space-3) var(--space-5);
-        font-size: var(--text-base);
-    }
-
-    .nav__link--dataviz .nav__styled-text {
-        font-size: 0.85rem;
+        font-size: var(--text-xl);
     }
 
     .nav__external {
