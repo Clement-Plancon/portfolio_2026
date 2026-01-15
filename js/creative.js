@@ -12,6 +12,7 @@ const translations = {
         'nav.skills': 'Compétences',
         'nav.articles': 'Articles',
         'nav.dataviz': 'Dataviz',
+        'nav.labs': 'Labs',
         'nav.contact': 'Contact',
         'nav.outils': 'Outils Publics',
 
@@ -106,6 +107,7 @@ const translations = {
         'nav.skills': 'Skills',
         'nav.articles': 'Articles',
         'nav.dataviz': 'Dataviz',
+        'nav.labs': 'Labs',
         'nav.contact': 'Contact',
         'nav.outils': 'Public Tools',
 
