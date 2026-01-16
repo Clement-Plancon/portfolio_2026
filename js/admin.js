@@ -7,6 +7,7 @@
 const DataStore = {
     ARTICLES_KEY: 'portfolio_articles',
     DATAVIZ_KEY: 'portfolio_dataviz',
+    LABS_KEY: 'portfolio_labs',
     SEEDED_KEY: 'portfolio_seeded',
 
     getArticles() {
@@ -23,6 +24,14 @@ const DataStore = {
 
     saveDataviz(dataviz) {
         localStorage.setItem(this.DATAVIZ_KEY, JSON.stringify(dataviz));
+    },
+
+    getLabs() {
+        return JSON.parse(localStorage.getItem(this.LABS_KEY) || '[]');
+    },
+
+    saveLabs(labs) {
+        localStorage.setItem(this.LABS_KEY, JSON.stringify(labs));
     },
 
     generateId() {
@@ -245,8 +254,85 @@ const DataStore = {
             }
         ];
 
+        // Initial labs projects
+        const initialLabs = [
+            {
+                id: 'lab1',
+                title: 'Neural Canvas',
+                desc: 'Application de transfert de style neuronal en temps réel utilisant des modèles pré-entraînés pour transformer vos photos en œuvres d\'art.',
+                category: 'ia',
+                status: 'active',
+                progress: 85,
+                link: 'https://github.com',
+                tech: 'Python, TensorFlow, FastAPI, React',
+                featured: true,
+                hidden: false
+            },
+            {
+                id: 'lab2',
+                title: 'HomeKit Bridge',
+                desc: 'Pont DIY pour connecter des appareils non-compatibles à Apple HomeKit via un Raspberry Pi et des protocoles radio.',
+                category: 'hardware',
+                status: 'beta',
+                progress: 70,
+                link: 'https://github.com',
+                tech: 'Python, Raspberry Pi, MQTT, HomeKit',
+                featured: false,
+                hidden: false
+            },
+            {
+                id: 'lab3',
+                title: 'DevDash CLI',
+                desc: 'CLI minimaliste pour monitorer vos projets GitHub, CI/CD pipelines et métriques de productivité depuis le terminal.',
+                category: 'tools',
+                status: 'active',
+                progress: 92,
+                link: 'https://github.com',
+                tech: 'Rust, GitHub API, Terminal UI',
+                featured: false,
+                hidden: false
+            },
+            {
+                id: 'lab4',
+                title: 'Pixel Dungeon AI',
+                desc: 'Agent de reinforcement learning qui apprend à jouer à un roguelike en pixel art que j\'ai créé.',
+                category: 'game',
+                status: 'prototype',
+                progress: 45,
+                link: '',
+                tech: 'Python, PyTorch, Pygame, RL',
+                featured: false,
+                hidden: false
+            },
+            {
+                id: 'lab5',
+                title: 'VoiceNote Transcriber',
+                desc: 'App mobile qui transcrit automatiquement vos notes vocales et les organise avec des tags générés par IA.',
+                category: 'web',
+                status: 'idea',
+                progress: 15,
+                link: '',
+                tech: 'React Native, Whisper, GPT-4',
+                featured: false,
+                hidden: false
+            },
+            {
+                id: 'lab6',
+                title: 'Carbon Tracker',
+                desc: 'Extension navigateur qui estime l\'empreinte carbone de votre navigation web et suggère des alternatives.',
+                category: 'web',
+                status: 'beta',
+                progress: 60,
+                link: 'https://github.com',
+                tech: 'JavaScript, Chrome API, Carbon API',
+                featured: false,
+                hidden: false
+            }
+        ];
+
         this.saveArticles(initialArticles);
         this.saveDataviz(initialDataviz);
+        this.saveLabs(initialLabs);
         localStorage.setItem(this.SEEDED_KEY, 'true');
     }
 };
@@ -398,7 +484,8 @@ class SectionTabs {
         this.tabs = document.querySelectorAll('.section-tab');
         this.sections = {
             articles: document.getElementById('articlesSection'),
-            dataviz: document.getElementById('datavizSection')
+            dataviz: document.getElementById('datavizSection'),
+            labs: document.getElementById('labsSection')
         };
         this.init();
     }
@@ -775,6 +862,174 @@ class DatavizManager {
     }
 }
 
+// ===================== LABS MANAGER =====================
+class LabsManager {
+    constructor(modalManager) {
+        this.modalManager = modalManager;
+        this.list = document.getElementById('labsList');
+        this.countEl = document.getElementById('labsCount');
+        this.form = document.getElementById('labsForm');
+        this.modal = document.getElementById('labsModal');
+        this.modalTitle = document.getElementById('labsModalTitle');
+
+        this.init();
+    }
+
+    init() {
+        document.getElementById('addLabBtn')?.addEventListener('click', () => this.openForm());
+        this.form?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.save();
+        });
+        this.render();
+    }
+
+    render() {
+        const labs = DataStore.getLabs();
+        this.countEl.textContent = labs.length;
+
+        if (labs.length === 0) {
+            this.list.innerHTML = `
+                <div class="content-empty">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 3h6v2H9zM8 5v5l-3 9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2l-3-9V5"/>
+                        <path d="M7 14h10"/>
+                    </svg>
+                    <p>Aucun projet labs</p>
+                    <button class="btn btn--ghost" onclick="document.getElementById('addLabBtn').click()">Créer le premier projet</button>
+                </div>
+            `;
+            return;
+        }
+
+        this.list.innerHTML = labs.map(item => this.renderItem(item)).join('');
+        this.attachItemEvents();
+    }
+
+    renderItem(item) {
+        const categoryLabels = {
+            ia: 'IA', web: 'Web', hardware: 'Hardware', tools: 'Outils', game: 'Jeux'
+        };
+        const statusLabels = {
+            idea: 'Idée', prototype: 'Proto', beta: 'Beta', active: 'Actif', archived: 'Archivé'
+        };
+        const statusColors = {
+            idea: '#6b7280', prototype: '#8b5cf6', beta: '#f59e0b', active: '#10b981', archived: '#6b7280'
+        };
+        return `
+            <div class="content-item ${item.hidden ? 'archived' : ''}" data-id="${item.id}">
+                <div class="content-item__preview" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    ${item.progress}%
+                </div>
+                <div class="content-item__info">
+                    <div class="content-item__title">${item.featured ? '⭐ ' : ''}${item.title}</div>
+                    <div class="content-item__meta">
+                        <span class="content-item__badge">${categoryLabels[item.category] || item.category}</span>
+                        <span class="content-item__badge" style="background: ${statusColors[item.status]}20; color: ${statusColors[item.status]}">${statusLabels[item.status] || item.status}</span>
+                        ${item.hidden ? '<span class="content-item__badge content-item__badge--archived">Masqué</span>' : ''}
+                    </div>
+                </div>
+                <div class="content-item__actions">
+                    <button class="edit" title="Modifier">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                    </button>
+                    <button class="delete" title="Supprimer">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    attachItemEvents() {
+        this.list.querySelectorAll('.content-item').forEach(item => {
+            const id = item.dataset.id;
+            item.querySelector('.edit')?.addEventListener('click', () => this.openForm(id));
+            item.querySelector('.delete')?.addEventListener('click', () => this.confirmDelete(id));
+        });
+    }
+
+    openForm(id = null) {
+        const labs = DataStore.getLabs();
+        const item = id ? labs.find(l => l.id === id) : null;
+
+        this.modalTitle.textContent = item ? 'Modifier le projet' : 'Nouveau projet Labs';
+
+        document.getElementById('labId').value = item?.id || '';
+        document.getElementById('labTitle').value = item?.title || '';
+        document.getElementById('labDesc').value = item?.desc || '';
+        document.getElementById('labCategory').value = item?.category || '';
+        document.getElementById('labStatus').value = item?.status || '';
+        document.getElementById('labProgress').value = item?.progress || '';
+        document.getElementById('labLink').value = item?.link || '';
+        document.getElementById('labTech').value = item?.tech || '';
+        document.getElementById('labFeatured').checked = item?.featured || false;
+        document.getElementById('labHidden').checked = item?.hidden || false;
+
+        this.modalManager.open('labsModal');
+    }
+
+    save() {
+        const labs = DataStore.getLabs();
+        const id = document.getElementById('labId').value;
+
+        const itemData = {
+            id: id || DataStore.generateId(),
+            title: document.getElementById('labTitle').value,
+            desc: document.getElementById('labDesc').value,
+            category: document.getElementById('labCategory').value,
+            status: document.getElementById('labStatus').value,
+            progress: parseInt(document.getElementById('labProgress').value) || 0,
+            link: document.getElementById('labLink').value,
+            tech: document.getElementById('labTech').value,
+            featured: document.getElementById('labFeatured').checked,
+            hidden: document.getElementById('labHidden').checked
+        };
+
+        if (id) {
+            const index = labs.findIndex(l => l.id === id);
+            if (index !== -1) labs[index] = itemData;
+        } else {
+            labs.unshift(itemData);
+        }
+
+        DataStore.saveLabs(labs);
+        this.modalManager.close('labsModal');
+        this.render();
+        Toast.show(id ? 'Projet modifié' : 'Projet créé', 'success');
+    }
+
+    confirmDelete(id) {
+        const item = DataStore.getLabs().find(l => l.id === id);
+        document.getElementById('confirmMessage').textContent =
+            `Êtes-vous sûr de vouloir supprimer "${item?.title}" ?`;
+
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        const newBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newBtn, confirmBtn);
+
+        newBtn.addEventListener('click', () => {
+            this.delete(id);
+            modalManager.close('confirmModal');
+        });
+
+        modalManager.open('confirmModal');
+    }
+
+    delete(id) {
+        const labs = DataStore.getLabs().filter(l => l.id !== id);
+        DataStore.saveLabs(labs);
+        this.render();
+        Toast.show('Projet supprimé', 'success');
+    }
+}
+
 // ===================== CODE GENERATOR =====================
 const CodeGenerator = {
     generateArticlesHTML() {
@@ -1037,5 +1292,6 @@ document.addEventListener('DOMContentLoaded', () => {
     new SectionTabs();
     new ArticlesManager(modalManager);
     new DatavizManager(modalManager);
+    new LabsManager(modalManager);
     new PublishManager(modalManager);
 });

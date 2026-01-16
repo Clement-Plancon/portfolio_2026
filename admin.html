@@ -82,6 +82,14 @@
                         Dataviz
                         <span class="section-tab__count" id="datavizCount">0</span>
                     </button>
+                    <button class="section-tab" data-section="labs">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 3h6v2H9zM8 5v5l-3 9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2l-3-9V5"/>
+                            <path d="M7 14h10"/>
+                        </svg>
+                        Labs
+                        <span class="section-tab__count" id="labsCount">0</span>
+                    </button>
                 </div>
 
                 <!-- Articles Section -->
@@ -137,6 +145,35 @@
                             </svg>
                             <p>Aucune dataviz</p>
                             <button class="btn btn--ghost" onclick="document.getElementById('addDatavizBtn').click()">Créer la première dataviz</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Labs Section -->
+                <section class="admin-section" id="labsSection" style="display: none;">
+                    <div class="section-header">
+                        <div>
+                            <h2>Labs — Expérimentations</h2>
+                            <p>Gérez vos projets personnels et expérimentations</p>
+                        </div>
+                        <button class="btn btn--primary" id="addLabBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Nouveau projet
+                        </button>
+                    </div>
+
+                    <!-- Labs List -->
+                    <div class="content-list" id="labsList">
+                        <div class="content-empty">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 3h6v2H9zM8 5v5l-3 9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2l-3-9V5"/>
+                                <path d="M7 14h10"/>
+                            </svg>
+                            <p>Aucun projet labs</p>
+                            <button class="btn btn--ghost" onclick="document.getElementById('addLabBtn').click()">Créer le premier projet</button>
                         </div>
                     </div>
                 </section>
@@ -341,6 +378,98 @@
             <div class="admin-modal__footer">
                 <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
                 <button type="submit" form="datavizForm" class="btn btn--primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Labs Modal -->
+    <div class="admin-modal" id="labsModal">
+        <div class="admin-modal__backdrop"></div>
+        <div class="admin-modal__container">
+            <div class="admin-modal__header">
+                <h3 id="labsModalTitle">Nouveau projet Labs</h3>
+                <button class="admin-modal__close" aria-label="Fermer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="labsForm" class="admin-modal__body">
+                <input type="hidden" id="labId">
+                <div class="form-grid">
+                    <div class="form-group form-group--full">
+                        <label for="labTitle">Nom du projet *</label>
+                        <input type="text" id="labTitle" required placeholder="Ex: Neural Style Transfer App">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="labDesc">Description *</label>
+                        <textarea id="labDesc" required rows="3" placeholder="Description du projet..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="labCategory">Catégorie *</label>
+                        <select id="labCategory" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="ia">Intelligence Artificielle</option>
+                            <option value="web">Web / App</option>
+                            <option value="hardware">Hardware / IoT</option>
+                            <option value="tools">Outils / CLI</option>
+                            <option value="game">Jeux / Créatif</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="labStatus">Statut *</label>
+                        <select id="labStatus" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="idea">Idée</option>
+                            <option value="prototype">Prototype</option>
+                            <option value="beta">Beta</option>
+                            <option value="active">Actif</option>
+                            <option value="archived">Archivé</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="labProgress">Progression (%) *</label>
+                        <input type="number" id="labProgress" required min="0" max="100" placeholder="75">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="labLink">Lien (GitHub, Demo...)</label>
+                        <input type="url" id="labLink" placeholder="https://github.com/...">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label for="labTech">Technologies (séparées par virgule) *</label>
+                        <input type="text" id="labTech" required placeholder="Python, TensorFlow, React">
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="labFeatured">
+                            <span>Projet mis en avant (featured)</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group form-group--full">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="labHidden">
+                            <span>Masqué (non visible sur le site)</span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+            <div class="admin-modal__footer">
+                <button type="button" class="btn btn--ghost" data-close-modal>Annuler</button>
+                <button type="submit" form="labsForm" class="btn btn--primary">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="20 6 9 17 4 12"/>
                     </svg>
