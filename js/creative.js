@@ -10,55 +10,51 @@ const modalContent = {
         title: 'Laboratoire de Police Scientifique de Paris',
         subtitle: 'Chef adjoint de la section informatique — Ingénieur SIC',
         period: '2022 — Présent',
-        description: 'Au sein de la Préfecture de Police de Paris, je pilote la transformation numérique du laboratoire et développe des outils innovants pour optimiser les processus d\'investigation.',
+        description: 'Au sein du Laboratoire de police scientifique de Paris, je pilote une équipe de 4 développeurs logiciel.',
         responsibilities: [
-            'Management d\'une équipe de 5 développeurs et techniciens',
-            'Architecture et développement d\'applications métier critiques',
-            'Intégration de solutions d\'IA pour l\'analyse de données',
-            'Gestion du parc informatique et de l\'infrastructure',
-            'Conduite du changement et formation des utilisateurs'
+            "Lead d'une équipe de 4 développeurs (encadrement technique, priorisation, accompagnement)",
+            'Conception et arbitrage des choix techniques, en lien avec les besoins métiers et les contraintes opérationnelles',
+            'Maintien en condition opérationnelle, évolution et fiabilisation d’applications métiers existantes',
+            'Contribution à la structuration des pratiques de développement et des processus techniques',
         ],
-        technologies: ['Angular', 'C# .NET', 'Python', 'PostgreSQL', 'Docker']
+        technologies: ['Docker', 'PHP', 'K8S', 'PostgreSQL']
     },
     exp2: {
-        title: 'Point Virgule',
-        subtitle: 'Fondateur — Développeur Fullstack & IA',
-        period: '2020 — Présent',
-        description: 'Entreprise de développement logiciel et conseil en transformation numérique. J\'accompagne des startups et PME dans la conception et le développement de leurs produits digitaux.',
+        title: 'Outils Publics',
+        subtitle: 'Coordinateur technique – Données & développement',
+        period: '2024 — Présent',
+        description: "Le collectif Outils Publics est spécialisé dans la recherche, l'exploration et création d’outils numériques applicatifs.",
         responsibilities: [
-            'Développement d\'applications web et mobiles sur mesure',
-            'Intégration de solutions d\'intelligence artificielle (LLM, RAG)',
-            'Conseil en architecture technique et stratégie digitale',
-            'Formation et accompagnement des équipes techniques',
-            'Prototypage et POC pour validation de concepts'
+            'Développement de prototypes, outils et visualisations à partir de données publiques',
+            'Structuration des pratiques, des outils et des méthodes techniques',
+            'Interface entre recherche, design et implémentation logicielle',
         ],
-        technologies: ['Angular', 'React', 'Node.js', 'Flutter', 'Python', 'OpenAI']
+        technologies: ['React', 'Node.js', 'Flutter', 'Python']
     },
     exp3: {
         title: 'Ministère de l\'Économie et des Finances',
-        subtitle: 'Analyste Développeur — Laboratoire de la Transformation',
-        period: '2019 — 2022',
-        description: 'Au sein du Lab de la Transformation Numérique, j\'ai participé à la modernisation des services publics en développant des solutions innovantes et en accompagnant les agents dans l\'adoption de nouveaux outils.',
+        subtitle: 'Ingénieur logiciel et chef de projet technique — Laboratoire de la Transformation',
+        period: '2022 — 2024',
+        description: 'Au sein du Lab de la Transformation, j\'ai participé à la modernisation des services publics en développant des solutions innovantes et en accompagnant les agents dans l\'adoption de nouveaux outils.',
         responsibilities: [
-            'Développement d\'applications internes en Angular et .NET',
-            'Automatisation de processus métier avec RPA',
+            'Développement d\'applications internes en react et next.js',
             'Analyse des besoins et rédaction de spécifications',
             'Animation d\'ateliers d\'innovation et de design thinking',
             'Veille technologique et expérimentation'
         ],
-        technologies: ['Angular', 'C# .NET', 'Power Platform', 'SQL Server', 'Azure']
+        technologies: ['C# .NET', 'Power Platform', 'SQL Server', 'Azure']
     },
     // Projects
     proj1: {
-        title: 'QuiPaieQuoi',
-        subtitle: 'Application Mobile — IA',
-        description: 'Application mobile de gestion des dépenses partagées entre amis, colocataires ou collègues. Elle intègre une fonctionnalité de reconnaissance automatique des tickets de caisse grâce à l\'IA.',
+        title: 'Bercy Vert',
+        subtitle: 'Conception de logiciel – Transition écologique',
+        description: 'Projet de conception d’un logiciel destiné à accompagner la démarche de transition verte et écologique du ministère de l’Économie et des Finances. L’objectif était de répondre aux besoins des référents ministériels en centralisant et structurant les actions issues du BEGES et les mesures SPE.',
         features: [
-            'Scan et reconnaissance automatique des tickets par OCR + IA',
-            'Calcul automatique des remboursements optimisés',
+            'Cadrage du projet et expression des besoins fonctionnels en lien avec les parties prenantes',
+            'Définition de la méthodologie de développement et structuration du cycle projet',
             'Gestion multi-groupes et historique des dépenses',
-            'Notifications et rappels de paiement',
-            'Export des données et statistiques personnelles'
+            'Conception et développement de l’interface du proof of concept',
+            'Recueil, analyse et restitution des retours utilisateurs pour orienter les évolutions du produit'
         ],
         technologies: ['Flutter', 'Dart', 'Firebase', 'Google Vision AI', 'Node.js']
     },
@@ -73,20 +69,19 @@ const modalContent = {
             'Rapports automatisés et export PDF/Excel',
             'Gestion des droits et périmètres utilisateurs'
         ],
-        technologies: ['Angular', 'Node.js', 'PostgreSQL', 'Chart.js', 'Docker']
+        technologies: ['Next', 'Node.js', 'PostgreSQL', 'Chart.js', 'Docker']
     },
     proj3: {
-        title: 'Assistant IA Métier',
-        subtitle: 'Agent IA — RAG',
-        description: 'Chatbot intelligent basé sur l\'architecture RAG (Retrieval-Augmented Generation) permettant de répondre aux questions des utilisateurs en s\'appuyant sur la documentation interne de l\'entreprise.',
+        title: 'Conception de logiciel pour les saisines de la Cour des Comptes',
+        subtitle: 'Recherche utilisateurs & conception de solutions',
+        description: 'Projet de conception visant à améliorer et structurer les outils liés au traitement des saisines de la Cour des Comptes, en s’appuyant sur une compréhension fine des besoins des usagers et des contraintes institutionnelles.',
         features: [
-            'Recherche sémantique dans la base documentaire',
-            'Réponses contextualisées avec sources citées',
-            'Apprentissage continu et feedback utilisateurs',
-            'Interface conversationnelle intuitive',
-            'Intégration avec les outils existants (Teams, Slack)'
+            'Exploration et analyse des solutions existantes pouvant répondre aux besoins des usagers',
+            'Cadrage technique et identification des pistes de conception logicielle adaptées au contexte',
+            'Accompagnement de l’équipe de designers (User Studio) dans la recherche utilisateur et la conduite des entretiens',
+            'Analyse et synthèse des retours utilisateurs pour orienter les choix de conception et les arbitrages techniques',
         ],
-        technologies: ['Python', 'LangChain', 'OpenAI GPT-4', 'Pinecone', 'FastAPI']
+        technologies: ['UX research', 'Design centré utilisateur', 'Cadrage technique', 'Prototypage', 'Co-conception']
     },
     proj4: {
         title: 'Veille Stratégique',
