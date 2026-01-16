@@ -1,11 +1,60 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light" data-lang="fr">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000091">
-    <meta name="description" content="Clément Plançon - Ingénieur logiciel fullstack spécialisé en IA.">
-    <title>Clément Plançon — Ingénieur Logiciel</title>
+
+    <!-- SEO Meta Tags -->
+    <title>Clément Plançon — Ingénieur Logiciel Fullstack & IA | Paris</title>
+    <meta name="description" content="Clément Plançon, ingénieur logiciel fullstack spécialisé en intelligence artificielle, développement web (Angular, React, Node.js) et applications mobiles. Basé à Paris.">
+    <meta name="keywords" content="ingénieur logiciel, développeur fullstack, intelligence artificielle, IA, Angular, React, Node.js, Python, Paris, développeur web, freelance">
+    <meta name="author" content="Clément Plançon">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://clementplancon.fr/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://clementplancon.fr/">
+    <meta property="og:title" content="Clément Plançon — Ingénieur Logiciel Fullstack & IA">
+    <meta property="og:description" content="Ingénieur logiciel passionné par l'innovation, je conçois des solutions numériques alliant expertise technique et intelligence artificielle.">
+    <meta property="og:image" content="https://clementplancon.fr/images/og-image.jpg">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://clementplancon.fr/">
+    <meta name="twitter:title" content="Clément Plançon — Ingénieur Logiciel Fullstack & IA">
+    <meta name="twitter:description" content="Ingénieur logiciel passionné par l'innovation, je conçois des solutions numériques alliant expertise technique et intelligence artificielle.">
+    <meta name="twitter:image" content="https://clementplancon.fr/images/og-image.jpg">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Clément Plançon",
+        "url": "https://clementplancon.fr",
+        "image": "https://clementplancon.fr/images/profile.jpg",
+        "jobTitle": "Ingénieur Logiciel",
+        "worksFor": {
+            "@type": "Organization",
+            "name": "Laboratoire de Police Scientifique de Paris"
+        },
+        "description": "Ingénieur logiciel fullstack spécialisé en intelligence artificielle, développement web et applications mobiles.",
+        "knowsAbout": ["Angular", "React", "Node.js", "Python", "Intelligence Artificielle", "Flutter", "TypeScript"],
+        "sameAs": [
+            "https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/",
+            "https://github.com/Clement-Plancon",
+            "https://www.behance.net/clmentplanon"
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Paris",
+            "addressCountry": "FR"
+        }
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,32 +74,32 @@
 
     <!-- Header -->
     <header class="header">
-        <a href="#" class="logo">
+        <a href="#" class="logo" aria-label="Clément Plançon - Accueil">
             <span class="logo__mark">CP</span>
             <span class="logo__dot"></span>
         </a>
 
-        <nav class="nav">
-            <a href="#apropos" class="nav__link" data-i18n="nav.about">
+        <nav class="nav" aria-label="Navigation principale">
+            <a href="#apropos" class="nav__link">
                 <span class="nav__num">01</span>
                 <span class="nav__text">À propos</span>
             </a>
-            <a href="#competences" class="nav__link" data-i18n="nav.skills">
+            <a href="#competences" class="nav__link">
                 <span class="nav__num">02</span>
                 <span class="nav__text">Compétences</span>
             </a>
-            <a href="#projets" class="nav__link" data-i18n="nav.work">
+            <a href="#projets" class="nav__link">
                 <span class="nav__num">03</span>
                 <span class="nav__text">Projets</span>
             </a>
-            <a href="#contact" class="nav__link" data-i18n="nav.contact">
+            <a href="#contact" class="nav__link">
                 <span class="nav__num">04</span>
                 <span class="nav__text">Contact</span>
             </a>
 
             <!-- Styled Special Links -->
             <a href="articles.html" class="nav__link nav__link--styled nav__link--articles">
-                <span class="nav__styled-text" data-i18n="nav.articles">Articles</span>
+                <span class="nav__styled-text">Articles</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -60,7 +109,7 @@
                 </span>
             </a>
             <a href="dataviz.html" class="nav__link nav__link--styled nav__link--dataviz">
-                <span class="nav__styled-text" data-i18n="nav.dataviz">Dataviz</span>
+                <span class="nav__styled-text">Dataviz</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -70,7 +119,7 @@
                 </span>
             </a>
             <a href="labs.html" class="nav__link nav__link--styled nav__link--labs">
-                <span class="nav__styled-text" data-i18n="nav.labs">Labs</span>
+                <span class="nav__styled-text">Labs</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -80,7 +129,7 @@
                 </span>
             </a>
             <a href="https://outilspublics.netlify.app/" target="_blank" rel="noopener" class="nav__link nav__link--styled nav__link--outils">
-                <span class="nav__styled-text" data-i18n="nav.outils">Outils Publics</span>
+                <span class="nav__styled-text">Outils Publics</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -88,7 +137,7 @@
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
                 </span>
-                <svg class="nav__external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg class="nav__external" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                     <polyline points="15 3 21 3 21 9"/>
                     <line x1="10" y1="14" x2="21" y2="3"/>
@@ -97,16 +146,13 @@
         </nav>
 
         <div class="header__actions">
-            <button class="btn-icon" data-lang-toggle title="Changer de langue">
-                <span>FR</span>
-            </button>
-            <button class="btn-icon" data-theme-toggle title="Changer de thème">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="btn-icon" data-theme-toggle title="Changer de thème" aria-label="Changer de thème">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <circle cx="12" cy="12" r="5"/>
                     <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
                 </svg>
             </button>
-            <button class="nav-toggle" aria-label="Menu">
+            <button class="nav-toggle" aria-label="Ouvrir le menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -160,52 +206,52 @@
             <div class="hero__left">
                 <div class="hero__tags">
                     <span class="tag tag--glow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
                         </svg>
-                        <span data-i18n="hero.tag1">Développement</span>
+                        <span>Développement</span>
                     </span>
                     <span class="tag tag--glow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                         </svg>
-                        <span data-i18n="hero.tag2">Data & IA</span>
+                        <span>Data & IA</span>
                     </span>
                     <span class="tag tag--glow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                         </svg>
-                        <span data-i18n="hero.tag3">Management</span>
+                        <span>Management</span>
                     </span>
                 </div>
 
                 <div class="hero__main">
                     <p class="hero__intro">
                         <span class="hero__intro-line"></span>
-                        <span data-i18n="hero.intro">Je suis Clément Plançon,</span>
+                        <span>Je suis Clément Plançon,</span>
                     </p>
                     <h1 class="hero__title">
                         <span class="hero__title-line">
-                            <span class="hero__title-word" data-i18n="hero.title1">Ingénieur</span>
+                            <span class="hero__title-word">Ingénieur</span>
                         </span>
                         <span class="hero__title-line">
-                            <span class="hero__title-word hero__title-word--gradient" data-i18n="hero.title2">logiciel</span>
+                            <span class="hero__title-word hero__title-word--gradient">logiciel</span>
                         </span>
                     </h1>
-                    <p class="hero__desc" data-i18n="hero.desc">
+                    <p class="hero__desc">
                         Je conçois des solutions numériques innovantes, alliant expertise technique et curiosité pour transformer les idées en produits performants.
                     </p>
                 </div>
 
                 <div class="hero__cta">
                     <a href="#contact" class="btn btn--primary btn--shine">
-                        <span data-i18n="hero.cta">Discutons de votre projet</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <span>Discutons de votre projet</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
                     </a>
                     <a href="#projets" class="btn btn--ghost">
-                        <span data-i18n="hero.cta2">Voir mes réalisations</span>
+                        <span>Voir mes réalisations</span>
                     </a>
                 </div>
 
@@ -213,15 +259,15 @@
                 <div class="hero__stats">
                     <div class="hero__stat">
                         <span class="hero__stat-num" data-count="10">0</span><span class="hero__stat-plus">+</span>
-                        <span class="hero__stat-label" data-i18n="hero.stat1">Années d'expérience</span>
+                        <span class="hero__stat-label">Années d'expérience</span>
                     </div>
                     <div class="hero__stat">
                         <span class="hero__stat-num" data-count="50">0</span><span class="hero__stat-plus">+</span>
-                        <span class="hero__stat-label" data-i18n="hero.stat2">Projets livrés</span>
+                        <span class="hero__stat-label">Projets livrés</span>
                     </div>
                     <div class="hero__stat">
                         <span class="hero__stat-num" data-count="15">0</span><span class="hero__stat-plus">+</span>
-                        <span class="hero__stat-label" data-i18n="hero.stat3">Technologies maîtrisées</span>
+                        <span class="hero__stat-label">Technologies maîtrisées</span>
                     </div>
                 </div>
             </div>
@@ -308,13 +354,13 @@
         </div>
 
         <div class="hero__scroll">
-            <span data-i18n="hero.scroll">SCROLL</span>
+            <span>SCROLL</span>
             <div class="hero__scroll-line"></div>
         </div>
     </section>
 
     <!-- Marquee -->
-    <div class="marquee">
+    <div class="marquee" aria-hidden="true">
         <div class="marquee__track">
             <span class="marquee__item">Angular</span>
             <span class="marquee__sep">—</span>
@@ -352,7 +398,7 @@
         <div class="container">
             <header class="section__head">
                 <span class="section__num">01</span>
-                <h2 class="section__title" data-i18n="about.title">À propos</h2>
+                <h2 class="section__title">À propos</h2>
             </header>
 
             <div class="about__grid">
@@ -361,30 +407,30 @@
                         <span class="about__initials">CP</span>
                     </div>
                     <div class="about__label">
-                        <span data-i18n="about.since">Depuis 2014</span>
+                        <span>Depuis 2014</span>
                     </div>
                 </div>
 
                 <div class="about__content">
-                    <p class="about__lead" data-i18n="about.lead">
+                    <p class="about__lead">
                         Ingénieur logiciel passionné par l'innovation, je transforme des idées complexes en solutions élégantes et performantes.
                     </p>
-                    <p class="about__text" data-i18n="about.text">
+                    <p class="about__text">
                         Actuellement Chef adjoint de la section informatique au Laboratoire de Police Scientifique de Paris, je conçois des solutions techniques innovantes pour les enquêtes judiciaires. En parallèle, je développe des projets personnels et accompagne des entreprises dans leur transformation numérique.
                     </p>
 
                     <div class="about__stats">
                         <div class="stat">
                             <span class="stat__value">10<span class="stat__plus">+</span></span>
-                            <span class="stat__label" data-i18n="about.stat1">Années d'expérience</span>
+                            <span class="stat__label">Années d'expérience</span>
                         </div>
                         <div class="stat">
                             <span class="stat__value">50<span class="stat__plus">+</span></span>
-                            <span class="stat__label" data-i18n="about.stat2">Projets réalisés</span>
+                            <span class="stat__label">Projets réalisés</span>
                         </div>
                         <div class="stat">
                             <span class="stat__value">∞</span>
-                            <span class="stat__label" data-i18n="about.stat3">Curiosité</span>
+                            <span class="stat__label">Curiosité</span>
                         </div>
                     </div>
                 </div>
@@ -392,46 +438,46 @@
 
             <!-- Timeline / Parcours -->
             <div class="timeline">
-                <h3 class="timeline__title" data-i18n="about.experience">Parcours</h3>
-                <p class="timeline__subtitle" data-i18n="about.experience.subtitle">Cliquez sur une expérience pour en savoir plus</p>
+                <h3 class="timeline__title">Parcours</h3>
+                <p class="timeline__subtitle">Cliquez sur une expérience pour en savoir plus</p>
 
                 <div class="timeline__list">
-                    <div class="timeline__item" data-modal="exp1">
-                        <div class="timeline__date">2022 — <span data-i18n="date.present">Présent</span></div>
+                    <article class="timeline__item" data-modal="exp1">
+                        <div class="timeline__date">2022 — Présent</div>
                         <div class="timeline__info">
-                            <h4 data-i18n="exp1.title">Laboratoire de Police Scientifique</h4>
-                            <p data-i18n="exp1.role">Chef adjoint IT — Ingénieur SIC</p>
+                            <h4>Laboratoire de Police Scientifique</h4>
+                            <p>Chef adjoint IT — Ingénieur SIC</p>
                         </div>
                         <div class="timeline__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                         </div>
-                    </div>
-                    <div class="timeline__item" data-modal="exp2">
-                        <div class="timeline__date">2020 — <span data-i18n="date.present">Présent</span></div>
+                    </article>
+                    <article class="timeline__item" data-modal="exp2">
+                        <div class="timeline__date">2020 — Présent</div>
                         <div class="timeline__info">
-                            <h4 data-i18n="exp2.title">Point Virgule</h4>
-                            <p data-i18n="exp2.role">Fondateur — Développeur Fullstack & IA</p>
+                            <h4>Point Virgule</h4>
+                            <p>Fondateur — Développeur Fullstack & IA</p>
                         </div>
                         <div class="timeline__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                         </div>
-                    </div>
-                    <div class="timeline__item" data-modal="exp3">
+                    </article>
+                    <article class="timeline__item" data-modal="exp3">
                         <div class="timeline__date">2019 — 2022</div>
                         <div class="timeline__info">
-                            <h4 data-i18n="exp3.title">Ministère de l'Économie</h4>
-                            <p data-i18n="exp3.role">Analyste Développeur — Laboratoire de la Transformation</p>
+                            <h4>Ministère de l'Économie</h4>
+                            <p>Analyste Développeur — Laboratoire de la Transformation</p>
                         </div>
                         <div class="timeline__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M12 5l7 7-7 7"/>
                             </svg>
                         </div>
-                    </div>
+                    </article>
                 </div>
             </div>
         </div>
@@ -442,104 +488,104 @@
         <div class="container">
             <header class="section__head">
                 <span class="section__num">02</span>
-                <h2 class="section__title" data-i18n="skills.title">Compétences</h2>
+                <h2 class="section__title">Compétences</h2>
             </header>
 
             <div class="skills__grid">
-                <div class="skill-card">
+                <article class="skill-card">
                     <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
                         </svg>
                     </div>
-                    <h3 class="skill-card__title" data-i18n="skills.dev.title">Développement Web</h3>
-                    <p class="skill-card__desc" data-i18n="skills.dev.desc">Applications web modernes avec Angular, React, Node.js. APIs REST et GraphQL.</p>
+                    <h3 class="skill-card__title">Développement Web</h3>
+                    <p class="skill-card__desc">Applications web modernes avec Angular, React, Node.js. APIs REST et GraphQL.</p>
                     <div class="skill-card__tags">
                         <span>Angular</span>
                         <span>React</span>
                         <span>Node.js</span>
                         <span>TypeScript</span>
                     </div>
-                </div>
+                </article>
 
-                <div class="skill-card">
+                <article class="skill-card">
                     <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                             <polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
                         </svg>
                     </div>
-                    <h3 class="skill-card__title" data-i18n="skills.ia.title">Intelligence Artificielle</h3>
-                    <p class="skill-card__desc" data-i18n="skills.ia.desc">Intégration de LLM, systèmes RAG, chatbots intelligents et automatisation par IA.</p>
+                    <h3 class="skill-card__title">Intelligence Artificielle</h3>
+                    <p class="skill-card__desc">Intégration de LLM, systèmes RAG, chatbots intelligents et automatisation par IA.</p>
                     <div class="skill-card__tags">
                         <span>Python</span>
                         <span>LangChain</span>
                         <span>OpenAI</span>
                         <span>RAG</span>
                     </div>
-                </div>
+                </article>
 
-                <div class="skill-card">
+                <article class="skill-card">
                     <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
                         </svg>
                     </div>
-                    <h3 class="skill-card__title" data-i18n="skills.mobile.title">Applications Mobiles</h3>
-                    <p class="skill-card__desc" data-i18n="skills.mobile.desc">Développement cross-platform avec Flutter et Dart. UI/UX mobile natives.</p>
+                    <h3 class="skill-card__title">Applications Mobiles</h3>
+                    <p class="skill-card__desc">Développement cross-platform avec Flutter et Dart. UI/UX mobile natives.</p>
                     <div class="skill-card__tags">
                         <span>Flutter</span>
                         <span>Dart</span>
                         <span>Firebase</span>
                         <span>iOS/Android</span>
                     </div>
-                </div>
+                </article>
 
-                <div class="skill-card">
+                <article class="skill-card">
                     <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
                         </svg>
                     </div>
-                    <h3 class="skill-card__title" data-i18n="skills.data.title">Data & Backend</h3>
-                    <p class="skill-card__desc" data-i18n="skills.data.desc">Architecture backend, bases de données SQL/NoSQL, ETL et analyse de données.</p>
+                    <h3 class="skill-card__title">Data & Backend</h3>
+                    <p class="skill-card__desc">Architecture backend, bases de données SQL/NoSQL, ETL et analyse de données.</p>
                     <div class="skill-card__tags">
                         <span>C# .NET</span>
                         <span>PostgreSQL</span>
                         <span>MongoDB</span>
                         <span>Docker</span>
                     </div>
-                </div>
+                </article>
 
-                <div class="skill-card">
+                <article class="skill-card">
                     <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
                         </svg>
                     </div>
-                    <h3 class="skill-card__title" data-i18n="skills.ux.title">UX/UI Design</h3>
-                    <p class="skill-card__desc" data-i18n="skills.ux.desc">Conception d'interfaces utilisateur, prototypage et design systems.</p>
+                    <h3 class="skill-card__title">UX/UI Design</h3>
+                    <p class="skill-card__desc">Conception d'interfaces utilisateur, prototypage et design systems.</p>
                     <div class="skill-card__tags">
                         <span>Figma</span>
                         <span>Design System</span>
                         <span>Prototyping</span>
                     </div>
-                </div>
+                </article>
 
-                <div class="skill-card">
+                <article class="skill-card">
                     <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                         </svg>
                     </div>
-                    <h3 class="skill-card__title" data-i18n="skills.management.title">Management</h3>
-                    <p class="skill-card__desc" data-i18n="skills.management.desc">Gestion d'équipe technique, méthodologies agiles et pilotage de projets.</p>
+                    <h3 class="skill-card__title">Management</h3>
+                    <p class="skill-card__desc">Gestion d'équipe technique, méthodologies agiles et pilotage de projets.</p>
                     <div class="skill-card__tags">
                         <span>Agile/Scrum</span>
                         <span>Leadership</span>
                         <span>Gestion de projet</span>
                     </div>
-                </div>
+                </article>
             </div>
         </div>
     </section>
@@ -549,8 +595,8 @@
         <div class="container">
             <header class="section__head">
                 <span class="section__num">03</span>
-                <h2 class="section__title" data-i18n="projects.title">Projets sélectionnés</h2>
-                <p class="section__subtitle" data-i18n="projects.subtitle">Cliquez sur un projet pour voir les détails</p>
+                <h2 class="section__title">Projets sélectionnés</h2>
+                <p class="section__subtitle">Cliquez sur un projet pour voir les détails</p>
             </header>
 
             <div class="projects__grid">
@@ -560,12 +606,12 @@
                         <span class="project__num">01</span>
                     </div>
                     <div class="project__content">
-                        <span class="project__cat" data-i18n="proj1.cat">Application Mobile — IA</span>
-                        <h3 class="project__title" data-i18n="proj1.title">QuiPaieQuoi</h3>
-                        <p class="project__desc" data-i18n="proj1.desc">Application de gestion des dépenses partagées avec reconnaissance automatique des tickets par IA.</p>
+                        <span class="project__cat">Application Mobile — IA</span>
+                        <h3 class="project__title">QuiPaieQuoi</h3>
+                        <p class="project__desc">Application de gestion des dépenses partagées avec reconnaissance automatique des tickets par IA.</p>
                     </div>
                     <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
                     </div>
@@ -577,12 +623,12 @@
                         <span class="project__num">02</span>
                     </div>
                     <div class="project__content">
-                        <span class="project__cat" data-i18n="proj2.cat">Application Web</span>
-                        <h3 class="project__title" data-i18n="proj2.title">Référentiel Indicateurs</h3>
-                        <p class="project__desc" data-i18n="proj2.desc">Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.</p>
+                        <span class="project__cat">Application Web</span>
+                        <h3 class="project__title">Référentiel Indicateurs</h3>
+                        <p class="project__desc">Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.</p>
                     </div>
                     <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
                     </div>
@@ -594,12 +640,12 @@
                         <span class="project__num">03</span>
                     </div>
                     <div class="project__content">
-                        <span class="project__cat" data-i18n="proj3.cat">Agent IA — RAG</span>
-                        <h3 class="project__title" data-i18n="proj3.title">Assistant IA Métier</h3>
-                        <p class="project__desc" data-i18n="proj3.desc">Chatbot intelligent utilisant RAG pour répondre aux questions métiers à partir de la documentation interne.</p>
+                        <span class="project__cat">Agent IA — RAG</span>
+                        <h3 class="project__title">Assistant IA Métier</h3>
+                        <p class="project__desc">Chatbot intelligent utilisant RAG pour répondre aux questions métiers à partir de la documentation interne.</p>
                     </div>
                     <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
                     </div>
@@ -611,12 +657,12 @@
                         <span class="project__num">04</span>
                     </div>
                     <div class="project__content">
-                        <span class="project__cat" data-i18n="proj4.cat">Outil Interne</span>
-                        <h3 class="project__title" data-i18n="proj4.title">Veille Stratégique</h3>
-                        <p class="project__desc" data-i18n="proj4.desc">Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.</p>
+                        <span class="project__cat">Outil Interne</span>
+                        <h3 class="project__title">Veille Stratégique</h3>
+                        <p class="project__desc">Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.</p>
                     </div>
                     <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M7 17L17 7M17 7H7M17 7V17"/>
                         </svg>
                     </div>
@@ -630,7 +676,7 @@
         <div class="container">
             <header class="section__head">
                 <span class="section__num">05</span>
-                <h2 class="section__title section__title--large" data-i18n="contact.title">
+                <h2 class="section__title section__title--large">
                     Un projet en tête ?<br>
                     <span class="text--accent">Travaillons ensemble.</span>
                 </h2>
@@ -641,21 +687,21 @@
             </a>
 
             <div class="contact__socials">
-                <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" class="social">
+                <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" class="social" aria-label="Profil LinkedIn">
                     <span>LinkedIn</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M7 17L17 7M17 7H7M17 7V17"/>
                     </svg>
                 </a>
-                <a href="https://github.com" target="_blank" rel="noopener" class="social">
+                <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener" class="social" aria-label="Profil GitHub">
                     <span>GitHub</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M7 17L17 7M17 7H7M17 7V17"/>
                     </svg>
                 </a>
-                <a href="https://www.behance.net/clmentplanon" target="_blank" rel="noopener" class="social">
+                <a href="https://www.behance.net/clmentplanon" target="_blank" rel="noopener" class="social" aria-label="Profil Behance">
                     <span>Behance</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="M7 17L17 7M17 7H7M17 7V17"/>
                     </svg>
                 </a>
@@ -667,16 +713,16 @@
     <footer class="footer">
         <div class="container footer__inner">
             <p>© 2024 Clément Plançon</p>
-            <p data-i18n="footer.made">Conçu avec passion</p>
+            <p>Conçu avec passion</p>
         </div>
     </footer>
 
     <!-- Modal -->
-    <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true">
         <div class="modal__backdrop"></div>
         <div class="modal__container">
-            <button class="modal__close" aria-label="Fermer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="modal__close" aria-label="Fermer la fenêtre">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
