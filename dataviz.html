@@ -9,11 +9,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="css/creative.css">
     <link rel="stylesheet" href="css/dataviz.css">
 </head>
+
 <body class="dataviz-page">
     <!-- Cursor -->
     <div class="cursor" aria-hidden="true">
@@ -26,10 +29,10 @@
         <svg class="dataviz-bg__grid" width="100%" height="100%">
             <defs>
                 <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.1"/>
+                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" stroke-width="0.5" opacity="0.1" />
                 </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid)"/>
+            <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
         <div class="dataviz-bg__nodes"></div>
         <div class="dataviz-bg__chart dataviz-bg__chart--1"></div>
@@ -113,8 +116,9 @@
         <div class="header__actions">
             <button class="btn-icon" data-theme-toggle title="Changer de thème">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="5"/>
-                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    <circle cx="12" cy="12" r="5" />
+                    <path
+                        d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                 </svg>
             </button>
             <button class="nav-toggle" aria-label="Menu">
@@ -132,7 +136,7 @@
                 <div class="dataviz-hero__badge">
                     <span class="dataviz-hero__badge-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 20V10M12 20V4M6 20v-6"/>
+                            <path d="M18 20V10M12 20V4M6 20v-6" />
                         </svg>
                     </span>
                     <span>Data Stories</span>
@@ -164,15 +168,15 @@
             <div class="dataviz-hero__visual">
                 <div class="dataviz-chart">
                     <svg viewBox="0 0 200 200" class="dataviz-chart__donut">
-                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-bg)" stroke-width="20"/>
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-bg)" stroke-width="20" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-1)" stroke-width="20"
-                            stroke-dasharray="150 502" stroke-dashoffset="0" class="dataviz-chart__segment"/>
+                            stroke-dasharray="150 502" stroke-dashoffset="0" class="dataviz-chart__segment" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-2)" stroke-width="20"
-                            stroke-dasharray="100 502" stroke-dashoffset="-150" class="dataviz-chart__segment"/>
+                            stroke-dasharray="100 502" stroke-dashoffset="-150" class="dataviz-chart__segment" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-3)" stroke-width="20"
-                            stroke-dasharray="120 502" stroke-dashoffset="-250" class="dataviz-chart__segment"/>
+                            stroke-dasharray="120 502" stroke-dashoffset="-250" class="dataviz-chart__segment" />
                         <circle cx="100" cy="100" r="80" fill="none" stroke="var(--dataviz-4)" stroke-width="20"
-                            stroke-dasharray="132 502" stroke-dashoffset="-370" class="dataviz-chart__segment"/>
+                            stroke-dasharray="132 502" stroke-dashoffset="-370" class="dataviz-chart__segment" />
                     </svg>
                     <div class="dataviz-chart__center">
                         <span class="dataviz-chart__percent">100%</span>
@@ -440,7 +444,7 @@
                 <a href="index.html#contact" class="btn btn--primary">
                     <span>Me contacter</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                        <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                 </a>
             </div>
@@ -458,4 +462,5 @@
     <script src="js/creative.js"></script>
     <script src="js/dataviz.js"></script>
 </body>
+
 </html>
