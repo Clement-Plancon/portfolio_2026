@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light" data-lang="fr">
-
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,26 +34,26 @@
         </a>
 
         <nav class="nav">
-            <a href="index.html#apropos" class="nav__link" data-i18n="nav.about">
+            <a href="index.html#apropos" class="nav__link">
                 <span class="nav__num">01</span>
                 <span class="nav__text">À propos</span>
             </a>
-            <a href="index.html#competences" class="nav__link" data-i18n="nav.skills">
+            <a href="index.html#competences" class="nav__link">
                 <span class="nav__num">02</span>
                 <span class="nav__text">Compétences</span>
             </a>
-            <a href="index.html#projets" class="nav__link" data-i18n="nav.work">
+            <a href="index.html#projets" class="nav__link">
                 <span class="nav__num">03</span>
                 <span class="nav__text">Projets</span>
             </a>
-            <a href="index.html#contact" class="nav__link" data-i18n="nav.contact">
+            <a href="index.html#contact" class="nav__link">
                 <span class="nav__num">04</span>
                 <span class="nav__text">Contact</span>
             </a>
 
             <!-- Styled Special Links -->
             <a href="articles.html" class="nav__link nav__link--styled nav__link--articles nav__link--active">
-                <span class="nav__styled-text" data-i18n="nav.articles">Articles</span>
+                <span class="nav__styled-text">Articles</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -64,7 +63,7 @@
                 </span>
             </a>
             <a href="dataviz.html" class="nav__link nav__link--styled nav__link--dataviz">
-                <span class="nav__styled-text" data-i18n="nav.dataviz">Dataviz</span>
+                <span class="nav__styled-text">Dataviz</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -74,7 +73,7 @@
                 </span>
             </a>
             <a href="labs.html" class="nav__link nav__link--styled nav__link--labs">
-                <span class="nav__styled-text" data-i18n="nav.labs">Labs</span>
+                <span class="nav__styled-text">Labs</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -84,7 +83,7 @@
                 </span>
             </a>
             <a href="https://outilspublics.netlify.app/" target="_blank" rel="noopener" class="nav__link nav__link--styled nav__link--outils">
-                <span class="nav__styled-text" data-i18n="nav.outils">Outils Publics</span>
+                <span class="nav__styled-text">Outils Publics</span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -102,9 +101,6 @@
         </nav>
 
         <div class="header__actions">
-            <button class="btn-icon" data-lang-toggle title="Changer de langue">
-                <span>FR</span>
-            </button>
             <button class="btn-icon" data-theme-toggle title="Changer de thème">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="5" />
@@ -124,11 +120,10 @@
     <section class="articles-hero">
         <div class="container">
             <div class="articles-hero__content">
-                <span class="articles-hero__label" data-i18n="articles.label">Blog & Réflexions</span>
-                <h1 class="articles-hero__title" data-i18n="articles.title">Articles Medium</h1>
-                <p class="articles-hero__desc" data-i18n="articles.desc">
-                    Je partage ici mes réflexions sur le développement, l'intelligence artificielle, et les bonnes
-                    pratiques tech.
+                <span class="articles-hero__label">Blog & Réflexions</span>
+                <h1 class="articles-hero__title">Articles Medium</h1>
+                <p class="articles-hero__desc">
+                    Je partage ici mes réflexions sur le développement, l'intelligence artificielle, et les bonnes pratiques tech.
                 </p>
             </div>
 
@@ -145,14 +140,11 @@
                 </div>
 
                 <div class="categories">
-                    <button class="category-btn active" data-category="all" data-i18n="articles.cat.all">Tous</button>
-                    <button class="category-btn" data-category="dev" data-i18n="articles.cat.dev">Développement</button>
-                    <button class="category-btn" data-category="ia" data-i18n="articles.cat.ia">Intelligence
-                        Artificielle</button>
-                    <button class="category-btn" data-category="career"
-                        data-i18n="articles.cat.career">Carrière</button>
-                    <button class="category-btn" data-category="tools" data-i18n="articles.cat.tools">Outils &
-                        Productivité</button>
+                    <button class="category-btn active" data-category="all">Tous</button>
+                    <button class="category-btn" data-category="dev">Développement</button>
+                    <button class="category-btn" data-category="ia">Intelligence Artificielle</button>
+                    <button class="category-btn" data-category="career">Carrière</button>
+                    <button class="category-btn" data-category="tools">Outils & Productivité</button>
                 </div>
             </div>
         </div>
@@ -162,7 +154,203 @@
     <section class="section articles-section">
         <div class="container">
             <div class="articles-grid" id="articlesGrid">
+                <!-- Article 1 -->
+                <article class="article-card" data-category="ia">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                        <span class="article-card__read-time">8 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Intelligence Artificielle</span>
+                            <span class="article-card__date">15 Dec 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Comment j'ai intégré ChatGPT dans mon workflow de développement</h3>
+                        <p class="article-card__excerpt">Découvrez comment l'IA générative peut transformer votre productivité quotidienne en tant que développeur, avec des exemples concrets et des bonnes pratiques.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
 
+                <!-- Article 2 -->
+                <article class="article-card" data-category="dev">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"></div>
+                        <span class="article-card__read-time">12 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Développement</span>
+                            <span class="article-card__date">28 Nov 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Architecture Angular : Patterns et bonnes pratiques en 2024</h3>
+                        <p class="article-card__excerpt">Un guide complet sur les patterns d'architecture modernes pour Angular, du lazy loading aux standalone components en passant par les signals.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 3 -->
+                <article class="article-card" data-category="ia">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"></div>
+                        <span class="article-card__read-time">15 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Intelligence Artificielle</span>
+                            <span class="article-card__date">10 Nov 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Construire un chatbot RAG avec LangChain et Pinecone</h3>
+                        <p class="article-card__excerpt">Tutorial pas à pas pour créer un assistant IA capable de répondre à des questions en s'appuyant sur votre propre base documentaire.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 4 -->
+                <article class="article-card" data-category="career">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);"></div>
+                        <span class="article-card__read-time">6 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Carrière</span>
+                            <span class="article-card__date">25 Oct 2024</span>
+                        </div>
+                        <h3 class="article-card__title">De développeur à tech lead : les compétences clés</h3>
+                        <p class="article-card__excerpt">Retour d'expérience sur la transition du rôle de développeur à celui de manager technique, et les soft skills indispensables.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 5 -->
+                <article class="article-card" data-category="tools">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                        <span class="article-card__read-time">10 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Outils & Productivité</span>
+                            <span class="article-card__date">12 Oct 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Ma stack d'outils de développement en 2024</h3>
+                        <p class="article-card__excerpt">VSCode, extensions, terminal, CLI, et autres outils qui me font gagner des heures chaque semaine.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 6 -->
+                <article class="article-card" data-category="dev">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);"></div>
+                        <span class="article-card__read-time">9 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Développement</span>
+                            <span class="article-card__date">28 Sep 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Flutter vs React Native en 2024 : le verdict</h3>
+                        <p class="article-card__excerpt">Comparaison objective des deux frameworks de développement mobile cross-platform, avec benchmarks et cas d'usage.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 7 -->
+                <article class="article-card" data-category="ia">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);"></div>
+                        <span class="article-card__read-time">11 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Intelligence Artificielle</span>
+                            <span class="article-card__date">15 Sep 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Prompt Engineering : l'art de parler aux LLMs</h3>
+                        <p class="article-card__excerpt">Techniques avancées pour obtenir les meilleurs résultats de ChatGPT, Claude, et autres modèles de langage.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 8 -->
+                <article class="article-card" data-category="career">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
+                        <span class="article-card__read-time">7 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Carrière</span>
+                            <span class="article-card__date">1 Sep 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Travailler dans le secteur public comme développeur</h3>
+                        <p class="article-card__excerpt">Retour d'expérience sur le métier de développeur dans l'administration publique française : avantages, défis et opportunités.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Article 9 -->
+                <article class="article-card" data-category="tools">
+                    <div class="article-card__img">
+                        <div class="article-card__img-bg" style="--gradient: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);"></div>
+                        <span class="article-card__read-time">8 min</span>
+                    </div>
+                    <div class="article-card__content">
+                        <div class="article-card__meta">
+                            <span class="article-card__category">Outils & Productivité</span>
+                            <span class="article-card__date">20 Aug 2024</span>
+                        </div>
+                        <h3 class="article-card__title">Docker pour les développeurs : guide de survie</h3>
+                        <p class="article-card__excerpt">Les commandes essentielles, les bonnes pratiques, et comment éviter les erreurs courantes avec Docker.</p>
+                        <a href="https://medium.com" target="_blank" rel="noopener" class="article-card__link">
+                            <span>Lire l'article</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                            </svg>
+                        </a>
+                    </div>
+                </article>
             </div>
 
             <!-- No Results -->
@@ -172,7 +360,7 @@
                     <path d="M21 21l-4.35-4.35" />
                     <path d="M8 8l6 6M14 8l-6 6" />
                 </svg>
-                <p data-i18n="articles.noresults">Aucun article trouvé pour cette recherche.</p>
+                <p>Aucun article trouvé pour cette recherche.</p>
             </div>
         </div>
     </section>
@@ -181,15 +369,14 @@
     <section class="section medium-cta">
         <div class="container">
             <div class="medium-cta__content">
-                <h2 class="medium-cta__title" data-i18n="articles.cta.title">Retrouvez tous mes articles sur Medium</h2>
-                <p class="medium-cta__desc" data-i18n="articles.cta.desc">Suivez-moi pour ne manquer aucun nouveau
-                    contenu sur le développement et l'IA.</p>
+                <h2 class="medium-cta__title">Retrouvez tous mes articles sur Medium</h2>
+                <p class="medium-cta__desc">Suivez-moi pour ne manquer aucun nouveau contenu sur le développement et l'IA.</p>
                 <a href="https://medium.com/@clement.plancon" target="_blank" rel="noopener" class="btn btn--primary">
                     <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
                         <path
                             d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42zm2.94 0c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75c.66 0 1.19 2.58 1.19 5.75z" />
                     </svg>
-                    <span data-i18n="articles.cta.button">Suivre sur Medium</span>
+                    <span>Suivre sur Medium</span>
                 </a>
             </div>
         </div>
@@ -198,8 +385,8 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container footer__inner">
-            <p>© 2025 Clément Plançon</p>
-            <p data-i18n="footer.made">Conçu avec passion</p>
+            <p>© 2024 Clément Plançon</p>
+            <p>Conçu avec passion</p>
         </div>
     </footer>
 
