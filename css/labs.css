@@ -282,9 +282,13 @@
     text-transform: uppercase;
     letter-spacing: 0.2em;
     color: var(--labs-muted);
-    z-index: 1000;
+    z-index: 1001;
     box-shadow: 0 2px 20px rgba(0, 40, 80, 0.06);
     backdrop-filter: blur(10px);
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    contain: layout style;
 }
 
 .labs-status::before {
@@ -360,9 +364,13 @@
 /* Header adjustment for light mode */
 .header--labs {
     top: 36px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--labs-border);
+    position: fixed;
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 /* ===== HERO SECTION - R&D COMMAND CENTER ===== */
@@ -2879,5 +2887,201 @@
 
     [data-theme="dark"] .labs-hero__desc::before {
         display: none;
+    }
+
+    /* ===== LIGHT MODE MOBILE FIXES ===== */
+    /* Hide status bar on mobile - causes navbar issues */
+    .labs-status {
+        display: none !important;
+    }
+
+    /* Reset header position when status bar is hidden */
+    .header--labs {
+        top: 0 !important;
+    }
+
+    /* Adjust hero padding */
+    .labs-hero {
+        padding-top: calc(var(--space-20) + 80px);
+    }
+
+    /* Disable heavy background animations on mobile */
+    .labs-bg::before,
+    .labs-bg__scanline {
+        display: none;
+    }
+
+    .labs-bg::after {
+        animation: none;
+    }
+
+    .labs-bg__blueprint {
+        animation: none;
+        opacity: 0.6;
+    }
+
+    /* Hide molecules on mobile for performance */
+    .labs-bg__molecules,
+    .molecule {
+        display: none;
+    }
+
+    /* Simplify hero visual on mobile */
+    .labs-hero__visual::before {
+        animation: none;
+    }
+
+    .atom__orbit {
+        animation-duration: 8s;
+    }
+
+    /* Reduce card animations */
+    .lab-card__progress-fill::after {
+        animation: none;
+    }
+}
+
+/* ===== PERFORMANCE OPTIMIZATIONS ===== */
+/* GPU acceleration for animated elements */
+.labs-bg,
+.labs-bg::before,
+.labs-bg::after,
+.labs-bg__blueprint,
+.labs-bg__scanline,
+.molecule,
+.labs-flask__liquid,
+.atom__orbit,
+.atom__nucleus {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Contain paint for cards */
+.lab-card {
+    contain: layout style paint;
+}
+
+/* ===== REDUCED MOTION SUPPORT ===== */
+@media (prefers-reduced-motion: reduce) {
+    /* Disable all animations */
+    .labs-bg::before,
+    .labs-bg::after,
+    .labs-bg__blueprint,
+    .labs-bg__scanline,
+    .molecule,
+    .labs-flask__liquid,
+    .labs-flask__liquid::after,
+    .labs-flask__bubbles span,
+    .atom__nucleus,
+    .atom__orbit,
+    .labs-hero__badge::before,
+    .labs-hero__visual::before,
+    .labs-status__dot,
+    .labs-status__value--blink,
+    .terminal-title::before,
+    .labs-hero__terminal::after,
+    .lab-card__status-dot,
+    .lab-card__progress-fill::after,
+    .labs-filter::before,
+    .brain-wave,
+    [data-theme="dark"] .labs-bg,
+    [data-theme="dark"] .labs-bg::before,
+    [data-theme="dark"] .labs-bg__scanline,
+    [data-theme="dark"] .particle,
+    [data-theme="dark"] .labs-status::before,
+    [data-theme="dark"] .labs-status__dot,
+    [data-theme="dark"] .labs-hero__badge::before,
+    [data-theme="dark"] .labs-hero__terminal-header::after,
+    [data-theme="dark"] .labs-hero__visual::before,
+    [data-theme="dark"] .labs-hero__visual::after,
+    [data-theme="dark"] .lab-card__number,
+    [data-theme="dark"] .lab-card__status-dot,
+    [data-theme="dark"] .lab-card__progress-fill::after,
+    [data-theme="dark"] .lab-note__icon {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    /* Keep essential hover transitions but make them instant */
+    .lab-card,
+    .labs-filter,
+    .lab-note,
+    .btn {
+        transition: opacity 0.1s ease, background-color 0.1s ease !important;
+    }
+
+    /* Hide decorative animated elements */
+    .labs-bg__scanline,
+    .labs-bg__molecules,
+    .molecule,
+    .labs-flask__bubbles,
+    [data-theme="dark"] .labs-particles {
+        display: none !important;
+    }
+}
+
+/* ===== SMALL MOBILE (< 480px) ===== */
+@media (max-width: 480px) {
+    /* Ensure status bar stays hidden */
+    .labs-status,
+    [data-theme="dark"] .labs-status {
+        display: none !important;
+    }
+
+    /* Reset header */
+    .header--labs,
+    [data-theme="dark"] .header--labs {
+        top: 0 !important;
+    }
+
+    /* Disable ALL background animations for performance */
+    .labs-bg::before,
+    .labs-bg::after,
+    .labs-bg__blueprint,
+    .labs-bg__scanline,
+    .labs-bg__molecules,
+    .labs-bg__matrix,
+    [data-theme="dark"] .labs-bg::before,
+    [data-theme="dark"] .labs-bg__scanline,
+    [data-theme="dark"] .labs-particles {
+        display: none !important;
+        animation: none !important;
+    }
+
+    /* Simplify flask animation */
+    .labs-flask__bubbles {
+        display: none;
+    }
+
+    .labs-flask__liquid {
+        animation: none;
+    }
+
+    .labs-flask__liquid::after {
+        display: none;
+    }
+
+    /* Stop orbit animations */
+    .atom__orbit {
+        animation: none;
+    }
+
+    .atom__nucleus {
+        animation: none;
+    }
+
+    /* Disable card shine effects */
+    .lab-card__progress-fill::after,
+    [data-theme="dark"] .lab-card__progress-fill::after {
+        display: none;
+    }
+
+    /* Simplify terminal */
+    .labs-hero__terminal::after,
+    .terminal-title::before {
+        animation: none;
     }
 }
