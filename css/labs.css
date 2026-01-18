@@ -757,12 +757,34 @@
         rgba(0, 102, 204, 0.8) 50%,
         rgba(124, 58, 237, 0.7) 100%);
     border-radius: 0 0 58px 58px;
-    animation: liquid-wave 3s ease-in-out infinite;
     box-shadow:
         0 10px 30px rgba(0, 166, 125, 0.3),
         inset 0 -10px 20px rgba(255, 255, 255, 0.2);
-    position: relative;
     overflow: hidden;
+    /* GPU acceleration to prevent glitch */
+    will-change: transform;
+    transform: translateX(-50%) translateZ(0);
+    -webkit-transform: translateX(-50%) translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Liquid wave effect using transform instead of height */
+.labs-flask__liquid::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -10%;
+    right: -10%;
+    height: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    animation: liquid-wave-transform 3s ease-in-out infinite;
+    transform: translateZ(0);
+}
+
+@keyframes liquid-wave-transform {
+    0%, 100% { transform: translateY(0) scaleY(1) translateZ(0); }
+    50% { transform: translateY(-5px) scaleY(1.5) translateZ(0); }
 }
 
 .labs-flask__liquid::after {
@@ -777,16 +799,13 @@
         rgba(255, 255, 255, 0.3),
         transparent);
     animation: liquid-shine 4s ease-in-out infinite;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
 @keyframes liquid-shine {
-    0%, 100% { left: -100%; }
-    50% { left: 100%; }
-}
-
-@keyframes liquid-wave {
-    0%, 100% { height: 70px; }
-    50% { height: 78px; }
+    0%, 100% { transform: translateX(0) translateZ(0); }
+    50% { transform: translateX(200%) translateZ(0); }
 }
 
 .labs-flask__bubbles span {
@@ -2893,16 +2912,25 @@
     /* Hide status bar on mobile - causes navbar issues */
     .labs-status {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        pointer-events: none !important;
     }
 
     /* Reset header position when status bar is hidden */
     .header--labs {
         top: 0 !important;
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        transform: none !important;
+        will-change: auto !important;
     }
 
     /* Adjust hero padding */
     .labs-hero {
-        padding-top: calc(var(--space-20) + 80px);
+        padding-top: calc(var(--space-16) + 70px) !important;
+        margin-top: 0 !important;
     }
 
     /* Disable heavy background animations on mobile */
