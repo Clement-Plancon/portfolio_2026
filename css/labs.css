@@ -412,6 +412,59 @@
     .labs-bg::before {
         z-index: -1 !important;
     }
+
+    /* ===== FIX: Mobile nav overlay must cover Labs content ===== */
+    /* Nav must have solid opaque background */
+    .labs-page .nav {
+        background: #f8fafc !important;
+        z-index: 9999 !important;
+    }
+
+    .labs-page .nav.active {
+        background: #f8fafc !important;
+    }
+
+    /* Header and controls above nav */
+    .labs-page .header {
+        z-index: 10000 !important;
+    }
+
+    .labs-page .header__actions {
+        z-index: 10001 !important;
+        position: relative !important;
+    }
+
+    .labs-page .nav-toggle {
+        z-index: 10001 !important;
+        position: relative !important;
+    }
+
+    /* All labs content must be below nav overlay */
+    .labs-hero,
+    .labs-experiments,
+    .labs-notes,
+    .labs-cta,
+    .labs-hero__badge,
+    .labs-hero__title,
+    .labs-hero__terminal,
+    .labs-hero__visual {
+        z-index: 1 !important;
+        position: relative;
+    }
+
+    /* Background always behind */
+    .labs-bg {
+        z-index: -1 !important;
+    }
+}
+
+/* Dark mode: solid dark background for nav */
+[data-theme="dark"] .labs-page .nav {
+    background: #030308 !important;
+}
+
+[data-theme="dark"] .labs-page .nav.active {
+    background: #030308 !important;
 }
 
 /* ===== HERO SECTION - R&D COMMAND CENTER ===== */
