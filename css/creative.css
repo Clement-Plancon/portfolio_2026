@@ -440,18 +440,41 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
 }
 
-/* Articles particles - purple sparkles */
-.nav__link--articles .nav__particle:nth-child(1) { left: 10%; top: 50%; background: #667eea; }
-.nav__link--articles .nav__particle:nth-child(2) { left: 30%; top: 30%; background: #764ba2; }
-.nav__link--articles .nav__particle:nth-child(3) { left: 50%; top: 60%; background: #a78bfa; }
-.nav__link--articles .nav__particle:nth-child(4) { left: 70%; top: 40%; background: #667eea; }
-.nav__link--articles .nav__particle:nth-child(5) { left: 90%; top: 50%; background: #c4b5fd; }
+/* Articles particles - FEATHERS/PAGES floating up with rotation */
+.nav__link--articles .nav__particle {
+    width: 3px;
+    height: 8px;
+    border-radius: 50% 50% 50% 50% / 80% 80% 20% 20%;
+    transform-origin: center center;
+}
+.nav__link--articles .nav__particle:nth-child(1) { left: 10%; top: 60%; background: linear-gradient(180deg, #667eea, #764ba2); }
+.nav__link--articles .nav__particle:nth-child(2) { left: 25%; top: 50%; background: linear-gradient(180deg, #764ba2, #a78bfa); width: 2px; height: 6px; }
+.nav__link--articles .nav__particle:nth-child(3) { left: 50%; top: 70%; background: linear-gradient(180deg, #a78bfa, #667eea); }
+.nav__link--articles .nav__particle:nth-child(4) { left: 75%; top: 55%; background: linear-gradient(180deg, #667eea, #c4b5fd); width: 2px; height: 7px; }
+.nav__link--articles .nav__particle:nth-child(5) { left: 90%; top: 65%; background: linear-gradient(180deg, #c4b5fd, #764ba2); width: 3px; height: 5px; }
 
-.nav__link--articles:hover .nav__particle:nth-child(1) { animation: particle-float-1 0.6s ease-out forwards; }
-.nav__link--articles:hover .nav__particle:nth-child(2) { animation: particle-float-2 0.5s ease-out 0.05s forwards; }
-.nav__link--articles:hover .nav__particle:nth-child(3) { animation: particle-float-3 0.7s ease-out 0.1s forwards; }
-.nav__link--articles:hover .nav__particle:nth-child(4) { animation: particle-float-4 0.55s ease-out 0.15s forwards; }
-.nav__link--articles:hover .nav__particle:nth-child(5) { animation: particle-float-1 0.65s ease-out 0.08s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(1) { animation: article-feather-1 0.8s ease-out forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(2) { animation: article-feather-2 0.7s ease-out 0.05s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(3) { animation: article-feather-3 0.9s ease-out 0.1s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(4) { animation: article-feather-2 0.75s ease-out 0.08s forwards; }
+.nav__link--articles:hover .nav__particle:nth-child(5) { animation: article-feather-1 0.85s ease-out 0.12s forwards; }
+
+/* Feather floating animations - gentle sway while rising */
+@keyframes article-feather-1 {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(1); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-35px) translateX(8px) rotate(45deg) scale(0.6); }
+}
+@keyframes article-feather-2 {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(1); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-40px) translateX(-10px) rotate(-60deg) scale(0.5); }
+}
+@keyframes article-feather-3 {
+    0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(1); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-30px) translateX(5px) rotate(30deg) scale(0.7); }
+}
 
 [data-theme="dark"] .nav__link--articles .nav__styled-text {
     background: linear-gradient(135deg, #a78bfa, #c4b5fd);
@@ -466,7 +489,21 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     text-shadow: 0 0 25px rgba(167, 139, 250, 0.6);
 }
 
-[data-theme="dark"] .nav__link--articles .nav__particle { box-shadow: 0 0 6px currentColor; }
+[data-theme="dark"] .nav__link--articles .nav__particle {
+    box-shadow: 0 0 8px currentColor, 0 0 12px currentColor;
+}
+
+/* Dark mode feather trail effect */
+[data-theme="dark"] .nav__link--articles .nav__particle::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 200%;
+    background: inherit;
+    opacity: 0.3;
+    filter: blur(2px);
+    transform: translateY(50%);
+}
 
 /* ===== DATAVIZ - Cyan/Teal with data particles ===== */
 .nav__link--dataviz .nav__styled-text {
@@ -485,19 +522,50 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
 }
 
-/* Dataviz particles - square data points */
-.nav__link--dataviz .nav__particle { border-radius: 1px; width: 3px; height: 3px; }
-.nav__link--dataviz .nav__particle:nth-child(1) { left: 5%; top: 50%; background: #06b6d4; }
-.nav__link--dataviz .nav__particle:nth-child(2) { left: 25%; top: 20%; background: #22d3ee; }
-.nav__link--dataviz .nav__particle:nth-child(3) { left: 45%; top: 70%; background: #0891b2; }
-.nav__link--dataviz .nav__particle:nth-child(4) { left: 65%; top: 30%; background: #67e8f9; }
-.nav__link--dataviz .nav__particle:nth-child(5) { left: 85%; top: 50%; background: #06b6d4; }
+/* Dataviz particles - BAR CHART rising from bottom */
+.nav__link--dataviz .nav__particle {
+    border-radius: 1px 1px 0 0;
+    width: 3px;
+    transform-origin: bottom center;
+}
+.nav__link--dataviz .nav__particle:nth-child(1) { left: 10%; bottom: 30%; top: auto; height: 2px; background: #06b6d4; }
+.nav__link--dataviz .nav__particle:nth-child(2) { left: 28%; bottom: 30%; top: auto; height: 2px; background: #22d3ee; }
+.nav__link--dataviz .nav__particle:nth-child(3) { left: 46%; bottom: 30%; top: auto; height: 2px; background: #0891b2; }
+.nav__link--dataviz .nav__particle:nth-child(4) { left: 64%; bottom: 30%; top: auto; height: 2px; background: #67e8f9; }
+.nav__link--dataviz .nav__particle:nth-child(5) { left: 82%; bottom: 30%; top: auto; height: 2px; background: #06b6d4; }
 
-.nav__link--dataviz:hover .nav__particle:nth-child(1) { animation: particle-float-3 0.5s ease-out forwards; }
-.nav__link--dataviz:hover .nav__particle:nth-child(2) { animation: particle-float-1 0.6s ease-out 0.03s forwards; }
-.nav__link--dataviz:hover .nav__particle:nth-child(3) { animation: particle-float-4 0.45s ease-out 0.06s forwards; }
-.nav__link--dataviz:hover .nav__particle:nth-child(4) { animation: particle-float-2 0.55s ease-out 0.09s forwards; }
-.nav__link--dataviz:hover .nav__particle:nth-child(5) { animation: particle-float-3 0.5s ease-out 0.12s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(1) { animation: dataviz-bar-1 0.5s ease-out forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(2) { animation: dataviz-bar-2 0.5s ease-out 0.05s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(3) { animation: dataviz-bar-3 0.5s ease-out 0.1s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(4) { animation: dataviz-bar-4 0.5s ease-out 0.15s forwards; }
+.nav__link--dataviz:hover .nav__particle:nth-child(5) { animation: dataviz-bar-5 0.5s ease-out 0.2s forwards; }
+
+/* Bar chart animations - different heights like a graph */
+@keyframes dataviz-bar-1 {
+    0% { opacity: 0; height: 2px; }
+    30% { opacity: 1; }
+    100% { opacity: 1; height: 12px; }
+}
+@keyframes dataviz-bar-2 {
+    0% { opacity: 0; height: 2px; }
+    30% { opacity: 1; }
+    100% { opacity: 1; height: 20px; }
+}
+@keyframes dataviz-bar-3 {
+    0% { opacity: 0; height: 2px; }
+    30% { opacity: 1; }
+    100% { opacity: 1; height: 8px; }
+}
+@keyframes dataviz-bar-4 {
+    0% { opacity: 0; height: 2px; }
+    30% { opacity: 1; }
+    100% { opacity: 1; height: 16px; }
+}
+@keyframes dataviz-bar-5 {
+    0% { opacity: 0; height: 2px; }
+    30% { opacity: 1; }
+    100% { opacity: 1; height: 24px; }
+}
 
 [data-theme="dark"] .nav__link--dataviz .nav__styled-text {
     background: linear-gradient(135deg, #22d3ee, #67e8f9);
@@ -512,7 +580,14 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     text-shadow: 0 0 25px rgba(34, 211, 238, 0.6);
 }
 
-[data-theme="dark"] .nav__link--dataviz .nav__particle { box-shadow: 0 0 4px currentColor; }
+[data-theme="dark"] .nav__link--dataviz .nav__particle {
+    box-shadow: 0 0 6px currentColor, 0 0 10px currentColor;
+}
+
+/* Dark mode bar glow effect */
+[data-theme="dark"] .nav__link--dataviz:hover .nav__particle {
+    box-shadow: 0 0 8px currentColor, 0 0 15px currentColor, inset 0 0 3px rgba(255,255,255,0.3);
+}
 
 /* ===== OUTILS PUBLICS - French Blue with tricolor particles ===== */
 .nav__link--outils .nav__styled-text {
@@ -581,19 +656,57 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
 }
 
-/* Labs particles - green/neon sparkles */
-.nav__link--labs .nav__particle { border-radius: 2px; }
-.nav__link--labs .nav__particle:nth-child(1) { left: 10%; top: 40%; background: #10b981; }
-.nav__link--labs .nav__particle:nth-child(2) { left: 30%; top: 60%; background: #34d399; }
-.nav__link--labs .nav__particle:nth-child(3) { left: 50%; top: 30%; background: #059669; }
-.nav__link--labs .nav__particle:nth-child(4) { left: 70%; top: 55%; background: #6ee7b7; }
-.nav__link--labs .nav__particle:nth-child(5) { left: 90%; top: 45%; background: #10b981; }
+/* Labs particles - MOLECULE/ATOM orbiting effect */
+.nav__link--labs .nav__particle {
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+}
+/* Center nucleus */
+.nav__link--labs .nav__particle:nth-child(1) {
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, #10b981, #059669);
+    width: 6px; height: 6px;
+}
+/* Orbiting electrons */
+.nav__link--labs .nav__particle:nth-child(2) { left: 50%; top: 50%; background: #34d399; width: 4px; height: 4px; }
+.nav__link--labs .nav__particle:nth-child(3) { left: 50%; top: 50%; background: #6ee7b7; width: 3px; height: 3px; }
+.nav__link--labs .nav__particle:nth-child(4) { left: 50%; top: 50%; background: #10b981; width: 4px; height: 4px; }
+.nav__link--labs .nav__particle:nth-child(5) { left: 50%; top: 50%; background: #34d399; width: 3px; height: 3px; }
 
-.nav__link--labs:hover .nav__particle:nth-child(1) { animation: particle-float-3 0.5s ease-out forwards; }
-.nav__link--labs:hover .nav__particle:nth-child(2) { animation: particle-float-1 0.55s ease-out 0.03s forwards; }
-.nav__link--labs:hover .nav__particle:nth-child(3) { animation: particle-float-4 0.6s ease-out 0.06s forwards; }
-.nav__link--labs:hover .nav__particle:nth-child(4) { animation: particle-float-2 0.5s ease-out 0.09s forwards; }
-.nav__link--labs:hover .nav__particle:nth-child(5) { animation: particle-float-3 0.55s ease-out 0.12s forwards; }
+.nav__link--labs:hover .nav__particle:nth-child(1) { animation: labs-nucleus 0.6s ease-out forwards; }
+.nav__link--labs:hover .nav__particle:nth-child(2) { animation: labs-orbit-1 0.8s ease-out forwards; }
+.nav__link--labs:hover .nav__particle:nth-child(3) { animation: labs-orbit-2 0.9s ease-out 0.05s forwards; }
+.nav__link--labs:hover .nav__particle:nth-child(4) { animation: labs-orbit-3 0.85s ease-out 0.1s forwards; }
+.nav__link--labs:hover .nav__particle:nth-child(5) { animation: labs-orbit-4 0.95s ease-out 0.15s forwards; }
+
+/* Labs molecule animations - nucleus pulse + orbiting electrons */
+@keyframes labs-nucleus {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(16, 185, 129, 0.6); }
+}
+@keyframes labs-orbit-1 {
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(0deg) translateX(0); }
+    20% { opacity: 1; }
+    100% { opacity: 1; transform: translate(-50%, -50%) rotate(360deg) translateX(18px); }
+}
+@keyframes labs-orbit-2 {
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(90deg) translateX(0); }
+    20% { opacity: 1; }
+    100% { opacity: 1; transform: translate(-50%, -50%) rotate(450deg) translateX(14px); }
+}
+@keyframes labs-orbit-3 {
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(180deg) translateX(0); }
+    20% { opacity: 1; }
+    100% { opacity: 1; transform: translate(-50%, -50%) rotate(540deg) translateX(20px); }
+}
+@keyframes labs-orbit-4 {
+    0% { opacity: 0; transform: translate(-50%, -50%) rotate(270deg) translateX(0); }
+    20% { opacity: 1; }
+    100% { opacity: 1; transform: translate(-50%, -50%) rotate(630deg) translateX(12px); }
+}
 
 [data-theme="dark"] .nav__link--labs .nav__styled-text {
     background: linear-gradient(135deg, #00ff88, #39ff14);
@@ -608,13 +721,24 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     text-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
 }
 
-[data-theme="dark"] .nav__link--labs .nav__particle:nth-child(1) { background: #00ff88; }
+[data-theme="dark"] .nav__link--labs .nav__particle:nth-child(1) { background: radial-gradient(circle, #00ff88, #39ff14); }
 [data-theme="dark"] .nav__link--labs .nav__particle:nth-child(2) { background: #39ff14; }
 [data-theme="dark"] .nav__link--labs .nav__particle:nth-child(3) { background: #00ff88; }
 [data-theme="dark"] .nav__link--labs .nav__particle:nth-child(4) { background: #7fff00; }
 [data-theme="dark"] .nav__link--labs .nav__particle:nth-child(5) { background: #00ff88; }
 
 [data-theme="dark"] .nav__link--labs .nav__particle { box-shadow: 0 0 8px currentColor; }
+
+/* Dark mode nucleus glow */
+[data-theme="dark"] .nav__link--labs:hover .nav__particle:nth-child(1) {
+    animation: labs-nucleus-dark 0.6s ease-out forwards;
+}
+
+@keyframes labs-nucleus-dark {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 15px rgba(0, 255, 136, 0.8), 0 0 30px rgba(0, 255, 136, 0.4); }
+}
 
 /* ===== Mobile Styles ===== */
 @media (max-width: 768px) {
