@@ -361,108 +361,37 @@
     pointer-events: none;
 }
 
-/* Header adjustment for light mode - Desktop only */
-@media (min-width: 769px) {
-    .header--labs {
-        top: 36px;
-    }
+/* =================================================================== */
+/* LIGHT MODE: Header identical to other pages - NO special positioning */
+/* =================================================================== */
+
+/* Hide status bar in light mode - it's only for dark mode */
+.labs-status {
+    display: none;
 }
 
+/* Light mode header - just visual styling, NO positioning changes */
 .header--labs {
-    top: 0; /* Default - overridden on desktop */
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--labs-border);
-    position: fixed;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    will-change: auto;
+    background: linear-gradient(to bottom, rgba(248, 250, 252, 0.95), rgba(248, 250, 252, 0.8));
+    backdrop-filter: blur(12px);
 }
 
-/* Mobile: Force header to top - prevent glitches */
+/* =================================================================== */
+/* MOBILE: Nav overlay fix for Labs page                               */
+/* =================================================================== */
 @media (max-width: 768px) {
-    .header--labs {
-        top: 0 !important;
-        position: fixed !important;
-        transform: none !important;
-        animation: none !important;
-        will-change: auto !important;
-        backface-visibility: visible !important;
-        -webkit-backface-visibility: visible !important;
-    }
-
-    /* Hide status bar completely on mobile */
-    .labs-status {
-        display: none !important;
-        position: absolute !important;
-        top: -9999px !important;
-        left: -9999px !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        overflow: hidden !important;
-    }
-
-    /* Prevent any body scroll issues */
-    .labs-page {
-        padding-top: 0 !important;
-    }
-
-    /* Disable scan line z-index on mobile to prevent interference */
-    .labs-bg::before {
-        z-index: -1 !important;
-    }
-
-    /* ===== FIX: Mobile nav overlay must cover Labs content ===== */
-    /* Nav must have solid opaque background */
+    /* Mobile nav needs solid background on labs page */
     .labs-page .nav {
         background: #f8fafc !important;
-        z-index: 9999 !important;
     }
 
     .labs-page .nav.active {
         background: #f8fafc !important;
     }
-
-    /* Header and controls above nav */
-    .labs-page .header {
-        z-index: 10000 !important;
-    }
-
-    .labs-page .header__actions {
-        z-index: 10001 !important;
-        position: relative !important;
-    }
-
-    .labs-page .nav-toggle {
-        z-index: 10001 !important;
-        position: relative !important;
-    }
-
-    /* All labs content must be below nav overlay */
-    .labs-hero,
-    .labs-experiments,
-    .labs-notes,
-    .labs-cta,
-    .labs-hero__badge,
-    .labs-hero__title,
-    .labs-hero__terminal,
-    .labs-hero__visual {
-        z-index: 1 !important;
-        position: relative;
-    }
-
-    /* Background always behind */
-    .labs-bg {
-        z-index: -1 !important;
-    }
 }
 
-/* Dark mode: solid dark background for nav */
-[data-theme="dark"] .labs-page .nav {
-    background: #030308 !important;
-}
-
+/* Dark mode mobile nav */
+[data-theme="dark"] .labs-page .nav,
 [data-theme="dark"] .labs-page .nav.active {
     background: #030308 !important;
 }
@@ -472,7 +401,7 @@
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: calc(var(--space-20) + 120px) 0 var(--space-16);
+    padding: var(--space-24) 0;
     position: relative;
 }
 
