@@ -505,7 +505,39 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     transform: translateY(50%);
 }
 
-/* ===== DATAVIZ - Cyan/Teal with data particles ===== */
+/* ===== DATAMETRE - Observatoire premium : cyan/teal + live pulse + external ===== */
+.nav__link--dataviz {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: linear-gradient(135deg,
+        color-mix(in srgb, #06b6d4 10%, transparent),
+        color-mix(in srgb, #0891b2 6%, transparent));
+    border: 1px solid color-mix(in srgb, #06b6d4 25%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, #06b6d4 0%, transparent),
+        0 0 12px -4px rgba(6, 182, 212, 0.35),
+        inset 0 0 0 1px color-mix(in srgb, #22d3ee 10%, transparent);
+    transition: background 0.35s var(--ease), border-color 0.35s var(--ease), box-shadow 0.35s var(--ease), transform 0.35s var(--ease);
+}
+
+.nav__link--dataviz:hover,
+.nav__link--dataviz:focus-visible {
+    background: linear-gradient(135deg,
+        color-mix(in srgb, #06b6d4 18%, transparent),
+        color-mix(in srgb, #0891b2 12%, transparent));
+    border-color: color-mix(in srgb, #22d3ee 55%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, #22d3ee 35%, transparent),
+        0 0 24px -2px rgba(6, 182, 212, 0.6),
+        inset 0 0 0 1px color-mix(in srgb, #22d3ee 25%, transparent);
+    transform: translateY(-1px);
+}
+
+.nav__link--dataviz:focus-visible {
+    outline: 2px solid #22d3ee;
+    outline-offset: 3px;
+}
+
 .nav__link--dataviz .nav__styled-text {
     background: linear-gradient(135deg, #06b6d4, #0891b2);
     -webkit-background-clip: text;
@@ -513,6 +545,8 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     -webkit-text-fill-color: transparent;
     font-family: 'Space Mono', monospace;
     letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.92em;
 }
 
 .nav__link--dataviz:hover .nav__styled-text {
@@ -520,6 +554,41 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     -webkit-background-clip: text;
     background-clip: text;
     text-shadow: 0 0 20px rgba(6, 182, 212, 0.5);
+}
+
+/* Live "observatoire" pulse dot */
+.nav__link--dataviz .nav__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #06b6d4;
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.6), 0 0 8px rgba(6, 182, 212, 0.8);
+    animation: datametre-pulse 2.2s ease-in-out infinite;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+@keyframes datametre-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.55), 0 0 6px rgba(6, 182, 212, 0.7);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(6, 182, 212, 0), 0 0 12px rgba(34, 211, 238, 0.9);
+        transform: scale(1.15);
+    }
+}
+
+/* External icon for Datametre */
+.nav__link--dataviz .nav__external {
+    color: #0891b2;
+    opacity: 0.65;
+}
+
+.nav__link--dataviz:hover .nav__external {
+    opacity: 1;
+    color: #22d3ee;
+    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.6));
 }
 
 /* Dataviz particles - BAR CHART rising from bottom */
@@ -567,6 +636,25 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     100% { opacity: 1; height: 24px; }
 }
 
+[data-theme="dark"] .nav__link--dataviz {
+    background: linear-gradient(135deg,
+        color-mix(in srgb, #22d3ee 14%, transparent),
+        color-mix(in srgb, #06b6d4 8%, transparent));
+    border-color: color-mix(in srgb, #22d3ee 40%, transparent);
+    box-shadow:
+        0 0 14px -4px rgba(34, 211, 238, 0.5),
+        inset 0 0 0 1px color-mix(in srgb, #67e8f9 12%, transparent);
+}
+
+[data-theme="dark"] .nav__link--dataviz:hover,
+[data-theme="dark"] .nav__link--dataviz:focus-visible {
+    border-color: color-mix(in srgb, #67e8f9 70%, transparent);
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, #67e8f9 45%, transparent),
+        0 0 28px -2px rgba(34, 211, 238, 0.75),
+        inset 0 0 0 1px color-mix(in srgb, #67e8f9 30%, transparent);
+}
+
 [data-theme="dark"] .nav__link--dataviz .nav__styled-text {
     background: linear-gradient(135deg, #22d3ee, #67e8f9);
     -webkit-background-clip: text;
@@ -578,6 +666,20 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     -webkit-background-clip: text;
     background-clip: text;
     text-shadow: 0 0 25px rgba(34, 211, 238, 0.6);
+}
+
+[data-theme="dark"] .nav__link--dataviz .nav__dot {
+    background: #22d3ee;
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7), 0 0 10px rgba(34, 211, 238, 0.9);
+}
+
+[data-theme="dark"] .nav__link--dataviz .nav__external {
+    color: #67e8f9;
+}
+
+[data-theme="dark"] .nav__link--dataviz:hover .nav__external {
+    color: #a5f3fc;
+    filter: drop-shadow(0 0 6px rgba(103, 232, 249, 0.8));
 }
 
 [data-theme="dark"] .nav__link--dataviz .nav__particle {
@@ -754,6 +856,15 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     .nav__particle {
         width: 5px;
         height: 5px;
+    }
+
+    .nav__link--dataviz {
+        padding: 6px 14px;
+    }
+
+    .nav__link--dataviz .nav__dot {
+        width: 9px;
+        height: 9px;
     }
 }
 
