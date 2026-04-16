@@ -3053,33 +3053,33 @@ html {
 /* ===================== COMPETENCES — Page enrichie ===================== */
 
 .view--competences .skills {
-    padding-top: var(--space-12);
-    padding-bottom: var(--space-24);
+    padding-top: clamp(var(--space-16), 10vw, 8rem);
+    padding-bottom: clamp(var(--space-24), 14vw, 12rem);
 }
 
 /* --- Hero de la page compétences --- */
 .skills-hero {
-    padding: var(--space-10) 0 var(--space-16);
-    border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
-    margin-bottom: var(--space-16);
+    padding: clamp(var(--space-10), 6vw, 5rem) 0 clamp(var(--space-20), 10vw, 8rem);
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    margin-bottom: clamp(var(--space-20), 10vw, 8rem);
     position: relative;
 }
 
 .skills-hero__meta {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-4);
     font-family: 'Space Mono', 'Inter', monospace;
     font-size: var(--text-xs);
-    letter-spacing: 0.22em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--text) 55%, transparent);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-10);
 }
 
 .skills-hero__num {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 4px 10px;
     border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
     border-radius: 2px;
     font-weight: 600;
@@ -3094,10 +3094,10 @@ html {
 .skills-hero__title {
     font-family: 'Playfair Display', Georgia, serif;
     font-weight: 500;
-    font-size: clamp(2.4rem, 5.6vw, 4.8rem);
-    line-height: 1.05;
-    letter-spacing: -0.015em;
-    margin: 0 0 var(--space-8);
+    font-size: clamp(2.6rem, 6.2vw, 5.2rem);
+    line-height: 1.04;
+    letter-spacing: -0.018em;
+    margin: 0 0 clamp(var(--space-10), 3vw, var(--space-12));
     max-width: 20ch;
 }
 
@@ -3109,64 +3109,65 @@ html {
 
 .skills-hero__title-accent {
     display: block;
-    color: color-mix(in srgb, var(--text) 62%, transparent);
+    color: color-mix(in srgb, var(--text) 60%, transparent);
     font-family: 'Inter', sans-serif;
     font-weight: 300;
     font-style: normal;
     font-size: clamp(1.6rem, 3.4vw, 2.6rem);
     letter-spacing: -0.005em;
-    margin-top: var(--space-3);
-    line-height: 1.15;
+    margin-top: var(--space-5);
+    line-height: 1.2;
 }
 
 .skills-hero__lead {
-    font-size: clamp(1.05rem, 1.4vw, 1.2rem);
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--text) 78%, transparent);
+    font-size: clamp(1.08rem, 1.4vw, 1.25rem);
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--text) 75%, transparent);
     max-width: 62ch;
-    margin: 0 0 var(--space-10);
+    margin: 0 0 clamp(var(--space-12), 4vw, var(--space-16));
 }
 
 .skills-hero__scroll {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-4);
     font-family: 'Space Mono', monospace;
     font-size: var(--text-xs);
-    letter-spacing: 0.25em;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--text) 55%, transparent);
 }
 
 .skills-hero__scroll-line {
     display: inline-block;
-    width: 48px;
+    width: 56px;
     height: 1px;
     background: color-mix(in srgb, var(--text) 40%, transparent);
 }
 
 /* --- Approche --- */
 .skills-approach {
-    margin-bottom: var(--space-20);
+    margin-bottom: clamp(var(--space-24), 12vw, 10rem);
 }
 
 .skills-approach__label {
     font-family: 'Space Mono', monospace;
     font-size: var(--text-xs);
-    letter-spacing: 0.22em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--text) 55%, transparent);
-    margin-bottom: var(--space-6);
+    margin-bottom: clamp(var(--space-10), 3vw, var(--space-12));
 }
 
 .skills-approach__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-8);
+    column-gap: clamp(var(--space-10), 5vw, 5rem);
+    row-gap: var(--space-16);
 }
 
 .skills-approach__item {
-    padding: var(--space-6) 0;
+    padding: var(--space-10) 0 var(--space-4);
     border-top: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
     position: relative;
 }
@@ -3177,131 +3178,139 @@ html {
     font-size: var(--text-xs);
     letter-spacing: 0.22em;
     color: var(--accent);
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-6);
 }
 
 .skills-approach__title {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
     font-weight: 500;
-    line-height: 1.25;
-    margin: 0 0 var(--space-3);
+    line-height: 1.3;
+    margin: 0 0 var(--space-5);
     letter-spacing: -0.005em;
+    max-width: 22ch;
 }
 
 .skills-approach__desc {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: color-mix(in srgb, var(--text) 72%, transparent);
+    font-size: 0.98rem;
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--text) 70%, transparent);
     margin: 0;
+    max-width: 38ch;
 }
 
 /* --- Section headers (Domaines / Toolbox / Signature) --- */
 .skills-section__head {
-    margin-bottom: var(--space-10);
-    padding-bottom: var(--space-6);
-    border-bottom: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    margin-bottom: clamp(var(--space-12), 5vw, 5rem);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
     display: grid;
     grid-template-columns: auto 1fr;
-    column-gap: var(--space-4);
-    row-gap: var(--space-2);
+    column-gap: var(--space-6);
+    row-gap: var(--space-3);
     align-items: baseline;
 }
 
 .skills-section__num {
     grid-row: 1 / 3;
     font-family: 'Space Mono', monospace;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     color: var(--accent);
     line-height: 1;
-    margin-top: 4px;
+    margin-top: 6px;
 }
 
 .skills-section__title {
     font-family: 'Playfair Display', Georgia, serif;
     font-weight: 500;
-    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    font-size: clamp(1.9rem, 3.6vw, 2.8rem);
     line-height: 1.1;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.012em;
     margin: 0;
 }
 
 .skills-section__desc {
-    font-size: 0.98rem;
-    line-height: 1.55;
-    color: color-mix(in srgb, var(--text) 70%, transparent);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--text) 65%, transparent);
     margin: 0;
     max-width: 60ch;
 }
 
 /* --- Domaines grid --- */
 .skills-domains {
-    margin-bottom: var(--space-24);
+    margin-bottom: clamp(var(--space-24), 12vw, 10rem);
 }
 
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0;
-    border-top: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
-    border-left: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    column-gap: clamp(var(--space-12), 6vw, 6rem);
+    row-gap: clamp(var(--space-12), 5vw, 5rem);
 }
 
 .skill-block {
     position: relative;
-    padding: var(--space-8) var(--space-7);
-    border-right: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    padding: clamp(var(--space-10), 3vw, var(--space-12)) 0 var(--space-8);
+    border-top: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
     background: transparent;
-    transition: background 0.4s var(--ease);
+    transition: border-color 0.4s var(--ease);
+    display: flex;
+    flex-direction: column;
 }
 
 .skill-block:hover {
-    background: color-mix(in srgb, var(--text) 3%, transparent);
+    border-top-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 .skill-block__head {
     display: grid;
     grid-template-columns: auto auto 1fr;
-    column-gap: var(--space-4);
-    row-gap: var(--space-1);
+    column-gap: var(--space-6);
+    row-gap: var(--space-2);
     align-items: center;
-    margin-bottom: var(--space-5);
+    margin-bottom: clamp(var(--space-8), 2.5vw, var(--space-10));
 }
 
 .skill-block__index {
     font-family: 'Space Mono', monospace;
     font-size: var(--text-xs);
-    letter-spacing: 0.22em;
+    letter-spacing: 0.24em;
     color: color-mix(in srgb, var(--text) 55%, transparent);
     grid-row: 1 / 3;
     align-self: start;
-    margin-top: 6px;
+    margin-top: 10px;
 }
 
 .skill-block__icon {
-    width: 38px;
-    height: 38px;
+    width: 48px;
+    height: 48px;
     border-radius: 2px;
-    border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--accent);
     grid-row: 1 / 3;
+    transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+
+.skill-block:hover .skill-block__icon {
+    border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    background: color-mix(in srgb, var(--accent) 5%, transparent);
 }
 
 .skill-block__icon svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
 }
 
 .skill-block__title {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.5rem;
+    font-size: clamp(1.5rem, 2vw, 1.7rem);
     font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: -0.005em;
+    line-height: 1.18;
+    letter-spacing: -0.008em;
     margin: 0;
     grid-column: 3;
 }
@@ -3310,105 +3319,109 @@ html {
     grid-column: 3;
     margin: 0;
     font-family: 'Space Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--text) 55%, transparent);
+    color: color-mix(in srgb, var(--text) 52%, transparent);
 }
 
 .skill-block__desc {
-    font-size: 0.98rem;
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.75;
     color: color-mix(in srgb, var(--text) 78%, transparent);
-    margin: 0 0 var(--space-5);
+    margin: 0 0 clamp(var(--space-8), 2.5vw, var(--space-10));
+    max-width: 52ch;
 }
 
 .skill-block__list {
     list-style: none;
     padding: 0;
-    margin: 0 0 var(--space-6);
+    margin: 0 0 clamp(var(--space-10), 3vw, var(--space-12));
 }
 
 .skill-block__list li {
     position: relative;
-    padding-left: 22px;
-    font-size: 0.93rem;
-    line-height: 1.55;
-    color: color-mix(in srgb, var(--text) 85%, transparent);
-    margin-bottom: var(--space-2);
+    padding-left: 28px;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--text) 82%, transparent);
+    margin-bottom: var(--space-4);
+}
+
+.skill-block__list li:last-child {
+    margin-bottom: 0;
 }
 
 .skill-block__list li::before {
     content: "";
     position: absolute;
     left: 0;
-    top: 0.7em;
-    width: 12px;
+    top: 0.75em;
+    width: 16px;
     height: 1px;
     background: var(--accent);
+    opacity: 0.8;
 }
 
 .skill-block__stack {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    padding-top: var(--space-4);
-    border-top: 1px dashed color-mix(in srgb, var(--text) 14%, transparent);
+    gap: 10px;
+    padding-top: var(--space-6);
+    margin-top: auto;
+    border-top: 1px dashed color-mix(in srgb, var(--text) 12%, transparent);
 }
 
 .skill-block__stack span {
     font-family: 'Space Mono', monospace;
     font-size: 0.72rem;
     letter-spacing: 0.08em;
-    padding: 4px 10px;
-    border: 1px solid color-mix(in srgb, var(--text) 18%, transparent);
+    padding: 6px 14px;
+    border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
     border-radius: 999px;
-    color: color-mix(in srgb, var(--text) 75%, transparent);
+    color: color-mix(in srgb, var(--text) 72%, transparent);
     background: transparent;
-    transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+    transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background 0.3s var(--ease);
 }
 
 .skill-block:hover .skill-block__stack span {
-    border-color: color-mix(in srgb, var(--text) 28%, transparent);
+    border-color: color-mix(in srgb, var(--text) 26%, transparent);
     color: var(--text);
-}
-
-.skill-block--accent {
-    background: color-mix(in srgb, var(--accent) 4%, transparent);
-}
-
-.skill-block--accent:hover {
-    background: color-mix(in srgb, var(--accent) 7%, transparent);
 }
 
 .skill-block--accent .skill-block__icon {
     border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.skill-block--accent {
+    border-top-color: color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 /* --- Toolbox --- */
 .skills-toolbox {
-    margin-bottom: var(--space-24);
+    margin-bottom: clamp(var(--space-24), 12vw, 10rem);
 }
 
 .toolbox-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-8) var(--space-10);
+    column-gap: clamp(var(--space-12), 6vw, 6rem);
+    row-gap: clamp(var(--space-12), 5vw, 5rem);
 }
 
 .toolbox-group {
-    border-top: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
-    padding-top: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    padding-top: var(--space-8);
 }
 
 .toolbox-group__title {
     font-family: 'Space Mono', monospace;
     font-size: 0.78rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--text) 62%, transparent);
-    margin: 0 0 var(--space-4);
+    color: color-mix(in srgb, var(--text) 58%, transparent);
+    margin: 0 0 var(--space-6);
     font-weight: 500;
 }
 
@@ -3418,16 +3431,16 @@ html {
     margin: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 10px;
 }
 
 .toolbox-group__tags li {
     font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    padding: 4px 10px;
-    background: color-mix(in srgb, var(--text) 5%, transparent);
+    font-size: 0.88rem;
+    padding: 7px 14px;
+    background: color-mix(in srgb, var(--text) 4%, transparent);
     border-radius: 2px;
-    color: color-mix(in srgb, var(--text) 82%, transparent);
+    color: color-mix(in srgb, var(--text) 80%, transparent);
     letter-spacing: -0.003em;
     transition: background 0.3s var(--ease), color 0.3s var(--ease);
 }
@@ -3439,7 +3452,7 @@ html {
 
 /* --- Signature --- */
 .skills-signature {
-    margin-bottom: var(--space-10);
+    margin-bottom: var(--space-16);
 }
 
 .signature-list {
@@ -3448,27 +3461,26 @@ html {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border-top: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
-    border-left: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    column-gap: clamp(var(--space-12), 6vw, 6rem);
+    row-gap: clamp(var(--space-10), 4vw, 4rem);
 }
 
 .signature-item {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: var(--space-5);
-    padding: var(--space-7) var(--space-6);
-    border-right: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    column-gap: var(--space-8);
+    row-gap: 0;
+    padding: var(--space-10) 0 var(--space-6);
+    border-top: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
     align-items: start;
 }
 
 .signature-item__num {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.8rem;
+    font-size: 2rem;
     color: var(--accent);
     line-height: 1;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .signature-item__body {
@@ -3477,104 +3489,155 @@ html {
 
 .signature-item__title {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.25rem;
+    font-size: 1.32rem;
     font-weight: 500;
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--space-4);
     letter-spacing: -0.005em;
-    line-height: 1.25;
+    line-height: 1.3;
+    max-width: 26ch;
 }
 
 .signature-item__body p {
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: color-mix(in srgb, var(--text) 72%, transparent);
+    font-size: 0.98rem;
+    line-height: 1.75;
+    color: color-mix(in srgb, var(--text) 70%, transparent);
     margin: 0;
+    max-width: 44ch;
 }
 
 /* --- Dark theme adjustments --- */
 [data-theme="dark"] .skills-hero {
-    border-bottom-color: color-mix(in srgb, var(--text) 15%, transparent);
+    border-bottom-color: color-mix(in srgb, var(--text) 14%, transparent);
 }
 
-[data-theme="dark"] .skill-block--accent {
-    background: color-mix(in srgb, var(--accent) 8%, transparent);
-}
-
-[data-theme="dark"] .skill-block--accent:hover {
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
+[data-theme="dark"] .skill-block--accent .skill-block__icon {
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 [data-theme="dark"] .toolbox-group__tags li {
-    background: color-mix(in srgb, var(--text) 8%, transparent);
+    background: color-mix(in srgb, var(--text) 7%, transparent);
 }
 
 /* --- Responsive --- */
 @media (max-width: 1024px) {
     .skills-approach__grid {
         grid-template-columns: 1fr 1fr;
+        column-gap: var(--space-12);
+        row-gap: var(--space-12);
     }
 
     .skills-approach__item:last-child {
         grid-column: 1 / -1;
     }
 
+    .skills-grid {
+        grid-template-columns: 1fr;
+        row-gap: var(--space-16);
+    }
+
     .toolbox-grid {
         grid-template-columns: repeat(2, 1fr);
+        column-gap: var(--space-12);
+        row-gap: var(--space-12);
+    }
+
+    .signature-list {
+        grid-template-columns: 1fr;
+        row-gap: var(--space-10);
     }
 }
 
 @media (max-width: 768px) {
     .view--competences .skills {
-        padding-top: var(--space-8);
+        padding-top: var(--space-10);
+        padding-bottom: var(--space-20);
     }
 
     .skills-hero {
-        padding: var(--space-6) 0 var(--space-10);
-        margin-bottom: var(--space-10);
+        padding: var(--space-8) 0 var(--space-16);
+        margin-bottom: var(--space-16);
+    }
+
+    .skills-hero__meta {
+        margin-bottom: var(--space-8);
     }
 
     .skills-hero__title-accent {
-        font-size: clamp(1.3rem, 5vw, 1.8rem);
+        font-size: clamp(1.35rem, 5vw, 1.9rem);
+    }
+
+    .skills-hero__lead {
+        margin-bottom: var(--space-10);
+    }
+
+    .skills-approach {
+        margin-bottom: var(--space-20);
     }
 
     .skills-approach__grid {
         grid-template-columns: 1fr;
-        gap: var(--space-4);
+        row-gap: var(--space-8);
+    }
+
+    .skills-approach__item {
+        padding: var(--space-8) 0 var(--space-2);
     }
 
     .skills-approach__item:last-child {
         grid-column: auto;
     }
 
+    .skills-domains,
+    .skills-toolbox {
+        margin-bottom: var(--space-20);
+    }
+
     .skills-grid {
-        grid-template-columns: 1fr;
+        row-gap: var(--space-12);
     }
 
     .skill-block {
-        padding: var(--space-6) var(--space-5);
+        padding: var(--space-8) 0 var(--space-6);
+    }
+
+    .skill-block__head {
+        margin-bottom: var(--space-6);
+        column-gap: var(--space-4);
+    }
+
+    .skill-block__desc {
+        margin-bottom: var(--space-6);
+    }
+
+    .skill-block__list {
+        margin-bottom: var(--space-8);
+    }
+
+    .skill-block__list li {
+        margin-bottom: var(--space-3);
     }
 
     .toolbox-grid {
         grid-template-columns: 1fr;
-        gap: var(--space-6);
-    }
-
-    .signature-list {
-        grid-template-columns: 1fr;
+        row-gap: var(--space-10);
     }
 
     .signature-item {
-        padding: var(--space-5) var(--space-4);
+        padding: var(--space-8) 0 var(--space-4);
+        column-gap: var(--space-5);
     }
 
     .skills-section__head {
         grid-template-columns: auto 1fr;
+        margin-bottom: var(--space-10);
     }
 }
 
 @media (max-width: 480px) {
     .skill-block__head {
         grid-template-columns: auto 1fr;
+        column-gap: var(--space-4);
     }
 
     .skill-block__icon {
@@ -3584,7 +3647,12 @@ html {
     .skill-block__index {
         display: none;
     }
+
+    .skill-block__stack {
+        gap: 8px;
+    }
 }
+
 
 /* ===================== ANIMATIONS ===================== */
 @media (prefers-reduced-motion: reduce) {
