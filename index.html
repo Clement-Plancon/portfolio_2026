@@ -111,9 +111,20 @@
                     <span class="nav__particle"></span>
                 </span>
             </a>
+            <a href="labs.html" class="nav__link nav__link--styled nav__link--labs">
+                <span class="nav__styled-text">Labs</span>
+                <span class="nav__particles">
+                    <span class="nav__particle"></span>
+                    <span class="nav__particle"></span>
+                    <span class="nav__particle"></span>
+                    <span class="nav__particle"></span>
+                    <span class="nav__particle"></span>
+                </span>
+            </a>
             <a href="https://datametre.netlify.app/" target="_blank" rel="noopener noreferrer" class="nav__link nav__link--styled nav__link--dataviz" aria-label="Datametre (ouvre dans un nouvel onglet)">
                 <span class="nav__dot" aria-hidden="true"></span>
                 <span class="nav__styled-text">Datametre</span>
+                <span class="nav__underline" aria-hidden="true"></span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -126,16 +137,6 @@
                     <polyline points="15 3 21 3 21 9"/>
                     <line x1="10" y1="14" x2="21" y2="3"/>
                 </svg>
-            </a>
-            <a href="labs.html" class="nav__link nav__link--styled nav__link--labs">
-                <span class="nav__styled-text">Labs</span>
-                <span class="nav__particles">
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                </span>
             </a>
             <a href="https://outilspublics.netlify.app/" target="_blank" rel="noopener" class="nav__link nav__link--styled nav__link--outils">
                 <span class="nav__styled-text">Outils Publics</span>
@@ -168,6 +169,12 @@
             </button>
         </div>
     </header>
+
+    <!-- View Router -->
+    <main class="views" id="views">
+
+    <!-- VIEW: Home -->
+    <section class="view view--home is-active" data-view="home" aria-hidden="false">
 
     <!-- Hero -->
     <section class="hero">
@@ -412,6 +419,11 @@
         </div>
     </div>
 
+    </section><!-- /view home -->
+
+    <!-- VIEW: À propos -->
+    <section class="view view--apropos" data-view="apropos" aria-hidden="true">
+
     <!-- À propos (Section 01) -->
     <section class="section about" id="apropos">
         <div class="container">
@@ -502,6 +514,11 @@
             </div>
         </div>
     </section>
+
+    </section><!-- /view apropos -->
+
+    <!-- VIEW: Compétences -->
+    <section class="view view--competences" data-view="competences" aria-hidden="true">
 
     <!-- Compétences (Section 02) -->
     <section class="section skills" id="competences">
@@ -610,6 +627,11 @@
         </div>
     </section>
 
+    </section><!-- /view competences -->
+
+    <!-- VIEW: Projets -->
+    <section class="view view--projets" data-view="projets" aria-hidden="true">
+
     <!-- Projets (Section 03) -->
     <section class="section projects" id="projets">
         <div class="container">
@@ -696,6 +718,11 @@
         </div>
     </section>
 
+    </section><!-- /view projets -->
+
+    <!-- VIEW: Contact -->
+    <section class="view view--contact" data-view="contact" aria-hidden="true">
+
     <!-- Contact (Section 05) -->
     <section class="section contact" id="contact">
         <div class="container">
@@ -733,6 +760,10 @@
             </div>
         </div>
     </section>
+
+    </section><!-- /view contact -->
+
+    </main><!-- /views -->
 
     <!-- Footer -->
     <footer class="footer">
