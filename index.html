@@ -424,93 +424,241 @@
     <section class="view view--apropos" data-view="apropos" aria-hidden="true">
 
     <!-- À propos (Section 01) -->
-    <section class="section about" id="apropos">
+    <section class="section about-page" id="apropos">
         <div class="container">
-            <header class="section__head">
-                <span class="section__num">01</span>
-                <h2 class="section__title">À propos</h2>
+
+            <!-- Hero éditorial -->
+            <header class="about-hero">
+                <div class="about-hero__meta">
+                    <span class="about-hero__num">01</span>
+                    <span class="about-hero__path">Portfolio — À propos</span>
+                </div>
+
+                <div class="about-hero__grid">
+                    <div class="about-hero__intro">
+                        <h1 class="about-hero__title">
+                            Ingénieur logiciel,
+                            <em>artisan produit</em>,
+                            <span class="about-hero__title-line">basé à Paris.</span>
+                        </h1>
+                        <p class="about-hero__lead">
+                            Je conçois des applications utiles, honnêtes et maintenables.
+                            À la croisée du code, du design, de la donnée et de l'IA appliquée.
+                        </p>
+                        <ul class="about-hero__chips">
+                            <li>Full-stack</li>
+                            <li>Architecture</li>
+                            <li>Produit</li>
+                            <li>Data &amp; IA</li>
+                        </ul>
+                    </div>
+
+                    <aside class="about-card" aria-label="Carte d'identité">
+                        <header class="about-card__head">
+                            <span class="about-card__label">— Carte d'identité</span>
+                            <span class="about-card__status">
+                                <span class="about-card__dot" aria-hidden="true"></span>
+                                Disponible
+                            </span>
+                        </header>
+                        <dl class="about-card__list">
+                            <div class="about-card__row">
+                                <dt>Nom</dt>
+                                <dd>Clément Plançon</dd>
+                            </div>
+                            <div class="about-card__row">
+                                <dt>Poste actuel</dt>
+                                <dd>Chef adjoint · Section informatique</dd>
+                            </div>
+                            <div class="about-card__row">
+                                <dt>Lieu</dt>
+                                <dd>Paris — Île-de-France</dd>
+                            </div>
+                            <div class="about-card__row">
+                                <dt>Expérience</dt>
+                                <dd>10 ans · public &amp; produit</dd>
+                            </div>
+                            <div class="about-card__row">
+                                <dt>Langues</dt>
+                                <dd>Français · Anglais</dd>
+                            </div>
+                        </dl>
+                        <footer class="about-card__foot">
+                            <span class="about-card__sig">CP / 2014 → 2026</span>
+                            <span class="about-card__pulse" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span>
+                            </span>
+                        </footer>
+                    </aside>
+                </div>
             </header>
 
-            <div class="about__grid">
-                <div class="about__visual">
-                    <div class="about__portrait">
-                        <span class="about__initials">CP</span>
-                    </div>
-                    <div class="about__label">
-                        <span>Depuis 2014</span>
-                    </div>
-                </div>
-
-                <div class="about__content">
-                    <p class="about__lead">
-                        Ingénieur logiciel passionné par l'innovation, je transforme des idées complexes en solutions élégantes et performantes.
+            <!-- Narration -->
+            <section class="about-intro" aria-label="Présentation">
+                <div class="about-intro__label">— Présentation</div>
+                <div class="about-intro__body">
+                    <p class="about-intro__p">
+                        Je travaille à l'endroit où la technique rencontre le produit&nbsp;: là où se prennent les choix
+                        structurants. Ingénieur logiciel depuis dix ans, je suis aujourd'hui chef adjoint
+                        d'une section informatique au sein du Laboratoire de Police Scientifique de Paris,
+                        et en parallèle, je continue à coder sur des projets d'auteur, plus libres.
                     </p>
-                    <p class="about__text">
-                        Actuellement Chef adjoint de la section informatique au Laboratoire de Police Scientifique de Paris, je conçois des solutions techniques innovantes pour les enquêtes judiciaires. En parallèle, je développe des projets personnels et accompagne des entreprises dans leur transformation numérique.
+                    <p class="about-intro__p">
+                        Ce qui m'intéresse&nbsp;: concevoir des applications qui servent vraiment à quelque chose.
+                        Des interfaces claires, une architecture tenable, une donnée bien pensée, et — quand
+                        c'est pertinent — de l'IA appliquée proprement, avec des garde-fous, pas comme démo.
                     </p>
-
-                    <div class="about__stats">
-                        <div class="stat">
-                            <span class="stat__value">10<span class="stat__plus">+</span></span>
-                            <span class="stat__label">Années d'expérience</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat__value">50<span class="stat__plus">+</span></span>
-                            <span class="stat__label">Projets réalisés</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat__value">∞</span>
-                            <span class="stat__label">Curiosité</span>
-                        </div>
-                    </div>
+                    <p class="about-intro__p">
+                        Je pratique le développement web et mobile, le backend, la data et le pilotage d'équipe.
+                        J'aime autant poser une base solide que sortir une v1 honnête en production.
+                        Le code que je préfère, c'est celui qu'on comprend encore six mois plus tard.
+                    </p>
                 </div>
-            </div>
+            </section>
 
-            <!-- Timeline / Parcours -->
-            <div class="timeline">
-                <h3 class="timeline__title">Parcours</h3>
-                <p class="timeline__subtitle">Cliquez sur une expérience pour en savoir plus</p>
+            <!-- Principes -->
+            <section class="about-principles" aria-label="Principes de travail">
+                <header class="about-section__head">
+                    <span class="about-section__num">→</span>
+                    <h2 class="about-section__title">Comment je travaille</h2>
+                    <p class="about-section__desc">Quatre principes qui me guident, projet après projet.</p>
+                </header>
 
-                <div class="timeline__list">
-                    <article class="timeline__item" data-modal="exp1">
-                        <div class="timeline__date">2024 — Présent</div>
-                        <div class="timeline__info">
-                            <h4>Laboratoire de Police Scientifique</h4>
-                            <p>Chef adjoint Section informatique — Ingénieur SIC</p>
+                <ol class="principles-list">
+                    <li class="principle">
+                        <span class="principle__index">01</span>
+                        <h3 class="principle__title">Comprendre avant de construire</h3>
+                        <p class="principle__desc">
+                            Je commence par les questions floues, pas par le clavier.
+                            Le code est plus simple quand le problème est clair&nbsp;: deux heures de cadrage
+                            valent mieux qu'un mois passé dans le vide.
+                        </p>
+                    </li>
+                    <li class="principle">
+                        <span class="principle__index">02</span>
+                        <h3 class="principle__title">Simple avant d'être malin</h3>
+                        <p class="principle__desc">
+                            Une solution ennuyeuse qui marche bat une archi brillante qui ne tient pas en prod.
+                            Je préfère rendre le complexe lisible plutôt que le contraire.
+                        </p>
+                    </li>
+                    <li class="principle">
+                        <span class="principle__index">03</span>
+                        <h3 class="principle__title">Livrer, écouter, corriger</h3>
+                        <p class="principle__desc">
+                            On apprend en mettant les choses entre les mains des gens.
+                            Une v1 utile vite, puis des itérations honnêtes nourries par les retours réels —
+                            pas par les slides.
+                        </p>
+                    </li>
+                    <li class="principle">
+                        <span class="principle__index">04</span>
+                        <h3 class="principle__title">Tenir l'équipe avec soi</h3>
+                        <p class="principle__desc">
+                            J'encadre en expliquant les choix, pas en les imposant.
+                            Une équipe qui comprend le pourquoi livre mieux et tient plus longtemps.
+                        </p>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Parcours -->
+            <section class="about-journey" aria-label="Parcours">
+                <header class="about-section__head">
+                    <span class="about-section__num">→</span>
+                    <h2 class="about-section__title">Parcours</h2>
+                    <p class="about-section__desc">Dix ans entre administration, produit et développement logiciel. Cliquez sur une expérience pour la déplier.</p>
+                </header>
+
+                <ol class="journey-list">
+                    <li class="journey-item" data-modal="exp1">
+                        <span class="journey-item__rail" aria-hidden="true"></span>
+                        <div class="journey-item__date">
+                            <span class="journey-item__year">2022</span>
+                            <span class="journey-item__year-end">Aujourd'hui</span>
                         </div>
-                        <div class="timeline__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                        <div class="journey-item__body">
+                            <span class="journey-item__org">Laboratoire de Police Scientifique</span>
+                            <h3 class="journey-item__role">Chef adjoint · Section informatique</h3>
+                            <p class="journey-item__ctx">
+                                Pilotage d'une équipe de 4 développeurs, arbitrages techniques
+                                et fiabilisation des outils métiers utilisés par les enquêteurs.
+                            </p>
+                            <ul class="journey-item__tags">
+                                <li>Lead tech</li><li>PHP</li><li>K8S</li><li>PostgreSQL</li>
+                            </ul>
+                        </div>
+                        <span class="journey-item__cue" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
                             </svg>
+                        </span>
+                    </li>
+
+                    <li class="journey-item" data-modal="exp2">
+                        <span class="journey-item__rail" aria-hidden="true"></span>
+                        <div class="journey-item__date">
+                            <span class="journey-item__year">2024</span>
+                            <span class="journey-item__year-end">Aujourd'hui</span>
                         </div>
-                    </article>
-                    <article class="timeline__item" data-modal="exp2">
-                        <div class="timeline__date">2024 — Présent</div>
-                        <div class="timeline__info">
-                            <h4>>Outils Publics</h4>
-                            <p>Coordinateur technique – Données & développement</p>
+                        <div class="journey-item__body">
+                            <span class="journey-item__org">Outils Publics</span>
+                            <h3 class="journey-item__role">Coordinateur technique · Données &amp; développement</h3>
+                            <p class="journey-item__ctx">
+                                Au sein d'un collectif spécialisé en outils numériques publics&nbsp;:
+                                prototypes, dataviz et développement à partir de données ouvertes.
+                            </p>
+                            <ul class="journey-item__tags">
+                                <li>React</li><li>Node.js</li><li>Flutter</li><li>Python</li>
+                            </ul>
                         </div>
-                        <div class="timeline__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                        <span class="journey-item__cue" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
                             </svg>
+                        </span>
+                    </li>
+
+                    <li class="journey-item" data-modal="exp3">
+                        <span class="journey-item__rail" aria-hidden="true"></span>
+                        <div class="journey-item__date">
+                            <span class="journey-item__year">2022</span>
+                            <span class="journey-item__year-end">2024</span>
                         </div>
-                    </article>
-                    <article class="timeline__item" data-modal="exp3">
-                        <div class="timeline__date">2022 — 2024</div>
-                        <div class="timeline__info">
-                            <h4>Ministère de l'Économie</h4>
-                            <p>Ingénieur logiciel et chef de projet technique — Laboratoire de
-                                Transformation</p>
+                        <div class="journey-item__body">
+                            <span class="journey-item__org">Ministère de l'Économie et des Finances</span>
+                            <h3 class="journey-item__role">Ingénieur logiciel &amp; chef de projet — Lab de la Transformation</h3>
+                            <p class="journey-item__ctx">
+                                Modernisation des services publics&nbsp;: applications internes,
+                                ateliers d'innovation et accompagnement des agents dans l'adoption d'outils numériques.
+                            </p>
+                            <ul class="journey-item__tags">
+                                <li>C# .NET</li><li>Power Platform</li><li>SQL Server</li><li>Azure</li>
+                            </ul>
                         </div>
-                        <div class="timeline__arrow">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                        <span class="journey-item__cue" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                <path d="M5 12h14M13 6l6 6-6 6"/>
                             </svg>
-                        </div>
-                    </article>
-                </div>
-            </div>
+                        </span>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Closing -->
+            <section class="about-closing" aria-label="Note de clôture">
+                <span class="about-closing__mark" aria-hidden="true">“</span>
+                <blockquote class="about-closing__quote">
+                    Construire des produits utiles, bien dessinés, qui durent.
+                    Rien de plus compliqué que ça — et c'est déjà beaucoup.
+                </blockquote>
+                <footer class="about-closing__foot">
+                    <span>Clément Plançon</span>
+                    <span class="about-closing__sep" aria-hidden="true"></span>
+                    <span>Paris · 2026</span>
+                </footer>
+            </section>
+
         </div>
     </section>
 
