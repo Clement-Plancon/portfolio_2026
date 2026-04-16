@@ -260,29 +260,148 @@ class Modal {
     }
 }
 
-// ===================== SMOOTH SCROLL =====================
-class SmoothScroll {
+// ===================== VIEW ROUTER =====================
+class ViewRouter {
     constructor() {
-        this.links = document.querySelectorAll('a[href^="#"]');
+        this.container = document.querySelector('.views');
+        this.views = document.querySelectorAll('.view');
+        this.navLinks = document.querySelectorAll('.nav a[href^="#"]');
+        this.defaultView = 'home';
+        this.exitMs = 320;
+        this.enterMs = 520;
+        this.transitioning = false;
+
+        if (!this.container || this.views.length === 0) return;
+
+        this.viewMap = new Map();
+        this.views.forEach(v => this.viewMap.set(v.dataset.view, v));
+
         this.init();
     }
 
     init() {
-        this.links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
-                if (href === '#') return;
+        // Intercept all internal hash links that target a view
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href^="#"]');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            if (!href || href.length < 1) return;
 
-                const target = document.querySelector(href);
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
+            const targetId = href === '#' ? this.defaultView : href.slice(1);
+            if (!this.viewMap.has(targetId)) return;
+
+            e.preventDefault();
+            this.navigate(targetId);
         });
+
+        // Hashchange (back/forward)
+        window.addEventListener('popstate', () => this.syncFromUrl(true));
+        window.addEventListener('hashchange', () => this.syncFromUrl(true));
+
+        // Initial state
+        this.syncFromUrl(false);
+
+        // Mark active link on load
+        this.updateActiveLinks(this.currentView());
+    }
+
+    currentView() {
+        const active = document.querySelector('.view.is-active');
+        return active ? active.dataset.view : this.defaultView;
+    }
+
+    syncFromUrl(animate) {
+        const hash = (location.hash || '').replace(/^#/, '');
+        const target = this.viewMap.has(hash) ? hash : this.defaultView;
+        if (animate) {
+            this.navigate(target, { skipUrl: true });
+        } else {
+            this.setActive(target, false);
+        }
+    }
+
+    setActive(viewId, animate) {
+        this.views.forEach(v => {
+            const active = v.dataset.view === viewId;
+            v.classList.toggle('is-active', active);
+            v.classList.remove('is-leaving');
+            v.setAttribute('aria-hidden', active ? 'false' : 'true');
+        });
+        this.updateActiveLinks(viewId);
+    }
+
+    updateActiveLinks(viewId) {
+        document.querySelectorAll('.nav a[href^="#"]').forEach(a => {
+            const href = a.getAttribute('href');
+            const id = href === '#' ? this.defaultView : href.slice(1);
+            const match = id === viewId && this.viewMap.has(id);
+            a.classList.toggle('nav__link--current', match);
+            if (match) {
+                a.setAttribute('aria-current', 'page');
+            } else {
+                a.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    navigate(viewId, opts = {}) {
+        if (this.transitioning) return;
+        const target = this.viewMap.get(viewId);
+        if (!target) return;
+        const current = document.querySelector('.view.is-active');
+        if (current === target) {
+            if (!opts.skipUrl) {
+                const newHash = viewId === this.defaultView ? location.pathname + location.search : `#${viewId}`;
+                history.replaceState({ view: viewId }, '', newHash);
+            }
+            return;
+        }
+
+        this.transitioning = true;
+        this.container.classList.add('is-transitioning');
+
+        // Update URL immediately
+        if (!opts.skipUrl) {
+            const newHash = viewId === this.defaultView ? location.pathname + location.search : `#${viewId}`;
+            history.pushState({ view: viewId }, '', newHash);
+        }
+
+        // Close mobile nav if open
+        document.body.classList.remove('nav-open');
+        document.querySelector('.nav')?.classList.remove('active');
+
+        // Update active link immediately for feedback
+        this.updateActiveLinks(viewId);
+
+        // 1. Mark current as leaving (absolute-positioned fade/slide out)
+        if (current) {
+            current.classList.remove('is-active');
+            current.classList.add('is-leaving');
+            current.setAttribute('aria-hidden', 'true');
+        }
+
+        // 2. Reset scroll instantly (bypass smooth scroll)
+        const htmlEl = document.documentElement;
+        const prevBehavior = htmlEl.style.scrollBehavior;
+        htmlEl.style.scrollBehavior = 'auto';
+        window.scrollTo(0, 0);
+        htmlEl.style.scrollBehavior = prevBehavior;
+
+        // 3. Activate target (enter animation plays concurrently for smooth crossfade)
+        target.classList.add('is-active');
+        target.setAttribute('aria-hidden', 'false');
+
+        // 4. Cleanup timers
+        if (current) {
+            setTimeout(() => {
+                current.classList.remove('is-leaving');
+            }, this.exitMs);
+        }
+
+        setTimeout(() => {
+            this.container.classList.remove('is-transitioning');
+            this.transitioning = false;
+        }, this.enterMs);
     }
 }
 
@@ -409,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new ThemeToggle();
     new Modal();
     new MobileNav();
-    new SmoothScroll();
+    new ViewRouter();
     new ScrollAnimations();
     new CounterAnimation();
 });
