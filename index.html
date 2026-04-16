@@ -124,7 +124,6 @@
             <a href="https://datametre.netlify.app/" target="_blank" rel="noopener noreferrer" class="nav__link nav__link--styled nav__link--dataviz" aria-label="Datametre (ouvre dans un nouvel onglet)">
                 <span class="nav__dot" aria-hidden="true"></span>
                 <span class="nav__styled-text">Datametre</span>
-                <span class="nav__underline" aria-hidden="true"></span>
                 <span class="nav__particles">
                     <span class="nav__particle"></span>
                     <span class="nav__particle"></span>
@@ -523,107 +522,370 @@
     <!-- Compétences (Section 02) -->
     <section class="section skills" id="competences">
         <div class="container">
-            <header class="section__head">
-                <span class="section__num">02</span>
-                <h2 class="section__title">Compétences</h2>
+
+            <!-- Hero de la page Compétences -->
+            <header class="skills-hero">
+                <div class="skills-hero__meta">
+                    <span class="skills-hero__num">02</span>
+                    <span class="skills-hero__label">Expertise &amp; savoir-faire</span>
+                </div>
+                <h1 class="skills-hero__title">
+                    Construire des produits <em>utiles</em>,
+                    <span class="skills-hero__title-accent">de l'idée au déploiement.</span>
+                </h1>
+                <p class="skills-hero__lead">
+                    Je travaille à la croisée du développement, de la donnée et du design.
+                    Mon terrain favori&nbsp;: transformer un besoin flou en un produit clair,
+                    maintenable et mesurable — sans dépendre d'une stack à la mode.
+                </p>
+                <div class="skills-hero__scroll">
+                    <span class="skills-hero__scroll-line" aria-hidden="true"></span>
+                    <span class="skills-hero__scroll-text">Parcourir les domaines</span>
+                </div>
             </header>
 
-            <div class="skills__grid">
-                <article class="skill-card">
-                    <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                        </svg>
-                    </div>
-                    <h3 class="skill-card__title">Développement Web</h3>
-                    <p class="skill-card__desc">Applications web modernes avec React,
-                        React, Node.js. APIs REST et GraphQL.</p>
-                    <div class="skill-card__tags">
-                        <span>React</span>
-                        <span>Node.js</span>
-                        <span>TypeScript</span>
-                    </div>
-                </article>
+            <!-- Approche -->
+            <section class="skills-approach" aria-label="Approche">
+                <div class="skills-approach__label">— Approche</div>
+                <div class="skills-approach__grid">
+                    <article class="skills-approach__item">
+                        <span class="skills-approach__num">01</span>
+                        <h3 class="skills-approach__title">Comprendre avant de coder</h3>
+                        <p class="skills-approach__desc">
+                            Un cadrage sérieux, des hypothèses explicites, un périmètre tenable.
+                            Le code vient après, pas avant.
+                        </p>
+                    </article>
+                    <article class="skills-approach__item">
+                        <span class="skills-approach__num">02</span>
+                        <h3 class="skills-approach__title">Livrer, mesurer, itérer</h3>
+                        <p class="skills-approach__desc">
+                            Je préfère une v1 honnête en production à une v3 parfaite en slide.
+                            On apprend avec les utilisateurs, pas contre eux.
+                        </p>
+                    </article>
+                    <article class="skills-approach__item">
+                        <span class="skills-approach__num">03</span>
+                        <h3 class="skills-approach__title">Soigner la maintenance</h3>
+                        <p class="skills-approach__desc">
+                            Tests ciblés, CI qui fait peur au bon moment, docs qui se lisent.
+                            Le code qu'on garde est le code qu'on comprend encore dans 6 mois.
+                        </p>
+                    </article>
+                </div>
+            </section>
 
-                <article class="skill-card">
-                    <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                            <polyline points="7.5 4.21 12 6.81 16.5 4.21"/><polyline points="7.5 19.79 7.5 14.6 3 12"/><polyline points="21 12 16.5 14.6 16.5 19.79"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
-                        </svg>
-                    </div>
-                    <h3 class="skill-card__title">Intelligence Artificielle</h3>
-                    <p class="skill-card__desc">Intégration de LLM, systèmes RAG, chatbots intelligents et automatisation par IA.</p>
-                    <div class="skill-card__tags">
-                        <span>Python</span>
-                        <span>LangChain</span>
-                        <span>OpenAI</span>
-                        <span>RAG</span>
-                    </div>
-                </article>
+            <!-- Domaines -->
+            <section class="skills-domains" aria-label="Domaines d'expertise">
+                <header class="skills-section__head">
+                    <span class="skills-section__num">→</span>
+                    <h2 class="skills-section__title">Domaines</h2>
+                    <p class="skills-section__desc">Sept terrains que je pratique régulièrement, avec des niveaux d'implication différents.</p>
+                </header>
 
-                <article class="skill-card">
-                    <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-                        </svg>
-                    </div>
-                    <h3 class="skill-card__title">Applications Mobiles</h3>
-                    <p class="skill-card__desc">Développement cross-platform avec Flutter et Dart. UI/UX mobile natives.</p>
-                    <div class="skill-card__tags">
-                        <span>Flutter</span>
-                        <span>Dart</span>
-                        <span>Firebase</span>
-                        <span>iOS/Android</span>
-                    </div>
-                </article>
+                <div class="skills-grid">
 
-                <article class="skill-card">
-                    <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-                        </svg>
-                    </div>
-                    <h3 class="skill-card__title">Data & Backend</h3>
-                    <p class="skill-card__desc">Architecture backend, bases de données SQL/NoSQL, ETL et analyse de données.</p>
-                    <div class="skill-card__tags">
-                        <span>K8S/K3S</span>
-                        <span>PostgreSQL</span>
-                        <span>MongoDB</span>
-                        <span>Docker</span>
-                    </div>
-                </article>
+                    <!-- 1. Développement web -->
+                    <article class="skill-block" data-skill="web">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">01</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <polyline points="16 18 22 12 16 6"/>
+                                    <polyline points="8 6 2 12 8 18"/>
+                                    <line x1="14" y1="4" x2="10" y2="20"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">Développement web</h3>
+                            <p class="skill-block__kicker">Interfaces, SPAs, sites institutionnels</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            Front moderne avec un fort goût pour le HTML/CSS bien tenu.
+                            J'aime les bases solides&nbsp;: accessibilité, performance, cohérence visuelle.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>Applications React / Next.js, composants réutilisables</li>
+                            <li>Sites statiques performants (Astro, Eleventy, HTML vanilla)</li>
+                            <li>Animations sobres, micro-interactions, responsive fin</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>React</span><span>Next.js</span><span>TypeScript</span>
+                            <span>HTML5</span><span>CSS moderne</span><span>Astro</span>
+                        </div>
+                    </article>
 
-                <article class="skill-card">
-                    <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
-                        </svg>
-                    </div>
-                    <h3 class="skill-card__title">UX/UI Design</h3>
-                    <p class="skill-card__desc">Conception d'interfaces utilisateur, prototypage et design systems.</p>
-                    <div class="skill-card__tags">
-                        <span>Figma</span>
-                        <span>Design System</span>
-                        <span>Prototyping</span>
-                    </div>
-                </article>
+                    <!-- 2. Backend & architecture -->
+                    <article class="skill-block" data-skill="backend">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">02</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">Backend &amp; architecture</h3>
+                            <p class="skill-block__kicker">APIs, bases de données, plateformes</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            APIs propres, schémas pensés, observabilité correcte.
+                            Je préfère un service simple et testé à une archi distribuée à la mode.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>APIs REST / GraphQL, authentification, quotas</li>
+                            <li>Modélisation SQL/NoSQL, migrations, indexation</li>
+                            <li>Conteneurisation, orchestration légère (K3S)</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>Node.js</span><span>Python</span><span>PostgreSQL</span>
+                            <span>MongoDB</span><span>Docker</span><span>K3S / K8S</span>
+                        </div>
+                    </article>
 
-                <article class="skill-card">
-                    <div class="skill-card__icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
+                    <!-- 3. Data & IA -->
+                    <article class="skill-block skill-block--accent" data-skill="ia">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">03</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <path d="M12 2a5 5 0 0 1 5 5c0 1.5-.5 2.5-1 3.5"/>
+                                    <path d="M12 2a5 5 0 0 0-5 5c0 1.5.5 2.5 1 3.5"/>
+                                    <path d="M8 10.5a4 4 0 0 0 0 7"/>
+                                    <path d="M16 10.5a4 4 0 0 1 0 7"/>
+                                    <path d="M9 17.5a3 3 0 0 0 6 0"/>
+                                    <circle cx="12" cy="13" r="1.2"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">Data &amp; IA appliquée</h3>
+                            <p class="skill-block__kicker">LLMs, RAG, automatisation</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            Intégration d'IA dans des produits réels, avec des contraintes réelles&nbsp;:
+                            coût, latence, confidentialité, évaluation. Zéro hype gratuite.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>Systèmes RAG (ingestion, chunking, retrieval, re-ranking)</li>
+                            <li>Orchestration de LLMs, prompts versionnés, évaluations</li>
+                            <li>Pipelines data, ETL, tableaux de bord décisionnels</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>Python</span><span>LangChain</span><span>OpenAI / Anthropic</span>
+                            <span>pgvector</span><span>Pandas</span><span>LlamaIndex</span>
+                        </div>
+                    </article>
+
+                    <!-- 4. Mobile -->
+                    <article class="skill-block" data-skill="mobile">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">04</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">Mobile cross-platform</h3>
+                            <p class="skill-block__kicker">iOS / Android avec une base unique</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            Applications mobiles pragmatiques, avec une UX qui respecte chaque plateforme
+                            sans doubler les coûts de maintenance.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>Apps Flutter production-ready, builds et déploiement</li>
+                            <li>Authentification, stockage offline, notifications</li>
+                            <li>Intégration avec backends REST / Firebase</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>Flutter</span><span>Dart</span><span>Firebase</span>
+                            <span>iOS</span><span>Android</span>
+                        </div>
+                    </article>
+
+                    <!-- 5. UX / UI -->
+                    <article class="skill-block" data-skill="design">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">05</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">UX / UI &amp; design system</h3>
+                            <p class="skill-block__kicker">Penser l'interface, pas juste la dessiner</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            Conception d'interfaces claires, hiérarchisées, accessibles.
+                            Je code ce que je dessine, ce qui évite pas mal d'allers-retours.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>Wireframes, prototypes cliquables, tests utilisateurs légers</li>
+                            <li>Design systems, tokens, composants documentés</li>
+                            <li>Accessibilité (WCAG), contraste, navigation clavier</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>Figma</span><span>Design tokens</span><span>Accessibilité</span>
+                            <span>Prototypage</span><span>DSFR</span>
+                        </div>
+                    </article>
+
+                    <!-- 6. Outils & DevOps -->
+                    <article class="skill-block" data-skill="devops">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">06</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9 1.65 1.65 0 0 0 4.27 7.18l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.17.4.23.87.23 1.35"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">Outils &amp; DevOps</h3>
+                            <p class="skill-block__kicker">Autonomie sur toute la chaîne</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            Ce qui rend l'équipe plus rapide et le produit plus stable&nbsp;:
+                            CI/CD, monitoring, infra reproductible, scripts qui font gagner des heures.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>CI/CD (GitHub Actions, GitLab CI), déploiements automatisés</li>
+                            <li>Infra as code, observabilité, logs structurés</li>
+                            <li>Self-hosting serveurs / K3S, reverse-proxy, TLS</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>GitHub Actions</span><span>Docker</span><span>K3S</span>
+                            <span>Traefik</span><span>Grafana</span><span>Netlify</span>
+                        </div>
+                    </article>
+
+                    <!-- 7. Pilotage & produit -->
+                    <article class="skill-block" data-skill="product">
+                        <header class="skill-block__head">
+                            <span class="skill-block__index">07</span>
+                            <div class="skill-block__icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="9" cy="7" r="4"/>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                </svg>
+                            </div>
+                            <h3 class="skill-block__title">Pilotage &amp; produit</h3>
+                            <p class="skill-block__kicker">Cadrage, équipe, décisions</p>
+                        </header>
+                        <p class="skill-block__desc">
+                            J'ai piloté des équipes et des produits, au-delà du seul code.
+                            Cadrer, arbitrer, expliquer aux métiers&nbsp;: ça compte autant que le reste.
+                        </p>
+                        <ul class="skill-block__list">
+                            <li>Animation d'équipes techniques (2 à 8 personnes)</li>
+                            <li>Rituels agiles réalistes, pas cérémoniels</li>
+                            <li>Dialogue métier ↔ tech, arbitrages coût / valeur</li>
+                        </ul>
+                        <div class="skill-block__stack">
+                            <span>Scrum / Kanban</span><span>Lean</span><span>Roadmap</span>
+                            <span>Discovery</span><span>Coaching tech</span>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Toolbox -->
+            <section class="skills-toolbox" aria-label="Boîte à outils">
+                <header class="skills-section__head">
+                    <span class="skills-section__num">→</span>
+                    <h2 class="skills-section__title">Boîte à outils</h2>
+                    <p class="skills-section__desc">Ce que j'utilise au quotidien, par famille. Pas une liste exhaustive&nbsp;: ce avec quoi je suis vraiment à l'aise.</p>
+                </header>
+
+                <div class="toolbox-grid">
+                    <div class="toolbox-group">
+                        <h4 class="toolbox-group__title">Langages</h4>
+                        <ul class="toolbox-group__tags">
+                            <li>TypeScript</li><li>JavaScript</li><li>Python</li>
+                            <li>Dart</li><li>SQL</li><li>Bash</li>
+                        </ul>
                     </div>
-                    <h3 class="skill-card__title">Management</h3>
-                    <p class="skill-card__desc">Gestion d'équipe technique, méthodologies agiles et pilotage de projets.</p>
-                    <div class="skill-card__tags">
-                        <span>Agile/Scrum/Lean</span>
-                        <span>Leadership</span>
-                        <span>Gestion de projet</span>
+                    <div class="toolbox-group">
+                        <h4 class="toolbox-group__title">Front</h4>
+                        <ul class="toolbox-group__tags">
+                            <li>React</li><li>Next.js</li><li>Astro</li>
+                            <li>Tailwind</li><li>CSS moderne</li><li>Framer Motion</li>
+                        </ul>
                     </div>
-                </article>
-            </div>
+                    <div class="toolbox-group">
+                        <h4 class="toolbox-group__title">Back &amp; data</h4>
+                        <ul class="toolbox-group__tags">
+                            <li>Node.js</li><li>FastAPI</li><li>PostgreSQL</li>
+                            <li>MongoDB</li><li>pgvector</li><li>Redis</li>
+                        </ul>
+                    </div>
+                    <div class="toolbox-group">
+                        <h4 class="toolbox-group__title">IA</h4>
+                        <ul class="toolbox-group__tags">
+                            <li>OpenAI</li><li>Anthropic</li><li>LangChain</li>
+                            <li>LlamaIndex</li><li>Embeddings</li><li>Evals</li>
+                        </ul>
+                    </div>
+                    <div class="toolbox-group">
+                        <h4 class="toolbox-group__title">Infra &amp; DevOps</h4>
+                        <ul class="toolbox-group__tags">
+                            <li>Docker</li><li>K3S</li><li>Traefik</li>
+                            <li>GitHub Actions</li><li>Netlify</li><li>OVH / Scaleway</li>
+                        </ul>
+                    </div>
+                    <div class="toolbox-group">
+                        <h4 class="toolbox-group__title">Design &amp; méthodes</h4>
+                        <ul class="toolbox-group__tags">
+                            <li>Figma</li><li>DSFR</li><li>Design system</li>
+                            <li>Scrum</li><li>Kanban</li><li>Lean</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Signature : ce qui fait la différence -->
+            <section class="skills-signature" aria-label="Ce qui fait la différence">
+                <header class="skills-section__head">
+                    <span class="skills-section__num">→</span>
+                    <h2 class="skills-section__title">Ce qui fait la différence</h2>
+                    <p class="skills-section__desc">Au-delà des technos, ce que j'apporte concrètement sur un projet.</p>
+                </header>
+
+                <ul class="signature-list">
+                    <li class="signature-item">
+                        <span class="signature-item__num">①</span>
+                        <div class="signature-item__body">
+                            <h3 class="signature-item__title">Un regard produit autant que technique</h3>
+                            <p>Je pose les bonnes questions avant d'ouvrir l'IDE. Périmètre, utilisateur, cible, KPI.</p>
+                        </div>
+                    </li>
+                    <li class="signature-item">
+                        <span class="signature-item__num">②</span>
+                        <div class="signature-item__body">
+                            <h3 class="signature-item__title">De bout en bout, sans trou dans la raquette</h3>
+                            <p>Du cadrage au déploiement, en passant par le design, la base de données et la CI.</p>
+                        </div>
+                    </li>
+                    <li class="signature-item">
+                        <span class="signature-item__num">③</span>
+                        <div class="signature-item__body">
+                            <h3 class="signature-item__title">Un code qu'on peut relire</h3>
+                            <p>Lisible, testé là où ça compte, documenté juste assez. Pas du code jetable.</p>
+                        </div>
+                    </li>
+                    <li class="signature-item">
+                        <span class="signature-item__num">④</span>
+                        <div class="signature-item__body">
+                            <h3 class="signature-item__title">Une IA intégrée proprement</h3>
+                            <p>Évaluations, garde-fous, coûts maîtrisés. Pas un chatbot posé par-dessus.</p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
         </div>
     </section>
 
