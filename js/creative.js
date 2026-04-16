@@ -8,41 +8,44 @@ const modalContent = {
     // Experiences
     exp1: {
         title: 'Laboratoire de Police Scientifique de Paris',
-        subtitle: 'Chef adjoint de la section informatique — Ingénieur SIC',
+        subtitle: 'Chef adjoint · Section informatique — Ingénieur SIC',
         period: '2022 — Présent',
-        description: 'Au sein du Laboratoire de police scientifique de Paris, je pilote une équipe de 4 développeurs logiciel.',
+        location: 'Paris',
+        description: "Au sein du Laboratoire de police scientifique, je pilote une équipe de quatre développeurs logiciel et j'arbitre les choix techniques au service des outils utilisés par les enquêteurs.",
         responsibilities: [
-            "Lead d'une équipe de 4 développeurs (encadrement technique, priorisation, accompagnement)",
-            'Conception et arbitrage des choix techniques, en lien avec les besoins métiers et les contraintes opérationnelles',
-            'Maintien en condition opérationnelle, évolution et fiabilisation d’applications métiers existantes',
-            'Contribution à la structuration des pratiques de développement et des processus techniques',
+            "Encadrement technique d'une équipe de 4 développeurs : priorisation, accompagnement, revues",
+            "Conception et arbitrage des choix techniques en lien avec les besoins métiers et les contraintes opérationnelles",
+            "Maintien en condition opérationnelle, évolution et fiabilisation d'applications métiers critiques",
+            "Structuration des pratiques de développement et des processus techniques de la section"
         ],
-        technologies: ['Docker', 'PHP', 'K8S', 'PostgreSQL']
+        technologies: ['PHP', 'PostgreSQL', 'Docker', 'Kubernetes', 'CI/CD']
     },
     exp2: {
         title: 'Outils Publics',
-        subtitle: 'Coordinateur technique – Données & développement',
+        subtitle: 'Coordinateur technique · Données & développement',
         period: '2024 — Présent',
-        description: "Le collectif Outils Publics est spécialisé dans la recherche, l'exploration et création d’outils numériques applicatifs.",
+        location: 'France · Distance',
+        description: "Outils Publics est un collectif dédié à la recherche, l'exploration et la création d'outils numériques applicatifs autour de la donnée publique.",
         responsibilities: [
-            'Développement de prototypes, outils et visualisations à partir de données publiques',
-            'Structuration des pratiques, des outils et des méthodes techniques',
-            'Interface entre recherche, design et implémentation logicielle',
+            "Développement de prototypes, outils et visualisations à partir de données publiques",
+            "Structuration des pratiques, des outils et des méthodes techniques du collectif",
+            "Interface entre recherche, design et implémentation logicielle"
         ],
-        technologies: ['React', 'Node.js', 'Flutter', 'Python']
+        technologies: ['React', 'Node.js', 'Flutter', 'Python', 'Open data']
     },
     exp3: {
-        title: 'Ministère de l\'Économie et des Finances',
-        subtitle: 'Ingénieur logiciel et chef de projet technique — Laboratoire de la Transformation',
+        title: "Ministère de l'Économie et des Finances",
+        subtitle: 'Ingénieur logiciel & chef de projet — Laboratoire de la Transformation',
         period: '2022 — 2024',
-        description: 'Au sein du Lab de la Transformation, j\'ai participé à la modernisation des services publics en développant des solutions innovantes et en accompagnant les agents dans l\'adoption de nouveaux outils.',
+        location: 'Paris — Bercy',
+        description: "Au sein du Lab de la Transformation, j'ai contribué à la modernisation des services publics : applications internes, ateliers d'innovation et accompagnement des agents dans l'adoption de nouveaux outils numériques.",
         responsibilities: [
-            'Développement d\'applications internes en react et next.js',
-            'Analyse des besoins et rédaction de spécifications',
-            'Animation d\'ateliers d\'innovation et de design thinking',
-            'Veille technologique et expérimentation'
+            "Développement d'applications internes en React et Next.js",
+            "Analyse des besoins et rédaction de spécifications fonctionnelles",
+            "Animation d'ateliers d'innovation et de design thinking auprès des équipes métier",
+            "Veille technologique, expérimentation et industrialisation des prototypes retenus"
         ],
-        technologies: ['C# .NET', 'Power Platform', 'SQL Server', 'Azure']
+        technologies: ['C# .NET', 'Power Platform', 'SQL Server', 'Azure', 'React']
     },
     // Projects
     proj1: {
@@ -222,30 +225,49 @@ class Modal {
         const listTitle = isExperience ? 'Responsabilités' : 'Fonctionnalités';
         const listItems = isExperience ? data.responsibilities : data.features;
 
+        const kind = isExperience ? 'Expérience' : 'Projet';
+        const meta = [];
+        if (data.period) meta.push(`<span class="modal__meta-item modal__meta-item--period">${data.period}</span>`);
+        if (data.location) meta.push(`<span class="modal__meta-item modal__meta-item--loc">${data.location}</span>`);
+
         this.content.innerHTML = `
-            <div class="modal__header">
-                <span class="modal__subtitle">${data.subtitle}</span>
-                <h3 class="modal__title">${data.title}</h3>
-                ${data.period ? `<span class="modal__period">${data.period}</span>` : ''}
-            </div>
-            <div class="modal__body">
-                <p class="modal__desc">${data.description}</p>
-
-                <div class="modal__section">
-                    <h4 class="modal__section-title">${listTitle}</h4>
-                    <ul class="modal__list">
-                        ${listItems.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </div>
-
-                <div class="modal__section">
-                    <h4 class="modal__section-title">Technologies</h4>
-                    <div class="modal__tags">
-                        ${data.technologies.map(tech => `<span class="modal__tag">${tech}</span>`).join('')}
+            <article class="modal__article">
+                <header class="modal__header">
+                    <div class="modal__eyebrow">
+                        <span class="modal__kind">— ${kind}</span>
                     </div>
+                    <h3 class="modal__title">${data.title}</h3>
+                    <p class="modal__subtitle">${data.subtitle}</p>
+                    ${meta.length ? `<div class="modal__meta">${meta.join('')}</div>` : ''}
+                </header>
+
+                <div class="modal__body">
+                    <p class="modal__desc">${data.description}</p>
+
+                    <section class="modal__section">
+                        <h4 class="modal__section-title"><span aria-hidden="true">→</span> ${listTitle}</h4>
+                        <ul class="modal__list">
+                            ${listItems.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </section>
+
+                    <section class="modal__section">
+                        <h4 class="modal__section-title"><span aria-hidden="true">→</span> Stack &amp; outils</h4>
+                        <ul class="modal__tags">
+                            ${data.technologies.map(tech => `<li class="modal__tag">${tech}</li>`).join('')}
+                        </ul>
+                    </section>
                 </div>
-            </div>
+
+                <footer class="modal__foot">
+                    <span class="modal__sig">CP / Portfolio</span>
+                    <button type="button" class="modal__foot-close" data-modal-close>Fermer</button>
+                </footer>
+            </article>
         `;
+
+        const footClose = this.content.querySelector('[data-modal-close]');
+        if (footClose) footClose.addEventListener('click', () => this.close());
 
         // Show modal
         this.modal.classList.add('active');
@@ -408,7 +430,7 @@ class ViewRouter {
 // ===================== SCROLL ANIMATIONS =====================
 class ScrollAnimations {
     constructor() {
-        this.elements = document.querySelectorAll('.project, .stat, .timeline__item, .skill-card');
+        this.elements = document.querySelectorAll('.project, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item');
         this.init();
     }
 
