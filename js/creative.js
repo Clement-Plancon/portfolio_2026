@@ -430,7 +430,7 @@ class ViewRouter {
 // ===================== SCROLL ANIMATIONS =====================
 class ScrollAnimations {
     constructor() {
-        this.elements = document.querySelectorAll('.proj-feat, .proj-card, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item, .home-what__item, .running-prep, .running-metric, .running-race, .home-portal');
+        this.elements = document.querySelectorAll('.proj-feat, .proj-card, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item, .statement, .strava__stat, .strava__bar, .strava__activity, .strava__pr');
         this.init();
     }
 
