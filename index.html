@@ -1133,43 +1133,201 @@
     <!-- VIEW: Contact -->
     <section class="view view--contact" data-view="contact" aria-hidden="true">
 
-    <!-- Contact (Section 05) -->
-    <section class="section contact" id="contact">
+    <div class="contact-page">
         <div class="container">
-            <header class="section__head">
-                <span class="section__num">05</span>
-                <h2 class="section__title section__title--large">
-                    Un projet en tête ?<br>
-                    <span class="text--accent">Travaillons ensemble.</span>
-                </h2>
+
+            <!-- Hero -->
+            <header class="contact-hero">
+                <span class="contact-hero__meta">05 · Portfolio — Contact</span>
+                <h1 class="contact-hero__title">
+                    Parlons de votre<br>
+                    <span class="text--accent">prochain projet.</span>
+                </h1>
+                <p class="contact-hero__lead">
+                    Que ce soit pour une mission, une collaboration ou simplement échanger sur un sujet tech — je suis ouvert à la discussion.
+                </p>
+                <span class="contact-hero__avail">
+                    <span class="contact-hero__dot" aria-hidden="true"></span>
+                    Disponible pour de nouvelles missions
+                </span>
             </header>
 
-            <a href="mailto:plancon.clem.pro@gmail.com" class="contact__email" data-cursor="email">
-                plancon.clem.pro@gmail.com
-            </a>
+            <!-- Primary Contact -->
+            <section class="contact-primary" id="contact">
+                <div class="contact-card">
+                    <span class="contact-card__label">Email</span>
+                    <div class="contact-card__row">
+                        <a href="mailto:plancon.clem.pro@gmail.com" class="contact-card__email" data-cursor="email">
+                            plancon.clem.pro@gmail.com
+                        </a>
+                        <button class="contact-card__copy" data-copy-email="plancon.clem.pro@gmail.com" type="button" aria-label="Copier l'adresse email">
+                            <svg class="contact-card__copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            <span class="contact-card__copy-label">Copier</span>
+                        </button>
+                    </div>
+                    <div class="contact-card__details">
+                        <span class="contact-card__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Réponse sous 48h
+                        </span>
+                        <span class="contact-card__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            Paris, France — Remote friendly
+                        </span>
+                    </div>
+                </div>
+            </section>
 
-            <div class="contact__socials">
-                <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" class="social" aria-label="Profil LinkedIn">
-                    <span>LinkedIn</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                    </svg>
-                </a>
-                <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener" class="social" aria-label="Profil GitHub">
-                    <span>GitHub</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                    </svg>
-                </a>
-                <a href="https://www.behance.net/clmentplanon" target="_blank" rel="noopener" class="social" aria-label="Profil Behance">
-                    <span>Behance</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                    </svg>
-                </a>
-            </div>
+            <!-- Purposes -->
+            <section class="contact-purposes">
+                <header class="contact-section__head">
+                    <span class="contact-section__num">01</span>
+                    <h2 class="contact-section__title">On peut échanger pour…</h2>
+                </header>
+                <div class="purposes-grid">
+                    <article class="purpose">
+                        <span class="purpose__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        </span>
+                        <h3 class="purpose__title">Développement web</h3>
+                        <p class="purpose__desc">Applications React / Node, sites vitrines, plateformes sur-mesure — du prototypage à la mise en production.</p>
+                    </article>
+                    <article class="purpose">
+                        <span class="purpose__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z"/><circle cx="12" cy="15" r="2"/></svg>
+                        </span>
+                        <h3 class="purpose__title">Data & Intelligence Artificielle</h3>
+                        <p class="purpose__desc">Dashboards, pipelines de données, intégration d'IA dans vos outils métier, automatisations intelligentes.</p>
+                    </article>
+                    <article class="purpose">
+                        <span class="purpose__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        </span>
+                        <h3 class="purpose__title">Conseil technique</h3>
+                        <p class="purpose__desc">Audit de code, choix d'architecture, accompagnement technique ponctuel ou récurrent pour votre équipe.</p>
+                    </article>
+                    <article class="purpose">
+                        <span class="purpose__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </span>
+                        <h3 class="purpose__title">Collaboration & échange</h3>
+                        <p class="purpose__desc">Projets open source, articles en co-écriture, talks, mentorat — ouvert aux échanges constructifs.</p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Collaboration principles -->
+            <section class="contact-collab">
+                <header class="contact-section__head">
+                    <span class="contact-section__num">02</span>
+                    <h2 class="contact-section__title">Comment je collabore</h2>
+                </header>
+                <ul class="collab-list">
+                    <li class="collab-item">
+                        <span class="collab-item__num" aria-hidden="true">01</span>
+                        <div class="collab-item__body">
+                            <h3 class="collab-item__title">Communication directe</h3>
+                            <p class="collab-item__desc">Pas de jargon inutile. Je privilégie les échanges clairs, les feedbacks réguliers et la transparence sur l'avancement.</p>
+                        </div>
+                    </li>
+                    <li class="collab-item">
+                        <span class="collab-item__num" aria-hidden="true">02</span>
+                        <div class="collab-item__body">
+                            <h3 class="collab-item__title">Rigueur technique</h3>
+                            <p class="collab-item__desc">Code propre, testé, documenté. Je livre du travail maintenable, pas des prototypes jetables.</p>
+                        </div>
+                    </li>
+                    <li class="collab-item">
+                        <span class="collab-item__num" aria-hidden="true">03</span>
+                        <div class="collab-item__body">
+                            <h3 class="collab-item__title">Vision produit</h3>
+                            <p class="collab-item__desc">Je m'intéresse au problème avant la solution. Comprendre le contexte métier pour proposer la bonne architecture.</p>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Online presence -->
+            <section class="contact-presence">
+                <header class="contact-section__head">
+                    <span class="contact-section__num">03</span>
+                    <h2 class="contact-section__title">Présence en ligne</h2>
+                </header>
+                <div class="presence-grid">
+                    <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" class="presence-card" aria-label="Profil LinkedIn">
+                        <span class="presence-card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg>
+                        </span>
+                        <div class="presence-card__body">
+                            <span class="presence-card__name">LinkedIn</span>
+                            <span class="presence-card__desc">Parcours & réseau pro</span>
+                        </div>
+                        <svg class="presence-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                    <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener" class="presence-card" aria-label="Profil GitHub">
+                        <span class="presence-card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        </span>
+                        <div class="presence-card__body">
+                            <span class="presence-card__name">GitHub</span>
+                            <span class="presence-card__desc">Code & projets open source</span>
+                        </div>
+                        <svg class="presence-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                    <a href="https://medium.com/@clement.plancon" target="_blank" rel="noopener" class="presence-card" aria-label="Profil Medium">
+                        <span class="presence-card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zm7.42 0c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42zm2.94 0c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75c.66 0 1.19 2.58 1.19 5.75z"/></svg>
+                        </span>
+                        <div class="presence-card__body">
+                            <span class="presence-card__name">Medium</span>
+                            <span class="presence-card__desc">Articles & réflexions tech</span>
+                        </div>
+                        <svg class="presence-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                    <a href="https://www.behance.net/clmentplanon" target="_blank" rel="noopener" class="presence-card" aria-label="Profil Behance">
+                        <span class="presence-card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 7h-7V5h7zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H0V5.021h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zM3 11h3.584c2.508 0 2.906-3-.312-3H3zm3.391 3H3v4h3.341c2.418 0 2.837-4 .05-4z"/></svg>
+                        </span>
+                        <div class="presence-card__body">
+                            <span class="presence-card__name">Behance</span>
+                            <span class="presence-card__desc">Design & projets visuels</span>
+                        </div>
+                        <svg class="presence-card__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
+                    </a>
+                </div>
+            </section>
+
+            <!-- FAQ -->
+            <section class="contact-faq">
+                <header class="contact-section__head">
+                    <span class="contact-section__num">04</span>
+                    <h2 class="contact-section__title">Questions fréquentes</h2>
+                </header>
+                <div class="faq-list">
+                    <details class="faq-item">
+                        <summary class="faq-item__q">Quel est votre tarif journalier ?</summary>
+                        <p class="faq-item__a">Il dépend du type de mission, de la durée et de la complexité. Contactez-moi pour en discuter — je propose toujours un devis clair et détaillé avant de démarrer.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary class="faq-item__q">Travaillez-vous en remote ?</summary>
+                        <p class="faq-item__a">Oui, principalement. Je suis basé à Paris et habitué au travail à distance avec des équipes en France et à l'international. Des rencontres en présentiel sont possibles sur Paris.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary class="faq-item__q">Quels types de projets acceptez-vous ?</summary>
+                        <p class="faq-item__a">Développement web, applications data/IA, conseil technique. Je privilégie les projets avec un vrai enjeu produit, où la qualité technique fait la différence.</p>
+                    </details>
+                    <details class="faq-item">
+                        <summary class="faq-item__q">Quelle est votre disponibilité actuelle ?</summary>
+                        <p class="faq-item__a">Je suis actuellement ouvert à de nouvelles missions. N'hésitez pas à me contacter pour vérifier mes créneaux — je m'engage à répondre sous 48 heures.</p>
+                    </details>
+                </div>
+            </section>
+
         </div>
-    </section>
+    </div>
 
     </section><!-- /view contact -->
 
