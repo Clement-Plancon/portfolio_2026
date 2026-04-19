@@ -223,26 +223,10 @@
         <!-- Main Content -->
         <div class="hero__container">
             <div class="hero__left">
-                <div class="hero__tags">
-                    <span class="tag tag--glow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                        </svg>
-                        <span>Développement</span>
-                    </span>
-                    <span class="tag tag--glow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                        </svg>
-                        <span>Data & IA</span>
-                    </span>
-                    <span class="tag tag--glow">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                        <span>Management</span>
-                    </span>
-                </div>
+                <span class="hero__avail">
+                    <span class="hero__avail-dot" aria-hidden="true"></span>
+                    Disponible pour de nouvelles missions
+                </span>
 
                 <div class="hero__main">
                     <p class="hero__intro">
@@ -258,7 +242,7 @@
                         </span>
                     </h1>
                     <p class="hero__desc">
-                        Je conçois des solutions numériques innovantes, alliant expertise technique et curiosité pour transformer les idées en produits performants.
+                        Je conçois des applications utiles, bien architecturées et maintenables — du cadrage à la mise en production. Full-stack, data, IA appliquée.
                     </p>
                 </div>
 
@@ -417,6 +401,162 @@
             <span class="marquee__sep">—</span>
         </div>
     </div>
+
+    <!-- Positionnement -->
+    <section class="home-what">
+        <div class="container">
+            <header class="home-what__header">
+                <span class="home-what__label">Ce que je construis</span>
+                <span class="home-what__line" aria-hidden="true"></span>
+            </header>
+            <div class="home-what__grid">
+                <article class="home-what__item">
+                    <span class="home-what__num">01</span>
+                    <h3 class="home-what__title">Applications web & mobiles</h3>
+                    <p class="home-what__desc">SPAs, plateformes métier, outils internes, sites institutionnels. Du prototype rapide au produit maintenu en production — avec une vraie exigence sur la qualité du code et de l'interface.</p>
+                    <ul class="home-what__stack">
+                        <li>React</li><li>Next.js</li><li>Node.js</li><li>Flutter</li>
+                    </ul>
+                </article>
+                <article class="home-what__item">
+                    <span class="home-what__num">02</span>
+                    <h3 class="home-what__title">Architecture & systèmes</h3>
+                    <p class="home-what__desc">APIs propres, bases de données bien modélisées, déploiement conteneurisé. Les fondations invisibles qui font qu'un produit tient dans la durée, pas juste en démo.</p>
+                    <ul class="home-what__stack">
+                        <li>PostgreSQL</li><li>Docker</li><li>K3S</li><li>CI/CD</li>
+                    </ul>
+                </article>
+                <article class="home-what__item home-what__item--accent">
+                    <span class="home-what__num">03</span>
+                    <h3 class="home-what__title">Data & IA appliquée</h3>
+                    <p class="home-what__desc">RAG, orchestration de LLMs, pipelines de données, tableaux de bord décisionnels. De l'IA intégrée dans de vrais produits, avec des garde-fous et des évaluations — pas en slide.</p>
+                    <ul class="home-what__stack">
+                        <li>Python</li><li>LangChain</li><li>OpenAI</li><li>pgvector</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Running / Discipline -->
+    <section class="home-running">
+        <div class="container">
+            <div class="home-running__layout">
+                <div class="home-running__intro">
+                    <span class="home-running__eyebrow">Au-delà du code</span>
+                    <h2 class="home-running__title">Course<br><span class="text--accent">à pied.</span></h2>
+                    <p class="home-running__lead">La même rigueur qui structure mon code structure mes kilomètres. Constance, progression, discipline — le running m'apprend autant que n'importe quel projet technique.</p>
+                    <div class="home-running__values">
+                        <span class="home-running__value">Endurance</span>
+                        <span class="home-running__sep" aria-hidden="true"></span>
+                        <span class="home-running__value">Régularité</span>
+                        <span class="home-running__sep" aria-hidden="true"></span>
+                        <span class="home-running__value">Progression</span>
+                    </div>
+                </div>
+                <div class="home-running__data">
+                    <div class="running-prep">
+                        <div class="running-prep__header">
+                            <span class="running-prep__dot" aria-hidden="true"></span>
+                            <span class="running-prep__label">En préparation</span>
+                        </div>
+                        <span class="running-prep__event">Semi-Marathon de Paris</span>
+                        <span class="running-prep__goal">Objectif : sub 1h40</span>
+                        <div class="running-prep__bar" aria-label="65% du plan d'entraînement complété">
+                            <div class="running-prep__fill" style="--pct: 65%"></div>
+                        </div>
+                        <span class="running-prep__status">65% du plan suivi</span>
+                    </div>
+
+                    <div class="running-metrics">
+                        <div class="running-metric">
+                            <span class="running-metric__num">1 200+</span>
+                            <span class="running-metric__label">km en 2025</span>
+                        </div>
+                        <div class="running-metric">
+                            <span class="running-metric__num">4</span>
+                            <span class="running-metric__label">courses finies</span>
+                        </div>
+                        <div class="running-metric">
+                            <span class="running-metric__num">1h42</span>
+                            <span class="running-metric__label">record semi</span>
+                        </div>
+                    </div>
+
+                    <div class="running-races">
+                        <span class="running-races__title">Courses</span>
+                        <ul class="running-races__list">
+                            <li class="running-race">
+                                <span class="running-race__badge" aria-hidden="true"></span>
+                                <div class="running-race__info">
+                                    <span class="running-race__name">Semi-Marathon des Hauts-de-Seine</span>
+                                    <span class="running-race__time">1h42 — 2024</span>
+                                </div>
+                            </li>
+                            <li class="running-race">
+                                <span class="running-race__badge" aria-hidden="true"></span>
+                                <div class="running-race__info">
+                                    <span class="running-race__name">10K de Vincennes</span>
+                                    <span class="running-race__time">42'15 — 2024</span>
+                                </div>
+                            </li>
+                            <li class="running-race">
+                                <span class="running-race__badge" aria-hidden="true"></span>
+                                <div class="running-race__info">
+                                    <span class="running-race__name">Trail du Mont Valérien</span>
+                                    <span class="running-race__time">55'30 — 2025</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portals -->
+    <section class="home-portals">
+        <div class="container">
+            <header class="home-portals__header">
+                <span class="home-portals__label">Explorer le portfolio</span>
+                <span class="home-portals__line" aria-hidden="true"></span>
+            </header>
+            <div class="home-portals__grid">
+                <a href="#projets" class="home-portal">
+                    <span class="home-portal__num">01</span>
+                    <div class="home-portal__body">
+                        <h3 class="home-portal__title">Projets</h3>
+                        <p class="home-portal__desc">Quatre travaux sélectionnés</p>
+                    </div>
+                    <svg class="home-portal__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+                <a href="#competences" class="home-portal">
+                    <span class="home-portal__num">02</span>
+                    <div class="home-portal__body">
+                        <h3 class="home-portal__title">Compétences</h3>
+                        <p class="home-portal__desc">Stack, domaines, approche</p>
+                    </div>
+                    <svg class="home-portal__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+                <a href="#apropos" class="home-portal">
+                    <span class="home-portal__num">03</span>
+                    <div class="home-portal__body">
+                        <h3 class="home-portal__title">À propos</h3>
+                        <p class="home-portal__desc">Parcours, principes, identité</p>
+                    </div>
+                    <svg class="home-portal__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+                <a href="#contact" class="home-portal">
+                    <span class="home-portal__num">04</span>
+                    <div class="home-portal__body">
+                        <h3 class="home-portal__title">Contact</h3>
+                        <p class="home-portal__desc">Parlons de votre projet</p>
+                    </div>
+                    <svg class="home-portal__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
 
     </section><!-- /view home -->
 
