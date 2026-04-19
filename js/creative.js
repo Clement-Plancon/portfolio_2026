@@ -430,7 +430,7 @@ class ViewRouter {
 // ===================== SCROLL ANIMATIONS =====================
 class ScrollAnimations {
     constructor() {
-        this.elements = document.querySelectorAll('.project, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item');
+        this.elements = document.querySelectorAll('.project, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item');
         this.init();
     }
 
@@ -544,6 +544,38 @@ class MobileNav {
     }
 }
 
+// ===================== CONTACT COPY =====================
+class ContactCopy {
+    constructor() {
+        this.btns = document.querySelectorAll('[data-copy-email]');
+        if (!this.btns.length) return;
+        this.btns.forEach(btn => btn.addEventListener('click', (e) => this.copy(e)));
+    }
+
+    async copy(e) {
+        const btn = e.currentTarget;
+        const email = btn.dataset.copyEmail;
+        const label = btn.querySelector('.contact-card__copy-label');
+        try {
+            await navigator.clipboard.writeText(email);
+        } catch {
+            const ta = document.createElement('textarea');
+            ta.value = email;
+            ta.style.cssText = 'position:fixed;left:-9999px;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+        btn.classList.add('is-copied');
+        if (label) label.textContent = 'Copié';
+        setTimeout(() => {
+            btn.classList.remove('is-copied');
+            if (label) label.textContent = 'Copier';
+        }, 2000);
+    }
+}
+
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
     new Cursor();
@@ -553,4 +585,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new ViewRouter();
     new ScrollAnimations();
     new CounterAnimation();
+    new ContactCopy();
 });
