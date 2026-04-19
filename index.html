@@ -1042,91 +1042,178 @@
     <!-- VIEW: Projets -->
     <section class="view view--projets" data-view="projets" aria-hidden="true">
 
-    <!-- Projets (Section 03) -->
-    <section class="section projects" id="projets">
+    <div class="projects-page" id="projets">
         <div class="container">
-            <header class="section__head">
-                <span class="section__num">03</span>
-                <h2 class="section__title">Projets sélectionnés</h2>
-                <p class="section__subtitle">Cliquez sur un projet pour voir les détails</p>
+
+            <!-- Hero -->
+            <header class="projects-hero">
+                <span class="projects-hero__meta">03 · Portfolio — Projets</span>
+                <h1 class="projects-hero__title">
+                    Travaux<br>
+                    <span class="text--accent">sélectionnés.</span>
+                </h1>
+                <p class="projects-hero__lead">
+                    Quatre projets qui illustrent mon approche : comprendre le besoin réel, concevoir la bonne solution, livrer un produit qui tient. Pas une vitrine exhaustive — une sélection honnête.
+                </p>
             </header>
 
-            <div class="projects__grid">
-                <article class="project" data-modal="proj1" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">01</span>
+            <!-- Featured 1 — Bercy Vert -->
+            <article class="proj-feat" data-modal="proj1" data-cursor="view">
+                <span class="proj-feat__rail" aria-hidden="true"></span>
+                <div class="proj-feat__body">
+                    <div class="proj-feat__head">
+                        <span class="proj-feat__num">01</span>
+                        <span class="proj-feat__type">Conception de logiciel</span>
                     </div>
-                    <div class="project__content">
-                        <span class="project__cat">Conception de logiciel – Transition
-                            écologique</span>
-                        <h3 class="project__title">Bercy Vert</h3>
-                        <p class="project__desc">Projet de conception d’un logiciel destiné à
-                            accompagner la démarche de transition verte et écologique.</p>
+                    <h2 class="proj-feat__title">Bercy Vert</h2>
+                    <p class="proj-feat__desc">
+                        Conception d’un logiciel pour accompagner la transition écologique du ministère de l’Économie. Centralisation des actions issues du BEGES, structuration des mesures SPE, cadrage fonctionnel et développement du proof of concept avec les référents ministériels.
+                    </p>
+                    <div class="proj-feat__meta">
+                        <span class="proj-feat__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Min. de l’Économie
+                        </span>
+                        <span class="proj-feat__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            2023
+                        </span>
+                        <span class="proj-feat__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            Chef de projet & dev
+                        </span>
                     </div>
-                    <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
+                    <ul class="proj-feat__stack">
+                        <li>Flutter</li><li>Dart</li><li>Firebase</li><li>Google Vision AI</li><li>Node.js</li>
+                    </ul>
+                    <span class="proj-feat__cta">
+                        Voir le détail
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </span>
+                </div>
+                <div class="proj-feat__visual" aria-hidden="true">
+                    <div class="proj-vis proj-vis--eco">
+                        <div class="proj-vis__layer proj-vis__layer--1"></div>
+                        <div class="proj-vis__layer proj-vis__layer--2"></div>
+                        <div class="proj-vis__accent"></div>
                     </div>
-                </article>
+                </div>
+            </article>
 
-                <article class="project" data-modal="proj2" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">02</span>
+            <!-- Featured 2 — Référentiel Indicateurs -->
+            <article class="proj-feat proj-feat--reverse" data-modal="proj2" data-cursor="view">
+                <span class="proj-feat__rail" aria-hidden="true"></span>
+                <div class="proj-feat__body">
+                    <div class="proj-feat__head">
+                        <span class="proj-feat__num">02</span>
+                        <span class="proj-feat__type">Application web · Dashboard</span>
                     </div>
-                    <div class="project__content">
-                        <span class="project__cat">Application Web</span>
-                        <h3 class="project__title">Référentiel Indicateurs</h3>
-                        <p class="project__desc">Plateforme de centralisation et visualisation des indicateurs métiers pour la prise de décision.</p>
+                    <h2 class="proj-feat__title">Référentiel Indicateurs</h2>
+                    <p class="proj-feat__desc">
+                        Plateforme de centralisation et de visualisation des indicateurs métiers pour les décideurs. Import automatique multi-sources, alertes sur seuils critiques, rapports générés — l’outil qui remplace les 15 fichiers Excel.
+                    </p>
+                    <div class="proj-feat__meta">
+                        <span class="proj-feat__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Administration publique
+                        </span>
+                        <span class="proj-feat__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            2023 — 2024
+                        </span>
+                        <span class="proj-feat__detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                            Développeur fullstack
+                        </span>
                     </div>
-                    <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
+                    <ul class="proj-feat__stack">
+                        <li>Next.js</li><li>Node.js</li><li>PostgreSQL</li><li>Chart.js</li><li>Docker</li>
+                    </ul>
+                    <span class="proj-feat__cta">
+                        Voir le détail
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </span>
+                </div>
+                <div class="proj-feat__visual" aria-hidden="true">
+                    <div class="proj-vis proj-vis--data">
+                        <div class="proj-vis__grid"></div>
+                        <div class="proj-vis__accent"></div>
                     </div>
-                </article>
+                </div>
+            </article>
 
-                <article class="project" data-modal="proj3" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">03</span>
-                    </div>
-                    <div class="project__content">
-                        <span class="project__cat">Recherche utilisateurs & conception de
-                            solutions</span>
-                        <h3 class="project__title">Conception de logiciel pour les saisines de
-                            la Cour des Comptes</h3>
-                        <p class="project__desc">Projet de conception visant à améliorer et
-                            structurer les outils liés au traitement des saisines de la Cour des Comptes.</p>
-                    </div>
-                    <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </article>
+            <!-- Secondary projects -->
+            <section class="proj-secondary">
+                <header class="proj-secondary__head">
+                    <span class="proj-secondary__label">Autres travaux</span>
+                    <span class="proj-secondary__line" aria-hidden="true"></span>
+                </header>
 
-                <article class="project" data-modal="proj4" data-cursor="view">
-                    <div class="project__img">
-                        <div class="project__img-bg"></div>
-                        <span class="project__num">04</span>
-                    </div>
-                    <div class="project__content">
-                        <span class="project__cat">Outil Interne</span>
-                        <h3 class="project__title">Veille Stratégique</h3>
-                        <p class="project__desc">Système automatisé de veille technologique et concurrentielle avec agrégation et analyse de contenus.</p>
-                    </div>
-                    <div class="project__link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                            <path d="M7 17L17 7M17 7H7M17 7V17"/>
-                        </svg>
-                    </div>
-                </article>
-            </div>
+                <div class="proj-secondary__grid">
+
+                    <!-- Saisines Cour des Comptes -->
+                    <article class="proj-card" data-modal="proj3" data-cursor="view">
+                        <div class="proj-card__inner">
+                            <div class="proj-card__head">
+                                <span class="proj-card__num">03</span>
+                                <span class="proj-card__type">Recherche & conception</span>
+                            </div>
+                            <h3 class="proj-card__title">Saisines de la Cour des Comptes</h3>
+                            <p class="proj-card__desc">
+                                Cadrage technique et recherche utilisateur pour structurer les outils de traitement des saisines. Accompagnement du studio de design, entretiens terrain, analyse et synthèse pour orienter les arbitrages de conception.
+                            </p>
+                            <div class="proj-card__meta">
+                                <span>Cour des Comptes</span>
+                                <span>2023</span>
+                            </div>
+                            <ul class="proj-card__stack">
+                                <li>UX Research</li><li>Cadrage technique</li><li>Prototypage</li><li>Co-conception</li>
+                            </ul>
+                            <span class="proj-card__cta">
+                                Détail
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                            </span>
+                        </div>
+                    </article>
+
+                    <!-- Veille Stratégique -->
+                    <article class="proj-card" data-modal="proj4" data-cursor="view">
+                        <div class="proj-card__inner">
+                            <div class="proj-card__head">
+                                <span class="proj-card__num">04</span>
+                                <span class="proj-card__type">Outil interne · IA</span>
+                            </div>
+                            <h3 class="proj-card__title">Veille Stratégique</h3>
+                            <p class="proj-card__desc">
+                                Système automatisé de veille technologique : crawling multi-sources, extraction d’entités, résumés par IA, newsletter personnalisée. Un outil interne qui remplace la veille manuelle par un flux structuré et actionnable.
+                            </p>
+                            <div class="proj-card__meta">
+                                <span>Projet personnel</span>
+                                <span>2024</span>
+                            </div>
+                            <ul class="proj-card__stack">
+                                <li>Python</li><li>Scrapy</li><li>OpenAI</li><li>MongoDB</li><li>React</li>
+                            </ul>
+                            <span class="proj-card__cta">
+                                Détail
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                            </span>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- Closing note -->
+            <footer class="projects-closing">
+                <p class="projects-closing__text">
+                    D’autres projets existent — outils internes, prototypes, contributions open source — mais un portfolio n’est pas un inventaire. Ces quatre travaux reflètent le mieux ma façon de concevoir.
+                </p>
+                <span class="projects-closing__sig">CP · 2024 — 2026</span>
+            </footer>
+
         </div>
-    </section>
+    </div>
 
     </section><!-- /view projets -->
 
