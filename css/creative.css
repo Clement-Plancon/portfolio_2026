@@ -42,9 +42,14 @@
     --space-8: 2rem;
     --space-10: 2.5rem;
     --space-12: 3rem;
+    --space-14: 3.5rem;
     --space-16: 4rem;
     --space-20: 5rem;
     --space-24: 6rem;
+
+    /* Layout */
+    --header-h: 5rem;
+    --page-offset: clamp(7rem, 12vw, 10rem);
 
     /* Transitions */
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -171,7 +176,9 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     align-items: center;
     justify-content: space-between;
     padding: var(--space-6) var(--space-8);
-    background: linear-gradient(to bottom, var(--bg), transparent);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
 .logo {
@@ -325,6 +332,10 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
     .header {
         padding: var(--space-4);
+    }
+
+    :root {
+        --page-offset: 5.5rem;
     }
 
     .header__actions {
@@ -1771,7 +1782,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 /* ===================== PROJECTS — Editorial ===================== */
 .projects-page {
-    padding: clamp(var(--space-16), 8vw, 8rem) 0 clamp(var(--space-20), 10vw, 10rem);
+    padding: var(--page-offset) 0 clamp(var(--space-20), 10vw, 10rem);
 }
 
 /* --- Hero --- */
@@ -1787,7 +1798,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--text) 50%, transparent);
-    margin-bottom: var(--space-6);
+    margin-bottom: clamp(var(--space-8), 3vw, var(--space-12));
 }
 
 .projects-hero__title {
@@ -2271,12 +2282,12 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 @media (max-width: 768px) {
     .projects-page {
-        padding-top: var(--space-10);
+        padding-top: var(--page-offset);
         padding-bottom: var(--space-20);
     }
 
     .projects-hero {
-        margin-bottom: var(--space-14);
+        margin-bottom: var(--space-16);
     }
 
     .proj-feat {
@@ -2311,12 +2322,12 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 /* ===================== CONTACT — Editorial ===================== */
 .contact-page {
-    padding: clamp(var(--space-16), 8vw, 8rem) 0 clamp(var(--space-20), 10vw, 10rem);
+    padding: var(--page-offset) 0 clamp(var(--space-20), 10vw, 10rem);
 }
 
 /* --- Hero --- */
 .contact-hero {
-    margin-bottom: clamp(var(--space-16), 7vw, 7rem);
+    margin-bottom: clamp(var(--space-20), 8vw, 8rem);
     max-width: 52ch;
 }
 
@@ -2327,7 +2338,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: color-mix(in srgb, var(--text) 50%, transparent);
-    margin-bottom: var(--space-6);
+    margin-bottom: clamp(var(--space-8), 3vw, var(--space-12));
 }
 
 .contact-hero__title {
@@ -2768,12 +2779,12 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 @media (max-width: 768px) {
     .contact-page {
-        padding-top: var(--space-10);
+        padding-top: var(--page-offset);
         padding-bottom: var(--space-20);
     }
 
     .contact-hero {
-        margin-bottom: var(--space-14);
+        margin-bottom: var(--space-16);
     }
 
     .purposes-grid {
@@ -3783,15 +3794,15 @@ html {
 /* ===================== COMPETENCES — Page enrichie ===================== */
 
 .view--competences .skills {
-    padding-top: clamp(var(--space-16), 10vw, 8rem);
+    padding-top: var(--page-offset);
     padding-bottom: clamp(var(--space-24), 14vw, 12rem);
 }
 
 /* --- Hero de la page compétences --- */
 .skills-hero {
-    padding: clamp(var(--space-10), 6vw, 5rem) 0 clamp(var(--space-20), 10vw, 8rem);
+    padding: 0 0 clamp(var(--space-20), 8vw, 8rem);
     border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
-    margin-bottom: clamp(var(--space-20), 10vw, 8rem);
+    margin-bottom: clamp(var(--space-20), 8vw, 8rem);
     position: relative;
 }
 
@@ -4280,12 +4291,12 @@ html {
 
 @media (max-width: 768px) {
     .view--competences .skills {
-        padding-top: var(--space-10);
+        padding-top: var(--page-offset);
         padding-bottom: var(--space-20);
     }
 
     .skills-hero {
-        padding: var(--space-8) 0 var(--space-16);
+        padding: 0 0 var(--space-16);
         margin-bottom: var(--space-16);
     }
 
@@ -4387,13 +4398,13 @@ html {
 /* ===================== À PROPOS — Page éditoriale ===================== */
 
 .about-page {
-    padding-top: clamp(var(--space-16), 10vw, 8rem);
+    padding-top: var(--page-offset);
     padding-bottom: clamp(var(--space-24), 14vw, 12rem);
 }
 
 /* --- Hero --- */
 .about-hero {
-    margin-bottom: clamp(var(--space-24), 12vw, 10rem);
+    margin-bottom: clamp(var(--space-20), 8vw, 8rem);
     position: relative;
 }
 
@@ -4995,12 +5006,12 @@ html {
 
 @media (max-width: 768px) {
     .about-page {
-        padding-top: var(--space-10);
+        padding-top: var(--page-offset);
         padding-bottom: var(--space-20);
     }
 
     .about-hero {
-        margin-bottom: var(--space-20);
+        margin-bottom: var(--space-16);
     }
 
     .about-hero__meta {
