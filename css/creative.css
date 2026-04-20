@@ -176,9 +176,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
     align-items: center;
     justify-content: space-between;
     padding: var(--space-6) var(--space-8);
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: linear-gradient(to bottom, var(--bg), transparent);
 }
 
 .logo {
@@ -332,10 +330,6 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
     .header {
         padding: var(--space-4);
-    }
-
-    :root {
-        --page-offset: 5.5rem;
     }
 
     .header__actions {
@@ -1782,7 +1776,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 /* ===================== PROJECTS — Editorial ===================== */
 .projects-page {
-    padding: var(--page-offset) 0 clamp(var(--space-20), 10vw, 10rem);
+    padding: var(--page-offset) 0 clamp(var(--space-24), 14vw, 12rem);
 }
 
 /* --- Hero --- */
@@ -1792,13 +1786,29 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 }
 
 .projects-hero__meta {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
     font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.2em;
+    font-size: var(--text-xs);
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--text) 50%, transparent);
-    margin-bottom: clamp(var(--space-8), 3vw, var(--space-12));
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+    margin-bottom: clamp(var(--space-10), 4vw, var(--space-16));
+}
+
+.projects-hero__num {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+    border-radius: 2px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.projects-hero__path::before {
+    content: "— ";
+    opacity: 0.5;
 }
 
 .projects-hero__title {
@@ -2290,6 +2300,10 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
         margin-bottom: var(--space-16);
     }
 
+    .projects-hero__meta {
+        margin-bottom: var(--space-8);
+    }
+
     .proj-feat {
         padding: var(--space-6) var(--space-5);
     }
@@ -2322,7 +2336,7 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
 /* ===================== CONTACT — Editorial ===================== */
 .contact-page {
-    padding: var(--page-offset) 0 clamp(var(--space-20), 10vw, 10rem);
+    padding: var(--page-offset) 0 clamp(var(--space-24), 14vw, 12rem);
 }
 
 /* --- Hero --- */
@@ -2332,13 +2346,29 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 }
 
 .contact-hero__meta {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
     font-family: 'Space Mono', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.2em;
+    font-size: var(--text-xs);
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--text) 50%, transparent);
-    margin-bottom: clamp(var(--space-8), 3vw, var(--space-12));
+    color: color-mix(in srgb, var(--text) 55%, transparent);
+    margin-bottom: clamp(var(--space-10), 4vw, var(--space-16));
+}
+
+.contact-hero__num {
+    display: inline-block;
+    padding: 4px 10px;
+    border: 1px solid color-mix(in srgb, var(--text) 25%, transparent);
+    border-radius: 2px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.contact-hero__path::before {
+    content: "— ";
+    opacity: 0.5;
 }
 
 .contact-hero__title {
@@ -2785,6 +2815,10 @@ body:has([data-cursor="email"]:hover) .cursor__dot {
 
     .contact-hero {
         margin-bottom: var(--space-16);
+    }
+
+    .contact-hero__meta {
+        margin-bottom: var(--space-8);
     }
 
     .purposes-grid {
