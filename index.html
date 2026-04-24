@@ -111,16 +111,6 @@
                     <span class="nav__particle"></span>
                 </span>
             </a>
-            <a href="labs.html" class="nav__link nav__link--styled nav__link--labs">
-                <span class="nav__styled-text">Labs</span>
-                <span class="nav__particles">
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                    <span class="nav__particle"></span>
-                </span>
-            </a>
             <a href="https://datametre.netlify.app/" target="_blank" rel="noopener noreferrer" class="nav__link nav__link--styled nav__link--dataviz" aria-label="Datametre (ouvre dans un nouvel onglet)">
                 <span class="nav__dot" aria-hidden="true"></span>
                 <span class="nav__styled-text">Datametre</span>
@@ -1040,17 +1030,24 @@
                     <span class="text--accent">sélectionnés.</span>
                 </h1>
                 <p class="projects-hero__lead">
-                    Quatre projets qui illustrent mon approche : comprendre le besoin réel, concevoir la bonne solution, livrer un produit qui tient. Pas une vitrine exhaustive — une sélection honnête.
+                    Projets professionnels, personnels et expérimentaux — une sélection honnête de ce que je construis.
                 </p>
+                <nav class="proj-filters" aria-label="Filtrer les projets">
+                    <button class="proj-filter is-active" data-filter="all">Tous</button>
+                    <button class="proj-filter" data-filter="pro">Pro</button>
+                    <button class="proj-filter" data-filter="perso">Perso</button>
+                    <button class="proj-filter" data-filter="experimental">Expérimental</button>
+                </nav>
             </header>
 
             <!-- Featured 1 — Bercy Vert -->
-            <article class="proj-feat" data-modal="proj1" data-cursor="view">
+            <article class="proj-feat proj-item" data-modal="proj1" data-cursor="view" data-category="pro">
                 <span class="proj-feat__rail" aria-hidden="true"></span>
                 <div class="proj-feat__body">
                     <div class="proj-feat__head">
                         <span class="proj-feat__num">01</span>
                         <span class="proj-feat__type">Conception de logiciel</span>
+                        <span class="proj-badge proj-badge--pro">Pro</span>
                     </div>
                     <h2 class="proj-feat__title">Bercy Vert</h2>
                     <p class="proj-feat__desc">
@@ -1088,12 +1085,13 @@
             </article>
 
             <!-- Featured 2 — Référentiel Indicateurs -->
-            <article class="proj-feat proj-feat--reverse" data-modal="proj2" data-cursor="view">
+            <article class="proj-feat proj-feat--reverse proj-item" data-modal="proj2" data-cursor="view" data-category="pro">
                 <span class="proj-feat__rail" aria-hidden="true"></span>
                 <div class="proj-feat__body">
                     <div class="proj-feat__head">
                         <span class="proj-feat__num">02</span>
                         <span class="proj-feat__type">Application web · Dashboard</span>
+                        <span class="proj-badge proj-badge--pro">Pro</span>
                     </div>
                     <h2 class="proj-feat__title">Référentiel Indicateurs</h2>
                     <p class="proj-feat__desc">
@@ -1132,18 +1130,19 @@
             <!-- Secondary projects -->
             <section class="proj-secondary">
                 <header class="proj-secondary__head">
-                    <span class="proj-secondary__label">Autres travaux</span>
+                    <span class="proj-secondary__label">Autres projets</span>
                     <span class="proj-secondary__line" aria-hidden="true"></span>
                 </header>
 
                 <div class="proj-secondary__grid">
 
                     <!-- Saisines Cour des Comptes -->
-                    <article class="proj-card" data-modal="proj3" data-cursor="view">
+                    <article class="proj-card proj-item" data-modal="proj3" data-cursor="view" data-category="pro">
                         <div class="proj-card__inner">
                             <div class="proj-card__head">
                                 <span class="proj-card__num">03</span>
                                 <span class="proj-card__type">Recherche & conception</span>
+                                <span class="proj-badge proj-badge--pro">Pro</span>
                             </div>
                             <h3 class="proj-card__title">Saisines de la Cour des Comptes</h3>
                             <p class="proj-card__desc">
@@ -1164,11 +1163,12 @@
                     </article>
 
                     <!-- Veille Stratégique -->
-                    <article class="proj-card" data-modal="proj4" data-cursor="view">
+                    <article class="proj-card proj-item" data-modal="proj4" data-cursor="view" data-category="perso">
                         <div class="proj-card__inner">
                             <div class="proj-card__head">
                                 <span class="proj-card__num">04</span>
                                 <span class="proj-card__type">Outil interne · IA</span>
+                                <span class="proj-badge proj-badge--perso">Perso</span>
                             </div>
                             <h3 class="proj-card__title">Veille Stratégique</h3>
                             <p class="proj-card__desc">
@@ -1188,13 +1188,35 @@
                         </div>
                     </article>
 
+                    <!-- SafePing -->
+                    <article class="proj-card proj-item" data-category="experimental">
+                        <div class="proj-card__inner">
+                            <div class="proj-card__head">
+                                <span class="proj-card__num">05</span>
+                                <span class="proj-card__type">Monitoring réseau</span>
+                                <span class="proj-badge proj-badge--experimental">Expérimental</span>
+                            </div>
+                            <h3 class="proj-card__title">SafePing</h3>
+                            <p class="proj-card__desc">
+                                Sonde légère de monitoring réseau pour détecter les anomalies de connectivité. Concept de surveillance autonome avec alertes en temps réel.
+                            </p>
+                            <div class="proj-card__meta">
+                                <span>Projet expérimental</span>
+                                <span>2025</span>
+                            </div>
+                            <ul class="proj-card__stack">
+                                <li>Python</li><li>Network</li><li>CLI</li>
+                            </ul>
+                        </div>
+                    </article>
+
                 </div>
             </section>
 
             <!-- Closing note -->
             <footer class="projects-closing">
                 <p class="projects-closing__text">
-                    D’autres projets existent — outils internes, prototypes, contributions open source — mais un portfolio n’est pas un inventaire. Ces quatre travaux reflètent le mieux ma façon de concevoir.
+                    D’autres projets existent — outils internes, prototypes, contributions open source — mais un portfolio n’est pas un inventaire. Cette sélection reflète le mieux ma façon de concevoir.
                 </p>
                 <span class="projects-closing__sig">CP · 2024 — 2026</span>
             </footer>

@@ -576,6 +576,40 @@ class ContactCopy {
     }
 }
 
+// ===================== PROJECT FILTERS =====================
+class ProjectFilters {
+    constructor() {
+        this.filters = document.querySelectorAll('.proj-filter');
+        this.items = document.querySelectorAll('.proj-item');
+        this.secondary = document.querySelector('.proj-secondary');
+        if (!this.filters.length || !this.items.length) return;
+        this.init();
+    }
+
+    init() {
+        this.filters.forEach(btn => {
+            btn.addEventListener('click', () => this.filter(btn));
+        });
+    }
+
+    filter(btn) {
+        const category = btn.dataset.filter;
+
+        this.filters.forEach(f => f.classList.remove('is-active'));
+        btn.classList.add('is-active');
+
+        this.items.forEach(item => {
+            const match = category === 'all' || item.dataset.category === category;
+            item.classList.toggle('is-hidden', !match);
+        });
+
+        if (this.secondary) {
+            const visibleCards = this.secondary.querySelectorAll('.proj-item:not(.is-hidden)');
+            this.secondary.style.display = visibleCards.length === 0 ? 'none' : '';
+        }
+    }
+}
+
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
     new Cursor();
@@ -586,4 +620,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new ScrollAnimations();
     new CounterAnimation();
     new ContactCopy();
+    new ProjectFilters();
 });
