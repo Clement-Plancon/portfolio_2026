@@ -9,7 +9,7 @@ const modalContent = {
     exp1: {
         title: 'Laboratoire de Police Scientifique de Paris',
         subtitle: 'Chef adjoint · Section informatique — Ingénieur SIC',
-        period: '2022 — Présent',
+        period: '2024 — Présent',
         location: 'Paris',
         description: "Au sein du Laboratoire de police scientifique, je pilote une équipe de quatre développeurs logiciel et j'arbitre les choix techniques au service des outils utilisés par les enquêteurs.",
         responsibilities: [

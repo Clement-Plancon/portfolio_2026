@@ -4592,15 +4592,20 @@ html {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #34d399;
-    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55), 0 0 6px rgba(52, 211, 153, 0.7);
+    background: #d33434 /* #34d399 */;
+    box-shadow: 0 0 0 0 rgba(211, 52, 52, 0.55), 0 0 6px rgba(211, 52, 52, 0.7) /* 0 0 0 0 rgba(52, 211, 153, 0.55), 0 0 6px rgba(52, 211, 153, 0.7) */;
     animation: about-card-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes about-card-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(211, 52, 52, 0.5), 0 0 6px rgba(211, 52, 52, 0.6); transform: scale(1); }
+    50% { box-shadow: 0 0 0 7px rgba(211, 52, 86, 0), 0 0 12px rgba(211, 52, 52, 0.85); transform: scale(1.18); }
+}
+
+/* @keyframes about-card-pulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5), 0 0 6px rgba(52, 211, 153, 0.6); transform: scale(1); }
     50% { box-shadow: 0 0 0 7px rgba(52, 211, 153, 0), 0 0 12px rgba(52, 211, 153, 0.85); transform: scale(1.18); }
-}
+} */
 
 .about-card__list {
     margin: 0;
