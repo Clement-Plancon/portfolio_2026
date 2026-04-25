@@ -430,7 +430,7 @@ class ViewRouter {
 // ===================== SCROLL ANIMATIONS =====================
 class ScrollAnimations {
     constructor() {
-        this.elements = document.querySelectorAll('.proj-card, .proj-safeping, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item');
+        this.elements = document.querySelectorAll('.proj-card, .proj-safeping, .proj-datametre, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item');
         this.init();
     }
 
