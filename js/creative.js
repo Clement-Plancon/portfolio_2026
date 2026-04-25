@@ -430,7 +430,7 @@ class ViewRouter {
 // ===================== SCROLL ANIMATIONS =====================
 class ScrollAnimations {
     constructor() {
-        this.elements = document.querySelectorAll('.proj-feat, .proj-card, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item');
+        this.elements = document.querySelectorAll('.proj-card, .skill-card, .skill-block, .principle, .journey-item, .toolbox-group, .signature-item, .purpose, .collab-item, .presence-card, .faq-item');
         this.init();
     }
 
@@ -581,7 +581,6 @@ class ProjectFilters {
     constructor() {
         this.filters = document.querySelectorAll('.proj-filter');
         this.items = document.querySelectorAll('.proj-item');
-        this.secondary = document.querySelector('.proj-secondary');
         if (!this.filters.length || !this.items.length) return;
         this.init();
     }
@@ -602,11 +601,6 @@ class ProjectFilters {
             const match = category === 'all' || item.dataset.category === category;
             item.classList.toggle('is-hidden', !match);
         });
-
-        if (this.secondary) {
-            const visibleCards = this.secondary.querySelectorAll('.proj-item:not(.is-hidden)');
-            this.secondary.style.display = visibleCards.length === 0 ? 'none' : '';
-        }
     }
 }
 
