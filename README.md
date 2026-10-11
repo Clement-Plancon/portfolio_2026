@@ -3,10 +3,10 @@
 Portfolio de Clément Plançon — HTML, CSS et JavaScript, sans framework ni build.
 
 ```
-index.html          page unique (À propos, Expérience, Projets, Compétences, Contact)
+index.html          page unique (Projets, Expérience, À propos, Contact)
 css/style.css
 js/main.js          section active dans la navigation + année du footer
-images/             image Open Graph (1200×630) et apple-touch-icon
+images/             image Open Graph (1200×630), apple-touch-icon, aperçu de Datametre
 favicon.svg
 robots.txt, sitemap.xml
 ```
