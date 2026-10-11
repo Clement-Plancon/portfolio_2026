@@ -671,6 +671,43 @@ body.nav-open .drawer { transform: translateY(0); }
     height: auto;
 }
 
+/* Featured work variant — full-width hero visual */
+.work-item--featured {
+    grid-template-columns: 60px minmax(0, 1fr);
+    grid-template-areas:
+        "num  body"
+        "span diagram";
+    gap: var(--s-5) var(--s-7);
+    padding-bottom: var(--s-8);
+}
+.work-item--featured .work-item__num { grid-area: num; display: flex; flex-direction: column; gap: 8px; }
+.work-item--featured .work-item__body { grid-area: body; max-width: 60ch; }
+.work-item--featured .work-item__diagram {
+    grid-area: diagram;
+    min-height: 380px;
+    padding: var(--s-7);
+    margin-top: var(--s-4);
+}
+.work-item--featured .work-item__diagram svg {
+    max-width: 560px;
+}
+.work-item--featured .work-item__title { font-size: var(--fs-4xl); }
+.work-item--featured .work-item__desc { font-size: var(--fs-lg); max-width: 56ch; }
+
+.work-item__badge {
+    display: inline-block;
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: 2px;
+    font-weight: 500;
+    width: fit-content;
+}
+
 @media (max-width: 900px) {
     .work-item {
         grid-template-columns: 1fr;
@@ -679,6 +716,18 @@ body.nav-open .drawer { transform: translateY(0); }
     .work-item__num { padding-top: 0; }
     .work-item__diagram { min-height: 180px; order: -1; }
     .work-item__title { font-size: var(--fs-2xl); }
+
+    .work-item--featured {
+        grid-template-columns: 1fr;
+        grid-template-areas: none;
+        padding-bottom: var(--s-7);
+    }
+    .work-item--featured .work-item__num,
+    .work-item--featured .work-item__body,
+    .work-item--featured .work-item__diagram { grid-area: auto; }
+    .work-item--featured .work-item__diagram { min-height: 220px; padding: var(--s-4); }
+    .work-item--featured .work-item__title { font-size: var(--fs-2xl); }
+    .work-item--featured .work-item__desc { font-size: var(--fs-md); }
 }
 
 /* =========================================================
