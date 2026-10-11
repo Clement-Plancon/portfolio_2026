@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#f6f4ee">
+    <title>SafePing — Clément Plançon</title>
+    <meta name="description" content="Case study — SafePing : application mobile de sécurité personnelle, privacy-first, mode façade, contacts de confiance, zéro compte.">
+    <link rel="canonical" href="https://clementplancon.fr/work/safeping.html">
+    <meta property="og:title" content="SafePing — Clément Plançon">
+    <meta property="og:description" content="Application mobile de sécurité personnelle, privacy-first.">
+    <meta property="og:type" content="article">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/atlas.css">
+</head>
+<body>
+    <a class="skip-link" href="#case">Aller au contenu</a>
+
+    <header class="nav">
+        <div class="nav__inner">
+            <a href="../index.html#top" class="nav__brand">Clément Plançon</a>
+            <nav class="nav__links" aria-label="Primary">
+                <a class="nav__link" href="../index.html#work" aria-current="true">Work</a>
+                <a class="nav__link" href="../index.html#experience">Experience</a>
+                <a class="nav__link" href="../index.html#about">About</a>
+                <a class="nav__link" href="../index.html#contact">Contact</a>
+            </nav>
+            <div class="nav__aside">
+                <button class="icon-btn" data-theme-toggle type="button" aria-label="Basculer thème">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+                        <path d="M8 2.5V1M8 15v-1.5M13.5 8H15M1 8h1.5M12.1 3.9l1-1M2.9 13.1l1-1M12.1 12.1l1 1M2.9 2.9l1 1"/>
+                        <circle cx="8" cy="8" r="3"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="case">
+        <section class="case__hero">
+            <div class="wrap">
+                <a href="../index.html#work" class="case__back">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2L4 6l4 4"/></svg>
+                    Retour au portfolio
+                </a>
+
+                <div class="case__num">W—03 <span class="mono">· Case study</span></div>
+                <h1 class="case__title reveal">SafePing</h1>
+                <p class="case__tagline reveal" data-delay="1">
+                    Application mobile de sécurité personnelle, pensée pour les situations où un téléphone ne doit pas trahir celui qui le porte. Mode façade, contacts de confiance, GPS optionnel, zéro compte.
+                </p>
+
+                <dl class="case__meta reveal" data-delay="2">
+                    <div><dt>Rôle</dt><dd>Design · Architecture · Dev</dd></div>
+                    <div><dt>Contexte</dt><dd>Projet d'auteur · privacy-first</dd></div>
+                    <div><dt>Période</dt><dd>2025 — en développement</dd></div>
+                    <div><dt>Stack</dt><dd>Flutter · Dart · Local-first</dd></div>
+                </dl>
+
+                <div class="case__visual reveal" data-delay="3">
+                    <svg class="diag" viewBox="0 0 460 260" fill="none">
+                        <!-- Phone 1: facade -->
+                        <text x="40" y="20" class="label">01 — FAÇADE</text>
+                        <rect x="40" y="30" width="110" height="200" rx="10"/>
+                        <rect x="48" y="46" width="94" height="168" rx="2"/>
+                        <text x="95" y="80" text-anchor="middle">Notes</text>
+                        <line x1="60" y1="100" x2="130" y2="100"/>
+                        <line x1="60" y1="118" x2="130" y2="118"/>
+                        <line x1="60" y1="136" x2="110" y2="136"/>
+                        <line x1="60" y1="162" x2="130" y2="162"/>
+                        <line x1="60" y1="180" x2="118" y2="180"/>
+
+                        <!-- Arrow between -->
+                        <path d="M160 130 L190 130" class="flow"/>
+                        <text x="175" y="125" text-anchor="middle" class="label">geste</text>
+
+                        <!-- Phone 2: SOS mode -->
+                        <text x="200" y="20" class="label">02 — SOS</text>
+                        <rect x="200" y="30" width="110" height="200" rx="10"/>
+                        <rect x="208" y="46" width="94" height="168" rx="2" class="fill-accent" opacity="0.08"/>
+                        <circle cx="255" cy="110" r="30" class="fill-accent pulse"/>
+                        <text x="255" y="114" text-anchor="middle" fill="#ffffff" font-size="12">!</text>
+                        <text x="255" y="170" text-anchor="middle">Envoi en cours</text>
+                        <text x="255" y="186" text-anchor="middle" class="label">C1 · C2 · C3</text>
+
+                        <!-- Flow to contacts -->
+                        <path d="M310 110 L370 60" class="flow"/>
+                        <path d="M310 130 L370 130" class="flow"/>
+                        <path d="M310 150 L370 200" class="flow"/>
+
+                        <text x="370" y="20" class="label">03 — CONTACTS</text>
+                        <circle cx="400" cy="60" r="18"/>
+                        <text x="400" y="64" text-anchor="middle" class="label">C1</text>
+                        <circle cx="400" cy="130" r="18"/>
+                        <text x="400" y="134" text-anchor="middle" class="label">C2</text>
+                        <circle cx="400" cy="200" r="18"/>
+                        <text x="400" y="204" text-anchor="middle" class="label">C3</text>
+
+                        <text x="40" y="252" class="label">Données locales uniquement. Pas de compte, pas de cloud par défaut.</text>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <section class="case__section">
+            <aside><div class="case__section-num">01</div><div class="case__section-label">Overview</div></aside>
+            <div class="case__body">
+                <p>
+                    SafePing est une application mobile pensée pour une catégorie précise d'usagers : des personnes exposées, parfois accompagnées, qui ont besoin de pouvoir déclencher une alerte <strong>sans que le téléphone n'ait l'air d'une app d'alerte</strong>.
+                </p>
+                <p>
+                    L'app se présente comme une appli de notes anodine. Un geste connu de l'utilisateur bascule en mode SOS, envoie un message à des contacts prédéfinis, et peut partager une position si l'utilisateur l'a autorisée en amont. Aucune donnée ne quitte l'appareil tant qu'il n'y a pas d'alerte active.
+                </p>
+            </div>
+        </section>
+
+        <section class="case__section">
+            <aside><div class="case__section-num">02</div><div class="case__section-label">Le problème</div></aside>
+            <div class="case__body">
+                <p>
+                    Les apps de sécurité existantes partent du principe que le téléphone est <strong>une alliée visible</strong>. Dans les situations où le téléphone peut être inspecté — violences conjugales, situations à risque — cette hypothèse ne tient pas.
+                </p>
+                <p>
+                    L'app devait disparaître dans le paysage de l'appareil, être simple à expliquer en deux minutes, et ne pas demander de compte ni de configuration cloud.
+                </p>
+            </div>
+        </section>
+
+        <section class="case__section">
+            <aside><div class="case__section-num">03</div><div class="case__section-label">Approche</div></aside>
+            <div class="case__body">
+                <ul>
+                    <li><strong>Mode façade</strong> — Interface de notes convaincante : on peut y écrire, les notes sont persistées, elles ont l'air réelles.</li>
+                    <li><strong>Déclencheur caché</strong> — Un geste précis, choisi par l'utilisateur, active le mode SOS. Pas de bouton visible.</li>
+                    <li><strong>Local-first</strong> — Tout vit dans l'appareil. Les contacts de confiance sont enregistrés localement, le canal d'envoi est SMS natif en premier recours.</li>
+                    <li><strong>Zéro compte</strong> — Pas d'inscription, pas de serveur, pas de connexion internet obligatoire pour le fonctionnement courant.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="case__section">
+            <aside><div class="case__section-num">04</div><div class="case__section-label">Décisions &amp; compromis</div></aside>
+            <div class="case__body">
+                <h3>Flutter plutôt que natif</h3>
+                <p>
+                    Projet d'auteur, une seule base de code pour iOS et Android. Les sensibilités tactiles exigeaient quelques patchs natifs, mais Flutter couvre 90% du besoin sans compromis sur la réactivité.
+                </p>
+                <h3>Pas de cloud par défaut, point.</h3>
+                <p>
+                    La tentation existait de proposer "une synchronisation sécurisée". Elle a été écartée. Un backend crée une surface qu'on ne peut pas garantir à cent pour cent. Le choix a été de rester local, et d'assumer qu'un changement de téléphone demande une reconfiguration — c'est le prix de la discrétion.
+                </p>
+                <h3>Pas de notifications</h3>
+                <p>
+                    L'app ne pousse rien. Elle n'apparaît pas dans la barre d'état. Elle ne demande que les permissions nécessaires au moment où elles le sont, pas en bloc à l'installation.
+                </p>
+            </div>
+        </section>
+
+        <section class="case__section">
+            <aside><div class="case__section-num">05</div><div class="case__section-label">Statut &amp; suite</div></aside>
+            <div class="case__body">
+                <p>
+                    En développement. Les parcours principaux fonctionnent, le mode façade est stable, le déclencheur est en calibration. L'étape suivante est un cycle de tests dans un cadre associatif, avec des usagers réels, pour vérifier que la gestuelle reste discrète en situation.
+                </p>
+                <p>
+                    Je ne communique volontairement pas de date de sortie. Un outil de ce type ne sort pas tant qu'il n'est pas prêt.
+                </p>
+            </div>
+        </section>
+
+        <section class="case__next">
+            <div class="wrap">
+                <div class="case__next-label">Case study suivante</div>
+                <a href="datametre.html" class="case__next-link">
+                    <span>
+                        <span class="mono" style="display: block; margin-bottom: 6px;">W—04</span>
+                        <span class="case__next-title">Datametre</span>
+                    </span>
+                    <span class="case__next-arrow" aria-hidden="true">→</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer">
+            <div>
+                <div class="footer__brand">Clément Plançon</div>
+                <div class="footer__loc">PARIS / FR · 48.8566° N · 2.3522° E</div>
+            </div>
+            <div class="footer__right">
+                <div class="footer__links">
+                    <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener">GitHub</a>
+                    <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener">LinkedIn</a>
+                    <a href="mailto:plancon.clem.pro@gmail.com">Email</a>
+                </div>
+                <div class="footer__meta">
+                    © <span id="year">2026</span> · Clément Plançon · Built with web standards
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/atlas.js"></script>
+</body>
+</html>
