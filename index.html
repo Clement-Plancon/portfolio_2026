@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="color-scheme" content="light dark">
-    <meta name="theme-color" content="#f6f4ee">
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#0d1326">
 
     <title>Clément Plançon — Ingénieur logiciel &amp; Tech Lead</title>
-    <meta name="description" content="Ingénieur logiciel et Tech Lead à Paris. Je conçois des logiciels métiers, des outils internes et des produits numériques pour des environnements où la simplicité et la fiabilité comptent vraiment.">
+    <meta name="description" content="Ingénieur logiciel et Tech Lead basé à Paris. Développement, architecture et conception de produits numériques.">
     <link rel="canonical" href="https://clementplancon.fr/">
 
     <meta property="og:type" content="profile">
     <meta property="og:title" content="Clément Plançon — Ingénieur logiciel &amp; Tech Lead">
-    <meta property="og:description" content="Ingénieur logiciel et Tech Lead à Paris. Logiciels métiers, outils internes, produits numériques.">
+    <meta property="og:description" content="Ingénieur logiciel et Tech Lead basé à Paris. Développement, architecture et conception de produits numériques.">
     <meta property="og:url" content="https://clementplancon.fr/">
     <meta property="og:locale" content="fr_FR">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/atlas.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <script type="application/ld+json">
     {
@@ -31,7 +31,7 @@
       "jobTitle": "Ingénieur logiciel & Tech Lead",
       "worksFor": {
         "@type": "Organization",
-        "name": "Ministère de l'Intérieur"
+        "name": "Laboratoire de Police Scientifique de Paris"
       },
       "address": {
         "@type": "PostalAddress",
@@ -42,660 +42,354 @@
       "sameAs": [
         "https://github.com/Clement-Plancon",
         "https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/"
-      ],
-      "knowsAbout": [
-        "Software architecture", "Product engineering", "Technical leadership",
-        "TypeScript", "React", "Node.js", "Python", "PostgreSQL", "Applied AI"
       ]
     }
     </script>
 </head>
 <body>
-    <a class="skip-link" href="#work">Aller au contenu</a>
+    <a class="skip" href="#about">Aller au contenu</a>
 
-    <!-- ===================== NAV ===================== -->
-    <header class="nav">
-        <div class="nav__inner">
-            <a href="#top" class="nav__brand" aria-label="Clément Plançon — accueil">Clément Plançon</a>
+    <div class="layout">
+        <!-- ===================== SIDEBAR ===================== -->
+        <aside class="side">
+            <header>
+                <h1 class="side__name">Clément Plançon</h1>
+                <p class="side__role">Ingénieur logiciel &amp; Tech Lead</p>
+                <p class="side__pitch">
+                    Je conçois des logiciels métiers et des produits numériques simples, fiables et maintenables.
+                </p>
+            </header>
 
-            <nav class="nav__links" aria-label="Primary">
-                <a class="nav__link" data-nav-to="work" href="#work">Projets</a>
-                <a class="nav__link" data-nav-to="experience" href="#experience">Expérience</a>
-                <a class="nav__link" data-nav-to="about" href="#about">À propos</a>
-                <a class="nav__link" data-nav-to="contact" href="#contact">Contact</a>
+            <nav class="side__nav" aria-label="Navigation principale">
+                <a href="#about" class="nav-link" data-nav-to="about">
+                    <span class="nav-link__indicator" aria-hidden="true"></span>
+                    <span>À propos</span>
+                </a>
+                <a href="#experience" class="nav-link" data-nav-to="experience">
+                    <span class="nav-link__indicator" aria-hidden="true"></span>
+                    <span>Expérience</span>
+                </a>
+                <a href="#projects" class="nav-link" data-nav-to="projects">
+                    <span class="nav-link__indicator" aria-hidden="true"></span>
+                    <span>Projets</span>
+                </a>
+                <a href="#contact" class="nav-link" data-nav-to="contact">
+                    <span class="nav-link__indicator" aria-hidden="true"></span>
+                    <span>Contact</span>
+                </a>
             </nav>
 
-            <div class="nav__aside">
-                <button class="icon-btn" data-cmdk-open type="button" aria-label="Ouvrir la palette de commandes">
-                    <span class="icon-btn__kbd">⌘K</span>
-                </button>
-                <button class="icon-btn" data-theme-toggle type="button" aria-label="Basculer thème clair / sombre">
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
-                        <path d="M8 2.5V1M8 15v-1.5M13.5 8H15M1 8h1.5M12.1 3.9l1-1M2.9 13.1l1-1M12.1 12.1l1 1M2.9 2.9l1 1"/>
-                        <circle cx="8" cy="8" r="3"/>
-                    </svg>
-                </button>
-                <button class="nav__burger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="drawer">
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </header>
+            <ul class="side__socials" aria-label="Liens">
+                <li>
+                    <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.19.69-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.95.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.27-5.23-5.67 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.17.91-.25 1.89-.38 2.86-.38s1.95.13 2.86.38c2.19-1.48 3.15-1.17 3.15-1.17.62 1.58.23 2.75.11 3.04.73.8 1.18 1.82 1.18 3.07 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.06.78 2.15 0 1.55-.01 2.8-.01 3.18 0 .31.21.68.8.56C20.21 21.38 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.34V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29zM5.34 7.43a2.07 2.07 0 1 1 0-4.15 2.07 2.07 0 0 1 0 4.15zm1.78 13.02H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0z"/></svg>
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:plancon.clem.pro@gmail.com" aria-label="Email">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </a>
+                </li>
+            </ul>
+        </aside>
 
-    <!-- Mobile drawer -->
-    <aside id="drawer" class="drawer" aria-label="Navigation">
-        <a class="drawer__link" href="#work"><span class="mono">01 /</span>Projets</a>
-        <a class="drawer__link" href="#experience"><span class="mono">02 /</span>Expérience</a>
-        <a class="drawer__link" href="#about"><span class="mono">03 /</span>À propos</a>
-        <a class="drawer__link" href="#expertise"><span class="mono">04 /</span>Expertise</a>
-        <a class="drawer__link" href="#contact"><span class="mono">05 /</span>Contact</a>
-        <div class="drawer__footer">
-            <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="mailto:plancon.clem.pro@gmail.com">Email</a>
-        </div>
-    </aside>
-
-    <main id="top">
-        <!-- ===================== HERO ===================== -->
-        <section class="hero" data-section="top">
-            <div class="hero__inner">
-                <div class="hero__coord" aria-hidden="true">
-                    <span>PARIS / FR</span>
-                    <span>48.8566° N</span>
-                    <span>2.3522° E</span>
+        <!-- ===================== MAIN ===================== -->
+        <main>
+            <!-- ========== ABOUT ========== -->
+            <section id="about" class="section about" aria-labelledby="about-title">
+                <div class="section__sticky-label" id="about-title">À propos</div>
+                <div class="reveal">
+                    <p>
+                        Je suis ingénieur logiciel. Je travaille aujourd'hui au <a href="https://www.police-scientifique.interieur.gouv.fr/" target="_blank" rel="noopener">Laboratoire de police scientifique de Paris</a> (ministère de l'Intérieur), où j'encadre une équipe de quatre développeurs et conçois les applications métiers utilisées par les enquêteurs.
+                    </p>
+                    <p>
+                        Ce qui m'intéresse : poser une architecture tenable, écrire du code lisible, livrer des interfaces claires. L'IA appliquée aussi, quand c'est pertinent — avec des garde-fous, pas comme démo.
+                    </p>
+                    <p>
+                        En parallèle, je code sur des projets d'auteur plus libres et je contribue au collectif <strong>Outils Publics</strong> autour de la donnée publique. Le code que je préfère est celui qu'on comprend encore six mois plus tard.
+                    </p>
                 </div>
+            </section>
 
-                <div class="hero__pre reveal">001 / Portfolio — 2026</div>
-
-                <h1 class="hero__name reveal" data-delay="1">Clément Plançon</h1>
-
-                <p class="hero__role reveal" data-delay="2">
-                    Ingénieur logiciel<br>
-                    <em>&amp; Tech Lead</em>
-                </p>
-
-                <p class="hero__pitch reveal" data-delay="3">
-                    Je conçois des logiciels métiers, des outils internes et des produits numériques pour des environnements où la simplicité et la fiabilité comptent vraiment.
-                </p>
-
-                <div class="hero__footline reveal" data-delay="4">
-                    <span class="hero__status">
-                        <span class="dot" aria-hidden="true"></span>
-                        <span><strong>Actuellement</strong> &nbsp;/&nbsp; ministère de l'Intérieur · Paris</span>
-                    </span>
-                </div>
-
-                <a href="#work" class="hero__scroll reveal" data-delay="4" aria-label="Voir les projets">
-                    <span>Projets sélectionnés</span>
-                    <span class="hero__scroll-line" aria-hidden="true"></span>
-                </a>
-            </div>
-        </section>
-
-        <!-- ===================== 01 / WORK ===================== -->
-        <section class="sec" id="work" data-section="work">
-            <div class="wrap">
-                <header class="sec__head reveal">
-                    <span class="sec__num">01 /</span>
-                    <h2 class="sec__title">Projets sélectionnés</h2>
-                    <span class="sec__kicker">4 projets · 2022 → 2026</span>
-                </header>
-
-                <ol class="work-list">
-                    <!-- 01 Priorisation (featured) -->
-                    <li class="work-item work-item--featured reveal">
-                        <div class="work-item__num">W—01 <span class="work-item__badge">Featured</span></div>
-                        <div class="work-item__body">
-                            <div class="work-item__meta">
-                                <span>Application métier</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>2026</span>
-                            </div>
-                            <a href="work/prioritisation.html" class="work-item__title">
-                                Priorisation
-                                <span class="work-item__arrow" aria-hidden="true">↗</span>
-                            </a>
-                            <p class="work-item__desc">
-                                Une application conçue pour structurer et prioriser des saisines dans un environnement contraint. On décide vite, on trace les choix, on tient la charge dans la durée.
+            <!-- ========== EXPERIENCE ========== -->
+            <section id="experience" class="section" aria-labelledby="exp-title">
+                <div class="section__sticky-label" id="exp-title">Expérience</div>
+                <ol class="jobs">
+                    <li class="job reveal">
+                        <div class="job__dates">2024 — Présent</div>
+                        <div class="job__body">
+                            <h3 class="job__role">
+                                Tech Lead · Section informatique
+                                <span class="job__role-arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="job__org">Laboratoire de police scientifique de Paris · Ministère de l'Intérieur</div>
+                            <p class="job__desc">
+                                Pilotage d'une équipe de quatre développeurs, arbitrages techniques et fiabilisation des outils métiers utilisés par les enquêteurs. Encadrement, revues, structuration des pratiques de la section.
                             </p>
-                            <dl class="work-item__attrs">
-                                <div class="work-item__attr">
-                                    <dt>Rôle</dt><dd>Architecture · Produit · Dev</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Contexte</dt><dd>Ministère de l'Intérieur</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Stack</dt><dd>PHP · PostgreSQL · Docker</dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="work-item__diagram" aria-hidden="true">
-                            <svg class="diag" viewBox="0 0 560 320" fill="none">
-                                <!-- Column labels -->
-                                <text x="20" y="22" class="label">01 — ENTRÉE</text>
-                                <text x="210" y="22" class="label">02 — SCORING</text>
-                                <text x="420" y="22" class="label">03 — ROUTAGE</text>
-
-                                <!-- Sources -->
-                                <rect x="20" y="40" width="130" height="34" rx="1"/>
-                                <text x="85" y="60" text-anchor="middle">Email / portail</text>
-                                <rect x="20" y="86" width="130" height="34" rx="1"/>
-                                <text x="85" y="106" text-anchor="middle">Formulaires</text>
-                                <rect x="20" y="132" width="130" height="34" rx="1"/>
-                                <text x="85" y="152" text-anchor="middle">API tiers</text>
-
-                                <!-- Scoring box -->
-                                <rect x="210" y="86" width="140" height="34" rx="1" class="fill-accent"/>
-                                <text x="280" y="106" text-anchor="middle" fill="#ffffff">Moteur de règles</text>
-
-                                <!-- Routing queues -->
-                                <rect x="400" y="40" width="140" height="30" rx="1"/>
-                                <text x="470" y="58" text-anchor="middle">Q · P1 — urgent</text>
-                                <rect x="400" y="86" width="140" height="30" rx="1"/>
-                                <text x="470" y="104" text-anchor="middle">Q · P2</text>
-                                <rect x="400" y="132" width="140" height="30" rx="1"/>
-                                <text x="470" y="150" text-anchor="middle">Q · P3</text>
-
-                                <!-- Flow entry → scoring -->
-                                <line x1="150" y1="57" x2="210" y2="93" class="flow"/>
-                                <line x1="150" y1="103" x2="210" y2="103" class="flow"/>
-                                <line x1="150" y1="149" x2="210" y2="113" class="flow"/>
-
-                                <!-- Flow scoring → queues -->
-                                <path d="M350 95 L400 55" class="flow"/>
-                                <path d="M350 103 L400 101" class="flow"/>
-                                <path d="M350 110 L400 147" class="flow"/>
-
-                                <!-- Audit layer -->
-                                <text x="20" y="218" class="label">04 — AUDIT &amp; TRAÇABILITÉ</text>
-                                <rect x="20" y="230" width="520" height="36" rx="1"/>
-                                <text x="280" y="252" text-anchor="middle">Historique · Justification · Export</text>
-                                <path d="M280 120 L280 230" class="flow"/>
-
-                                <!-- Footer labels -->
-                                <text x="20" y="296" class="label">01 — multi-sources normalisées</text>
-                                <text x="20" y="310" class="label">02 — règles explicites, versionnées</text>
-                                <text x="540" y="296" text-anchor="end" class="label">03 — décision tracée</text>
-                                <text x="540" y="310" text-anchor="end" class="label">04 — tenu dans la durée</text>
-                            </svg>
-                        </div>
-                    </li>
-
-                    <!-- 02 Référentiel -->
-                    <li class="work-item reveal">
-                        <div class="work-item__num">W—02</div>
-                        <div class="work-item__body">
-                            <div class="work-item__meta">
-                                <span>Data · Produit · Architecture</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>2023 — 2024</span>
-                            </div>
-                            <a href="work/referentiel.html" class="work-item__title">
-                                Référentiel d'indicateurs
-                                <span class="work-item__arrow" aria-hidden="true">↗</span>
-                            </a>
-                            <p class="work-item__desc">
-                                Un tableau de bord unifié pour une administration qui pilotait ses indicateurs à travers un patchwork de fichiers. On a remplacé l'incertitude par une source auditable, et le reporting par de la décision.
-                            </p>
-                            <dl class="work-item__attrs">
-                                <div class="work-item__attr">
-                                    <dt>Rôle</dt><dd>Architecture · Dev · Delivery</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Contexte</dt><dd>Ministère · pilotage opérationnel</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Stack</dt><dd>Next.js · Node · PostgreSQL · Docker</dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="work-item__diagram" aria-hidden="true">
-                            <svg class="diag" viewBox="0 0 240 180" fill="none">
-                                <rect x="10" y="20" width="60" height="22" rx="1"/>
-                                <text x="40" y="34" text-anchor="middle">Excel</text>
-                                <rect x="10" y="56" width="60" height="22" rx="1"/>
-                                <text x="40" y="70" text-anchor="middle">CSV</text>
-                                <rect x="10" y="92" width="60" height="22" rx="1"/>
-                                <text x="40" y="106" text-anchor="middle">API</text>
-                                <rect x="100" y="56" width="40" height="40" rx="1" class="fill-accent"/>
-                                <text x="120" y="80" text-anchor="middle" fill="#ffffff">ETL</text>
-                                <ellipse cx="190" cy="40" rx="24" ry="8"/>
-                                <path d="M166 40 L166 56 Q166 64 190 64 Q214 64 214 56 L214 40"/>
-                                <text x="190" y="44" text-anchor="middle">store</text>
-                                <rect x="160" y="92" width="64" height="30" rx="1"/>
-                                <text x="192" y="110" text-anchor="middle">Dashboard</text>
-                                <line x1="70" y1="31" x2="100" y2="68" class="flow"/>
-                                <line x1="70" y1="67" x2="100" y2="76" class="flow"/>
-                                <line x1="70" y1="103" x2="100" y2="84" class="flow"/>
-                                <path d="M140 68 L170 48" class="flow"/>
-                                <path d="M140 84 L170 100" class="flow"/>
-                                <text x="10" y="150" class="label">01 — multi-sources normalisées</text>
-                                <text x="10" y="162" class="label">02 — droits · export · alerte</text>
-                            </svg>
-                        </div>
-                    </li>
-
-                    <!-- 03 SafePing -->
-                    <li class="work-item reveal">
-                        <div class="work-item__num">W—03</div>
-                        <div class="work-item__body">
-                            <div class="work-item__meta">
-                                <span>Projet d'auteur · Mobile</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>2025 — en développement</span>
-                            </div>
-                            <a href="work/safeping.html" class="work-item__title">
-                                SafePing
-                                <span class="work-item__arrow" aria-hidden="true">↗</span>
-                            </a>
-                            <p class="work-item__desc">
-                                Application mobile de sécurité personnelle, pensée pour les situations où un téléphone ne doit pas trahir celui qui le porte. Mode façade, contacts de confiance, GPS optionnel, zéro compte.
-                            </p>
-                            <dl class="work-item__attrs">
-                                <div class="work-item__attr">
-                                    <dt>Rôle</dt><dd>Design · Architecture · Dev</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Contexte</dt><dd>Projet d'auteur · privacy-first</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Stack</dt><dd>Flutter · Dart · Local-first</dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="work-item__diagram" aria-hidden="true">
-                            <svg class="diag" viewBox="0 0 240 180" fill="none">
-                                <rect x="86" y="20" width="68" height="130" rx="6"/>
-                                <rect x="94" y="34" width="52" height="94" rx="1" class="fill-accent" opacity="0.08"/>
-                                <text x="120" y="60" text-anchor="middle">SOS</text>
-                                <circle cx="120" cy="90" r="18" class="fill-accent pulse"/>
-                                <text x="120" y="94" text-anchor="middle" fill="#ffffff">!</text>
-                                <text x="120" y="122" text-anchor="middle" class="label">façade</text>
-                                <circle cx="30" cy="40" r="10"/>
-                                <text x="30" y="44" text-anchor="middle" class="label">C1</text>
-                                <circle cx="30" cy="90" r="10"/>
-                                <text x="30" y="94" text-anchor="middle" class="label">C2</text>
-                                <circle cx="30" cy="140" r="10"/>
-                                <text x="30" y="144" text-anchor="middle" class="label">C3</text>
-                                <rect x="190" y="30" width="40" height="22" rx="1"/>
-                                <text x="210" y="44" text-anchor="middle">GPS</text>
-                                <rect x="190" y="60" width="40" height="22" rx="1"/>
-                                <text x="210" y="74" text-anchor="middle">local</text>
-                                <path d="M86 85 L40 50" class="flow"/>
-                                <path d="M86 90 L40 90" class="flow"/>
-                                <path d="M86 95 L40 130" class="flow"/>
-                                <path d="M154 50 L190 41" class="flow"/>
-                                <path d="M154 90 L190 71" class="flow"/>
-                            </svg>
-                        </div>
-                    </li>
-
-                    <!-- 04 Datametre -->
-                    <li class="work-item reveal">
-                        <div class="work-item__num">W—04</div>
-                        <div class="work-item__body">
-                            <div class="work-item__meta">
-                                <span>Projet d'auteur · Open data</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>2024 → présent</span>
-                            </div>
-                            <a href="work/datametre.html" class="work-item__title">
-                                Datametre
-                                <span class="work-item__arrow" aria-hidden="true">↗</span>
-                            </a>
-                            <p class="work-item__desc">
-                                Un observatoire éditorial des données publiques françaises. Chaque chiffre devient une courte lecture : source, méthode, nuance. L'inverse d'un tableau de bord jetable.
-                            </p>
-                            <dl class="work-item__attrs">
-                                <div class="work-item__attr">
-                                    <dt>Rôle</dt><dd>Design · Dev · Éditorial</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Contexte</dt><dd>Open data · INSEE · data.gouv</dd>
-                                </div>
-                                <div class="work-item__attr">
-                                    <dt>Stack</dt><dd>JavaScript · D3 · Netlify</dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="work-item__diagram" aria-hidden="true">
-                            <svg class="diag" viewBox="0 0 240 180" fill="none">
-                                <line x1="20" y1="140" x2="220" y2="140"/>
-                                <line x1="20" y1="20" x2="20" y2="140"/>
-                                <rect x="40" y="100" width="22" height="40" class="fill-accent" opacity="0.4"/>
-                                <rect x="72" y="76" width="22" height="64" class="fill-accent" opacity="0.6"/>
-                                <rect x="104" y="54" width="22" height="86" class="fill-accent" opacity="0.8"/>
-                                <rect x="136" y="30" width="22" height="110" class="fill-accent"/>
-                                <rect x="168" y="60" width="22" height="80" class="fill-accent" opacity="0.6"/>
-                                <text x="51" y="156" text-anchor="middle" class="label">2020</text>
-                                <text x="83" y="156" text-anchor="middle" class="label">2021</text>
-                                <text x="115" y="156" text-anchor="middle" class="label">2022</text>
-                                <text x="147" y="156" text-anchor="middle" class="label">2023</text>
-                                <text x="179" y="156" text-anchor="middle" class="label">2024</text>
-                                <text x="20" y="14" class="label">INSEE · 2024</text>
-                                <text x="220" y="14" text-anchor="end" class="label">+ data.gouv</text>
-                            </svg>
-                        </div>
-                    </li>
-                </ol>
-
-                <!-- Other work -->
-                <header class="sec__head reveal" style="margin-top: var(--s-8);">
-                    <span class="sec__num">01.5 /</span>
-                    <h3 class="sec__title" style="font-size: var(--fs-xl);">Autres travaux</h3>
-                    <span class="sec__kicker">expérimentations · recherche · projets d'auteur</span>
-                </header>
-                <ul class="other-work reveal">
-                    <li>
-                        <span class="other-work__num">05</span>
-                        <span class="other-work__title">Veille stratégique IA</span>
-                        <span class="other-work__meta">Python · LLM · 2024</span>
-                        <span class="other-work__arrow" aria-hidden="true">↗</span>
-                    </li>
-                    <li>
-                        <span class="other-work__num">06</span>
-                        <span class="other-work__title">Bercy Vert — bilan carbone ministériel</span>
-                        <span class="other-work__meta">Flutter · Firebase · 2023</span>
-                        <span class="other-work__arrow" aria-hidden="true">↗</span>
-                    </li>
-                    <li>
-                        <span class="other-work__num">07</span>
-                        <span class="other-work__title">Saisines Cour des comptes — cadrage</span>
-                        <span class="other-work__meta">UX · Prototypage · 2023</span>
-                        <span class="other-work__arrow" aria-hidden="true">↗</span>
-                    </li>
-                </ul>
-            </div>
-        </section>
-
-        <!-- ===================== 02 / EXPERIENCE ===================== -->
-        <section class="sec" id="experience" data-section="experience">
-            <div class="wrap">
-                <header class="sec__head reveal">
-                    <span class="sec__num">02 /</span>
-                    <h2 class="sec__title">Expérience</h2>
-                    <span class="sec__kicker">7 ans · public &amp; produit</span>
-                </header>
-
-                <ol class="timeline">
-                    <li class="timeline__item timeline__item--current reveal">
-                        <div class="timeline__dates">2024 → PRÉSENT</div>
-                        <div>
-                            <h3 class="timeline__role">Ingénieur logiciel &amp; Tech Lead</h3>
-                            <div class="timeline__org">
-                                <span>Ministère de l'Intérieur</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>Paris</span>
-                            </div>
-                            <ul class="timeline__list">
-                                <li>Conception et évolution des applications métiers avec une équipe de développeurs.</li>
-                                <li>Décisions d'architecture, choix d'infrastructure, dette technique.</li>
-                                <li>Encadrement : revue, mentorat, trajectoire produit.</li>
+                            <ul class="job__tags" aria-label="Technologies">
+                                <li class="tag">PHP</li>
+                                <li class="tag">PostgreSQL</li>
+                                <li class="tag">Docker</li>
+                                <li class="tag">Kubernetes</li>
+                                <li class="tag">CI/CD</li>
                             </ul>
-                            <div class="timeline__stack">PHP · PostgreSQL · Docker · Kubernetes · CI/CD</div>
                         </div>
                     </li>
 
-                    <li class="timeline__item timeline__item--current reveal">
-                        <div class="timeline__dates">2024 → PRÉSENT</div>
-                        <div>
-                            <h3 class="timeline__role">Coordinateur technique</h3>
-                            <div class="timeline__org">
-                                <span>Outils Publics — collectif</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>En parallèle</span>
-                            </div>
-                            <ul class="timeline__list">
-                                <li>Coordination des sujets données &amp; développement du collectif.</li>
-                                <li>Projets d'intérêt général autour de l'open data et de l'outillage public.</li>
+                    <li class="job reveal">
+                        <div class="job__dates">2024 — Présent</div>
+                        <div class="job__body">
+                            <h3 class="job__role">
+                                Coordinateur technique · Données &amp; développement
+                                <span class="job__role-arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="job__org">Outils Publics — collectif · En parallèle</div>
+                            <p class="job__desc">
+                                Développement de prototypes, outils et visualisations à partir de données publiques. Interface entre recherche, design et implémentation logicielle au sein du collectif.
+                            </p>
+                            <ul class="job__tags" aria-label="Technologies">
+                                <li class="tag">React</li>
+                                <li class="tag">Node.js</li>
+                                <li class="tag">Flutter</li>
+                                <li class="tag">Python</li>
+                                <li class="tag">Open data</li>
                             </ul>
-                            <div class="timeline__stack">React · Node.js · Flutter · Python · Open data</div>
                         </div>
                     </li>
 
-                    <li class="timeline__item reveal">
-                        <div class="timeline__dates">2022 — 2024</div>
-                        <div>
-                            <h3 class="timeline__role">Ingénieur logiciel &amp; chef de projet</h3>
-                            <div class="timeline__org">
-                                <span>Ministère de l'Économie &amp; des Finances</span>
-                                <span class="dot" aria-hidden="true"></span>
-                                <span>Lab de la Transformation · Bercy</span>
-                            </div>
-                            <ul class="timeline__list">
-                                <li>Conception d'applications métiers pour la transformation publique.</li>
-                                <li>Co-conception, cadrage technique, prototypage avec les usagers.</li>
-                                <li>Mise en production, intégration et conduite du changement.</li>
-                            </ul>
-                            <div class="timeline__stack">C# .NET · Power Platform · SQL Server · Azure · React</div>
-                        </div>
-                    </li>
-
-                    <li class="timeline__item reveal">
-                        <div class="timeline__dates">2019 — 2022</div>
-                        <div>
-                            <h3 class="timeline__role">Développeur applicatif</h3>
-                            <div class="timeline__org">
-                                <span>Secteur public — Île-de-France</span>
-                            </div>
-                            <ul class="timeline__list">
-                                <li>Développement d'outils internes pour des équipes opérationnelles.</li>
-                                <li>Premières responsabilités techniques, bascule vers un rôle produit.</li>
+                    <li class="job reveal">
+                        <div class="job__dates">2022 — 2024</div>
+                        <div class="job__body">
+                            <h3 class="job__role">
+                                Ingénieur logiciel &amp; chef de projet
+                                <span class="job__role-arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="job__org">Lab de la Transformation — Ministère de l'Économie · Bercy</div>
+                            <p class="job__desc">
+                                Modernisation des services publics : développement d'applications internes, animation d'ateliers d'innovation, accompagnement des agents dans l'adoption de nouveaux outils numériques. Industrialisation des prototypes retenus.
+                            </p>
+                            <ul class="job__tags" aria-label="Technologies">
+                                <li class="tag">C# .NET</li>
+                                <li class="tag">Power Platform</li>
+                                <li class="tag">SQL Server</li>
+                                <li class="tag">Azure</li>
+                                <li class="tag">React</li>
                             </ul>
                         </div>
                     </li>
                 </ol>
-            </div>
-        </section>
+            </section>
 
-        <!-- ===================== 03 / ABOUT ===================== -->
-        <section class="sec" id="about" data-section="about">
-            <div class="wrap">
-                <header class="sec__head reveal">
-                    <span class="sec__num">03 /</span>
-                    <h2 class="sec__title">À propos</h2>
-                    <span class="sec__kicker">CP / 2019 → 2026</span>
-                </header>
-
-                <div class="col-grid">
-                    <div>
-                        <span class="mono reveal">Positionnement</span>
-                    </div>
-                    <div>
-                        <p class="about__lead reveal">
-                            Ingénieur logiciel, <em>artisan produit</em>, basé à Paris.
-                        </p>
-                        <p class="about__text reveal" data-delay="1">
-                            Je travaille actuellement au <strong>ministère de l'Intérieur</strong>, où je conçois et fais évoluer des applications métiers avec une équipe de développeurs. Je m'intéresse surtout aux logiciels qui résolvent des problèmes concrets.
-                        </p>
-                        <p class="about__text reveal" data-delay="2">
-                            Ce qui me plaît : poser une architecture tenable, écrire du code lisible, livrer des interfaces claires, et — quand c'est pertinent — intégrer de l'IA appliquée proprement. Pas comme démo.
-                        </p>
-                        <p class="about__text reveal" data-delay="3">
-                            En parallèle, je continue à coder sur des projets d'auteur, plus libres. Le code que je préfère est celui qu'on comprend encore six mois plus tard.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="principles">
-                    <div class="principle reveal">
-                        <div class="principle__num">01 — Méthode</div>
-                        <h3 class="principle__title">Comprendre avant de construire</h3>
-                        <p class="principle__text">
-                            Je commence par les questions floues, pas par le clavier. Deux heures de cadrage valent mieux qu'un mois passé dans le vide.
-                        </p>
-                    </div>
-                    <div class="principle reveal" data-delay="1">
-                        <div class="principle__num">02 — Design</div>
-                        <h3 class="principle__title">Simple avant d'être malin</h3>
-                        <p class="principle__text">
-                            Une solution ennuyeuse qui marche bat une archi brillante qui ne tient pas en prod. Je préfère rendre le complexe lisible plutôt que le contraire.
-                        </p>
-                    </div>
-                    <div class="principle reveal" data-delay="2">
-                        <div class="principle__num">03 — Delivery</div>
-                        <h3 class="principle__title">Livrer, écouter, corriger</h3>
-                        <p class="principle__text">
-                            Une v1 utile vite, puis des itérations honnêtes nourries par les retours réels — pas par les slides.
-                        </p>
-                    </div>
-                    <div class="principle reveal" data-delay="3">
-                        <div class="principle__num">04 — Équipe</div>
-                        <h3 class="principle__title">Tenir l'équipe avec soi</h3>
-                        <p class="principle__text">
-                            J'encadre en expliquant les choix, pas en les imposant. Une équipe qui comprend le pourquoi livre mieux et tient plus longtemps.
-                        </p>
-                    </div>
-                </div>
-
-                <blockquote class="about__quote reveal">
-                    Construire des produits utiles, bien dessinés, qui durent.
-                    <span class="about__quote-attr">— Rien de plus compliqué que ça</span>
-                </blockquote>
-            </div>
-        </section>
-
-        <!-- ===================== 04 / EXPERTISE ===================== -->
-        <section class="sec" id="expertise" data-section="expertise">
-            <div class="wrap">
-                <header class="sec__head reveal">
-                    <span class="sec__num">04 /</span>
-                    <h2 class="sec__title">Expertise</h2>
-                    <span class="sec__kicker">4 axes</span>
-                </header>
-
-                <div class="axes">
-                    <div class="axis reveal">
-                        <div class="axis__num">01 — Software engineering</div>
-                        <h3 class="axis__title">Code, systèmes, delivery</h3>
-                        <p class="axis__text">
-                            Du front au back, du prototype à la mise en production. Je code pour que d'autres puissent reprendre le code après moi.
-                        </p>
-                    </div>
-                    <div class="axis reveal" data-delay="1">
-                        <div class="axis__num">02 — Architecture</div>
-                        <h3 class="axis__title">Choix structurants &amp; données</h3>
-                        <p class="axis__text">
-                            Choix de modèle, choix de techno, choix de ce qu'on ne fera pas. Infrastructure et données pensées pour la durée, pas pour le dashboard.
-                        </p>
-                    </div>
-                    <div class="axis reveal" data-delay="2">
-                        <div class="axis__num">03 — Product engineering</div>
-                        <h3 class="axis__title">Du besoin au produit</h3>
-                        <p class="axis__text">
-                            Cadrage, discovery, prototypage, co-conception avec les utilisateurs. Un produit n'est pas une spec exécutée.
-                        </p>
-                    </div>
-                    <div class="axis reveal" data-delay="3">
-                        <div class="axis__num">04 — Technical leadership</div>
-                        <h3 class="axis__title">Décisions &amp; équipe</h3>
-                        <p class="axis__text">
-                            Arbitrages d'architecture, mentorat, revue, pilotage. Je prépare l'équipe à prendre ses propres décisions.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="tools-line reveal">
-                    <strong>Main tools /</strong>
-                    <span>TypeScript</span><span>·</span>
-                    <span>React / Next.js</span><span>·</span>
-                    <span>Node.js</span><span>·</span>
-                    <span>Python</span><span>·</span>
-                    <span>PHP</span><span>·</span>
-                    <span>PostgreSQL</span><span>·</span>
-                    <span>Flutter</span><span>·</span>
-                    <span>Docker</span><span>·</span>
-                    <span>LLM / RAG</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===================== 05 / CONTACT ===================== -->
-        <section class="sec" id="contact" data-section="contact">
-            <div class="wrap">
-                <header class="sec__head reveal">
-                    <span class="sec__num">05 /</span>
-                    <h2 class="sec__title">Contact</h2>
-                    <span class="sec__kicker">Paris · remote friendly</span>
-                </header>
-
-                <h3 class="contact__lead reveal">
-                    <em>Let's talk.</em>
-                </h3>
-                <p class="contact__sub reveal" data-delay="1">
-                    Ingénierie, architecture, produit — ou simplement un problème intéressant. J'ouvre volontiers la discussion, même sans mission à la clé.
-                </p>
-
-                <ul class="contact__list">
-                    <li class="reveal">
-                        <a href="mailto:plancon.clem.pro@gmail.com">
-                            <span class="contact__label">Email</span>
-                            <span class="contact__value">plancon.clem.pro@gmail.com</span>
-                            <span class="contact__arrow" aria-hidden="true">↗</span>
-                        </a>
+            <!-- ========== PROJECTS ========== -->
+            <section id="projects" class="section" aria-labelledby="proj-title">
+                <div class="section__sticky-label" id="proj-title">Projets</div>
+                <ol class="projects">
+                    <!-- Bercy Vert -->
+                    <li class="project reveal">
+                        <div class="project__thumb" aria-hidden="true">
+                            <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="18" y="20" width="64" height="36" rx="2" stroke="#79b8ff" stroke-width="1.2" fill="rgba(121,184,255,0.06)"/>
+                                <path d="M30 48 Q50 10 70 48" stroke="#79b8ff" stroke-width="1.4" fill="none"/>
+                                <circle cx="50" cy="38" r="2.4" fill="#79b8ff"/>
+                                <line x1="30" y1="48" x2="70" y2="48" stroke="#79b8ff" stroke-width="1"/>
+                            </svg>
+                        </div>
+                        <div class="project__body">
+                            <h3 class="project__title">
+                                <a href="#projects">Bercy Vert</a>
+                                <span class="project__arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="project__meta">Ministère de l'Économie · 2023</div>
+                            <p class="project__desc">
+                                Logiciel pour la transition écologique du ministère de l'Économie. Centralisation BEGES, structuration SPE, cadrage fonctionnel et développement du proof of concept.
+                            </p>
+                            <ul class="project__tags">
+                                <li class="tag">Flutter</li>
+                                <li class="tag">Dart</li>
+                                <li class="tag">Firebase</li>
+                                <li class="tag">Google Vision AI</li>
+                                <li class="tag">Node.js</li>
+                            </ul>
+                        </div>
                     </li>
-                    <li class="reveal" data-delay="1">
-                        <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener">
-                            <span class="contact__label">LinkedIn</span>
-                            <span class="contact__value">clement-plançon</span>
-                            <span class="contact__arrow" aria-hidden="true">↗</span>
-                        </a>
+
+                    <!-- Référentiel Indicateurs -->
+                    <li class="project reveal">
+                        <div class="project__thumb" aria-hidden="true">
+                            <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="12" y="48" width="12" height="14" fill="#79b8ff" opacity="0.4"/>
+                                <rect x="30" y="36" width="12" height="26" fill="#79b8ff" opacity="0.55"/>
+                                <rect x="48" y="22" width="12" height="40" fill="#79b8ff" opacity="0.75"/>
+                                <rect x="66" y="30" width="12" height="32" fill="#79b8ff"/>
+                                <line x1="8" y1="62" x2="86" y2="62" stroke="#79b8ff" stroke-width="0.8"/>
+                                <line x1="8" y1="10" x2="8" y2="62" stroke="#79b8ff" stroke-width="0.8"/>
+                            </svg>
+                        </div>
+                        <div class="project__body">
+                            <h3 class="project__title">
+                                <a href="#projects">Référentiel d'indicateurs</a>
+                                <span class="project__arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="project__meta">Administration publique · 2023 — 2024</div>
+                            <p class="project__desc">
+                                Plateforme de centralisation et de visualisation des indicateurs métiers pour les décideurs. Import automatique multi-sources, alertes sur seuils critiques, rapports générés.
+                            </p>
+                            <ul class="project__tags">
+                                <li class="tag">Next.js</li>
+                                <li class="tag">Node.js</li>
+                                <li class="tag">PostgreSQL</li>
+                                <li class="tag">Chart.js</li>
+                                <li class="tag">Docker</li>
+                            </ul>
+                        </div>
                     </li>
-                    <li class="reveal" data-delay="2">
-                        <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener">
-                            <span class="contact__label">GitHub</span>
-                            <span class="contact__value">Clement-Plancon</span>
-                            <span class="contact__arrow" aria-hidden="true">↗</span>
-                        </a>
+
+                    <!-- SafePing -->
+                    <li class="project reveal">
+                        <div class="project__thumb" aria-hidden="true">
+                            <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="36" y="12" width="28" height="46" rx="3" stroke="#79b8ff" stroke-width="1.2" fill="rgba(121,184,255,0.06)"/>
+                                <rect x="39" y="16" width="22" height="30" rx="1" fill="rgba(121,184,255,0.08)"/>
+                                <circle cx="50" cy="52" r="2.2" stroke="#79b8ff" stroke-width="0.8" fill="none"/>
+                                <circle cx="50" cy="30" r="6" fill="#79b8ff" opacity="0.9"/>
+                                <text x="50" y="32.5" text-anchor="middle" font-family="Inter, sans-serif" font-size="6" font-weight="700" fill="#0d1326">!</text>
+                            </svg>
+                        </div>
+                        <div class="project__body">
+                            <h3 class="project__title">
+                                <a href="#projects">SafePing</a>
+                                <span class="project__arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="project__meta">Projet d'auteur · En développement</div>
+                            <p class="project__desc">
+                                Application discrète de sécurité personnelle pour alerter rapidement des contacts de confiance. Mode façade « Notes », position GPS optionnelle, données locales, aucun compte.
+                            </p>
+                            <ul class="project__tags">
+                                <li class="tag">Flutter</li>
+                                <li class="tag">Dart</li>
+                                <li class="tag">Local-first</li>
+                                <li class="tag">Vie privée</li>
+                            </ul>
+                        </div>
                     </li>
-                </ul>
-            </div>
-        </section>
-    </main>
 
-    <!-- ===================== FOOTER ===================== -->
-    <footer>
-        <div class="footer">
-            <div>
-                <div class="footer__brand">Clément Plançon</div>
-                <div class="footer__loc">PARIS / FR · 48.8566° N · 2.3522° E</div>
-            </div>
-            <div class="footer__right">
-                <div class="footer__links">
-                    <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener">GitHub</a>
-                    <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener">LinkedIn</a>
-                    <a href="mailto:plancon.clem.pro@gmail.com">Email</a>
+                    <!-- Datametre -->
+                    <li class="project reveal">
+                        <div class="project__thumb" aria-hidden="true">
+                            <svg viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M14 50 L28 38 L42 44 L58 24 L74 32 L86 20" stroke="#79b8ff" stroke-width="1.4" fill="none"/>
+                                <circle cx="28" cy="38" r="2" fill="#79b8ff"/>
+                                <circle cx="42" cy="44" r="2" fill="#79b8ff"/>
+                                <circle cx="58" cy="24" r="2.4" fill="#79b8ff"/>
+                                <circle cx="74" cy="32" r="2" fill="#79b8ff"/>
+                                <line x1="8" y1="58" x2="92" y2="58" stroke="#79b8ff" stroke-width="0.8" opacity="0.6"/>
+                            </svg>
+                        </div>
+                        <div class="project__body">
+                            <h3 class="project__title">
+                                <a href="https://datametre.netlify.app/" target="_blank" rel="noopener">Datametre</a>
+                                <span class="project__arrow" aria-hidden="true">↗</span>
+                            </h3>
+                            <div class="project__meta">Projet d'auteur · Open data · 2024</div>
+                            <p class="project__desc">
+                                Plateforme de datavisualisation dédiée aux données publiques françaises, avec une approche éditoriale, claire et accessible des grands indicateurs du territoire.
+                            </p>
+                            <ul class="project__tags">
+                                <li class="tag">JavaScript</li>
+                                <li class="tag">Dataviz</li>
+                                <li class="tag">Open data</li>
+                                <li class="tag">Netlify</li>
+                            </ul>
+                        </div>
+                    </li>
+                </ol>
+
+                <!-- Autres projets -->
+                <div class="other">
+                    <div class="other__head">Autres projets</div>
+                    <ul class="other-list">
+                        <li class="other-item">
+                            <div>
+                                <div class="other-item__title">Saisines de la Cour des Comptes</div>
+                                <p class="other-item__desc">
+                                    Cadrage technique et recherche utilisateur pour structurer les outils de traitement des saisines. Accompagnement du studio de design, entretiens terrain, analyse et arbitrages de conception.
+                                </p>
+                            </div>
+                            <div class="other-item__meta">UX · Cadrage · 2023</div>
+                        </li>
+                        <li class="other-item">
+                            <div>
+                                <div class="other-item__title">Veille stratégique</div>
+                                <p class="other-item__desc">
+                                    Système automatisé de veille technologique : crawling multi-sources, extraction d'entités, résumés par IA, newsletter personnalisée. Un flux structuré et actionnable.
+                                </p>
+                            </div>
+                            <div class="other-item__meta">Python · IA · 2024</div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="footer__meta">
-                    © <span id="year">2026</span> · Clément Plançon · Built with web standards
+
+                <!-- Technologies principales -->
+                <div class="tech-line">
+                    <strong>Technologies principales</strong>
+                    <div class="tech-line__list">
+                        <span>TypeScript</span><span class="sep">·</span>
+                        <span>React / Next.js</span><span class="sep">·</span>
+                        <span>Node.js</span><span class="sep">·</span>
+                        <span>Python</span><span class="sep">·</span>
+                        <span>PHP</span><span class="sep">·</span>
+                        <span>Flutter</span><span class="sep">·</span>
+                        <span>PostgreSQL</span><span class="sep">·</span>
+                        <span>Docker</span><span class="sep">·</span>
+                        <span>Kubernetes</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </footer>
+            </section>
 
-    <!-- ===================== COMMAND PALETTE ===================== -->
-    <dialog class="cmdk" id="cmdk" aria-label="Command palette">
-        <div class="cmdk__box" role="combobox" aria-expanded="true">
-            <input
-                id="cmdk-input"
-                class="cmdk__input"
-                type="text"
-                placeholder="Chercher ou naviguer…"
-                autocomplete="off"
-                spellcheck="false"
-                aria-label="Rechercher"
-            >
-            <ul id="cmdk-list" class="cmdk__list" role="listbox"></ul>
-            <div class="cmdk__foot">
-                <span><span class="cmdk__kbd">↑↓</span> naviguer</span>
-                <span><span class="cmdk__kbd">↵</span> sélectionner</span>
-                <span><span class="cmdk__kbd">esc</span> fermer</span>
-            </div>
-        </div>
-    </dialog>
+            <!-- ========== CONTACT ========== -->
+            <section id="contact" class="section" aria-labelledby="contact-title">
+                <div class="section__sticky-label" id="contact-title">Contact</div>
+                <div class="reveal">
+                    <p>
+                        Pour une mission, une discussion technique ou simplement échanger sur un sujet intéressant — je suis joignable aux adresses ci-dessous.
+                    </p>
+                    <ul class="contact__list">
+                        <li>
+                            <a href="mailto:plancon.clem.pro@gmail.com">
+                                <span class="contact__label">Email</span>
+                                <span class="contact__value">plancon.clem.pro@gmail.com</span>
+                                <span class="contact__arrow" aria-hidden="true">↗</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener">
+                                <span class="contact__label">LinkedIn</span>
+                                <span class="contact__value">clement-plançon</span>
+                                <span class="contact__arrow" aria-hidden="true">↗</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener">
+                                <span class="contact__label">GitHub</span>
+                                <span class="contact__value">Clement-Plancon</span>
+                                <span class="contact__arrow" aria-hidden="true">↗</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
-    <script src="js/atlas.js"></script>
+                <div class="foot">
+                    © <span id="year">2026</span> Clément Plançon · Paris · Site conçu et développé par ses soins.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
