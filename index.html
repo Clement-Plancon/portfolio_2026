@@ -8,8 +8,9 @@
     <meta name="author" content="Clément Plançon">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://clementplancon.fr/">
-    <meta name="theme-color" content="#f7f7f5">
-    <meta name="color-scheme" content="light">
+    <meta name="theme-color" content="#f1f1ee" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
 
     <!-- Search Console / Bing Webmaster Tools : insérer ici les balises de vérification -->
 
@@ -31,11 +32,12 @@
     <meta name="twitter:image" content="https://clementplancon.fr/images/og-clement-plancon.png">
     <meta name="twitter:image:alt" content="Clément Plançon — Ingénieur logiciel &amp; Tech Lead, Paris">
 
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="images/favicon-64.png" type="image/png" sizes="64x64">
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
-    <link rel="preload" href="fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/bricolage-grotesque-latin-var.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/style.css">
+    <script>document.documentElement.classList.add('js')</script>
 
     <script type="application/ld+json">
     {
@@ -56,7 +58,7 @@
           "name": "Clément Plançon — Ingénieur logiciel & Tech Lead à Paris",
           "inLanguage": "fr-FR",
           "isPartOf": { "@id": "https://clementplancon.fr/#website" },
-          "dateModified": "2026-10-11",
+          "dateModified": "2026-11-03",
           "mainEntity": { "@id": "https://clementplancon.fr/#person" }
         },
         {
@@ -108,229 +110,327 @@
 <body>
     <a class="skip" href="#content">Aller au contenu</a>
 
-    <header class="top">
+    <header class="top" id="top-bar">
         <div class="wrap top__inner">
             <a href="#top" class="top__name">Clément Plançon</a>
             <nav class="top__nav" aria-label="Sections">
+                <span class="top__pill" aria-hidden="true"></span>
                 <a href="#projects" data-nav-to="projects">Projets</a>
-                <a href="#experience" data-nav-to="experience">Expérience</a>
+                <a href="#experience" data-nav-to="experience">Parcours</a>
                 <a href="#about" data-nav-to="about">À propos</a>
                 <a href="#contact" data-nav-to="contact">Contact</a>
             </nav>
-            <ul class="top__social">
-                <li><a href="https://github.com/Clement-Plancon" target="_blank" rel="noopener me">GitHub</a></li>
-                <li><a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener me">LinkedIn</a></li>
-            </ul>
         </div>
     </header>
 
     <main id="content">
-        <section class="intro wrap" id="top" aria-label="Présentation">
-            <h1 class="intro__title">
-                <span class="intro__name">Clément Plançon</span>
-                <span class="intro__role">Ingénieur logiciel &amp; Tech Lead</span>
-            </h1>
-            <p class="intro__lead">
-                Je conçois des applications métiers et des produits numériques, du cadrage à la mise en production.
-            </p>
-            <p class="intro__meta">Paris · Ministère de l'Intérieur</p>
+        <!-- ===================== INTRO ===================== -->
+        <section class="hero wrap" id="top" aria-label="Présentation">
+            <div class="hero__text">
+                <p class="hero__kicker"><span class="hero__mark" aria-hidden="true"></span>Paris · Ministère de l'Intérieur</p>
+                <h1 class="hero__title">
+                    <span class="hero__name">Clément Plançon</span>
+                    <span class="hero__role">Ingénieur logiciel &amp; Tech&nbsp;Lead</span>
+                </h1>
+                <p class="hero__lead">
+                    Je conçois des applications métiers et des produits numériques, du cadrage à la mise en production.
+                </p>
+                <p class="hero__links">
+                    <a class="u" href="#projects">Voir les projets<span class="arrow arrow--down" aria-hidden="true">↓</span></a>
+                    <a class="u" href="#contact">Me contacter</a>
+                </p>
+            </div>
+
+            <aside class="now" aria-labelledby="now-title">
+                <h2 class="now__title" id="now-title">Actuellement</h2>
+                <p class="now__role">Chef adjoint de la section informatique</p>
+                <p class="now__org">Laboratoire de police scientifique de Paris</p>
+                <p class="now__note">Encadrement d'une équipe de quatre développeurs et évolution des applications métiers utilisées par les enquêteurs.</p>
+                <div class="now__side">
+                    <p class="now__label">En parallèle</p>
+                    <p class="now__side-text">Coordinateur technique, collectif Outils Publics</p>
+                </div>
+                <ul class="now__links">
+                    <li><a class="u" href="https://github.com/Clement-Plancon" target="_blank" rel="noopener me">GitHub</a></li>
+                    <li><a class="u" href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener me">LinkedIn</a></li>
+                    <li><a class="u" href="mailto:plancon.clem.pro@gmail.com">Email</a></li>
+                </ul>
+            </aside>
         </section>
 
         <!-- ===================== PROJETS ===================== -->
-        <section class="sec" id="projects" aria-labelledby="projects-title">
-            <div class="wrap sec__grid">
-                <h2 class="sec__title" id="projects-title">Projets sélectionnés</h2>
-                <div class="sec__body">
+        <section class="projects wrap" id="projects" aria-labelledby="projects-title">
+            <header class="sec-head">
+                <h2 class="sec-head__title" id="projects-title">Projets</h2>
+                <p class="sec-head__intro">Projets professionnels et personnels : une sélection de ce que je construis, du logiciel ministériel à l'application mobile.</p>
+            </header>
 
-                    <article class="proj proj--aside">
-                        <div class="proj__main">
+            <ul class="plist">
+                <!-- Bercy Vert -->
+                <li>
+                    <article class="reveal proj proj--bercy">
+                        <div class="proj__cover cover" aria-hidden="true">
+                            <div class="cover__in">
+                                <span class="cover__kicker">Transition écologique</span>
+                                <span class="cover__word">BEGES</span>
+                                <span class="cover__foot">Ministère de l'Économie</span>
+                            </div>
+                        </div>
+                        <div class="proj__body">
+                            <p class="proj__meta"><span class="proj__kind">Pro</span> Ministère de l'Économie et des Finances · <time datetime="2023">2023</time></p>
                             <h3 class="proj__title">Bercy Vert</h3>
-                            <p class="proj__desc">
-                                Logiciel pour la transition écologique du ministère de l'Économie et des Finances : centralisation des actions issues du BEGES et structuration des mesures SPE pour les référents ministériels.
-                            </p>
-                            <ul class="stack">
-                                <li>Flutter</li><li>Dart</li><li>Firebase</li><li>Google Vision AI</li><li>Node.js</li>
-                            </ul>
+                            <p class="proj__desc">Logiciel pour la transition écologique du ministère : centralisation des actions issues du BEGES et structuration des mesures SPE pour les référents ministériels.</p>
+                            <div class="proj__foot">
+                                <ul class="stack"><li>Flutter</li><li>Dart</li><li>Firebase</li><li>Google Vision AI</li><li>Node.js</li></ul>
+                                <button class="more" type="button" aria-expanded="true" aria-controls="d-bercy">Détails<span class="more__icon" aria-hidden="true"></span></button>
+                            </div>
+                            <div class="proj__details" id="d-bercy">
+                                <div class="proj__details-inner">
+                                    <p>Conception d'un logiciel destiné à accompagner la démarche de transition verte et écologique du ministère de l'Économie et des Finances, pour répondre aux besoins des référents ministériels.</p>
+                                    <h4>Contributions</h4>
+                                    <ul class="ticks">
+                                        <li>Cadrage du projet et expression des besoins fonctionnels avec les parties prenantes</li>
+                                        <li>Définition de la méthodologie de développement et structuration du cycle projet</li>
+                                        <li>Conception et développement de l'interface du proof of concept, avec gestion multi-groupes et historique des dépenses</li>
+                                        <li>Recueil, analyse et restitution des retours utilisateurs pour orienter les évolutions du produit</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <dl class="facts">
-                            <div><dt>Contexte</dt><dd>Ministère de l'Économie et des Finances</dd></div>
-                            <div><dt>Année</dt><dd><time datetime="2023">2023</time></dd></div>
-                            <div><dt>Rôle</dt><dd>Cadrage fonctionnel, méthodologie projet, conception et développement du proof of concept</dd></div>
-                        </dl>
                     </article>
+                </li>
 
-                    <article class="proj proj--aside">
-                        <div class="proj__main">
+                <!-- Référentiel Indicateurs -->
+                <li>
+                    <article class="reveal proj proj--ref">
+                        <div class="proj__cover cover" aria-hidden="true">
+                            <div class="cover__in">
+                                <span class="cover__kicker">Dashboard métier</span>
+                                <span class="cover__word">Indicateurs</span>
+                                <span class="cover__foot">Import · Alertes · Rapports</span>
+                            </div>
+                        </div>
+                        <div class="proj__body">
+                            <p class="proj__meta"><span class="proj__kind">Pro</span> Administration publique · <time datetime="2023">2023</time> — <time datetime="2024">2024</time></p>
                             <h3 class="proj__title">Référentiel Indicateurs</h3>
-                            <p class="proj__desc">
-                                Application web de centralisation et de visualisation des indicateurs métiers pour les décideurs : import automatique multi-sources, alertes sur seuils critiques, rapports et exports PDF/Excel, gestion des droits utilisateurs.
-                            </p>
-                            <ul class="stack">
-                                <li>Next.js</li><li>Node.js</li><li>PostgreSQL</li><li>Chart.js</li><li>Docker</li>
-                            </ul>
+                            <p class="proj__desc">Plateforme de centralisation et de visualisation des indicateurs métiers pour les décideurs : import automatique multi-sources, alertes sur seuils critiques, rapports générés.</p>
+                            <div class="proj__foot">
+                                <ul class="stack"><li>Next.js</li><li>Node.js</li><li>PostgreSQL</li><li>Chart.js</li><li>Docker</li></ul>
+                                <button class="more" type="button" aria-expanded="true" aria-controls="d-ref">Détails<span class="more__icon" aria-hidden="true"></span></button>
+                            </div>
+                            <div class="proj__details" id="d-ref">
+                                <div class="proj__details-inner">
+                                    <p>Plateforme web permettant de centraliser, visualiser et analyser les indicateurs métiers clés pour faciliter la prise de décision des managers et dirigeants.</p>
+                                    <h4>Fonctionnalités</h4>
+                                    <ul class="ticks">
+                                        <li>Dashboard interactif avec graphiques dynamiques</li>
+                                        <li>Import automatique de données multi-sources</li>
+                                        <li>Alertes configurables sur seuils critiques</li>
+                                        <li>Rapports automatisés et export PDF / Excel</li>
+                                        <li>Gestion des droits et périmètres utilisateurs</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <dl class="facts">
-                            <div><dt>Contexte</dt><dd>Administration publique</dd></div>
-                            <div><dt>Période</dt><dd><time datetime="2023">2023</time> — <time datetime="2024">2024</time></dd></div>
-                        </dl>
                     </article>
+                </li>
 
-                    <article class="proj proj--wide">
-                        <div class="proj__head">
+                <!-- SafePing -->
+                <li>
+                    <article class="reveal proj proj--safeping">
+                        <div class="proj__cover cover" aria-hidden="true">
+                            <div class="cover__in">
+                                <span class="cover__kicker">Sécurité personnelle</span>
+                                <span class="cover__word">SOS</span>
+                                <span class="cover__foot">Mode Notes · GPS optionnel</span>
+                            </div>
+                        </div>
+                        <div class="proj__body">
+                            <p class="proj__meta"><span class="proj__kind">Perso</span> Application mobile · En développement</p>
                             <h3 class="proj__title">SafePing</h3>
-                            <p class="proj__meta">Projet personnel · Application mobile · En développement</p>
-                        </div>
-                        <div class="proj__cols">
-                            <p class="proj__desc">
-                                Application discrète de sécurité personnelle pour alerter rapidement des contacts de confiance, avec position GPS optionnelle et mode façade « Notes ».
-                            </p>
-                            <ul class="features">
-                                <li>SOS</li>
-                                <li>Contacts de confiance</li>
-                                <li>GPS optionnel</li>
-                                <li>Mode façade « Notes »</li>
-                                <li>Données locales</li>
-                                <li>Aucun compte requis</li>
-                            </ul>
+                            <p class="proj__desc">Application discrète de sécurité personnelle pour alerter rapidement des contacts de confiance, avec position GPS optionnelle et mode façade « Notes ».</p>
+                            <div class="proj__foot">
+                                <ul class="stack"><li>Mobile</li><li>Sécurité</li><li>SOS</li><li>GPS</li><li>Vie privée</li></ul>
+                                <button class="more" type="button" aria-expanded="true" aria-controls="d-safeping">Détails<span class="more__icon" aria-hidden="true"></span></button>
+                            </div>
+                            <div class="proj__details" id="d-safeping">
+                                <div class="proj__details-inner">
+                                    <h4>Fonctionnalités</h4>
+                                    <ul class="ticks ticks--cols">
+                                        <li>SOS</li>
+                                        <li>Contacts de confiance</li>
+                                        <li>GPS optionnel</li>
+                                        <li>Mode Notes</li>
+                                        <li>Données locales</li>
+                                        <li>Aucun compte requis</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </article>
+                </li>
 
-                    <article class="proj proj--media">
-                        <div class="proj__main">
-                            <h3 class="proj__title">
-                                <a class="u" href="https://datametre.netlify.app/" target="_blank" rel="noopener">Datametre</a>
-                            </h3>
-                            <p class="proj__meta">Projet personnel · Open data</p>
-                            <p class="proj__desc">
-                                Observatoire des données publiques françaises : une plateforme de datavisualisation avec une approche éditoriale, claire et accessible des grands indicateurs du territoire.
-                            </p>
-                            <ul class="stack">
-                                <li>JavaScript</li><li>Dataviz</li><li>Open data</li>
-                            </ul>
-                        </div>
-                        <div class="proj__thumb">
-                            <img src="images/datametre-apercu.webp" width="640" height="400" loading="lazy" decoding="async"
+                <!-- Datametre -->
+                <li>
+                    <article class="reveal proj proj--link">
+                        <div class="proj__cover proj__cover--shot">
+                            <img src="images/datametre-apercu.webp" srcset="images/datametre-apercu-400.webp 400w, images/datametre-apercu.webp 640w" sizes="(max-width: 720px) 104px, 340px" width="640" height="400" loading="lazy" decoding="async"
                                  alt="Page d'accueil de Datametre : « Comprendre la France en chiffres »">
                         </div>
+                        <div class="proj__body">
+                            <p class="proj__meta"><span class="proj__kind">Perso</span> Observatoire des données publiques françaises</p>
+                            <h3 class="proj__title"><a class="ext" href="https://datametre.netlify.app/" target="_blank" rel="noopener">Datametre</a></h3>
+                            <p class="proj__desc">Plateforme de datavisualisation dédiée aux données publiques françaises, avec une approche éditoriale, claire et accessible des grands indicateurs du territoire.</p>
+                            <div class="proj__foot">
+                                <ul class="stack"><li>JavaScript</li><li>Dataviz</li><li>Open data</li><li>Visualisation</li></ul>
+                                <button class="more" type="button" aria-expanded="true" aria-controls="d-datametre">Détails<span class="more__icon" aria-hidden="true"></span></button>
+                            </div>
+                            <div class="proj__details" id="d-datametre">
+                                <div class="proj__details-inner">
+                                    <h4>Points clés</h4>
+                                    <ul class="ticks ticks--cols">
+                                        <li>Données publiques</li>
+                                        <li>Dataviz</li>
+                                        <li>Approche éditoriale</li>
+                                        <li>Interface responsive</li>
+                                    </ul>
+                                    <p><a class="u" href="https://datametre.netlify.app/" target="_blank" rel="noopener">Voir le site<span class="arrow arrow--out" aria-hidden="true">↗</span></a></p>
+                                </div>
+                            </div>
+                        </div>
                     </article>
+                </li>
+            </ul>
 
-                    <h3 class="subhead">Autres projets</h3>
-                    <div class="others">
-                        <article class="other">
-                            <h4 class="other__title">Saisines de la Cour des comptes</h4>
-                            <p class="other__meta">Cour des comptes · <time datetime="2023">2023</time></p>
-                            <p class="other__desc">
-                                Cadrage technique et recherche utilisateur pour structurer les outils de traitement des saisines : accompagnement de l'équipe de designers (User Studio), entretiens, analyse des retours et arbitrages de conception.
-                            </p>
-                            <ul class="stack">
-                                <li>UX research</li><li>Cadrage technique</li><li>Prototypage</li>
-                            </ul>
-                        </article>
-                        <article class="other">
-                            <h4 class="other__title">Veille stratégique</h4>
-                            <p class="other__meta">Projet personnel · <time datetime="2024">2024</time></p>
-                            <p class="other__desc">
-                                Système automatisé de veille technologique : crawling multi-sources, extraction d'entités, résumés par IA et newsletter personnalisée.
-                            </p>
-                            <ul class="stack">
-                                <li>Python</li><li>Scrapy</li><li>OpenAI</li><li>MongoDB</li><li>React</li>
-                            </ul>
-                        </article>
-                    </div>
-                </div>
-            </div>
+            <h3 class="others__title">Autres projets</h3>
+            <ul class="others">
+                <li>
+                    <article class="reveal card">
+                        <p class="proj__meta"><span class="proj__kind">Pro</span> Cour des comptes · <time datetime="2023">2023</time></p>
+                        <h4 class="card__title">Saisines de la Cour des comptes</h4>
+                        <p class="card__desc">Cadrage technique et recherche utilisateur pour structurer les outils de traitement des saisines. Accompagnement du studio de design, entretiens terrain, analyse et arbitrages de conception.</p>
+                        <div class="proj__foot">
+                            <ul class="stack"><li>UX research</li><li>Cadrage technique</li><li>Prototypage</li><li>Co-conception</li></ul>
+                            <button class="more" type="button" aria-expanded="true" aria-controls="d-saisines">Détails<span class="more__icon" aria-hidden="true"></span></button>
+                        </div>
+                        <div class="proj__details" id="d-saisines">
+                            <div class="proj__details-inner">
+                                <p>Projet de conception visant à améliorer et structurer les outils liés au traitement des saisines de la Cour des comptes, en s'appuyant sur une compréhension fine des besoins des usagers et des contraintes institutionnelles.</p>
+                                <ul class="ticks">
+                                    <li>Exploration et analyse des solutions existantes</li>
+                                    <li>Cadrage technique et identification des pistes de conception logicielle adaptées au contexte</li>
+                                    <li>Accompagnement de l'équipe de designers (User Studio) dans la recherche utilisateur et la conduite des entretiens</li>
+                                    <li>Analyse et synthèse des retours utilisateurs pour orienter les choix de conception et les arbitrages techniques</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </li>
+                <li>
+                    <article class="reveal card">
+                        <p class="proj__meta"><span class="proj__kind">Perso</span> Outil interne · IA · <time datetime="2024">2024</time></p>
+                        <h4 class="card__title">Veille stratégique</h4>
+                        <p class="card__desc">Système automatisé de veille technologique : crawling multi-sources, extraction d'entités, résumés par IA, newsletter personnalisée.</p>
+                        <div class="proj__foot">
+                            <ul class="stack"><li>Python</li><li>Scrapy</li><li>OpenAI</li><li>MongoDB</li><li>React</li></ul>
+                            <button class="more" type="button" aria-expanded="true" aria-controls="d-veille">Détails<span class="more__icon" aria-hidden="true"></span></button>
+                        </div>
+                        <div class="proj__details" id="d-veille">
+                            <div class="proj__details-inner">
+                                <p>Système automatisé de veille technologique et concurrentielle qui agrège, analyse et synthétise les informations provenant de multiples sources web.</p>
+                                <ul class="ticks">
+                                    <li>Crawling automatique de sources configurables</li>
+                                    <li>Analyse de sentiment et extraction d'entités</li>
+                                    <li>Résumés automatiques par IA</li>
+                                    <li>Newsletter personnalisée hebdomadaire</li>
+                                    <li>Tableau de bord des tendances et alertes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </li>
+            </ul>
         </section>
 
-        <!-- ===================== EXPÉRIENCE ===================== -->
-        <section class="sec" id="experience" aria-labelledby="experience-title">
-            <div class="wrap sec__grid">
-                <h2 class="sec__title" id="experience-title">Expérience</h2>
-                <div class="sec__body">
-                    <article class="job">
-                        <p class="job__date"><time datetime="2024">2024</time> — aujourd'hui</p>
-                        <div class="job__body">
-                            <h3 class="job__role">Chef adjoint de la section informatique — Ingénieur SIC</h3>
-                            <p class="job__org">Laboratoire de police scientifique de Paris · Ministère de l'Intérieur</p>
-                            <p class="job__desc">
-                                Encadrement technique d'une équipe de quatre développeurs : priorisation, accompagnement, revues. Arbitrage des choix techniques, maintien en condition opérationnelle et fiabilisation d'applications métiers critiques utilisées par les enquêteurs.
-                            </p>
-                            <ul class="stack">
-                                <li>PHP</li><li>PostgreSQL</li><li>Docker</li><li>Kubernetes</li><li>CI/CD</li>
-                            </ul>
-                        </div>
-                    </article>
-                    <article class="job">
-                        <p class="job__date"><time datetime="2024">2024</time> — aujourd'hui</p>
-                        <div class="job__body">
-                            <h3 class="job__role">Coordinateur technique — Données &amp; développement</h3>
-                            <p class="job__org">Outils Publics · Collectif</p>
-                            <p class="job__desc">
-                                Collectif dédié à la création d'outils numériques autour de la donnée publique. Développement de prototypes, d'outils et de visualisations à partir de données ouvertes ; structuration des pratiques techniques du collectif.
-                            </p>
-                            <ul class="stack">
-                                <li>React</li><li>Node.js</li><li>Flutter</li><li>Python</li><li>Open data</li>
-                            </ul>
-                        </div>
-                    </article>
-                    <article class="job">
-                        <p class="job__date"><time datetime="2022">2022</time> — <time datetime="2024">2024</time></p>
-                        <div class="job__body">
-                            <h3 class="job__role">Ingénieur logiciel &amp; chef de projet</h3>
-                            <p class="job__org">Lab de la Transformation · Ministère de l'Économie et des Finances</p>
-                            <p class="job__desc">
-                                Modernisation des services publics : développement d'applications internes, analyse des besoins et spécifications fonctionnelles, ateliers d'innovation avec les équipes métier, industrialisation des prototypes retenus.
-                            </p>
-                            <ul class="stack">
-                                <li>C# .NET</li><li>Power Platform</li><li>SQL Server</li><li>Azure</li><li>React</li>
-                            </ul>
-                        </div>
-                    </article>
+        <!-- ===================== PARCOURS ===================== -->
+        <section class="journey wrap" id="experience" aria-labelledby="experience-title">
+            <div class="journey__aside">
+                <h2 class="sec-head__title" id="experience-title">Parcours</h2>
+                <p class="journey__intro">Secteur public et produit, de Bercy à la police scientifique.</p>
+                <div class="chart" aria-hidden="true">
+                    <div class="chart__axis">
+                        <span></span>
+                        <span class="chart__years"><span>2022</span><span>2024</span><span>2026</span></span>
+                    </div>
+                    <div class="chart__row" data-job="lps"><span class="chart__label">LPS Paris</span><span class="chart__track"><span class="chart__bar chart__bar--open chart__bar--2024"></span></span></div>
+                    <div class="chart__row" data-job="op"><span class="chart__label">Outils Publics</span><span class="chart__track"><span class="chart__bar chart__bar--open chart__bar--2024"></span></span></div>
+                    <div class="chart__row" data-job="bercy"><span class="chart__label">Bercy</span><span class="chart__track"><span class="chart__bar chart__bar--2022"></span></span></div>
                 </div>
             </div>
+
+            <ol class="jobs">
+                <li class="reveal job" data-job="lps">
+                    <p class="job__date"><span><time datetime="2024">2024</time> — aujourd'hui</span> <span class="job__live">En cours</span></p>
+                    <h3 class="job__role">Chef adjoint de la section informatique — Ingénieur SIC</h3>
+                    <p class="job__org">Laboratoire de police scientifique de Paris · Ministère de l'Intérieur</p>
+                    <p class="job__desc">Encadrement technique d'une équipe de quatre développeurs : priorisation, accompagnement, revues. Arbitrage des choix techniques, maintien en condition opérationnelle et fiabilisation d'applications métiers critiques utilisées par les enquêteurs.</p>
+                    <ul class="stack"><li>PHP</li><li>PostgreSQL</li><li>Docker</li><li>Kubernetes</li><li>CI/CD</li></ul>
+                </li>
+                <li class="reveal job" data-job="op">
+                    <p class="job__date"><span><time datetime="2024">2024</time> — aujourd'hui</span> <span class="job__live">En cours</span></p>
+                    <h3 class="job__role">Coordinateur technique — Données &amp; développement</h3>
+                    <p class="job__org">Outils Publics · Collectif</p>
+                    <p class="job__desc">Collectif dédié à la création d'outils numériques autour de la donnée publique. Développement de prototypes, d'outils et de visualisations à partir de données ouvertes ; structuration des pratiques techniques du collectif.</p>
+                    <ul class="stack"><li>React</li><li>Node.js</li><li>Flutter</li><li>Python</li><li>Open data</li></ul>
+                </li>
+                <li class="reveal job" data-job="bercy">
+                    <p class="job__date"><span><time datetime="2022">2022</time> — <time datetime="2024">2024</time></span></p>
+                    <h3 class="job__role">Ingénieur logiciel &amp; chef de projet</h3>
+                    <p class="job__org">Lab de la Transformation · Ministère de l'Économie et des Finances</p>
+                    <p class="job__desc">Modernisation des services publics : développement d'applications internes, analyse des besoins et spécifications fonctionnelles, ateliers d'innovation avec les équipes métier, industrialisation des prototypes retenus.</p>
+                    <ul class="stack"><li>C# .NET</li><li>Power Platform</li><li>SQL Server</li><li>Azure</li><li>React</li></ul>
+                </li>
+            </ol>
         </section>
 
         <!-- ===================== À PROPOS ===================== -->
-        <section class="sec" id="about" aria-labelledby="about-title">
-            <div class="wrap sec__grid">
-                <h2 class="sec__title" id="about-title">À propos</h2>
-                <div class="sec__body about">
-                    <p>
-                        Je suis Clément Plançon, ingénieur logiciel et Tech Lead basé à Paris. Depuis 2024, je suis chef adjoint de la section informatique du Laboratoire de police scientifique de Paris (ministère de l'Intérieur) : j'y encadre une équipe de quatre développeurs et je fais évoluer les applications métiers utilisées par les enquêteurs.
-                    </p>
-                    <p>
-                        Je travaille à l'endroit où la technique rencontre le produit : cadrage des besoins, architecture logicielle, développement full-stack web et mobile, mise en production. Auparavant, j'ai été ingénieur logiciel et chef de projet au Lab de la Transformation du ministère de l'Économie et des Finances.
-                    </p>
-                    <p>
-                        En parallèle, je coordonne les sujets données et développement du collectif Outils Publics et je mène des projets personnels. Le code que je préfère est celui qu'on comprend encore six mois plus tard.
-                    </p>
-                    <h3 class="subhead">Technologies principales</h3>
-                    <ul class="stack stack--plain">
-                        <li>TypeScript</li><li>React / Next.js</li><li>Node.js</li><li>Python</li><li>PHP</li><li>Flutter</li><li>PostgreSQL</li><li>Docker</li><li>Kubernetes</li>
-                    </ul>
-                </div>
+        <section class="about wrap" id="about" aria-labelledby="about-title">
+            <div class="about__text">
+                <h2 class="sec-head__title" id="about-title">À propos</h2>
+                <p>Je suis Clément Plançon, ingénieur logiciel et Tech Lead basé à Paris. Depuis 2024, je suis chef adjoint de la section informatique du Laboratoire de police scientifique de Paris (ministère de l'Intérieur) : j'y encadre une équipe de quatre développeurs et je fais évoluer les applications métiers utilisées par les enquêteurs.</p>
+                <p>Je travaille à l'endroit où la technique rencontre le produit : cadrage des besoins, architecture logicielle, développement full-stack web et mobile, mise en production. Auparavant, j'ai été ingénieur logiciel et chef de projet au Lab de la Transformation du ministère de l'Économie et des Finances.</p>
+                <p>En parallèle, je coordonne les sujets données et développement du collectif Outils Publics et je mène des projets personnels, de l'open data à l'application mobile.</p>
             </div>
+
+            <div class="reveal skills">
+                <h3 class="skills__title" id="skills-title">Compétences principales</h3>
+                <dl>
+                    <div><dt>Front-end</dt><dd>React · Next.js · TypeScript · JavaScript</dd></div>
+                    <div><dt>Back-end &amp; données</dt><dd>Node.js · PHP · Python · PostgreSQL · MongoDB</dd></div>
+                    <div><dt>Mobile</dt><dd>Flutter · Dart · Firebase</dd></div>
+                    <div><dt>Infrastructure</dt><dd>Docker · Kubernetes · CI/CD</dd></div>
+                    <div><dt>Méthodes</dt><dd>Cadrage · UX research · Prototypage · Ateliers d'innovation</dd></div>
+                </dl>
+            </div>
+
+            <figure class="reveal quote">
+                <blockquote><p>Le code que je préfère, c'est celui qu'on comprend encore six mois plus&nbsp;tard.</p></blockquote>
+            </figure>
         </section>
 
         <!-- ===================== CONTACT ===================== -->
-        <section class="sec" id="contact" aria-labelledby="contact-title">
-            <div class="wrap sec__grid">
-                <h2 class="sec__title" id="contact-title">Contact</h2>
-                <div class="sec__body">
-                    <p class="contact__lead">Pour échanger sur un projet, une opportunité ou un sujet technique.</p>
-                    <dl class="contact">
-                        <div>
-                            <dt>Email</dt>
-                            <dd><a class="u" href="mailto:plancon.clem.pro@gmail.com">plancon.clem.pro@gmail.com</a></dd>
-                        </div>
-                        <div>
-                            <dt>LinkedIn</dt>
-                            <dd><a class="u" href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener me">Clément Plançon</a></dd>
-                        </div>
-                        <div>
-                            <dt>GitHub</dt>
-                            <dd><a class="u" href="https://github.com/Clement-Plancon" target="_blank" rel="noopener me">Clement-Plancon</a></dd>
-                        </div>
-                    </dl>
+        <section class="contact" id="contact" aria-labelledby="contact-title">
+            <div class="wrap contact__inner">
+                <h2 class="contact__title" id="contact-title">Contact</h2>
+                <p class="contact__lead">Pour échanger sur un projet, une opportunité ou un sujet technique.</p>
+                <p class="contact__mail">
+                    <a href="mailto:plancon.clem.pro@gmail.com">plancon.clem.pro@gmail.com</a>
+                </p>
+                <div class="contact__actions">
+                    <button class="copy" type="button" data-copy="plancon.clem.pro@gmail.com">Copier l'adresse</button>
+                    <span class="copy__status" role="status"></span>
+                    <a class="u" href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" target="_blank" rel="noopener me">LinkedIn<span class="arrow arrow--out" aria-hidden="true">↗</span></a>
+                    <a class="u" href="https://github.com/Clement-Plancon" target="_blank" rel="noopener me">GitHub<span class="arrow arrow--out" aria-hidden="true">↗</span></a>
                 </div>
             </div>
         </section>
