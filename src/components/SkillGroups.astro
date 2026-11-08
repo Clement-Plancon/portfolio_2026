@@ -1,0 +1,58 @@
+---
+import type { Skills } from '../lib/schemas';
+
+interface Props {
+  skills: Skills;
+}
+const { skills } = Astro.props;
+---
+
+<div class="skills">
+  {
+    skills.groups.map((g) => (
+      <section class="skills__group reveal">
+        <h3>{g.name}</h3>
+        {g.description && <p>{g.description}</p>}
+        <ul class="slash-list">
+          {g.items.map((it) => (
+            <li>{it}</li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .skills {
+    display: grid;
+    gap: 0 var(--gutter);
+  }
+  @media (min-width: 40rem) {
+    .skills {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 64rem) {
+    .skills {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .skills__group {
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--line);
+  }
+  h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  p {
+    margin-block: var(--space-2) var(--space-3);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .slash-list {
+    font-size: 0.9375rem;
+    color: var(--ink);
+  }
+</style>

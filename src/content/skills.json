@@ -1,0 +1,10 @@
+{
+  "groups": [
+    { "name": "Front-end", "description": "Interfaces claires, accessibles et performantes.", "items": ["React", "Next.js", "TypeScript", "JavaScript", "Astro", "HTML & CSS"] },
+    { "name": "Back-end & données", "description": "API propres, schémas pensés, bases de données solides.", "items": ["Node.js", "PHP", "Python", "PostgreSQL", "MongoDB"] },
+    { "name": "Mobile", "description": "Une base unique pour iOS et Android.", "items": ["Flutter", "Dart", "Firebase"] },
+    { "name": "Infrastructure", "description": "Livrer souvent et sans surprise.", "items": ["Docker", "Kubernetes", "CI/CD", "GitHub Actions"] },
+    { "name": "Data & IA appliquée", "description": "Des usages concrets, avec leurs contraintes de coût et de confidentialité.", "items": ["Pipelines de données", "Tableaux de bord", "Intégration de LLM", "RAG"] },
+    { "name": "Produit & équipe", "description": "Du besoin flou au produit en production.", "items": ["Cadrage", "UX research", "Prototypage", "Ateliers d'innovation", "Encadrement technique"] }
+  ]
+}

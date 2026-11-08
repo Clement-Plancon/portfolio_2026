@@ -1,0 +1,17 @@
+{
+  "role": "Chef adjoint de la section informatique — Ingénieur SIC",
+  "organisation": "Laboratoire de police scientifique de Paris",
+  "parentOrganisation": "Ministère de l'Intérieur",
+  "location": "Paris",
+  "start": "2024",
+  "summary": "Je pilote une équipe de quatre développeurs et j'arbitre les choix techniques des outils utilisés par les enquêteurs.",
+  "responsibilities": [
+    "Encadrement technique d'une équipe de quatre développeurs : priorisation, accompagnement, revues",
+    "Conception et arbitrage des choix techniques en lien avec les besoins métiers et les contraintes opérationnelles",
+    "Maintien en condition opérationnelle, évolution et fiabilisation d'applications métiers critiques",
+    "Structuration des pratiques de développement et des processus techniques de la section"
+  ],
+  "skills": ["PHP", "PostgreSQL", "Docker", "Kubernetes", "CI/CD"],
+  "visible": true,
+  "order": 1
+}

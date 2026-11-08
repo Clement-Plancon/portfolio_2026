@@ -1,0 +1,381 @@
+---
+import { Image } from 'astro:assets';
+import ProjectCover from '../../components/ProjectCover.astro';
+import Base from '../../layouts/Base.astro';
+import { getProjects, getSeo, type ProjectEntry, paragraphs } from '../../lib/content';
+import { formatPeriod } from '../../lib/format';
+import { getMedia } from '../../lib/media';
+import { breadcrumbLd, PERSON_ID, SITE } from '../../lib/structured-data';
+
+export function getStaticPaths() {
+  const projects = getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: {
+      project,
+      prev: projects[(i - 1 + projects.length) % projects.length],
+      next: projects[(i + 1) % projects.length],
+    },
+  }));
+}
+
+interface Props {
+  project: ProjectEntry;
+  prev: ProjectEntry;
+  next: ProjectEntry;
+}
+const { project: p, prev, next } = Astro.props;
+const seo = getSeo();
+const period = formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours');
+const path = `/projets/${p.id}/`;
+
+const meta = [
+  { label: 'Période', value: period || (p.status === 'en-cours' ? 'En cours' : '') },
+  { label: 'Cadre', value: p.organisation === 'Projet personnel' ? undefined : p.organisation },
+  { label: 'Type', value: p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel' },
+  { label: 'État', value: p.status === 'en-cours' ? 'En développement' : undefined },
+].filter((m) => m.value);
+
+const sections = [
+  { id: 'contexte', title: 'Contexte', text: p.context },
+  { id: 'probleme', title: 'Problème', text: p.problem },
+  { id: 'role', title: 'Mon rôle', text: p.role },
+  { id: 'approche', title: 'Approche', text: p.approach },
+].filter((s) => s.text);
+
+const ogImage = getMedia(p.seo.ogImage ?? p.cover.image?.src ?? seo.defaultOgImage);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: p.title,
+    description: p.summary,
+    url: `${SITE}${path}`,
+    inLanguage: 'fr-FR',
+    creator: { '@id': PERSON_ID },
+    ...(p.period?.start && { dateCreated: p.period.start }),
+    ...(p.technologies.length && { keywords: p.technologies.join(', ') }),
+  },
+  breadcrumbLd([
+    { name: 'Accueil', path: '/' },
+    { name: 'Projets', path: '/projets/' },
+    { name: p.title, path },
+  ]),
+];
+---
+
+<Base
+  title={p.seo.title ?? `${p.title} — Projet de Clément Plançon`}
+  description={p.seo.description ?? p.summary.slice(0, 165)}
+  image={ogImage}
+  imageAlt={p.cover.image?.alt}
+  noindex={p.seo.noindex}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="project">
+    <header class="wrap project__head">
+      <a class="arrow-link arrow-link--back" href="/projets/">
+        <span class="arrow" aria-hidden="true">←</span><span>Tous les projets</span>
+      </a>
+      {!p.visible && <p class="draft-flag">Masqué — visible uniquement dans l'aperçu</p>}
+      <div class="project__intro">
+        <div>
+          {p.kind && <p class="eyebrow">{p.kind}</p>}
+          <h1>{p.title}</h1>
+          <p class="project__summary">{p.summary}</p>
+        </div>
+        <dl class="project__meta">
+          {
+            meta.map((m) => (
+              <div>
+                <dt>{m.label}</dt>
+                <dd>{m.value}</dd>
+              </div>
+            ))
+          }
+          {
+            p.links.length > 0 && (
+              <div>
+                <dt>Liens</dt>
+                <dd class="project__links">
+                  {p.links.map((l) => (
+                    <a href={l.url} rel="noopener" target="_blank">
+                      {l.label} <span aria-hidden="true">↗</span>
+                      <span class="visually-hidden"> (nouvel onglet)</span>
+                    </a>
+                  ))}
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </div>
+    </header>
+
+    <div class="wrap project__cover">
+      <ProjectCover project={p} size="hero" transition eager />
+    </div>
+
+    <div class="wrap project__body">
+      {
+        sections.map((s) => (
+          <section class="block" aria-labelledby={s.id}>
+            <h2 id={s.id}>{s.title}</h2>
+            <div class="prose">
+              {paragraphs(s.text).map((t) => (
+                <p>{t}</p>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+
+      {
+        p.contributions.length > 0 && (
+          <section class="block" aria-labelledby="contributions">
+            <h2 id="contributions">{p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</h2>
+            <ul class="bullets">
+              {p.contributions.map((c) => (
+                <li>{c}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        p.results.length > 0 && (
+          <section class="block" aria-labelledby="resultats">
+            <h2 id="resultats">Résultats</h2>
+            <ul class="bullets">
+              {p.results.map((r) => (
+                <li>{r}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        p.technologies.length > 0 && (
+          <section class="block" aria-labelledby="technologies">
+            <h2 id="technologies">Technologies</h2>
+            <ul class="slash-list techs">
+              {p.technologies.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        p.gallery.length > 0 && (
+          <section class="block block--wide" aria-labelledby="images">
+            <h2 id="images">Images</h2>
+            <div class="gallery">
+              {p.gallery.map((g) => (
+                <figure>
+                  <Image
+                    src={getMedia(g.src)!}
+                    alt={g.alt}
+                    widths={[480, 900, 1400]}
+                    sizes="(min-width: 64rem) 50vw, 100vw"
+                    loading="lazy"
+                  />
+                  {g.caption && <figcaption>{g.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </div>
+
+    {
+      prev.id !== p.id && (
+        <nav class="wrap pager" aria-label="Autres projets">
+          <a href={`/projets/${prev.id}/`} rel="prev">
+            <span class="pager__label">
+              <span aria-hidden="true">←</span> Projet précédent
+            </span>
+            <span class="pager__title">{prev.title}</span>
+          </a>
+          <a href={`/projets/${next.id}/`} rel="next" class="pager__next">
+            <span class="pager__label">
+              Projet suivant <span aria-hidden="true">→</span>
+            </span>
+            <span class="pager__title">{next.title}</span>
+          </a>
+        </nav>
+      )
+    }
+  </article>
+</Base>
+
+<style>
+  .project__head {
+    padding-top: var(--space-5);
+  }
+  .draft-flag {
+    display: inline-block;
+    margin-top: var(--space-3);
+    padding: 0.2rem 0.6rem;
+    background: var(--accent);
+    color: #fff;
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+  .project__intro {
+    display: grid;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+  }
+  @media (min-width: 64rem) {
+    .project__intro {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      gap: var(--space-8);
+      align-items: end;
+    }
+  }
+  h1 {
+    margin-top: var(--space-2);
+    font-size: var(--step-4);
+    font-weight: 650;
+    letter-spacing: -0.035em;
+  }
+  .project__summary {
+    margin-top: var(--space-5);
+    max-width: 42rem;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  .project__meta {
+    border-top: 2px solid var(--ink);
+  }
+  .project__meta > div {
+    display: grid;
+    grid-template-columns: 6rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.9375rem;
+  }
+  .project__meta dt {
+    color: var(--ink-3);
+  }
+  .project__links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .project__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    min-height: 32px;
+    font-weight: 600;
+  }
+  .project__cover {
+    margin-top: var(--space-7);
+  }
+  .project__body {
+    margin-top: var(--space-8);
+  }
+  .block {
+    display: grid;
+    gap: var(--space-3) var(--gutter);
+    padding-block: var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 48rem) {
+    .block {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    }
+  }
+  @media (min-width: 64rem) {
+    .block {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    }
+  }
+  .block h2 {
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .bullets {
+    max-width: var(--measure);
+    padding-left: 1.1em;
+  }
+  .bullets li + li {
+    margin-top: 0.5em;
+  }
+  .bullets li::marker {
+    color: var(--accent);
+  }
+  .techs {
+    font-size: var(--step-0);
+    color: var(--ink);
+  }
+  .gallery {
+    display: grid;
+    gap: var(--space-5);
+  }
+  @media (min-width: 48rem) {
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .gallery img {
+    width: 100%;
+    border-radius: var(--radius);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+  figcaption {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .pager {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+  }
+  @media (min-width: 48rem) {
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .pager a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-1) ease,
+      background-color var(--dur-1) ease;
+  }
+  .pager a:hover {
+    border-color: var(--ink);
+    background: var(--surface);
+  }
+  .pager__next {
+    text-align: right;
+    align-items: flex-end;
+  }
+  .pager__label {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .pager__title {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+</style>

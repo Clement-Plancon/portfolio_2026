@@ -1,0 +1,147 @@
+---
+import { Image } from 'astro:assets';
+import PageHead from '../components/PageHead.astro';
+import Base from '../layouts/Base.astro';
+import { getExperiences, getProfile, getSeo, getSkills, paragraphs } from '../lib/content';
+import { getMedia } from '../lib/media';
+import { breadcrumbLd, personLd, profilePageLd } from '../lib/structured-data';
+
+const seo = getSeo();
+const page = seo.pages.about;
+const profile = getProfile();
+const [lead, ...bio] = paragraphs(profile.bio);
+const photo = getMedia(profile.photo?.src);
+const cvHref = profile.cv?.startsWith('files/') ? `/${profile.cv}` : profile.cv;
+const skills = getSkills().groups.flatMap((g) => g.items);
+---
+
+<Base
+  title={page.title ?? 'À propos'}
+  description={page.description ?? seo.defaultDescription}
+  image={getMedia(page.ogImage ?? seo.defaultOgImage)}
+  noindex={page.noindex}
+  type="profile"
+  jsonLd={[
+    personLd(profile, getExperiences(), skills),
+    profilePageLd('/a-propos/', page.title ?? 'À propos'),
+    breadcrumbLd([{ name: 'Accueil', path: '/' }, { name: 'À propos', path: '/a-propos/' }]),
+  ]}
+>
+  <PageHead title="À propos" eyebrow={`${profile.name} · ${profile.jobTitle}`} />
+
+  <div class="wrap about">
+    <div class="about__text">
+      <p class="about__lead">{lead}</p>
+      <div class="prose">
+        {bio.map((t) => <p>{t}</p>)}
+      </div>
+      <p class="about__actions">
+        <a class="button" href="/contact/">Me contacter</a>
+        {
+          cvHref && (
+            <a class="button button--ghost" href={cvHref}>
+              Télécharger mon CV
+            </a>
+          )
+        }
+        <a class="arrow-link" href="/parcours/"><span>Mon parcours</span><span class="arrow" aria-hidden="true">→</span></a>
+      </p>
+    </div>
+    {
+      photo && profile.photo && (
+        <figure class="about__photo">
+          <Image src={photo} alt={profile.photo.alt} widths={[360, 720]} sizes="(min-width: 64rem) 30vw, 80vw" />
+        </figure>
+      )
+    }
+  </div>
+
+  {
+    profile.principles.length > 0 && (
+      <section class="section wrap" aria-labelledby="principes-title">
+        <div class="section-head">
+          <h2 id="principes-title">Ma façon de travailler</h2>
+        </div>
+        <ul role="list" class="principles">
+          {profile.principles.map((p) => (
+            <li class="reveal">
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-7);
+    margin-top: var(--space-7);
+  }
+  @media (min-width: 64rem) {
+    .about {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      gap: var(--space-8);
+    }
+  }
+  .about__lead {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    max-width: 44rem;
+    margin-bottom: var(--space-6);
+  }
+  @media (min-width: 48rem) {
+    .about__lead {
+      font-size: var(--step-2);
+    }
+  }
+  .about__text .prose p:last-child {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--ink);
+    padding-left: var(--space-4);
+    border-left: 2px solid var(--accent);
+  }
+  .prose {
+    color: var(--ink-2);
+  }
+  .about__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+    margin-top: var(--space-7);
+  }
+  .about__photo img {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+  .principles {
+    display: grid;
+    gap: 0 var(--gutter);
+  }
+  @media (min-width: 48rem) {
+    .principles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .principles li {
+    padding-block: var(--space-5) var(--space-6);
+    border-top: 1px solid var(--line);
+  }
+  .principles h3 {
+    font-size: var(--step-2);
+    font-weight: 600;
+  }
+  .principles p {
+    margin-top: var(--space-3);
+    max-width: 32rem;
+    color: var(--ink-2);
+  }
+</style>

@@ -1,0 +1,151 @@
+---
+import type { Profile } from '../lib/schemas';
+
+interface Props {
+  profile: Profile;
+  headingLevel?: 'h1' | 'h2';
+  title?: string;
+}
+const { profile, headingLevel = 'h2', title = 'Écrire, tout simplement.' } = Astro.props;
+const H = headingLevel;
+const cvHref = profile.cv?.startsWith('files/') ? `/${profile.cv}` : profile.cv;
+---
+
+<section class="contact-band" aria-labelledby="contact-title">
+  <div class="wrap contact-band__inner">
+    <div class="contact-band__head">
+      <H id="contact-title" class="contact-band__title">{title}</H>
+      <p class="contact-band__lead">
+        Pour échanger sur un projet, un poste ou une question technique, l'e-mail reste le plus direct. Je réponds
+        personnellement.
+      </p>
+    </div>
+    <div class="contact-band__main">
+      <a class="contact-band__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+      <div class="contact-band__actions">
+        <button type="button" class="copy" data-copy={profile.email}>
+          <span data-copy-label>Copier l'adresse</span>
+        </button>
+        <span class="visually-hidden" role="status" data-copy-status></span>
+      </div>
+      <ul role="list" class="contact-band__links">
+        {
+          profile.socials.map((s) => (
+            <li>
+              <a href={s.url} rel="me noopener" target="_blank">
+                {s.label}
+                <span class="visually-hidden"> (nouvel onglet)</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))
+        }
+        {
+          cvHref && (
+            <li>
+              <a href={cvHref}>
+                CV <span aria-hidden="true">↓</span>
+              </a>
+            </li>
+          )
+        }
+        <li class="contact-band__place">{profile.location}</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-band {
+    background: var(--sapin);
+    color: var(--on-sapin);
+    padding-block: var(--space-9) var(--space-8);
+    margin-top: var(--space-9);
+  }
+  .contact-band__inner {
+    display: grid;
+    gap: var(--space-7);
+  }
+  @media (min-width: 64rem) {
+    .contact-band__inner {
+      grid-template-columns: 5fr 7fr;
+      align-items: end;
+    }
+  }
+  .contact-band__title {
+    font-size: var(--step-3);
+    color: var(--on-sapin);
+  }
+  .contact-band__lead {
+    margin-top: var(--space-4);
+    max-width: 30rem;
+    color: var(--on-sapin-2);
+  }
+  .contact-band__email {
+    display: inline-block;
+    max-width: 100%;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 0.6rem + 3.6vw, 3.4rem);
+    font-weight: 600;
+    font-stretch: 88%;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--on-sapin);
+    text-decoration-color: color-mix(in srgb, var(--on-sapin) 35%, transparent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+    overflow-wrap: anywhere;
+  }
+  .contact-band__email:hover {
+    text-decoration-color: var(--accent-on-sapin);
+  }
+  .contact-band :focus-visible {
+    outline-color: var(--accent-on-sapin);
+  }
+  .contact-band__actions {
+    margin-top: var(--space-4);
+  }
+  .copy {
+    min-height: 44px;
+    padding: 0.55rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--on-sapin) 40%, transparent);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--on-sapin);
+    font-size: var(--step--1);
+    font-weight: 600;
+    transition:
+      background-color var(--dur-1) ease,
+      color var(--dur-1) ease;
+  }
+  .copy:hover {
+    background: var(--on-sapin);
+    color: var(--sapin);
+  }
+  .contact-band__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-6);
+    padding-top: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, var(--on-sapin) 22%, transparent);
+  }
+  .contact-band__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    min-height: 44px;
+    font-weight: 600;
+    color: var(--on-sapin);
+    text-decoration: none;
+  }
+  .contact-band__links a:hover {
+    color: var(--accent-on-sapin);
+  }
+  .contact-band__place {
+    margin-left: auto;
+    color: var(--on-sapin-2);
+    font-size: var(--step--1);
+  }
+</style>

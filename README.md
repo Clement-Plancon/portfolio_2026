@@ -1,46 +1,43 @@
 # clementplancon.fr
 
-Portfolio de Clément Plançon — HTML, CSS et JavaScript, sans framework ni build.
+Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
-```
-index.html          page unique : présentation, projets, parcours, à propos, contact
-css/style.css       système visuel (thème clair et sombre selon le réglage système)
-js/main.js          navigation active, apparitions au scroll, détails des projets,
-                    liaison parcours / frise, copie de l'e-mail
-fonts/              Bricolage Grotesque (variable, sous-ensemble latin) + licence OFL
-images/             image Open Graph (1200×630), favicon, apple-touch-icon, captures de Datametre
-robots.txt, sitemap.xml
-```
+- **Site public** : Astro, pages statiques pré-rendues, moins de 2 Ko de JavaScript, thème clair/sombre automatique.
+- **Administration** (`/admin/`) : projets, expériences, articles, profil, compétences, médias, référencement ; brouillon, aperçu réel et publication.
+- **Contenus** : fichiers JSON versionnés dans ce dépôt (`src/content/`), écrits par l'administration via l'API GitHub.
+- **Hébergement** : Netlify (site statique + une fonction serverless + Netlify Identity).
 
-Lancer en local :
+## Démarrer
 
-```
-python3 -m http.server 8000
+```bash
+npm install
+npm run dev
 ```
 
-## SEO — opérations manuelles
+| Commande | Rôle |
+|---|---|
+| `npm run dev` | site en local (http://localhost:4321) |
+| `npm run build` | build de production dans `dist/` |
+| `npm run check` | vérification des types |
+| `npm run lint` | lint (Biome) |
+| `npm test` | tests unitaires et API (Vitest) |
+| `npm run test:e2e` | tests navigateur (Playwright) : 8 largeurs d'écran, accessibilité axe, SEO, parcours admin |
 
-**Mettre à jour** à chaque modification de contenu : `<lastmod>` dans `sitemap.xml` et `dateModified` dans le JSON-LD de `index.html`.
+## Documentation
 
-**URL canonique** : `https://clementplancon.fr/`. Côté hébergeur, rediriger en 301 `www.clementplancon.fr` et `/index.html` vers cette URL.
+- [docs/design-research.md](docs/design-research.md) — étude de 16 portfolios et principes retenus
+- [docs/architecture.md](docs/architecture.md) — architecture, publication, sécurité, design system
+- [docs/netlify-deployment.md](docs/netlify-deployment.md) — mise en ligne, Identity, jeton GitHub, variables, vérifications
+- [docs/admin-guide.md](docs/admin-guide.md) — mode d'emploi de l'administration
 
-**Google Search Console / Bing Webmaster Tools** : coller les balises de vérification dans `index.html`, à l'emplacement du commentaire `Search Console / Bing Webmaster Tools` (dans le `<head>`), par exemple :
+## Modifier le contenu sans l'administration
 
-```html
-<meta name="google-site-verification" content="…">
-<meta name="msvalidate.01" content="…">
-```
+Les fichiers de `src/content/` peuvent aussi être édités à la main : ils sont validés au build (un fichier invalide fait échouer le build et la production garde la version précédente).
 
-Puis soumettre `https://clementplancon.fr/sitemap.xml` dans les deux outils. Bing permet aussi d'importer le site directement depuis Search Console.
+## Référencement
 
-## IndexNow (Bing, Yandex, Seznam…)
+`sitemap-index.xml` et `robots.txt` sont générés au build (les pages masquées et brouillons en sont exclus). Pour Google Search Console / Bing Webmaster Tools : vérifier la propriété par DNS (aucune balise à ajouter au code), puis soumettre `https://clementplancon.fr/sitemap-index.xml`.
 
-1. Générer une clé (8 à 128 caractères hexadécimaux), par exemple sur bing.com/indexnow.
-2. Créer à la racine un fichier `<clé>.txt` dont le contenu est la clé elle-même, puis déployer.
-3. Après chaque mise en ligne, notifier :
+## Licences
 
-```
-curl "https://api.indexnow.org/indexnow?url=https://clementplancon.fr/&key=<clé>"
-```
-
-Pour plusieurs URLs, envoyer un POST JSON à `https://api.indexnow.org/indexnow` avec `host`, `key`, `keyLocation` et `urlList`.
+Polices Bricolage Grotesque et Public Sans : SIL Open Font License 1.1 (`public/fonts/`).

@@ -1,0 +1,56 @@
+---
+interface Props {
+  name: string;
+}
+const { name } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <p>© {year} {name} · Ingénieur logiciel & Tech Lead · Paris</p>
+    <ul role="list">
+      <li><a href="/projets/">Projets</a></li>
+      <li><a href="/parcours/">Parcours</a></li>
+      <li><a href="/a-propos/">À propos</a></li>
+      <li><a href="/contact/">Contact</a></li>
+      <li><a href="#top">Haut de page <span aria-hidden="true">↑</span></a></li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--sapin);
+    color: var(--on-sapin-2);
+    font-size: var(--step--1);
+    padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  }
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-6);
+    padding-block: var(--space-5);
+    border-top: 1px solid color-mix(in srgb, var(--on-sapin) 22%, transparent);
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-4);
+  }
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--on-sapin);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--accent-on-sapin);
+  }
+  a:focus-visible {
+    outline-color: var(--accent-on-sapin);
+  }
+</style>

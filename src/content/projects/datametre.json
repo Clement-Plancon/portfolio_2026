@@ -1,0 +1,38 @@
+{
+  "title": "Datametre",
+  "summary": "Observatoire des données publiques françaises : une plateforme de datavisualisation éditoriale, claire et accessible, consacrée aux grands indicateurs du territoire.",
+  "kind": "Dataviz · Open data",
+  "category": "perso",
+  "organisation": "Projet personnel",
+  "context": "Plateforme de datavisualisation dédiée aux données publiques françaises, avec une approche éditoriale, claire et accessible des grands indicateurs du territoire.",
+  "contributions": [
+    "Données publiques françaises",
+    "Datavisualisation",
+    "Approche éditoriale des indicateurs",
+    "Interface responsive"
+  ],
+  "results": [],
+  "technologies": [
+    "JavaScript",
+    "Dataviz",
+    "Open data"
+  ],
+  "links": [
+    {
+      "label": "Voir le site",
+      "url": "https://datametre.netlify.app/"
+    }
+  ],
+  "cover": {
+    "color": "sable",
+    "image": {
+      "src": "media/datametre-apercu.webp",
+      "alt": "Page d'accueil de Datametre : « Comprendre la France en chiffres »"
+    }
+  },
+  "gallery": [],
+  "featured": true,
+  "visible": true,
+  "order": 6,
+  "seo": {}
+}

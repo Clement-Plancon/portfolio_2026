@@ -1,0 +1,25 @@
+{
+  "title": "SafePing",
+  "summary": "Application discrète de sécurité personnelle pour alerter rapidement des contacts de confiance, avec position GPS optionnelle et mode façade « Notes ».",
+  "kind": "Application mobile · Sécurité personnelle",
+  "category": "perso",
+  "organisation": "Projet personnel",
+  "status": "en-cours",
+  "context": "Application pensée pour envoyer une alerte en quelques secondes à des proches de confiance, sans attirer l'attention : l'interface peut se présenter comme une simple application de notes.",
+  "contributions": [
+    "Alerte SOS vers des contacts de confiance",
+    "Position GPS optionnelle",
+    "Mode façade « Notes »",
+    "Données conservées localement sur l'appareil",
+    "Aucun compte requis"
+  ],
+  "results": [],
+  "technologies": ["Application mobile", "Géolocalisation", "Vie privée"],
+  "links": [],
+  "cover": { "color": "vermillon" },
+  "gallery": [],
+  "featured": true,
+  "visible": true,
+  "order": 5,
+  "seo": {}
+}

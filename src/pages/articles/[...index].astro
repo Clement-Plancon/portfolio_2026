@@ -1,0 +1,86 @@
+---
+// The articles index only exists when at least one article is published (no empty section).
+import PageHead from '../../components/PageHead.astro';
+import Base from '../../layouts/Base.astro';
+import { getArticles, getSeo } from '../../lib/content';
+import { formatDate } from '../../lib/format';
+import { readingTime } from '../../lib/markdown';
+import { getMedia } from '../../lib/media';
+
+export function getStaticPaths() {
+  return getArticles().length > 0 ? [{ params: { index: undefined } }] : [];
+}
+
+const seo = getSeo();
+const page = seo.pages.articles;
+const articles = getArticles();
+---
+
+<Base
+  title={page.title ?? 'Articles'}
+  description={page.description ?? seo.defaultDescription}
+  image={getMedia(page.ogImage ?? seo.defaultOgImage)}
+  noindex={page.noindex}
+>
+  <PageHead title="Articles" lead="Notes techniques sur l'architecture, le développement et la conception de produits." />
+  <section class="section wrap" aria-label="Liste des articles">
+    <ol role="list" class="articles">
+      {
+        articles.map((a) => (
+          <li>
+            <a href={`/articles/${a.id}/`}>
+              <span class="articles__date">
+                {a.status === 'draft' ? 'Brouillon' : formatDate(a.publishedAt)}
+              </span>
+              <span class="articles__body">
+                <h2>{a.title}</h2>
+                <span class="articles__excerpt">{a.excerpt}</span>
+              </span>
+              <span class="articles__time">{readingTime(a.body)} min</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</Base>
+
+<style>
+  .articles {
+    border-top: 1px solid var(--ink);
+  }
+  li {
+    border-bottom: 1px solid var(--line);
+  }
+  a {
+    display: grid;
+    gap: var(--space-2) var(--gutter);
+    padding-block: var(--space-5);
+    text-decoration: none;
+  }
+  @media (min-width: 48rem) {
+    a {
+      grid-template-columns: 11rem minmax(0, 1fr) auto;
+      align-items: baseline;
+    }
+  }
+  h2 {
+    font-size: var(--step-2);
+    font-weight: 600;
+    transition: color var(--dur-1) ease;
+  }
+  a:hover h2 {
+    color: var(--accent-ink);
+  }
+  .articles__excerpt {
+    display: block;
+    margin-top: var(--space-2);
+    max-width: var(--measure);
+    color: var(--ink-2);
+  }
+  .articles__date,
+  .articles__time {
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+</style>

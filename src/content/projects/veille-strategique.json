@@ -1,0 +1,25 @@
+{
+  "title": "Veille Stratégique",
+  "summary": "Système automatisé de veille technologique : collecte multi-sources, extraction d'entités, résumés par IA et newsletter personnalisée.",
+  "kind": "Outil interne · IA",
+  "category": "perso",
+  "organisation": "Projet personnel",
+  "period": { "start": "2024" },
+  "context": "Système automatisé de veille technologique et concurrentielle qui agrège, analyse et synthétise les informations provenant de multiples sources web.",
+  "contributions": [
+    "Collecte automatique de sources configurables",
+    "Analyse de sentiment et extraction d'entités",
+    "Résumés automatiques par IA",
+    "Newsletter personnalisée hebdomadaire",
+    "Tableau de bord des tendances et alertes"
+  ],
+  "results": [],
+  "technologies": ["Python", "Scrapy", "OpenAI", "MongoDB", "React"],
+  "links": [],
+  "cover": { "color": "ocre" },
+  "gallery": [],
+  "featured": false,
+  "visible": true,
+  "order": 4,
+  "seo": {}
+}

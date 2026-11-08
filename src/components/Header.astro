@@ -1,0 +1,146 @@
+---
+import Name from './Name.astro';
+
+interface Props {
+  name: string;
+  showArticles: boolean;
+}
+const { name, showArticles } = Astro.props;
+const path = Astro.url.pathname;
+
+const links = [
+  { href: '/projets/', label: 'Projets' },
+  { href: '/parcours/', label: 'Parcours' },
+  { href: '/a-propos/', label: 'À propos' },
+  ...(showArticles ? [{ href: '/articles/', label: 'Articles' }] : []),
+];
+const isActive = (href: string) => path.startsWith(href);
+---
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="wordmark" href="/" aria-current={path === '/' ? 'page' : undefined}>
+      <Name text={name} />
+    </a>
+    <nav aria-label="Navigation principale" class="site-nav">
+      <ul role="list">
+        {
+          links.map((l) => (
+            <li class:list={{ 'hide-mobile': l.href !== '/articles/' }}>
+              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="hide-mobile">
+          <a class="site-nav__contact" href="/contact/" aria-current={isActive('/contact/') ? 'page' : undefined}>
+            Contact
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid transparent;
+    view-transition-name: site-header;
+  }
+  @supports (animation-timeline: scroll()) {
+    .site-header {
+      animation: header-line linear both;
+      animation-timeline: scroll();
+      animation-range: 0 120px;
+    }
+  }
+  @keyframes header-line {
+    to {
+      border-bottom-color: var(--line);
+    }
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-height: var(--header-h);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    padding-block: var(--space-2);
+    white-space: nowrap;
+  }
+  .site-nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.25rem, 1.5vw, 1.5rem);
+  }
+  .site-nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: var(--space-2);
+    font-size: 0.9375rem;
+    font-weight: 550;
+    text-decoration: none;
+    color: var(--ink-2);
+  }
+  .site-nav a:hover {
+    color: var(--ink);
+  }
+  /* Active page: a small vermillon square under the label. */
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 4px;
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+    transform: translateX(-50%) scale(0);
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+  .site-nav a[aria-current='page'] {
+    color: var(--ink);
+  }
+  .site-nav a[aria-current='page']::after,
+  .site-nav a:hover::after {
+    transform: translateX(-50%) scale(1);
+  }
+  .site-nav a.site-nav__contact {
+    margin-left: var(--space-2);
+    padding-inline: var(--space-4);
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+    color: var(--ink);
+    transition:
+      background-color var(--dur-1) ease,
+      color var(--dur-1) ease;
+  }
+  .site-nav a.site-nav__contact::after {
+    display: none;
+  }
+  .site-nav a.site-nav__contact:hover,
+  .site-nav a.site-nav__contact[aria-current='page'] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  @media (max-width: 47.99rem) {
+    .hide-mobile {
+      display: none;
+    }
+  }
+</style>
