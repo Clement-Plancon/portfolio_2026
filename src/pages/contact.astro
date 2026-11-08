@@ -1,0 +1,45 @@
+---
+import ContactBand from '../components/ContactBand.astro';
+import Base from '../layouts/Base.astro';
+import { getProfile, getSeo } from '../lib/content';
+import { getMedia } from '../lib/media';
+import { breadcrumbLd } from '../lib/structured-data';
+
+const seo = getSeo();
+const page = seo.pages.contact;
+const profile = getProfile();
+---
+
+<Base
+  title={page.title ?? 'Contact'}
+  description={page.description ?? seo.defaultDescription}
+  image={getMedia(page.ogImage ?? seo.defaultOgImage)}
+  noindex={page.noindex}
+  contactBand={false}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      url: 'https://clementplancon.fr/contact/',
+      name: page.title ?? 'Contact',
+      mainEntity: { '@id': 'https://clementplancon.fr/#person' },
+    },
+    breadcrumbLd([{ name: 'Accueil', path: '/' }, { name: 'Contact', path: '/contact/' }]),
+  ]}
+>
+  <div class="contact-page">
+    <ContactBand profile={profile} headingLevel="h1" title="Contact" />
+  </div>
+</Base>
+
+<style>
+  .contact-page :global(.contact-band) {
+    margin-top: 0;
+    min-height: calc(100dvh - var(--header-h) - 4rem - var(--tabbar-h));
+    display: flex;
+    align-items: center;
+  }
+  .contact-page :global(.contact-band__title) {
+    font-size: var(--step-4);
+  }
+</style>

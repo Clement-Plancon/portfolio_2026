@@ -1,0 +1,334 @@
+---
+import ExperienceList from '../components/ExperienceList.astro';
+import Name from '../components/Name.astro';
+import ProjectIndex from '../components/ProjectIndex.astro';
+import Base from '../layouts/Base.astro';
+import { getExperiences, getProfile, getProjects, getSeo, getSkills } from '../lib/content';
+import { getMedia } from '../lib/media';
+import { personLd, profilePageLd } from '../lib/structured-data';
+
+const profile = getProfile();
+const seo = getSeo();
+const projects = getProjects();
+const experiences = getExperiences();
+const featured = projects.filter((p) => p.featured);
+const shown = featured.length ? featured : projects.slice(0, 4);
+const current = experiences.filter((e) => !e.end);
+const [first, ...rest] = profile.name.split(' ');
+const skills = getSkills().groups.flatMap((g) => g.items);
+const page = seo.pages.home;
+---
+
+<Base
+  title={page.title ?? `${profile.name} — ${profile.jobTitle}`}
+  description={page.description ?? seo.defaultDescription}
+  image={getMedia(page.ogImage ?? seo.defaultOgImage)}
+  noindex={page.noindex}
+  type="profile"
+  jsonLd={[personLd(profile, experiences, skills), profilePageLd('/', page.title ?? profile.name)]}
+>
+  <section class="hero wrap" aria-labelledby="hero-name">
+    <p class="hero__role">{profile.jobTitle} <span aria-hidden="true">·</span> {profile.location}</p>
+    <h1 class="hero__name" id="hero-name" data-name>
+      <span class="hero__line"><Name text={first} letters /></span>
+      <span class="hero__line hero__line--2"><Name text={rest.join(' ')} letters /></span>
+      <span class="visually-hidden">, {profile.jobTitle}</span>
+    </h1>
+
+    <div class="hero__grid">
+      <div class="hero__lead">
+        <p class="hero__headline">{profile.headline}</p>
+        <p class="hero__intro">{profile.intro}</p>
+        <p class="hero__actions">
+          <a class="button" href="#projets">Voir les projets <span aria-hidden="true">↓</span></a>
+          <a class="arrow-link" href="/contact/"><span>Me contacter</span><span class="arrow" aria-hidden="true">→</span></a>
+        </p>
+      </div>
+
+      {
+        current.length > 0 && (
+          <dl class="hero__now">
+            {current.map((e, i) => (
+              <div class="hero__now-row">
+                <dt>{i === 0 ? 'Actuellement' : 'En parallèle'}</dt>
+                <dd>
+                  <strong>{e.role.split(' — ')[0]}</strong>
+                  <span>
+                    {e.organisation}
+                    {e.parentOrganisation && <> · {e.parentOrganisation}</>}
+                  </span>
+                </dd>
+              </div>
+            ))}
+            <div class="hero__now-row">
+              <dt>En ligne</dt>
+              <dd class="hero__links">
+                {profile.socials.map((s) => (
+                  <a href={s.url} rel="me noopener" target="_blank">
+                    {s.label}
+                    <span class="visually-hidden"> (nouvel onglet)</span>
+                  </a>
+                ))}
+              </dd>
+            </div>
+          </dl>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section wrap" id="projets" aria-labelledby="projets-title">
+    <div class="section-head">
+      <h2 id="projets-title">Projets sélectionnés</h2>
+      <a class="arrow-link section-head__note" href="/projets/">
+        <span>Les {projects.length} projets</span><span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <ProjectIndex projects={shown} />
+  </section>
+
+  <section class="section wrap" aria-labelledby="parcours-title">
+    <div class="section-head">
+      <h2 id="parcours-title">Parcours</h2>
+      <a class="arrow-link section-head__note" href="/parcours/">
+        <span>Détails et compétences</span><span class="arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <ExperienceList experiences={experiences} compact />
+  </section>
+
+  {
+    profile.principles.length > 0 && (
+      <section class="section wrap" aria-labelledby="approche-title">
+        <div class="section-head">
+          <h2 id="approche-title">Ma façon de travailler</h2>
+          <a class="arrow-link section-head__note" href="/a-propos/">
+            <span>À propos</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+        <ul role="list" class="principles">
+          {profile.principles.map((p) => (
+            <li class="reveal">
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</Base>
+
+<style>
+  .hero {
+    padding-top: clamp(2rem, 1rem + 5vw, 5.5rem);
+  }
+  .hero__role {
+    font-size: var(--step-0);
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .hero__name {
+    margin-top: var(--space-3);
+    font-size: var(--step-name);
+    font-weight: 650;
+    line-height: 0.88;
+    letter-spacing: -0.045em;
+  }
+  .hero__line {
+    display: block;
+    padding-bottom: 0.06em;
+  }
+  .hero__line--2 {
+    padding-left: 0.62em;
+  }
+  /* Letters are inline-blocks with the h1 line-height (0.88): baseline sits at 0.77em. */
+  .hero__name :global(.cedilla)::after {
+    line-height: inherit;
+    clip-path: inset(0.77em 0 0 0);
+  }
+  .hero__name :global(.l) {
+    display: inline-block;
+    font-weight: calc(650 + var(--w, 0) * 150);
+    font-stretch: calc(100% - var(--w, 0) * 14%);
+    transition:
+      font-weight 420ms var(--ease-out),
+      font-stretch 420ms var(--ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__line {
+      overflow: hidden;
+      /* room for descenders (the cedilla) inside the mask */
+      padding-bottom: 0.26em;
+      margin-bottom: -0.2em;
+    }
+    .hero__name :global(.l) {
+      animation: letter-rise 900ms var(--ease-out) both;
+      animation-delay: calc(var(--i) * 38ms + 60ms);
+    }
+    .hero__line--2 :global(.l) {
+      animation-delay: calc(var(--i) * 38ms + 260ms);
+    }
+    .hero__name :global(.cedilla)::after {
+      animation: cedilla-in 700ms var(--ease-out) 1150ms both;
+    }
+    .hero__grid {
+      animation: fade-up 800ms var(--ease-out) 500ms both;
+    }
+  }
+  @keyframes letter-rise {
+    from {
+      transform: translateY(105%);
+    }
+    to {
+      transform: none;
+    }
+  }
+  @keyframes cedilla-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.12em);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+
+  .hero__grid {
+    display: grid;
+    gap: var(--space-7);
+    margin-top: clamp(2rem, 1rem + 4vw, 4.5rem);
+  }
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--space-8);
+      align-items: end;
+    }
+  }
+  /* Wide screens: the current role sits beside the name instead of under it. */
+  @media (min-width: 90rem) {
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 24rem;
+      column-gap: var(--space-8);
+    }
+    .hero__role,
+    .hero__name,
+    .hero__lead {
+      grid-column: 1;
+    }
+    .hero__grid {
+      display: contents;
+    }
+    .hero__lead {
+      margin-top: var(--space-7);
+    }
+    .hero__now {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: end;
+      margin-bottom: 0.2em;
+    }
+  }
+  .hero__headline {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    max-width: 36rem;
+  }
+  .hero__intro {
+    margin-top: var(--space-4);
+    max-width: 34rem;
+    color: var(--ink-2);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+    margin-top: var(--space-6);
+  }
+  .hero__now {
+    border-top: 2px solid var(--ink);
+  }
+  .hero__now-row {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--line);
+  }
+  .hero__now dt {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--ink-3);
+    padding-top: 0.15rem;
+  }
+  .hero__now-row:first-child dt {
+    color: var(--accent-ink);
+  }
+  .hero__now dd strong {
+    display: block;
+    font-weight: 600;
+  }
+  .hero__now dd span {
+    display: block;
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-4);
+  }
+  .hero__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    font-weight: 600;
+  }
+  @media (max-width: 30rem) {
+    .hero__now-row {
+      grid-template-columns: 1fr;
+      gap: var(--space-1);
+    }
+    .hero__links a {
+      min-height: 44px;
+    }
+  }
+
+  .principles {
+    display: grid;
+    gap: var(--space-6) var(--gutter);
+  }
+  @media (min-width: 40rem) {
+    .principles {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 72rem) {
+    .principles {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .principles li {
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--line);
+  }
+  .principles h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .principles p {
+    margin-top: var(--space-3);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+</style>

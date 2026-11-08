@@ -1,0 +1,30 @@
+{
+  "siteName": "Clément Plançon",
+  "defaultDescription": "Clément Plançon, ingénieur logiciel et Tech Lead à Paris : architecture, développement full-stack et applications métiers.",
+  "pages": {
+    "home": {
+      "title": "Clément Plançon — Ingénieur logiciel & Tech Lead à Paris",
+      "description": "Clément Plançon, ingénieur logiciel et Tech Lead à Paris. Applications métiers, architecture logicielle et développement full-stack, du cadrage à la production."
+    },
+    "projects": {
+      "title": "Projets — Clément Plançon",
+      "description": "Projets de Clément Plançon : logiciels pour l'administration, tableaux de bord, recherche utilisateur, open data et application mobile."
+    },
+    "experience": {
+      "title": "Parcours et compétences — Clément Plançon",
+      "description": "Parcours de Clément Plançon : Tech Lead au Laboratoire de police scientifique de Paris (ministère de l'Intérieur), Outils Publics, Lab de la Transformation."
+    },
+    "about": {
+      "title": "À propos — Clément Plançon",
+      "description": "Qui est Clément Plançon : ingénieur logiciel et Tech Lead à Paris, sa façon de travailler et ce qui l'intéresse dans la conception de produits."
+    },
+    "articles": {
+      "title": "Articles — Clément Plançon",
+      "description": "Articles techniques de Clément Plançon sur l'architecture, le développement et la conception de produits."
+    },
+    "contact": {
+      "title": "Contact — Clément Plançon",
+      "description": "Contacter Clément Plançon, ingénieur logiciel et Tech Lead à Paris : e-mail, GitHub et LinkedIn."
+    }
+  }
+}

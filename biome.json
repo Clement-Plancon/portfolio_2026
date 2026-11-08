@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": { "includes": ["src/**/*.ts", "src/**/*.tsx", "tests/**", "netlify/**", "scripts/**", "*.ts", "*.mjs"] },
+  "formatter": { "enabled": false },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "security": { "noDangerouslySetInnerHtml": "off" },
+      "style": { "noNonNullAssertion": "off" },
+      "suspicious": { "noControlCharactersInRegex": "off" }
+    }
+  },
+  "assist": { "enabled": false }
+}

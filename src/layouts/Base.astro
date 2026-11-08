@@ -1,0 +1,61 @@
+---
+import type { ImageMetadata } from 'astro';
+import '../styles/global.css';
+import ContactBand from '../components/ContactBand.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Seo from '../components/Seo.astro';
+import TabBar from '../components/TabBar.astro';
+import { getArticles, getProfile } from '../lib/content';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  noindex?: boolean;
+  type?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown>[];
+  contactBand?: boolean;
+}
+
+const { contactBand = true, ...seo } = Astro.props;
+const profile = getProfile();
+const showArticles = getArticles().length > 0;
+---
+
+<!doctype html>
+<html lang="fr" id="top">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <Seo {...seo} />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141310" media="(prefers-color-scheme: dark)" />
+    <meta name="author" content={profile.name} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <Header name={profile.name} showArticles={showArticles} />
+    <main id="contenu" tabindex="-1">
+      <slot />
+    </main>
+    {contactBand && <ContactBand profile={profile} />}
+    <Footer name={profile.name} />
+    <TabBar />
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+</style>

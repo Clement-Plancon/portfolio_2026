@@ -1,0 +1,16 @@
+{
+  "role": "Coordinateur technique — Données & développement",
+  "organisation": "Outils Publics",
+  "url": "https://outilspublics.netlify.app/",
+  "location": "France · à distance",
+  "start": "2024",
+  "summary": "Outils Publics est un collectif dédié à la recherche, l'exploration et la création d'outils numériques autour de la donnée publique.",
+  "responsibilities": [
+    "Développement de prototypes, d'outils et de visualisations à partir de données publiques",
+    "Structuration des pratiques, des outils et des méthodes techniques du collectif",
+    "Interface entre recherche, design et implémentation logicielle"
+  ],
+  "skills": ["React", "Node.js", "Flutter", "Python", "Open data"],
+  "visible": true,
+  "order": 2
+}

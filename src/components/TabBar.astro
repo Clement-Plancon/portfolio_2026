@@ -1,0 +1,89 @@
+---
+// Mobile navigation: a bottom bar within thumb reach, always visible, with text labels.
+const path = Astro.url.pathname;
+const tabs = [
+  { href: '/', label: 'Accueil', icon: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z' },
+  { href: '/projets/', label: 'Projets', icon: 'M3 5h18M3 12h18M3 19h12' },
+  { href: '/parcours/', label: 'Parcours', icon: 'M6 3v18M6 7h12M6 13h9M6 19h6' },
+  { href: '/a-propos/', label: 'À propos', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0' },
+  { href: '/contact/', label: 'Contact', icon: 'M3 6h18v12H3zM3 6l9 7 9-7' },
+];
+const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<nav class="tabbar" aria-label="Navigation principale (mobile)">
+  <ul role="list">
+    {
+      tabs.map((t) => (
+        <li>
+          <a href={t.href} aria-current={active(t.href) ? 'page' : undefined}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d={t.icon} />
+            </svg>
+            <span>{t.label}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .tabbar {
+    display: none;
+  }
+  @media (max-width: 47.99rem) {
+    .tabbar {
+      display: block;
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: 50;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: color-mix(in srgb, var(--paper) 94%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--line);
+      view-transition-name: tabbar;
+    }
+    .tabbar ul {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .tabbar a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: 58px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-3);
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tabbar svg {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform var(--dur-2) var(--ease-out);
+    }
+    .tabbar a[aria-current='page'] {
+      color: var(--ink);
+    }
+    .tabbar a[aria-current='page'] svg {
+      stroke: var(--accent);
+      transform: translateY(-1px);
+    }
+    .tabbar a:active svg {
+      transform: scale(0.9);
+    }
+  }
+  @media (max-width: 22rem) {
+    .tabbar a {
+      font-size: 0.625rem;
+    }
+  }
+</style>

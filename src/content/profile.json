@@ -1,0 +1,19 @@
+{
+  "name": "Clément Plançon",
+  "jobTitle": "Ingénieur logiciel & Tech Lead",
+  "headline": "Je conçois des applications métiers et des produits numériques, du cadrage à la mise en production.",
+  "intro": "J'encadre une équipe de développeurs au ministère de l'Intérieur et je construis des outils utiles, lisibles et faits pour durer.",
+  "bio": "Je suis ingénieur logiciel et Tech Lead, basé à Paris. Depuis 2024, je suis chef adjoint de la section informatique du Laboratoire de police scientifique de Paris, au ministère de l'Intérieur : j'y encadre une équipe de quatre développeurs et je fais évoluer les applications métiers utilisées par les enquêteurs.\n\nJe travaille à l'endroit où la technique rencontre le produit : cadrage des besoins, architecture logicielle, développement full-stack web et mobile, mise en production. Auparavant, j'ai été ingénieur logiciel et chef de projet au Lab de la Transformation du ministère de l'Économie et des Finances.\n\nEn parallèle, je coordonne les sujets données et développement du collectif Outils Publics et je mène des projets personnels, de l'open data à l'application mobile.\n\nLe code que je préfère, c'est celui qu'on comprend encore six mois plus tard.",
+  "location": "Paris",
+  "email": "plancon.clem.pro@gmail.com",
+  "socials": [
+    { "label": "GitHub", "url": "https://github.com/Clement-Plancon" },
+    { "label": "LinkedIn", "url": "https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/" }
+  ],
+  "principles": [
+    { "title": "Comprendre avant de construire", "text": "Je commence par les questions floues, pas par le clavier. Le code est plus simple quand le problème est clair." },
+    { "title": "Simple avant d'être malin", "text": "Une solution ennuyeuse qui marche bat une architecture brillante qui ne tient pas en production. Je préfère rendre le complexe lisible." },
+    { "title": "Livrer, écouter, corriger", "text": "On apprend en mettant les choses entre les mains des gens : une première version utile, puis des itérations nourries par les retours réels." },
+    { "title": "Tenir l'équipe avec soi", "text": "J'encadre en expliquant les choix, pas en les imposant. Une équipe qui comprend le pourquoi livre mieux et tient plus longtemps." }
+  ]
+}

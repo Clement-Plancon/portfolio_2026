@@ -1,0 +1,23 @@
+---
+// Renders a name with the "ç" signature (accent cedilla). Each letter can be wrapped for the hero effect.
+interface Props {
+  text: string;
+  letters?: boolean;
+}
+const { text, letters = false } = Astro.props;
+const chars = [...text];
+---
+
+{
+  letters
+    ? chars.map((c, i) =>
+        c === ' ' ? (
+          ' '
+        ) : (
+          <span class:list={['l', { cedilla: c === 'ç' }]} style={`--i:${i}`}>
+            {c}
+          </span>
+        ),
+      )
+    : chars.map((c) => (c === 'ç' ? <span class="cedilla">ç</span> : c))
+}

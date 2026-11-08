@@ -1,0 +1,225 @@
+---
+// Projects as an index + viewer.
+// Wide screens with a mouse: a typographic list, and a panel showing the project under the pointer/focus.
+// Touch and narrow screens: compact cards with the cover always visible (nothing depends on hover).
+import type { ProjectEntry } from '../lib/content';
+import { formatPeriod } from '../lib/format';
+import ProjectCover from './ProjectCover.astro';
+
+interface Props {
+  projects: ProjectEntry[];
+  headingLevel?: 'h2' | 'h3';
+}
+const { projects, headingLevel = 'h3' } = Astro.props;
+const H = headingLevel;
+const period = (p: ProjectEntry) =>
+  formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
+const category = { pro: 'Professionnel', perso: 'Personnel' };
+---
+
+<div class="pindex" data-pindex>
+  <ol role="list" class="pindex__list">
+    {
+      projects.map((p, i) => (
+        <li class="pindex__item">
+          <a
+            href={`/projets/${p.id}/`}
+            class:list={['pindex__link', { 'is-active': i === 0 }]}
+            data-preview={p.id}
+          >
+            <span class="pindex__mini">
+              <ProjectCover project={p} size="mini" transition />
+            </span>
+            <span class="pindex__text">
+              <H class="pindex__title">{p.title}</H>
+              <span class="pindex__kind">
+                {[p.kind, p.organisation !== 'Projet personnel' ? p.organisation : null].filter(Boolean).join(' · ')}
+              </span>
+              <span class="pindex__summary">{p.summary}</span>
+            </span>
+            <span class="pindex__period">{period(p)}</span>
+            <span class="pindex__cat">{category[p.category]}</span>
+            <span class="pindex__arrow" aria-hidden="true">
+              →
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="pindex__viewer" aria-hidden="true">
+    {
+      projects.map((p, i) => (
+        <div class="pview" data-panel={p.id} hidden={i !== 0}>
+          <ProjectCover project={p} size="panel" />
+          <p class="pview__summary">{p.summary}</p>
+          {p.technologies.length > 0 && (
+            <ul class="slash-list">
+              {p.technologies.map((t) => (
+                <li>{t}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .pindex__list {
+    border-top: 1px solid var(--line);
+  }
+  .pindex__item {
+    border-bottom: 1px solid var(--line);
+  }
+  .pindex__link {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+    padding-block: var(--space-4);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pindex__title {
+    font-size: var(--step-1);
+    font-weight: 650;
+    line-height: 1.1;
+  }
+  .pindex__kind {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: var(--step--1);
+    color: var(--ink-3);
+  }
+  .pindex__summary {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: var(--space-2);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .pindex__period,
+  .pindex__cat {
+    display: none;
+  }
+  .pindex__arrow {
+    display: none;
+  }
+  .pindex__viewer {
+    display: none;
+  }
+  .pindex__link:active .pindex__mini {
+    transform: scale(0.97);
+  }
+  .pindex__mini {
+    transition: transform var(--dur-1) ease;
+  }
+
+  /* Tablet: bigger thumbnails, period visible */
+  @media (min-width: 40rem) {
+    .pindex__link {
+      grid-template-columns: 7rem minmax(0, 1fr) auto;
+      gap: var(--space-5);
+      padding-block: var(--space-5);
+    }
+    .pindex__period {
+      display: block;
+      font-size: var(--step--1);
+      color: var(--ink-3);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+  }
+
+  /* Desktop with a fine pointer: typographic index + sticky viewer */
+  @media (min-width: 64rem) and (hover: hover) and (pointer: fine) {
+    .pindex {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .pindex__mini,
+    .pindex__summary {
+      display: none;
+    }
+    .pindex__link {
+      grid-template-columns: 7.5rem minmax(0, 1fr) auto 1.5rem;
+      align-items: baseline;
+      padding-block: var(--space-5);
+      transition: color var(--dur-2) var(--ease-out);
+    }
+    .pindex__period {
+      order: -1;
+    }
+    .pindex__cat {
+      display: block;
+      font-size: var(--step--1);
+      color: var(--ink-3);
+    }
+    .pindex__title {
+      font-size: var(--step-3);
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      transition:
+        transform var(--dur-2) var(--ease-out),
+        color var(--dur-2) var(--ease-out);
+    }
+    .pindex__arrow {
+      display: block;
+      color: var(--accent);
+      opacity: 0;
+      transform: translateX(-8px);
+      transition:
+        opacity var(--dur-2) var(--ease-out),
+        transform var(--dur-2) var(--ease-out);
+    }
+    .pindex__list:hover .pindex__link:not(:hover) .pindex__title {
+      color: var(--ink-3);
+    }
+    .pindex__link:hover .pindex__title,
+    .pindex__link:focus-visible .pindex__title {
+      transform: translateX(10px);
+    }
+    .pindex__link:hover .pindex__arrow,
+    .pindex__link:focus-visible .pindex__arrow,
+    .pindex__link.is-active .pindex__arrow {
+      opacity: 1;
+      transform: none;
+    }
+    .pindex__viewer {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-h) + var(--space-5));
+    }
+    .pview[hidden] {
+      display: none;
+    }
+    .pview {
+      animation: pview-in var(--dur-3) var(--ease-out);
+    }
+    .pview__summary {
+      margin-block: var(--space-4) var(--space-3);
+      color: var(--ink-2);
+      max-width: 34rem;
+    }
+  }
+  @keyframes pview-in {
+    from {
+      opacity: 0;
+      clip-path: inset(0 0 12% 0);
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: none;
+    }
+  }
+</style>

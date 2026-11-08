@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas ou a été déplacée." noindex contactBand={false}>
+  <section class="wrap notfound">
+    <p class="eyebrow">Erreur 404</p>
+    <h1>Cette page n'existe pas.</h1>
+    <p>Elle a peut-être été déplacée. Voici les pages principales :</p>
+    <ul role="list">
+      <li><a class="arrow-link" href="/"><span>Accueil</span><span class="arrow" aria-hidden="true">→</span></a></li>
+      <li><a class="arrow-link" href="/projets/"><span>Projets</span><span class="arrow" aria-hidden="true">→</span></a></li>
+      <li><a class="arrow-link" href="/parcours/"><span>Parcours</span><span class="arrow" aria-hidden="true">→</span></a></li>
+      <li><a class="arrow-link" href="/contact/"><span>Contact</span><span class="arrow" aria-hidden="true">→</span></a></li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    padding-block: var(--space-9);
+    min-height: 60dvh;
+  }
+  h1 {
+    margin-top: var(--space-3);
+    font-size: var(--step-4);
+  }
+  p:not(.eyebrow) {
+    margin-top: var(--space-4);
+    color: var(--ink-2);
+  }
+  ul {
+    margin-top: var(--space-5);
+  }
+</style>

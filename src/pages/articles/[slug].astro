@@ -1,0 +1,109 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { type ArticleEntry, getArticles } from '../../lib/content';
+import { formatDate } from '../../lib/format';
+import { readingTime, renderMarkdown } from '../../lib/markdown';
+import { getMedia } from '../../lib/media';
+import { breadcrumbLd, PERSON_ID, SITE } from '../../lib/structured-data';
+
+export function getStaticPaths() {
+  return getArticles().map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article: a } = Astro.props as { article: ArticleEntry };
+const path = `/articles/${a.id}/`;
+const cover = getMedia(a.cover?.src);
+// Safe pipeline: raw HTML is escaped and only http(s)/mailto/relative links survive (see lib/markdown.ts).
+const html = renderMarkdown(a.body);
+---
+
+<Base
+  title={a.seo.title ?? `${a.title} — Clément Plançon`}
+  description={a.seo.description ?? a.excerpt.slice(0, 165)}
+  image={getMedia(a.seo.ogImage) ?? cover}
+  noindex={a.seo.noindex}
+  type="article"
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: a.title,
+      description: a.excerpt,
+      url: `${SITE}${path}`,
+      inLanguage: 'fr-FR',
+      author: { '@id': PERSON_ID },
+      ...(a.publishedAt && { datePublished: a.publishedAt }),
+      ...(a.updatedAt && { dateModified: a.updatedAt }),
+    },
+    breadcrumbLd([
+      { name: 'Accueil', path: '/' },
+      { name: 'Articles', path: '/articles/' },
+      { name: a.title, path },
+    ]),
+  ]}
+>
+  <article class="wrap article">
+    <a class="arrow-link arrow-link--back" href="/articles/">
+      <span class="arrow" aria-hidden="true">←</span><span>Tous les articles</span>
+    </a>
+    <header>
+      {a.status === 'draft' && <p class="draft-flag">Brouillon — visible uniquement dans l'aperçu</p>}
+      <p class="eyebrow">
+        {a.publishedAt && <time datetime={a.publishedAt}>{formatDate(a.publishedAt)}</time>}
+        {a.publishedAt && ' · '}
+        {readingTime(a.body)} min de lecture
+      </p>
+      <h1>{a.title}</h1>
+      <p class="article__excerpt">{a.excerpt}</p>
+    </header>
+    {
+      cover && a.cover && (
+        <Image src={cover} alt={a.cover.alt} widths={[640, 1000, 1400]} sizes="(min-width: 64rem) 60rem, 100vw" class="article__cover" loading="eager" />
+      )
+    }
+    <div class="prose article__body" set:html={html} />
+  </article>
+</Base>
+
+<style>
+  .article {
+    padding-top: var(--space-5);
+  }
+  header {
+    max-width: 52rem;
+    margin-top: var(--space-6);
+  }
+  .draft-flag {
+    display: inline-block;
+    margin-bottom: var(--space-3);
+    padding: 0.2rem 0.6rem;
+    background: var(--accent);
+    color: #fff;
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+  h1 {
+    margin-top: var(--space-3);
+    font-size: var(--step-4);
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+  .article__excerpt {
+    margin-top: var(--space-5);
+    font-size: var(--step-1);
+    color: var(--ink-2);
+    max-width: 42rem;
+  }
+  .article__cover {
+    width: 100%;
+    max-width: 60rem;
+    margin-top: var(--space-7);
+    border-radius: var(--radius);
+  }
+  .article__body {
+    margin-top: var(--space-7);
+    font-size: var(--step-0);
+    line-height: 1.7;
+  }
+</style>

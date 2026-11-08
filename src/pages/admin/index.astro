@@ -1,0 +1,25 @@
+---
+// The admin is a client-side app. This page holds no data: everything comes from the
+// authenticated API (/api/admin/*), which checks the session and the admin allow-list server-side.
+import '../../styles/global.css';
+import '../../admin/admin.css';
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Administration — Clément Plançon</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="admin">
+    <div id="admin">
+      <noscript><p class="center">L'administration nécessite JavaScript.</p></noscript>
+    </div>
+    <script>
+      import '../../admin/main';
+    </script>
+  </body>
+</html>

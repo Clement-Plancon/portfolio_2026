@@ -1,0 +1,131 @@
+---
+import type { ExperienceEntry } from '../lib/content';
+import { formatPeriod } from '../lib/format';
+
+interface Props {
+  experiences: ExperienceEntry[];
+  compact?: boolean;
+}
+const { experiences, compact = false } = Astro.props;
+---
+
+<ol role="list" class:list={['xp', { 'xp--compact': compact }]}>
+  {
+    experiences.map((e) => (
+      <li class:list={['xp__item', { 'is-current': !e.end }]}>
+        <p class="xp__period">
+          <span>{formatPeriod(e.start, e.end, !e.end)}</span>
+          {!e.end && <span class="xp__now">En poste</span>}
+        </p>
+        <div class="xp__body">
+          <h3 class="xp__role">{e.role}</h3>
+          <p class="xp__org">
+            {e.url ? <a href={e.url}>{e.organisation}</a> : e.organisation}
+            {e.parentOrganisation && <span> · {e.parentOrganisation}</span>}
+            {!compact && e.location && <span class="xp__place"> · {e.location}</span>}
+          </p>
+          {e.summary && <p class="xp__summary">{e.summary}</p>}
+          {!compact && e.responsibilities.length > 0 && (
+            <ul class="xp__resp">
+              {e.responsibilities.map((r) => (
+                <li>{r}</li>
+              ))}
+            </ul>
+          )}
+          {!compact && e.skills.length > 0 && (
+            <ul class="slash-list xp__skills" aria-label="Technologies">
+              {e.skills.map((s) => (
+                <li>{s}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .xp__item {
+    display: grid;
+    gap: var(--space-2) var(--gutter);
+    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--line);
+  }
+  .xp__item:first-child {
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 48rem) {
+    .xp__item {
+      grid-template-columns: 13rem minmax(0, 1fr);
+      padding-block: var(--space-6);
+    }
+    .xp--compact .xp__item {
+      padding-block: var(--space-5);
+    }
+  }
+  .xp__period {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    font-size: var(--step--1);
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 48rem) {
+    .xp__period {
+      flex-direction: column;
+      align-items: flex-start;
+      padding-top: 0.35rem;
+    }
+  }
+  .xp__now {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-weight: 600;
+    color: var(--accent-ink);
+  }
+  .xp__now::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+  }
+  .xp__role {
+    font-size: var(--step-2);
+    font-weight: 600;
+    max-width: 40rem;
+  }
+  .xp--compact .xp__role {
+    font-size: var(--step-1);
+  }
+  .xp__org {
+    margin-top: var(--space-2);
+    font-weight: 550;
+  }
+  .xp__org span {
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+  .xp__summary {
+    margin-top: var(--space-3);
+    max-width: var(--measure);
+    color: var(--ink-2);
+  }
+  .xp__resp {
+    margin-top: var(--space-4);
+    padding-left: 1.1em;
+    max-width: var(--measure);
+  }
+  .xp__resp li + li {
+    margin-top: 0.4em;
+  }
+  .xp__resp li::marker {
+    color: var(--accent);
+  }
+  .xp__skills {
+    margin-top: var(--space-4);
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import ExperienceList from '../components/ExperienceList.astro';
+import PageHead from '../components/PageHead.astro';
+import SkillGroups from '../components/SkillGroups.astro';
+import Base from '../layouts/Base.astro';
+import { getExperiences, getSeo, getSkills } from '../lib/content';
+import { getMedia } from '../lib/media';
+import { breadcrumbLd } from '../lib/structured-data';
+
+const seo = getSeo();
+const page = seo.pages.experience;
+const experiences = getExperiences();
+const skills = getSkills();
+---
+
+<Base
+  title={page.title ?? 'Parcours'}
+  description={page.description ?? seo.defaultDescription}
+  image={getMedia(page.ogImage ?? seo.defaultOgImage)}
+  noindex={page.noindex}
+  jsonLd={[breadcrumbLd([{ name: 'Accueil', path: '/' }, { name: 'Parcours', path: '/parcours/' }])]}
+>
+  <PageHead
+    title="Parcours"
+    lead="Du Lab de la Transformation de Bercy à la police scientifique : des applications métiers pour le service public, et de plus en plus de responsabilités techniques."
+  >
+    <nav class="jump" aria-label="Sur cette page">
+      <a href="#experience">Expérience</a>
+      <a href="#competences">Compétences</a>
+    </nav>
+  </PageHead>
+
+  <section class="section wrap" id="experience" aria-labelledby="experience-title">
+    <div class="section-head">
+      <h2 id="experience-title">Expérience</h2>
+      <span class="section-head__note">{experiences.length} postes</span>
+    </div>
+    <ExperienceList experiences={experiences} />
+  </section>
+
+  <section class="section wrap" id="competences" aria-labelledby="competences-title">
+    <div class="section-head">
+      <h2 id="competences-title">Compétences</h2>
+      <span class="section-head__note">Ce que je pratique au quotidien</span>
+    </div>
+    <SkillGroups skills={skills} />
+  </section>
+</Base>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin-top: var(--space-6);
+  }
+  .jump a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 600;
+  }
+</style>
