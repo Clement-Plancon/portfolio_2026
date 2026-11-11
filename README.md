@@ -2,7 +2,7 @@
 
 Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
-- **Site public** : Astro, pages statiques pré-rendues, moins de 2 Ko de JavaScript, thème clair/sombre automatique.
+- **Site public** : Astro, pages statiques pré-rendues, environ 3 Ko de JavaScript (1,5 Ko compressé), thème clair/sombre automatique.
 - **Administration** (`/admin/`) : projets, expériences, articles, profil, compétences, médias, référencement ; brouillon, aperçu réel et publication.
 - **Contenus** : fichiers JSON versionnés dans ce dépôt (`src/content/`), écrits par l'administration via l'API GitHub.
 - **Hébergement** : Netlify (site statique + une fonction serverless + Netlify Identity).
@@ -25,7 +25,11 @@ npm run dev
 
 ## Documentation
 
-- [docs/design-research.md](docs/design-research.md) — étude de 16 portfolios et principes retenus
+- [docs/art-direction.md](docs/art-direction.md) — les trois directions explorées, le choix « Départs » et son système
+- [docs/interaction-system.md](docs/interaction-system.md) — tableau à palettes, transitions, « vous êtes ici »
+- [docs/ux-review.md](docs/ux-review.md) — revue UX, corrections, limites
+- [docs/performance-review.md](docs/performance-review.md) — mesures Lighthouse et choix de performance
+- [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) — recherche de références
 - [docs/architecture.md](docs/architecture.md) — architecture, publication, sécurité, design system
 - [docs/netlify-deployment.md](docs/netlify-deployment.md) — mise en ligne, Identity, jeton GitHub, variables, vérifications
 - [docs/admin-guide.md](docs/admin-guide.md) — mode d'emploi de l'administration
@@ -40,4 +44,4 @@ Les fichiers de `src/content/` peuvent aussi être édités à la main : ils son
 
 ## Licences
 
-Polices Bricolage Grotesque et Public Sans : SIL Open Font License 1.1 (`public/fonts/`).
+Polices Overpass et Overpass Mono : SIL Open Font License 1.1 (`public/fonts/`).

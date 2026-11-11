@@ -1,4 +1,5 @@
 ---
+// The exit sign: every page ends on a signal-yellow panel that leads to the e-mail.
 import type { Profile } from '../lib/schemas';
 
 interface Props {
@@ -6,146 +7,179 @@ interface Props {
   headingLevel?: 'h1' | 'h2';
   title?: string;
 }
-const { profile, headingLevel = 'h2', title = 'Écrire, tout simplement.' } = Astro.props;
+const { profile, headingLevel = 'h2', title = 'Écrire à Clément' } = Astro.props;
 const H = headingLevel;
 const cvHref = profile.cv?.startsWith('files/') ? `/${profile.cv}` : profile.cv;
 ---
 
-<section class="contact-band" aria-labelledby="contact-title">
-  <div class="wrap contact-band__inner">
-    <div class="contact-band__head">
-      <H id="contact-title" class="contact-band__title">{title}</H>
-      <p class="contact-band__lead">
-        Pour échanger sur un projet, un poste ou une question technique, l'e-mail reste le plus direct. Je réponds
-        personnellement.
-      </p>
-    </div>
-    <div class="contact-band__main">
-      <a class="contact-band__email" href={`mailto:${profile.email}`}>{profile.email}</a>
-      <div class="contact-band__actions">
-        <button type="button" class="copy" data-copy={profile.email}>
-          <span data-copy-label>Copier l'adresse</span>
-        </button>
-        <span class="visually-hidden" role="status" data-copy-status></span>
-      </div>
-      <ul role="list" class="contact-band__links">
-        {
-          profile.socials.map((s) => (
-            <li>
-              <a href={s.url} rel="me noopener" target="_blank">
-                {s.label}
-                <span class="visually-hidden"> (nouvel onglet)</span>
-                <span aria-hidden="true">↗</span>
-              </a>
-            </li>
-          ))
-        }
-        {
-          cvHref && (
-            <li>
-              <a href={cvHref}>
-                CV <span aria-hidden="true">↓</span>
-              </a>
-            </li>
-          )
-        }
-        <li class="contact-band__place">{profile.location}</li>
-      </ul>
-    </div>
+<section class="wrap exit" aria-labelledby="exit-title">
+  <div class="exit__sign">
+    <p class="label">Contact</p>
+    <H id="exit-title" class="exit__title">{title}</H>
+    <a class="exit__email" href={`mailto:${profile.email}`}>
+      <span class="exit__arrow" aria-hidden="true">→</span>
+      <span>{profile.email}</span>
+    </a>
+    <p class="exit__note">
+      Un projet, un poste, une question technique : je réponds personnellement.
+      <button type="button" class="copy" data-copy={profile.email}><span data-copy-label>Copier l'adresse</span></button>
+      <span class="visually-hidden" role="status" data-copy-status></span>
+    </p>
   </div>
+  <ul role="list" class="exit__links">
+    {
+      profile.socials.map((s) => (
+        <li>
+          <a href={s.url} rel="me noopener" target="_blank">
+            {s.label}
+            <span class="visually-hidden"> (nouvel onglet)</span>
+            <span class="ext" aria-hidden="true">↗</span>
+          </a>
+        </li>
+      ))
+    }
+    {
+      cvHref && (
+        <li>
+          <a href={cvHref}>
+            CV (PDF) <span class="ext" aria-hidden="true">↓</span>
+          </a>
+        </li>
+      )
+    }
+    <li class="exit__place"><span class="label">Basé à</span> {profile.location}</li>
+  </ul>
 </section>
 
 <style>
-  .contact-band {
-    background: var(--sapin);
-    color: var(--on-sapin);
-    padding-block: var(--space-9) var(--space-8);
-    margin-top: var(--space-9);
-  }
-  .contact-band__inner {
+  .exit {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--joint);
+    margin-top: var(--joint);
   }
   @media (min-width: 64rem) {
-    .contact-band__inner {
-      grid-template-columns: 5fr 7fr;
-      align-items: end;
+    .exit {
+      grid-template-columns: minmax(0, 1fr) 20rem;
     }
   }
-  .contact-band__title {
+  .exit__sign {
+    padding: var(--pad);
+    padding-block: clamp(2rem, 1.5rem + 3vw, 4rem);
+    background: var(--signal);
+    color: var(--on-signal);
+    border-radius: var(--radius);
+  }
+  .exit__title {
+    margin-top: 0.75rem;
     font-size: var(--step-3);
-    color: var(--on-sapin);
   }
-  .contact-band__lead {
-    margin-top: var(--space-4);
-    max-width: 30rem;
-    color: var(--on-sapin-2);
-  }
-  .contact-band__email {
-    display: inline-block;
+  .exit__email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
     max-width: 100%;
-    font-family: var(--font-display);
-    font-size: clamp(1.35rem, 0.6rem + 3.6vw, 3.4rem);
-    font-weight: 600;
-    font-stretch: 88%;
+    margin-top: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+    /* sized so the address never breaks on a 320px screen */
+    font-size: clamp(1rem, 5.1vw, 3.25rem);
+    font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.1;
-    color: var(--on-sapin);
-    text-decoration-color: color-mix(in srgb, var(--on-sapin) 35%, transparent);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.18em;
+    text-decoration: none;
+  }
+  .exit__email span:last-child {
     overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.15em;
   }
-  .contact-band__email:hover {
-    text-decoration-color: var(--accent-on-sapin);
+  .exit__arrow {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 1.3em;
+    height: 1.3em;
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--signal);
+    transition: transform var(--dur-2) var(--ease);
   }
-  .contact-band :focus-visible {
-    outline-color: var(--accent-on-sapin);
+  .exit__email:hover .exit__arrow,
+  .exit__email:focus-visible .exit__arrow {
+    transform: translateX(6px);
   }
-  .contact-band__actions {
-    margin-top: var(--space-4);
-  }
-  .copy {
-    min-height: 44px;
-    padding: 0.55rem 1rem;
-    border: 1px solid color-mix(in srgb, var(--on-sapin) 40%, transparent);
-    border-radius: var(--radius);
-    background: transparent;
-    color: var(--on-sapin);
-    font-size: var(--step--1);
-    font-weight: 600;
-    transition:
-      background-color var(--dur-1) ease,
-      color var(--dur-1) ease;
-  }
-  .copy:hover {
-    background: var(--on-sapin);
-    color: var(--sapin);
-  }
-  .contact-band__links {
+  .exit__note {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2) var(--space-5);
-    margin-top: var(--space-6);
-    padding-top: var(--space-4);
-    border-top: 1px solid color-mix(in srgb, var(--on-sapin) 22%, transparent);
-  }
-  .contact-band__links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    min-height: 44px;
+    gap: 0.75rem 1rem;
+    margin-top: 1.25rem;
+    font-size: var(--step--1);
     font-weight: 600;
-    color: var(--on-sapin);
+  }
+  .copy {
+    min-height: 40px;
+    padding: 0.4rem 0.85rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: transparent;
+    font-weight: 800;
+  }
+  .copy:hover {
+    background: var(--ink);
+    color: var(--signal);
+  }
+  .exit :focus-visible {
+    outline-color: var(--ink);
+    box-shadow: 0 0 0 5px var(--signal);
+  }
+  .exit__links {
+    display: grid;
+    gap: var(--joint);
+    align-content: stretch;
+  }
+  .exit__links li {
+    display: flex;
+  }
+  .exit__links a,
+  .exit__place {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+    padding: 0 var(--pad);
+    padding-inline: 1.25rem;
+    background: var(--panel);
+    color: var(--on-panel);
+    border-radius: var(--radius);
+    font-weight: 800;
     text-decoration: none;
   }
-  .contact-band__links a:hover {
-    color: var(--accent-on-sapin);
+  .exit__links a:hover .ext {
+    transform: translate(2px, -2px);
   }
-  .contact-band__place {
-    margin-left: auto;
-    color: var(--on-sapin-2);
-    font-size: var(--step--1);
+  .ext {
+    color: var(--signal);
+    transition: transform var(--dur-2) var(--ease);
+  }
+  .exit__links a:focus-visible {
+    outline-color: var(--signal);
+    box-shadow: 0 0 0 5px var(--ground);
+  }
+  .exit__place .label {
+    color: var(--on-panel-2);
+  }
+  .exit__place {
+    justify-content: flex-start;
+    font-weight: 600;
+  }
+  @media (max-width: 63.99rem) {
+    .exit__links {
+      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    }
+    .exit__links .exit__place {
+      grid-column: 1 / -1;
+    }
   }
 </style>

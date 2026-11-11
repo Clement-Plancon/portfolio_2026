@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype A — Dossier</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--desk:#d9d2c3;--kraft:#c9a46a;--kraft-2:#b8914f;--paper:#f6f1e6;--ink:#1d1a15;--stamp:#b8321f;--blue:#1f3b8a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--desk);color:var(--ink);font-family:'IBM Plex Serif',serif}
+.binder{display:grid;grid-template-columns:minmax(0,1fr) 64px;max-width:1360px;margin:24px auto;min-height:calc(100vh - 48px)}
+.sheet{background:var(--paper);padding:56px 64px;box-shadow:0 1px 0 #0001,0 18px 40px -20px #0005;position:relative}
+.tabs{display:flex;flex-direction:column;gap:6px;padding-top:56px}
+.tabs a{writing-mode:vertical-rl;background:var(--kraft);color:var(--ink);text-decoration:none;font-family:'IBM Plex Mono';font-size:13px;padding:16px 12px;border-radius:0 8px 8px 0;letter-spacing:.06em}
+.tabs a.on{background:var(--paper);font-weight:600;margin-left:-2px}
+.ref{font-family:'IBM Plex Mono';font-size:13px;display:flex;justify-content:space-between;border-bottom:1px solid #1d1a1533;padding-bottom:10px}
+h1{font-weight:600;font-size:clamp(44px,6vw,96px);line-height:.95;margin-top:40px;letter-spacing:-.02em}
+.lead{font-size:22px;max-width:34ch;margin-top:20px;line-height:1.4}
+.stamp{position:absolute;right:80px;top:120px;transform:rotate(-8deg);border:3px solid var(--stamp);color:var(--stamp);font-family:'IBM Plex Mono';font-weight:600;padding:10px 16px;text-align:center;line-height:1.3;opacity:.85}
+.folders{margin-top:56px;display:grid;gap:0}
+.folder{position:relative;background:var(--kraft);border-radius:0 6px 6px 6px;padding:22px 26px;margin-top:-6px;box-shadow:0 -1px 0 #0002 inset;display:grid;grid-template-columns:120px 1fr 1fr 40px;gap:20px;align-items:baseline;color:var(--ink);text-decoration:none;transition:transform .25s}
+.folder:nth-child(even){background:var(--kraft-2)}
+.folder:before{content:attr(data-tab);position:absolute;top:-26px;left:calc(var(--i)*14%);background:inherit;padding:4px 14px 6px;border-radius:6px 6px 0 0;font-family:'IBM Plex Mono';font-size:12px}
+.folder:hover{transform:translateY(-10px)}
+.folder h3{font-size:26px;font-weight:600}
+.folder span{font-family:'IBM Plex Mono';font-size:13px}
+@media (max-width:760px){.binder{grid-template-columns:1fr;margin:0}.tabs{flex-direction:row;padding:0;position:fixed;bottom:0;left:0;right:0}.tabs a{writing-mode:horizontal-tb;flex:1;border-radius:8px 8px 0 0;text-align:center;padding:12px 4px}.sheet{padding:28px 18px 90px}.stamp{position:static;display:inline-block;margin-top:20px}.folder{grid-template-columns:1fr;gap:4px}.folder:before{left:12px}}
+</style>
+</head>
+<body>
+<div class="binder">
+  <main class="sheet">
+    <p class="ref"><span>DOSSIER N° CP-2026</span><span>Paris · Pièce 1/4</span></p>
+    <h1>Clément Plançon</h1>
+    <p class="lead">Ingénieur logiciel &amp; Tech Lead. Applications métiers pour le service public, du cadrage à la production.</p>
+    <div class="stamp">EN POSTE<br>Ministère de l'Intérieur</div>
+    <div class="folders">
+      <a class="folder" style="--i:0" data-tab="Pro · 2023" href="#"><span>BV-2023</span><h3>Bercy Vert</h3><span>Flutter · Firebase · Node.js</span><span>→</span></a>
+      <a class="folder" style="--i:1" data-tab="Pro · 2023—24" href="#"><span>RI-2023</span><h3>Référentiel Indicateurs</h3><span>Next.js · PostgreSQL</span><span>→</span></a>
+      <a class="folder" style="--i:2" data-tab="Pro · 2023" href="#"><span>SC-2023</span><h3>Saisines de la Cour des comptes</h3><span>UX research · Cadrage</span><span>→</span></a>
+      <a class="folder" style="--i:3" data-tab="Perso · 2024" href="#"><span>VS-2024</span><h3>Veille Stratégique</h3><span>Python · Scrapy</span><span>→</span></a>
+      <a class="folder" style="--i:4" data-tab="Perso · en cours" href="#"><span>SP</span><h3>SafePing</h3><span>Mobile · Vie privée</span><span>→</span></a>
+      <a class="folder" style="--i:5" data-tab="Perso" href="#"><span>DM</span><h3>Datametre</h3><span>Dataviz · Open data</span><span>→</span></a>
+    </div>
+  </main>
+  <nav class="tabs"><a class="on" href="#">Projets</a><a href="#">Parcours</a><a href="#">À propos</a><a href="#">Contact</a></nav>
+</div>
+</body>
+</html>

@@ -2,9 +2,14 @@
   "title": "Référentiel Indicateurs",
   "summary": "Plateforme de centralisation et de visualisation des indicateurs métiers pour les décideurs : import automatique multi-sources, alertes sur seuils critiques, rapports générés.",
   "kind": "Application web · Tableau de bord",
+  "code": "RI",
+  "pictogram": "jauge",
   "category": "pro",
   "organisation": "Administration publique",
-  "period": { "start": "2023", "end": "2024" },
+  "period": {
+    "start": "2023",
+    "end": "2024"
+  },
   "context": "Plateforme web permettant de centraliser, visualiser et analyser les indicateurs métiers clés pour faciliter la prise de décision des managers et des dirigeants.",
   "contributions": [
     "Tableau de bord interactif avec graphiques dynamiques",
@@ -14,9 +19,17 @@
     "Gestion des droits et des périmètres utilisateurs"
   ],
   "results": [],
-  "technologies": ["Next.js", "Node.js", "PostgreSQL", "Chart.js", "Docker"],
+  "technologies": [
+    "Next.js",
+    "Node.js",
+    "PostgreSQL",
+    "Chart.js",
+    "Docker"
+  ],
   "links": [],
-  "cover": { "color": "ardoise" },
+  "cover": {
+    "color": "ardoise"
+  },
   "gallery": [],
   "featured": true,
   "visible": true,

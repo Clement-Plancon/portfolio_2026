@@ -1,20 +1,40 @@
-// Generates public/og-default.png (1200×630) from HTML with the site's fonts.
-// Run after a build: `npm run build && node scripts/generate-og.mjs` (needs `npx astro preview` on :4321).
+// Generates public/og-default.png (1200×630) in the site's sign style, with the real fonts.
+// Usage: npm run build && npx astro preview --port 4321, then `node scripts/generate-og.mjs`.
 import { chromium } from '@playwright/test';
 
+const lines = [
+  ['BV', '#00a86b', '#121310', 'BERCY VERT'],
+  ['RI', '#2a62c4', '#f4f2ec', 'RÉFÉRENTIEL INDICATEURS'],
+  ['DM', '#d6c49a', '#121310', 'DATAMETRE'],
+];
+
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face{font-family:B;src:url(http://localhost:4321/fonts/bricolage-grotesque-latin.woff2);font-weight:200 800;font-stretch:75% 100%}
-@font-face{font-family:P;src:url(http://localhost:4321/fonts/public-sans-latin.woff2);font-weight:100 900}
-html,body{margin:0;width:1200px;height:630px;background:#f3efe6;color:#17160f}
-body{display:flex;flex-direction:column;justify-content:space-between;padding:64px 72px;box-sizing:border-box;font-family:P}
-.role{font-size:30px;font-weight:600;color:#4a463c}
-h1{margin:0;font-family:B;font-weight:650;font-size:150px;line-height:.88;letter-spacing:-.045em}
-h1 span{display:block}h1 span+span{padding-left:.62em}
-.c{position:relative}.c:after{content:'ç';position:absolute;left:0;top:0;line-height:1.2;color:#d9411a;clip-path:inset(.93em 0 0 0)}
-.foot{display:flex;justify-content:space-between;font-size:26px;color:#4a463c;border-top:2px solid #17160f;padding-top:18px}
-</style></head><body><div class="role">Ingénieur logiciel & Tech Lead · Paris</div>
-<h1><span>Clément</span><span>Plan<span class="c" style="display:inline">ç</span>on</span></h1>
-<div class="foot"><span>Architecture · Full-stack · Applications métiers</span><span>clementplancon.fr</span></div></body></html>`;
+@font-face{font-family:O;src:url(/fonts/overpass-latin.woff2);font-weight:100 900}
+@font-face{font-family:M;src:url(/fonts/overpass-mono-latin.woff2);font-weight:300 700}
+html,body{margin:0;width:1200px;height:630px;background:#e7e5df}
+body{padding:14px;box-sizing:border-box;font-family:O;display:grid;grid-template-rows:auto 1fr;gap:4px}
+.top{display:flex;gap:4px}.top div{background:#141513;color:#f4f2ec;border-radius:6px;padding:16px 22px;font-weight:800;font-size:22px}
+.top .here{background:#ffd21f;color:#121310}.top .grow{flex:1;font-family:M;font-weight:500;font-size:19px;color:#a6a59d;text-align:right}
+.panel{background:#141513;color:#f4f2ec;border-radius:6px;padding:34px 40px;display:grid;align-content:space-between}
+h1{margin:0;font-size:96px;line-height:.9;letter-spacing:-.045em;font-weight:800}
+.c{background:linear-gradient(currentColor 70%,#ffd21f 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.role{margin-top:14px;color:#ffd21f;font-weight:800;font-size:32px}
+.row{display:flex;align-items:center;gap:18px;border-top:1px solid #2e302b;padding:12px 0}
+.b{width:46px;height:46px;border-radius:6px;display:grid;place-items:center;font-weight:900;font-size:20px;padding-top:3px;box-sizing:border-box}
+.f{display:inline-block;width:.78em;text-align:center;background:#20221e;margin-right:2px;border-radius:2px;font-family:M;font-weight:600;font-size:26px}
+.sp{display:inline-block;width:.5em}
+</style></head><body>
+<div class="top"><div class="here">Clément Plançon</div><div>Projets</div><div>Parcours</div><div class="grow">● En service · ministère de l'Intérieur</div></div>
+<div class="panel"><div><h1>Clément Plan<span class="c">ç</span>on</h1><div class="role">Ingénieur logiciel &amp; Tech Lead · Paris</div></div>
+<div>${lines
+  .map(
+    ([code, bg, fg, name]) =>
+      `<div class="row"><span class="b" style="background:${bg};color:${fg}">${code}</span><span>${[...name]
+        .map((ch) => (ch === ' ' ? '<span class="sp"></span>' : `<span class="f">${ch}</span>`))
+        .join('')}</span></div>`,
+  )
+  .join('')}</div></div>
+</body></html>`;
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });

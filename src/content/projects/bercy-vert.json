@@ -2,9 +2,13 @@
   "title": "Bercy Vert",
   "summary": "Logiciel pour la transition écologique du ministère de l'Économie et des Finances : centralisation des actions issues du BEGES et structuration des mesures SPE pour les référents ministériels.",
   "kind": "Conception de logiciel · Transition écologique",
+  "code": "BV",
+  "pictogram": "feuille",
   "category": "pro",
   "organisation": "Ministère de l'Économie et des Finances",
-  "period": { "start": "2023" },
+  "period": {
+    "start": "2023"
+  },
   "context": "Projet de conception d'un logiciel destiné à accompagner la démarche de transition verte et écologique du ministère de l'Économie et des Finances.\n\nL'objectif était de répondre aux besoins des référents ministériels en centralisant et en structurant les actions issues du BEGES et les mesures SPE.",
   "contributions": [
     "Cadrage du projet et expression des besoins fonctionnels avec les parties prenantes",
@@ -13,9 +17,17 @@
     "Recueil, analyse et restitution des retours utilisateurs pour orienter les évolutions du produit"
   ],
   "results": [],
-  "technologies": ["Flutter", "Dart", "Firebase", "Google Vision AI", "Node.js"],
+  "technologies": [
+    "Flutter",
+    "Dart",
+    "Firebase",
+    "Google Vision AI",
+    "Node.js"
+  ],
   "links": [],
-  "cover": { "color": "sapin" },
+  "cover": {
+    "color": "sapin"
+  },
   "gallery": [],
   "featured": true,
   "visible": true,

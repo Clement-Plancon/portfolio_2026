@@ -1,38 +1,40 @@
 ---
+// Career as stops along one line: each position is a panel, the line runs through all of them.
 import type { ExperienceEntry } from '../lib/content';
 import { formatPeriod } from '../lib/format';
 
 interface Props {
   experiences: ExperienceEntry[];
-  compact?: boolean;
 }
-const { experiences, compact = false } = Astro.props;
+const { experiences } = Astro.props;
+const current = experiences.filter((e) => !e.end);
+const state = (e: ExperienceEntry) => (e.end ? 'Terminé' : e === current[0] ? 'En service' : 'En parallèle');
 ---
 
-<ol role="list" class:list={['xp', { 'xp--compact': compact }]}>
+<ol role="list" class="xp">
   {
     experiences.map((e) => (
-      <li class:list={['xp__item', { 'is-current': !e.end }]}>
-        <p class="xp__period">
-          <span>{formatPeriod(e.start, e.end, !e.end)}</span>
-          {!e.end && <span class="xp__now">En poste</span>}
-        </p>
+      <li class:list={['panel panel--sheet xp__item', { 'is-now': !e.end, 'is-main': e === current[0] }]}>
+        <div class="xp__when">
+          <span class="xp__state">{state(e)}</span>
+          <span class="xp__period">{formatPeriod(e.start, e.end, !e.end)}</span>
+        </div>
         <div class="xp__body">
           <h3 class="xp__role">{e.role}</h3>
           <p class="xp__org">
-            {e.url ? <a href={e.url}>{e.organisation}</a> : e.organisation}
+            {e.url ? <a href={e.url}>{e.organisation}</a> : <strong>{e.organisation}</strong>}
             {e.parentOrganisation && <span> · {e.parentOrganisation}</span>}
-            {!compact && e.location && <span class="xp__place"> · {e.location}</span>}
+            {e.location && <span> · {e.location}</span>}
           </p>
           {e.summary && <p class="xp__summary">{e.summary}</p>}
-          {!compact && e.responsibilities.length > 0 && (
-            <ul class="xp__resp">
+          {e.responsibilities.length > 0 && (
+            <ul role="list" class="xp__resp">
               {e.responsibilities.map((r) => (
                 <li>{r}</li>
               ))}
             </ul>
           )}
-          {!compact && e.skills.length > 0 && (
+          {e.skills.length > 0 && (
             <ul class="slash-list xp__skills" aria-label="Technologies">
               {e.skills.map((s) => (
                 <li>{s}</li>
@@ -46,86 +48,111 @@ const { experiences, compact = false } = Astro.props;
 </ol>
 
 <style>
-  .xp__item {
+  .xp {
     display: grid;
-    gap: var(--space-2) var(--gutter);
-    padding-block: var(--space-5);
-    border-bottom: 1px solid var(--line);
+    gap: var(--joint);
   }
-  .xp__item:first-child {
-    border-top: 1px solid var(--line);
+  .xp__item {
+    position: relative;
+    display: grid;
+    gap: 1rem var(--gutter);
+    padding-left: calc(var(--pad) + 2.25rem);
   }
-  @media (min-width: 48rem) {
+  /* The line through all panels, and the stop of each position. */
+  .xp__item::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--pad) + 7px);
+    top: 0;
+    bottom: calc(-1 * var(--joint));
+    width: 4px;
+    background: var(--panel);
+  }
+  .xp__item:last-child::before {
+    bottom: 50%;
+  }
+  .xp__item:first-child::before {
+    top: calc(var(--pad) + 0.3rem);
+  }
+  .xp__item::after {
+    content: '';
+    position: absolute;
+    left: var(--pad);
+    top: calc(var(--pad) + 0.15rem);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--sheet);
+    border: 4px solid var(--panel);
+  }
+  .xp__item.is-now::after {
+    background: var(--signal);
+  }
+  @media (min-width: 56rem) {
     .xp__item {
-      grid-template-columns: 13rem minmax(0, 1fr);
-      padding-block: var(--space-6);
-    }
-    .xp--compact .xp__item {
-      padding-block: var(--space-5);
+      grid-template-columns: 11rem minmax(0, 1fr);
     }
   }
-  .xp__period {
+  .xp__when {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2) var(--space-3);
-    font-size: var(--step--1);
-    color: var(--ink-3);
-    font-variant-numeric: tabular-nums;
+    gap: 0.4rem 0.75rem;
   }
-  @media (min-width: 48rem) {
-    .xp__period {
+  @media (min-width: 56rem) {
+    .xp__when {
       flex-direction: column;
       align-items: flex-start;
-      padding-top: 0.35rem;
     }
   }
-  .xp__now {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    font-weight: 600;
-    color: var(--accent-ink);
+  .xp__state {
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    background: var(--panel);
+    color: var(--on-panel);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  .xp__now::before {
-    content: '';
-    width: 7px;
-    height: 7px;
-    background: var(--accent);
+  .is-main .xp__state {
+    background: var(--signal);
+    color: var(--on-signal);
+  }
+  .xp__period {
+    font-family: var(--mono);
+    font-size: 0.875rem;
+    color: var(--ink-3);
   }
   .xp__role {
     font-size: var(--step-2);
-    font-weight: 600;
     max-width: 40rem;
   }
-  .xp--compact .xp__role {
-    font-size: var(--step-1);
-  }
   .xp__org {
-    margin-top: var(--space-2);
-    font-weight: 550;
+    margin-top: 0.5rem;
   }
   .xp__org span {
-    font-weight: 400;
     color: var(--ink-2);
   }
   .xp__summary {
-    margin-top: var(--space-3);
+    margin-top: 0.75rem;
     max-width: var(--measure);
     color: var(--ink-2);
   }
   .xp__resp {
-    margin-top: var(--space-4);
-    padding-left: 1.1em;
-    max-width: var(--measure);
+    display: grid;
+    gap: var(--joint);
+    margin-top: 1rem;
+    max-width: 48rem;
   }
-  .xp__resp li + li {
-    margin-top: 0.4em;
-  }
-  .xp__resp li::marker {
-    color: var(--accent);
+  .xp__resp li {
+    padding: 0.6rem 0.9rem;
+    background: var(--ground);
+    border-radius: 3px;
+    font-size: 0.9375rem;
   }
   .xp__skills {
-    margin-top: var(--space-4);
+    margin-top: 1rem;
+    color: var(--ink-2);
   }
 </style>

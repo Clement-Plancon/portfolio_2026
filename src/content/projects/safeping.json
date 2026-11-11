@@ -2,6 +2,8 @@
   "title": "SafePing",
   "summary": "Application discrète de sécurité personnelle pour alerter rapidement des contacts de confiance, avec position GPS optionnelle et mode façade « Notes ».",
   "kind": "Application mobile · Sécurité personnelle",
+  "code": "SP",
+  "pictogram": "alerte",
   "category": "perso",
   "organisation": "Projet personnel",
   "status": "en-cours",
@@ -14,9 +16,15 @@
     "Aucun compte requis"
   ],
   "results": [],
-  "technologies": ["Application mobile", "Géolocalisation", "Vie privée"],
+  "technologies": [
+    "Application mobile",
+    "Géolocalisation",
+    "Vie privée"
+  ],
   "links": [],
-  "cover": { "color": "vermillon" },
+  "cover": {
+    "color": "vermillon"
+  },
   "gallery": [],
   "featured": true,
   "visible": true,

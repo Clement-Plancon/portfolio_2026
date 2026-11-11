@@ -1,112 +1,94 @@
 /* ---------------------------------------------------------------
-   Design tokens
-   Paper, ink, one signal colour (vermillon) and a deep fir green.
+   « Départs » — design system
+   Everything is a sign panel, assembled edge to edge with a 2px joint.
+   Black panels, signal yellow for "you are here" and actions, one line
+   colour per project. See docs/art-direction.md.
    --------------------------------------------------------------- */
 @font-face {
-  font-family: 'Bricolage';
-  src: url('/fonts/bricolage-grotesque-latin.woff2') format('woff2-variations');
-  font-weight: 200 800;
-  font-stretch: 75% 100%;
+  font-family: 'Overpass';
+  src: url('/fonts/overpass-latin.woff2') format('woff2-variations');
+  font-weight: 100 900;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Public Sans';
-  src: url('/fonts/public-sans-latin.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Public Sans';
-  src: url('/fonts/public-sans-latin-italic.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: italic;
+  font-family: 'Overpass Mono';
+  src: url('/fonts/overpass-mono-latin.woff2') format('woff2-variations');
+  font-weight: 300 700;
   font-display: swap;
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
-  --paper: #f3efe6;
-  --paper-2: #eae5d9;
-  --surface: #fbf9f4;
-  --ink: #17160f;
-  --ink-2: #4a463c;
-  --ink-3: #686355;
-  --line: #d8d1c1;
-  --line-strong: #b9b09c;
-  --accent: #d9411a; /* large type, marks, focus */
-  --accent-ink: #b3340f; /* accent used as small text */
-  --sapin: #1e3a32;
-  --on-sapin: #ede8dc;
-  --on-sapin-2: #b9c4bb;
-  --accent-on-sapin: #ff7a50;
+  --ground: #e7e5df; /* page background: light concrete */
+  --panel: #141513; /* sign panel */
+  --panel-2: #20221e; /* flap cells, hover */
+  --panel-line: #2e302b; /* rules inside panels */
+  --on-panel: #f4f2ec;
+  --on-panel-2: #a6a59d;
+  --signal: #ffd21f;
+  --on-signal: #121310; /* text on yellow stays dark in both themes */
+  --ink: #121310;
+  --ink-2: #45463f;
+  --ink-3: #5d5e56;
+  --sheet: #f4f2ec; /* light panel on the ground */
+  --rule: #cfccc3;
 
-  /* Project covers */
-  --cover-vermillon: #c2391a;
-  --cover-sapin: #1e3a32;
-  --cover-ardoise: #24384f;
-  --cover-ocre: #c9932f;
-  --cover-prune: #4a2a3a;
-  --cover-sable: #d8cbb0;
+  /* Line colours (one per project) and the text colour that reads on them */
+  --line-sapin: #00a86b;
+  --line-sapin-text: #121310;
+  --line-ardoise: #2a62c4;
+  --line-ardoise-text: #f4f2ec;
+  --line-prune: #7b43b0;
+  --line-prune-text: #f4f2ec;
+  --line-ocre: #f28c28;
+  --line-ocre-text: #121310;
+  --line-vermillon: #c8361f;
+  --line-vermillon-text: #f4f2ec;
+  --line-sable: #d6c49a;
+  --line-sable-text: #121310;
 
-  --font-display: 'Bricolage', 'Arial Narrow', system-ui, sans-serif;
-  --font-text: 'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font: 'Overpass', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'Overpass Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
 
-  /* Fluid type scale (320px -> 1440px) */
   --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-  --step-0: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
-  --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.4375rem);
-  --step-2: clamp(1.4rem, 1.22rem + 0.85vw, 2rem);
-  --step-3: clamp(1.75rem, 1.4rem + 1.7vw, 3rem);
-  --step-4: clamp(2.25rem, 1.6rem + 3.2vw, 4.5rem);
-  --step-name: clamp(3.5rem, 1rem + 14vw, 12rem);
+  --step-0: clamp(1.0625rem, 1.02rem + 0.18vw, 1.1875rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
+  --step-3: clamp(2rem, 1.55rem + 2vw, 3.25rem);
+  --step-4: clamp(2.6rem, 1.8rem + 3.6vw, 5.25rem);
 
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4.5rem;
-  --space-9: clamp(4rem, 3rem + 5vw, 8rem);
-
-  --gutter: clamp(1rem, 0.6rem + 2.2vw, 3rem);
-  --max: 84rem;
+  --joint: 2px; /* gap between assembled panels: the signature of the layout */
+  --pad: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
+  --gutter: clamp(0.75rem, 0.4rem + 1.6vw, 2.5rem);
+  --max: 90rem;
   --measure: 38rem;
-  --header-h: 4rem;
+  --radius: 4px;
+  --nav-h: 3.5rem;
   --tabbar-h: 0px;
 
-  --radius: 3px;
-  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-1: 160ms;
-  --dur-2: 280ms;
-  --dur-3: 520ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-1: 140ms;
+  --dur-2: 260ms;
+  --dur-3: 480ms;
 }
 
 @media (max-width: 47.99rem) {
   :root {
-    --header-h: 3.5rem;
-    --tabbar-h: 58px;
+    --tabbar-h: 64px;
   }
 }
 
+/* Dark mode: the ground goes dark, panels stay panels (separated by their lighter joints). */
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #141310;
-    --paper-2: #1c1b17;
-    --surface: #1f1e19;
-    --ink: #ece7db;
-    --ink-2: #c9c3b5;
-    --ink-3: #a9a393;
-    --line: #34322b;
-    --line-strong: #4f4b40;
-    --accent: #ff7148;
-    --accent-ink: #ff7148;
-    --sapin: #16261f;
-    --cover-sable: #b9ab8d;
+    color-scheme: dark;
+    --ground: #0a0b09;
+    --sheet: #1a1c18;
+    --ink: #ecebe5;
+    --ink-2: #c4c3bb;
+    --ink-3: #a6a59d;
+    --rule: #34362f;
   }
 }
 
@@ -124,7 +106,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 1rem);
+  scroll-padding-top: calc(var(--nav-h) + 2rem);
 }
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -133,13 +115,11 @@ html {
 }
 body {
   min-height: 100dvh;
-  background: var(--paper);
+  background: var(--ground);
   color: var(--ink);
-  font-family: var(--font-text);
+  font-family: var(--font);
   font-size: var(--step-0);
-  line-height: 1.6;
-  font-kerning: normal;
-  font-variant-numeric: proportional-nums;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
@@ -165,10 +145,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-display);
-  font-weight: 650;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 p,
@@ -183,28 +162,27 @@ ol[role='list'] {
   padding: 0;
 }
 ::selection {
-  background: var(--accent);
-  color: #fff;
+  background: var(--signal);
+  color: var(--on-signal);
 }
-
 a {
   color: inherit;
   text-decoration-line: underline;
-  text-decoration-thickness: 1px;
-  text-decoration-color: var(--line-strong);
-  text-underline-offset: 0.22em;
-  transition:
-    text-decoration-color var(--dur-1) ease,
-    color var(--dur-1) ease;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  transition: text-decoration-color var(--dur-1) ease;
 }
 a:hover {
-  text-decoration-color: var(--accent);
+  text-decoration-color: currentColor;
 }
 
+/* Focus: a thick signal-yellow ring with a dark halo, readable on any panel or ground. */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 3px solid var(--signal);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--panel);
+  border-radius: var(--radius);
 }
 
 .visually-hidden {
@@ -218,15 +196,15 @@ a:hover {
   white-space: nowrap;
   border: 0;
 }
-
 .skip-link {
   position: fixed;
-  left: var(--space-4);
-  top: var(--space-3);
+  left: 0.75rem;
+  top: 0.75rem;
   z-index: 100;
-  padding: var(--space-3) var(--space-4);
-  background: var(--ink);
-  color: var(--paper);
+  padding: 0.75rem 1rem;
+  background: var(--signal);
+  color: var(--on-signal);
+  font-weight: 800;
   border-radius: var(--radius);
   transform: translateY(-200%);
 }
@@ -235,7 +213,7 @@ a:hover {
 }
 
 /* ---------------------------------------------------------------
-   Layout primitives
+   Layout: the panel assembly
    --------------------------------------------------------------- */
 .wrap {
   width: 100%;
@@ -243,148 +221,162 @@ a:hover {
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.grid {
+/* A stack of panels joined by 2px. */
+.assembly {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--gutter);
+  gap: var(--joint);
 }
-.section {
-  padding-block: var(--space-9) 0;
+.panel {
+  background: var(--panel);
+  color: var(--on-panel);
+  border-radius: var(--radius);
+  padding: var(--pad);
+}
+.panel--sheet {
+  background: var(--sheet);
+  color: var(--ink);
+}
+.panel--signal {
+  background: var(--signal);
+  color: var(--on-signal);
+}
+/* Inside a yellow sign every "ink" token resolves to the dark signal ink, whatever the theme. */
+.panel--signal,
+.exit__sign,
+.nav > a[aria-current='page'],
+.tabbar a[aria-current='page'] {
+  --ink: var(--on-signal);
+  --ink-2: var(--on-signal);
+  --ink-3: var(--on-signal);
+}
+.panel :focus-visible {
+  box-shadow: 0 0 0 5px var(--panel);
 }
 
-/* Section heading: a hairline with the label on the left and an optional note on the right. */
-.section-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--ink);
-  margin-bottom: var(--space-7);
-}
-.section-head h2 {
-  font-size: var(--step-1);
-  font-weight: 600;
-  letter-spacing: -0.005em;
-}
-.section-head__note {
-  color: var(--ink-3);
+/* Small label in mono capitals: the voice of the sign system. */
+.label {
+  font-family: var(--mono);
   font-size: var(--step--1);
-}
-
-.eyebrow {
-  font-size: var(--step--1);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   color: var(--ink-3);
 }
+.panel .label {
+  color: var(--on-panel-2);
+}
+.panel--signal .label {
+  color: var(--ink);
+}
 
-/* Inline list separated by thin slashes: used for technologies instead of pill tags. */
+/* Technologies etc.: mono, separated by thin slashes (no pill tags). */
 .slash-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.15rem 0;
   padding: 0;
   list-style: none;
+  font-family: var(--mono);
   font-size: var(--step--1);
-  color: var(--ink-2);
 }
 .slash-list li:not(:last-child)::after {
   content: '/' / '';
-  margin-inline: 0.5em;
-  color: var(--line-strong);
+  margin-inline: 0.55em;
+  opacity: 0.45;
 }
 
-/* Arrow link: label + arrow that moves on hover/focus. */
-.arrow-link {
+/* The arrow is the only mark of action. */
+.go {
   display: inline-flex;
   align-items: center;
-  gap: 0.45em;
+  gap: 0.5em;
   min-height: 44px;
-  font-weight: 600;
+  font-weight: 800;
   text-decoration: none;
 }
-.arrow-link .arrow {
-  transition: transform var(--dur-2) var(--ease-out);
+.go::after {
+  content: '→' / '';
+  color: var(--signal);
+  background: var(--panel);
+  width: 1.6em;
+  height: 1.6em;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 3px;
+  transition: transform var(--dur-2) var(--ease);
 }
-.arrow-link:hover .arrow,
-.arrow-link:focus-visible .arrow {
+.panel .go::after {
+  background: var(--panel-2);
+}
+.go:hover::after,
+.go:focus-visible::after {
   transform: translateX(4px);
 }
-.arrow-link--back:hover .arrow,
-.arrow-link--back:focus-visible .arrow {
+.go--back::after {
+  content: none;
+}
+.go--back::before {
+  content: '←' / '';
+  color: var(--signal);
+  background: var(--panel);
+  width: 1.6em;
+  height: 1.6em;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 3px;
+  transition: transform var(--dur-2) var(--ease);
+}
+.go--back:hover::before {
   transform: translateX(-4px);
-}
-.arrow-link span:not(.arrow) {
-  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-  transition: background-size var(--dur-2) var(--ease-out);
-}
-.arrow-link:hover span:not(.arrow) {
-  background-size: 100% 1px;
 }
 
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5em;
+  gap: 0.6em;
   min-height: 48px;
-  padding: 0.7rem 1.15rem;
-  border: 1px solid var(--ink);
+  padding: 0.7rem 1.1rem;
+  border: 0;
   border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--paper);
-  font-weight: 600;
+  background: var(--signal);
+  color: var(--on-signal);
+  font-weight: 800;
   text-decoration: none;
-  transition:
-    background-color var(--dur-1) ease,
-    border-color var(--dur-1) ease,
-    color var(--dur-1) ease;
+  transition: filter var(--dur-1) ease;
 }
 .button:hover {
-  background: var(--accent-ink);
-  border-color: var(--accent-ink);
-  color: #fff;
+  filter: brightness(1.06);
 }
-.button--ghost {
-  background: transparent;
-  color: var(--ink);
-}
-.button--ghost:hover {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+.button--panel {
+  background: var(--panel-2);
+  color: var(--on-panel);
 }
 
-/* The signature: the cedilla of "Plançon" in the accent colour.
-   The ç stays in ink; an accent copy is laid on top and clipped to what lies below the baseline
-   (the cedilla). Bricolage: ascent 0.93em, descent 0.27em, so the content box is 1.2em tall. */
+/* The cedilla of "Plançon" in signal yellow: the glyph is painted with a two-colour gradient that
+   switches at the baseline. Overpass: ascent 0.88em, descent 0.38em, so the baseline sits at 70%
+   of an inline box, whatever the line-height. */
 .cedilla {
-  position: relative;
-}
-.cedilla::after {
-  content: 'ç' / '';
-  position: absolute;
-  inset: 0 auto auto 0;
-  line-height: 1.2;
-  color: var(--accent);
-  clip-path: inset(0.93em 0 0 0);
+  background-image: linear-gradient(currentColor 70%, var(--signal) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Long-form text (article bodies, project text). */
+/* Long-form text. */
 .prose {
   max-width: var(--measure);
 }
 .prose > * + * {
-  margin-top: 1.1em;
+  margin-top: 1.05em;
 }
 .prose h2 {
   font-size: var(--step-2);
-  margin-top: 2em;
+  margin-top: 1.8em;
 }
 .prose h3 {
   font-size: var(--step-1);
-  margin-top: 1.6em;
+  margin-top: 1.5em;
 }
 .prose ul,
 .prose ol {
@@ -394,24 +386,25 @@ a:hover {
   margin-top: 0.35em;
 }
 .prose li::marker {
-  color: var(--accent);
+  color: var(--ink-3);
 }
 .prose blockquote {
-  padding-left: var(--space-4);
-  border-left: 2px solid var(--accent);
-  color: var(--ink-2);
+  padding: 0.6em 1em;
+  border-left: 4px solid var(--signal);
+  background: var(--sheet);
 }
 .prose code {
-  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  font-family: var(--mono);
   font-size: 0.9em;
   padding: 0.1em 0.3em;
-  background: var(--paper-2);
-  border-radius: var(--radius);
+  background: var(--sheet);
+  border-radius: 3px;
 }
 .prose pre {
   overflow-x: auto;
-  padding: var(--space-4);
-  background: var(--paper-2);
+  padding: 1rem;
+  background: var(--panel);
+  color: var(--on-panel);
   border-radius: var(--radius);
   font-size: var(--step--1);
   line-height: 1.5;
@@ -425,7 +418,7 @@ a:hover {
 }
 .prose hr {
   border: 0;
-  border-top: 1px solid var(--line);
+  border-top: 2px solid var(--rule);
 }
 .prose table {
   width: 100%;
@@ -437,12 +430,12 @@ a:hover {
 .prose th,
 .prose td {
   padding: 0.5em 0.75em;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--rule);
   text-align: left;
 }
 
 /* ---------------------------------------------------------------
-   Motion
+   Motion: page transitions only. Content never fades in on scroll.
    --------------------------------------------------------------- */
 @view-transition {
   navigation: auto;
@@ -451,26 +444,9 @@ a:hover {
 ::view-transition-new(root) {
   animation-duration: var(--dur-2);
 }
-
-/* Scroll reveal driven by CSS only: no script, and content is simply visible where unsupported. */
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
-  }
+::view-transition-group(*) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -486,7 +462,9 @@ a:hover {
   }
 }
 
-/* First section right under a page title: less air than between sections. */
-.page-head + .section {
-  padding-top: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+/* On yellow (current page, exit sign) the cedilla would vanish: keep it in ink there. */
+.panel--signal .cedilla,
+[aria-current='page'] .cedilla {
+  background-image: none;
+  -webkit-text-fill-color: currentColor;
 }

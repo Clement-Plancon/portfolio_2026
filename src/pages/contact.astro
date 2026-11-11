@@ -33,13 +33,16 @@ const profile = getProfile();
 </Base>
 
 <style>
-  .contact-page :global(.contact-band) {
-    margin-top: 0;
-    min-height: calc(100dvh - var(--header-h) - 4rem - var(--tabbar-h));
-    display: flex;
-    align-items: center;
+  .contact-page :global(.exit) {
+    margin-top: var(--joint);
+    min-height: calc(100dvh - var(--nav-h) - 6rem - var(--tabbar-h));
   }
-  .contact-page :global(.contact-band__title) {
+  .contact-page :global(.exit__sign) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .contact-page :global(.exit__title) {
     font-size: var(--step-4);
   }
 </style>

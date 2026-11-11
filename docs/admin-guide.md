@@ -25,7 +25,7 @@ Nombre de projets, expériences, articles et médias ; état du site public et d
 
 **Fiche projet**
 - *L'essentiel* : titre, adresse de la page (générée depuis le titre), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
-- *Couverture* : une couleur, et une image réelle si vous en avez une. Sans image, le site compose une couverture typographique.
+- *Ligne et visuel* : l'indice de ligne (1 à 3 caractères, ex. BV ; calculé depuis le titre s'il est vide), le pictogramme, la couleur de ligne, et une capture réelle si vous en avez une. Sans capture, la page projet affiche le pictogramme sur la couleur de ligne, présenté comme une interprétation graphique.
 - *Page détaillée* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
 - *Images de la page* : galerie avec texte alternatif et légende.
 - *Référencement* : titre et description pour Google, image de partage, aperçu du résultat de recherche.

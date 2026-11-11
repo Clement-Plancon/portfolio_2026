@@ -40,6 +40,15 @@ for (const path of PAGES) {
   });
 }
 
+for (const path of ['/', '/projets/safeping/', '/parcours/', '/contact/']) {
+  test(`accessibility in dark mode: ${path}`, async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+    await page.goto(path);
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+    expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(' | ')}`)).toEqual([]);
+  });
+}
+
 test('SEO essentials on every page', async ({ page }) => {
   const titles = new Set<string>();
   for (const path of PAGES) {
@@ -66,16 +75,35 @@ test('home exposes Person and ProfilePage structured data, with real facts', asy
   expect(data.some((d) => d['@type'] === 'ProfilePage')).toBe(true);
 });
 
-test('project index: viewer follows keyboard focus, detail page has its sections', async ({ page }) => {
+test('project board: flap names are real text, focus updates the info strip, row opens the project', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  const link = page.locator('[data-preview="referentiel-indicateurs"]');
-  await link.focus();
-  await expect(page.locator('[data-panel="referentiel-indicateurs"]')).toBeVisible();
-  await link.press('Enter');
+  // Screen readers get the real name, not the flap cells.
+  await expect(page.getByRole('heading', { name: 'Référentiel Indicateurs', level: 3 })).toHaveCount(1);
+  const row = page.locator('[data-row]').nth(1);
+  await row.focus();
+  await expect(page.locator('[data-strip-code]')).toHaveText('RI');
+  await row.press('Enter');
   await expect(page).toHaveURL(/\/projets\/referentiel-indicateurs\/$/);
   await expect(page.getByRole('heading', { name: 'Contexte' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Sections de la page' })).toBeVisible();
   await expect(page.getByRole('link', { name: /Tous les projets/ })).toBeVisible();
+});
+
+test('flaps settle on the real names (animation leaves no scrambled text)', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForTimeout(3000);
+  const texts = await page.locator('.flaps').evaluateAll((els) => els.map((e) => e.textContent?.replace(/\s+/g, '')));
+  expect(texts).toContain('BERCYVERT');
+  expect(texts).toContain('SAISINESDELACOURDESCOMPTES');
+});
+
+test('reduced motion: no flap animation', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page.waitForTimeout(150);
+  const first = await page.locator('.flaps').first().textContent();
+  expect(first?.replace(/\s+/g, '')).toBe('BERCYVERT');
 });
 
 test('sitemap and robots', async ({ request }) => {

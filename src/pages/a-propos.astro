@@ -9,9 +9,14 @@ import { breadcrumbLd, personLd, profilePageLd } from '../lib/structured-data';
 const seo = getSeo();
 const page = seo.pages.about;
 const profile = getProfile();
-const [lead, ...bio] = paragraphs(profile.bio);
+const experiences = getExperiences();
+const [lead, ...rest] = paragraphs(profile.bio);
+// The last paragraph of the bio is a motto: it gets its own sign.
+const motto = rest.length > 1 ? rest.at(-1) : undefined;
+const bio = motto ? rest.slice(0, -1) : rest;
 const photo = getMedia(profile.photo?.src);
 const cvHref = profile.cv?.startsWith('files/') ? `/${profile.cv}` : profile.cv;
+const current = experiences.find((e) => !e.end);
 const skills = getSkills().groups.flatMap((g) => g.items);
 ---
 
@@ -22,49 +27,78 @@ const skills = getSkills().groups.flatMap((g) => g.items);
   noindex={page.noindex}
   type="profile"
   jsonLd={[
-    personLd(profile, getExperiences(), skills),
+    personLd(profile, experiences, skills),
     profilePageLd('/a-propos/', page.title ?? 'À propos'),
     breadcrumbLd([{ name: 'Accueil', path: '/' }, { name: 'À propos', path: '/a-propos/' }]),
   ]}
 >
-  <PageHead title="À propos" eyebrow={`${profile.name} · ${profile.jobTitle}`} />
+  <PageHead label={`${profile.name} · ${profile.jobTitle}`} title="À propos" />
 
   <div class="wrap about">
-    <div class="about__text">
-      <p class="about__lead">{lead}</p>
-      <div class="prose">
-        {bio.map((t) => <p>{t}</p>)}
-      </div>
-      <p class="about__actions">
-        <a class="button" href="/contact/">Me contacter</a>
+    <div class="about__main">
+      <section class="panel panel--sheet about__text" aria-label="Présentation">
+        <p class="about__lead">{lead}</p>
+        <div class="prose">
+          {bio.map((t) => <p>{t}</p>)}
+        </div>
+      </section>
+      {
+        motto && (
+          <p class="panel panel--signal about__motto">
+            <span class="label">En une phrase</span>
+            {motto}
+          </p>
+        )
+      }
+    </div>
+
+    <aside class="about__facts" aria-label="En bref">
+      {
+        photo && profile.photo && (
+          <figure class="panel about__photo">
+            <Image src={photo} alt={profile.photo.alt} widths={[360, 720]} sizes="(min-width: 64rem) 22rem, 80vw" />
+          </figure>
+        )
+      }
+      <dl class="panel facts">
+        <div>
+          <dt>Basé à</dt>
+          <dd>{profile.location}</dd>
+        </div>
         {
-          cvHref && (
-            <a class="button button--ghost" href={cvHref}>
-              Télécharger mon CV
-            </a>
+          current && (
+            <div>
+              <dt>En service</dt>
+              <dd>
+                {current.role.split(' — ')[0]}
+                <span>{current.organisation}</span>
+              </dd>
+            </div>
           )
         }
-        <a class="arrow-link" href="/parcours/"><span>Mon parcours</span><span class="arrow" aria-hidden="true">→</span></a>
-      </p>
-    </div>
-    {
-      photo && profile.photo && (
-        <figure class="about__photo">
-          <Image src={photo} alt={profile.photo.alt} widths={[360, 720]} sizes="(min-width: 64rem) 30vw, 80vw" />
-        </figure>
-      )
-    }
+        <div>
+          <dt>Contact</dt>
+          <dd>
+            <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          </dd>
+        </div>
+      </dl>
+      <div class="facts__links">
+        <a class="go" href="/parcours/">Parcours complet</a>
+        {cvHref && <a class="go" href={cvHref}>Télécharger le CV</a>}
+      </div>
+    </aside>
   </div>
 
   {
     profile.principles.length > 0 && (
-      <section class="section wrap" aria-labelledby="principes-title">
-        <div class="section-head">
-          <h2 id="principes-title">Ma façon de travailler</h2>
-        </div>
-        <ul role="list" class="principles">
+      <section class="wrap principles" aria-labelledby="principes-title">
+        <h2 id="principes-title" class="panel principles__title">
+          Ma façon de travailler
+        </h2>
+        <ul role="list" class="principles__list">
           {profile.principles.map((p) => (
-            <li class="reveal">
+            <li class="panel panel--sheet">
               <h3>{p.title}</h3>
               <p>{p.text}</p>
             </li>
@@ -78,70 +112,108 @@ const skills = getSkills().groups.flatMap((g) => g.items);
 <style>
   .about {
     display: grid;
-    gap: var(--space-7);
-    margin-top: var(--space-7);
+    gap: var(--joint);
+    padding-top: var(--joint);
   }
   @media (min-width: 64rem) {
     .about {
-      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
-      gap: var(--space-8);
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      align-items: start;
     }
   }
+  .about__main {
+    display: grid;
+    gap: var(--joint);
+  }
   .about__lead {
-    font-family: var(--font-display);
+    max-width: 46rem;
     font-size: var(--step-1);
-    font-weight: 500;
-    line-height: 1.25;
-    letter-spacing: -0.015em;
-    max-width: 44rem;
-    margin-bottom: var(--space-6);
+    font-weight: 700;
+    line-height: 1.4;
   }
   @media (min-width: 48rem) {
     .about__lead {
       font-size: var(--step-2);
+      line-height: 1.3;
     }
   }
-  .about__text .prose p:last-child {
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    color: var(--ink);
-    padding-left: var(--space-4);
-    border-left: 2px solid var(--accent);
-  }
-  .prose {
+  .about__text .prose {
+    margin-top: 1.5rem;
     color: var(--ink-2);
   }
-  .about__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3) var(--space-5);
-    margin-top: var(--space-7);
+  .about__motto {
+    display: grid;
+    gap: 0.5rem;
+    font-size: var(--step-2);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
   }
-  .about__photo img {
+  .about__facts {
+    display: grid;
+    gap: var(--joint);
+  }
+  .about__photo :global(img) {
     width: 100%;
+    border-radius: 3px;
+  }
+  .facts {
+    display: grid;
+    gap: 1rem;
+  }
+  .facts dt {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-panel-2);
+  }
+  .facts dd {
+    margin-top: 0.15rem;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+  }
+  .facts dd span {
+    display: block;
+    font-weight: 400;
+    color: var(--on-panel-2);
+  }
+  .facts__links {
+    display: grid;
+    gap: var(--joint);
+  }
+  .facts__links .go {
+    justify-content: space-between;
+    padding: 0 1rem;
+    background: var(--sheet);
     border-radius: var(--radius);
   }
+
   .principles {
     display: grid;
-    gap: 0 var(--gutter);
+    gap: var(--joint);
+    margin-top: var(--joint);
+  }
+  .principles__title {
+    font-size: var(--step-3);
+  }
+  .principles__list {
+    display: grid;
+    gap: var(--joint);
   }
   @media (min-width: 48rem) {
-    .principles {
+    .principles__list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  .principles li {
-    padding-block: var(--space-5) var(--space-6);
-    border-top: 1px solid var(--line);
+  .principles__list li {
+    border-top: 6px solid var(--panel);
   }
-  .principles h3 {
-    font-size: var(--step-2);
-    font-weight: 600;
+  .principles__list h3 {
+    font-size: var(--step-1);
   }
-  .principles p {
-    margin-top: var(--space-3);
-    max-width: 32rem;
+  .principles__list p {
+    margin-top: 0.5rem;
     color: var(--ink-2);
   }
 </style>

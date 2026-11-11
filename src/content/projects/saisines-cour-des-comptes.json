@@ -2,9 +2,13 @@
   "title": "Saisines de la Cour des comptes",
   "summary": "Cadrage technique et recherche utilisateur pour structurer les outils de traitement des saisines. Accompagnement du studio de design, entretiens terrain, analyse et arbitrages de conception.",
   "kind": "Recherche utilisateur · Conception",
+  "code": "SC",
+  "pictogram": "dossier",
   "category": "pro",
   "organisation": "Cour des comptes",
-  "period": { "start": "2023" },
+  "period": {
+    "start": "2023"
+  },
   "context": "Projet de conception visant à améliorer et structurer les outils liés au traitement des saisines de la Cour des comptes, en s'appuyant sur une compréhension fine des besoins des usagers et des contraintes institutionnelles.",
   "contributions": [
     "Exploration et analyse des solutions existantes pouvant répondre aux besoins des usagers",
@@ -13,9 +17,16 @@
     "Analyse et synthèse des retours utilisateurs pour orienter les choix de conception et les arbitrages techniques"
   ],
   "results": [],
-  "technologies": ["UX research", "Cadrage technique", "Prototypage", "Co-conception"],
+  "technologies": [
+    "UX research",
+    "Cadrage technique",
+    "Prototypage",
+    "Co-conception"
+  ],
   "links": [],
-  "cover": { "color": "prune" },
+  "cover": {
+    "color": "prune"
+  },
   "gallery": [],
   "featured": false,
   "visible": true,
