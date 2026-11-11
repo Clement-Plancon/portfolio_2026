@@ -4,32 +4,54 @@ import Base from '../layouts/Base.astro';
 
 <Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas ou a été déplacée." noindex contactBand={false}>
   <section class="wrap notfound">
-    <p class="eyebrow">Erreur 404</p>
-    <h1>Cette page n'existe pas.</h1>
-    <p>Elle a peut-être été déplacée. Voici les pages principales :</p>
-    <ul role="list">
-      <li><a class="arrow-link" href="/"><span>Accueil</span><span class="arrow" aria-hidden="true">→</span></a></li>
-      <li><a class="arrow-link" href="/projets/"><span>Projets</span><span class="arrow" aria-hidden="true">→</span></a></li>
-      <li><a class="arrow-link" href="/parcours/"><span>Parcours</span><span class="arrow" aria-hidden="true">→</span></a></li>
-      <li><a class="arrow-link" href="/contact/"><span>Contact</span><span class="arrow" aria-hidden="true">→</span></a></li>
+    <div class="panel notfound__sign">
+      <p class="label">Erreur 404</p>
+      <h1>Cette page n'existe pas.</h1>
+      <p>Elle a peut-être été déplacée. Choisissez une direction :</p>
+    </div>
+    <ul role="list" class="notfound__ways">
+      <li><a class="go" href="/">Accueil</a></li>
+      <li><a class="go" href="/projets/">Projets</a></li>
+      <li><a class="go" href="/parcours/">Parcours</a></li>
+      <li><a class="go" href="/contact/">Contact</a></li>
     </ul>
   </section>
 </Base>
 
 <style>
   .notfound {
-    padding-block: var(--space-9);
+    display: grid;
+    gap: var(--joint);
+    padding-top: var(--joint);
     min-height: 60dvh;
   }
   h1 {
-    margin-top: var(--space-3);
+    margin-top: 0.75rem;
     font-size: var(--step-4);
   }
-  p:not(.eyebrow) {
-    margin-top: var(--space-4);
-    color: var(--ink-2);
+  .notfound__sign p:not(.label) {
+    margin-top: 1rem;
+    color: var(--on-panel-2);
   }
-  ul {
-    margin-top: var(--space-5);
+  .notfound__ways {
+    display: grid;
+    gap: var(--joint);
+  }
+  @media (min-width: 48rem) {
+    .notfound__ways {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .notfound__ways .go {
+    width: 100%;
+    justify-content: space-between;
+    min-height: 4rem;
+    padding: 0 1.25rem;
+    background: var(--panel);
+    color: var(--on-panel);
+    border-radius: var(--radius);
+  }
+  .notfound__ways .go::after {
+    background: var(--panel-2);
   }
 </style>

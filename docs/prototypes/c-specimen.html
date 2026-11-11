@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype C — Spécimen</title>
+<style>
+@font-face{font-family:B;src:url(../../public/fonts/bricolage-grotesque-latin.woff2);font-weight:200 800;font-stretch:75% 100%}
+*{box-sizing:border-box;margin:0}
+body{font-family:B,sans-serif;background:#111;color:#111}
+.label{position:fixed;top:12px;left:12px;z-index:5;display:flex;gap:4px}
+.label a{background:#111;color:#fff;font-size:14px;padding:6px 10px;text-decoration:none;font-weight:600}
+.band{min-height:46vh;display:flex;flex-direction:column;justify-content:space-between;padding:56px 24px 20px;overflow:hidden}
+.band h2{font-size:clamp(64px,13vw,220px);line-height:.82;letter-spacing:-.04em;white-space:nowrap}
+.meta{display:flex;justify-content:space-between;font-size:15px;font-weight:600}
+.hero{background:#f3efe6;min-height:72vh}.hero h1{font-size:clamp(70px,15vw,260px);line-height:.8;letter-spacing:-.05em;font-weight:800;font-stretch:75%}
+.hero p{font-size:22px;max-width:30ch}
+.b1{background:#1e3a32;color:#e9e4d8}.b1 h2{font-weight:300;font-stretch:100%}
+.b2{background:#9fd3ff}.b2 h2{font-weight:800;font-stretch:75%}
+.b3{background:#4a2a3a;color:#f3c7d8}.b3 h2{font-weight:500;font-style:italic;font-stretch:88%}
+.b4{background:#ffd21f}.b4 h2{font-weight:200;font-stretch:75%}
+.b5{background:#e2402a;color:#fff}.b5 h2{font-weight:800}
+.b6{background:#e9e4d8}.b6 h2{font-weight:400;font-stretch:80%}
+</style>
+</head>
+<body>
+<nav class="label"><a href="#">Clément Plançon</a><a href="#">Projets</a><a href="#">Parcours</a><a href="#">Contact</a></nav>
+<header class="band hero"><h1>Clément<br>Plançon</h1><div class="meta"><p>Ingénieur logiciel &amp; Tech Lead — applications métiers, du cadrage à la production.</p><span>Paris</span></div></header>
+<a class="band b1"><div class="meta"><span>Pro · 2023</span><span>Conception de logiciel</span></div><h2>Bercy Vert</h2></a>
+<a class="band b2"><div class="meta"><span>Pro · 2023—2024</span><span>Tableau de bord</span></div><h2>Référentiel Indicateurs</h2></a>
+<a class="band b3"><div class="meta"><span>Pro · 2023</span><span>Recherche utilisateur</span></div><h2>Saisines</h2></a>
+<a class="band b4"><div class="meta"><span>Perso · 2024</span><span>Outil · IA</span></div><h2>Veille Stratégique</h2></a>
+<a class="band b5"><div class="meta"><span>Perso · en cours</span><span>Mobile</span></div><h2>SafePing</h2></a>
+<a class="band b6"><div class="meta"><span>Perso</span><span>Dataviz · Open data</span></div><h2>Datametre</h2></a>
+</body>
+</html>

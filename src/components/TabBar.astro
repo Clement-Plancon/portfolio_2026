@@ -1,12 +1,14 @@
 ---
-// Mobile navigation: a bottom bar within thumb reach, always visible, with text labels.
+// Phone navigation: a sign panel fixed within thumb reach, pictogram + label, "you are here" in yellow.
+import Pictogram, { type PictogramName } from './Pictogram.astro';
+
 const path = Astro.url.pathname;
-const tabs = [
-  { href: '/', label: 'Accueil', icon: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z' },
-  { href: '/projets/', label: 'Projets', icon: 'M3 5h18M3 12h18M3 19h12' },
-  { href: '/parcours/', label: 'Parcours', icon: 'M6 3v18M6 7h12M6 13h9M6 19h6' },
-  { href: '/a-propos/', label: 'À propos', icon: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0' },
-  { href: '/contact/', label: 'Contact', icon: 'M3 6h18v12H3zM3 6l9 7 9-7' },
+const tabs: { href: string; label: string; icon: PictogramName }[] = [
+  { href: '/', label: 'Accueil', icon: 'accueil' },
+  { href: '/projets/', label: 'Projets', icon: 'projets' },
+  { href: '/parcours/', label: 'Parcours', icon: 'parcours' },
+  { href: '/a-propos/', label: 'À propos', icon: 'apropos' },
+  { href: '/contact/', label: 'Contact', icon: 'contact' },
 ];
 const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
@@ -17,9 +19,9 @@ const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(
       tabs.map((t) => (
         <li>
           <a href={t.href} aria-current={active(t.href) ? 'page' : undefined}>
-            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-              <path d={t.icon} />
-            </svg>
+            <span class="plate">
+              <Pictogram name={t.icon} size={18} />
+            </span>
             <span>{t.label}</span>
           </a>
         </li>
@@ -38,52 +40,50 @@ const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(
       position: fixed;
       inset: auto 0 0 0;
       z-index: 50;
-      padding-bottom: env(safe-area-inset-bottom);
-      background: color-mix(in srgb, var(--paper) 94%, transparent);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--line);
+      padding: var(--joint) var(--joint) calc(var(--joint) + env(safe-area-inset-bottom));
+      background: var(--ground);
       view-transition-name: tabbar;
     }
-    .tabbar ul {
+    ul {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
+      gap: var(--joint);
     }
-    .tabbar a {
+    a {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      min-height: 58px;
+      gap: 4px;
+      height: calc(var(--tabbar-h) - 2 * var(--joint));
+      background: var(--panel);
+      color: var(--on-panel-2);
+      border-radius: var(--radius);
       font-size: 0.6875rem;
-      font-weight: 600;
-      color: var(--ink-3);
+      font-weight: 800;
       text-decoration: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .tabbar svg {
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      transition: transform var(--dur-2) var(--ease-out);
+    .plate {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 3px;
+      background: var(--on-panel);
+      color: var(--panel);
+      transition: transform var(--dur-1) ease;
     }
-    .tabbar a[aria-current='page'] {
-      color: var(--ink);
-    }
-    .tabbar a[aria-current='page'] svg {
-      stroke: var(--accent);
-      transform: translateY(-1px);
-    }
-    .tabbar a:active svg {
+    a:active .plate {
       transform: scale(0.9);
     }
-  }
-  @media (max-width: 22rem) {
-    .tabbar a {
-      font-size: 0.625rem;
+    a[aria-current='page'] {
+      background: var(--signal);
+      color: var(--on-signal);
+    }
+    a[aria-current='page'] .plate {
+      background: var(--panel);
+      color: var(--signal);
     }
   }
 </style>

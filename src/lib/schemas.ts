@@ -58,10 +58,16 @@ export const seoSchema = z
 
 export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable'] as const;
 
+/** Pictograms drawn in src/components/Pictogram.astro (a graphic interpretation, never a screenshot). */
+export const PICTOGRAMS = ['feuille', 'jauge', 'dossier', 'radar', 'alerte', 'graphique', 'code', 'mobile', 'equipe'] as const;
+
 export const projectSchema = z.object({
   title: text(120).min(1, 'Titre requis'),
   summary: text(320).min(1, 'Résumé requis'),
   kind: optText(80),
+  /** Line code shown in the coloured badge (e.g. BV). Derived from the title when empty. */
+  code: z.string().trim().regex(/^[A-Z0-9]{1,3}$/, '1 à 3 lettres majuscules ou chiffres').optional(),
+  pictogram: z.enum(PICTOGRAMS).optional(),
   category: z.enum(['pro', 'perso']),
   organisation: optText(120),
   period: z

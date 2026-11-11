@@ -21,6 +21,7 @@ const skills = getSkills();
   jsonLd={[breadcrumbLd([{ name: 'Accueil', path: '/' }, { name: 'Parcours', path: '/parcours/' }])]}
 >
   <PageHead
+    label={`${experiences.length} postes · ${skills.groups.length} domaines`}
     title="Parcours"
     lead="Du Lab de la Transformation de Bercy à la police scientifique : des applications métiers pour le service public, et de plus en plus de responsabilités techniques."
   >
@@ -30,34 +31,66 @@ const skills = getSkills();
     </nav>
   </PageHead>
 
-  <section class="section wrap" id="experience" aria-labelledby="experience-title">
-    <div class="section-head">
-      <h2 id="experience-title">Expérience</h2>
-      <span class="section-head__note">{experiences.length} postes</span>
-    </div>
-    <ExperienceList experiences={experiences} />
-  </section>
+  <div class="wrap sections">
+    <section id="experience" aria-labelledby="experience-title">
+      <h2 id="experience-title" class="visually-hidden">Expérience</h2>
+      <ExperienceList experiences={experiences} />
+    </section>
 
-  <section class="section wrap" id="competences" aria-labelledby="competences-title">
-    <div class="section-head">
-      <h2 id="competences-title">Compétences</h2>
-      <span class="section-head__note">Ce que je pratique au quotidien</span>
-    </div>
-    <SkillGroups skills={skills} />
-  </section>
+    <section id="competences" class="skills-block" aria-labelledby="competences-title">
+      <div class="panel panel--signal skills-block__head">
+        <h2 id="competences-title">Compétences</h2>
+        <p>Ce que je pratique au quotidien, sans catalogue exhaustif.</p>
+      </div>
+      <SkillGroups skills={skills} />
+    </section>
+  </div>
 </Base>
 
 <style>
   .jump {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2) var(--space-5);
-    margin-top: var(--space-6);
+    gap: var(--joint);
+    margin-top: 1.5rem;
   }
   .jump a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+    padding: 0 0.9rem;
+    background: var(--panel-2);
+    border-radius: 3px;
+    font-weight: 800;
+    text-decoration: none;
+  }
+  .jump a:hover {
+    background: var(--signal);
+    color: var(--on-signal);
+  }
+  .sections {
+    display: grid;
+    gap: var(--joint);
+    padding-top: var(--joint);
+  }
+  section {
+    scroll-margin-top: 1rem;
+  }
+  .skills-block {
+    display: grid;
+    gap: var(--joint);
+  }
+  .skills-block__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+  }
+  .skills-block__head h2 {
+    font-size: var(--step-3);
+  }
+  .skills-block__head p {
     font-weight: 600;
   }
 </style>

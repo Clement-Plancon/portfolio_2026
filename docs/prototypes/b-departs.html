@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype B — Départs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@300..900&family=Overpass+Mono:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#e9e7e1;--ink:#121310;--panel:#151614;--panel-2:#22241f;--white:#f4f2ec;--grey:#9a9a92;--yellow:#ffd21f;
+  --l-bv:#00a86b;--l-ri:#2f6fd6;--l-sc:#8a4fbf;--l-vs:#e6862c;--l-sp:#e2402a;--l-dm:#c9b48a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font-family:Overpass,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1440px;margin:auto;padding:0 clamp(12px,2.5vw,40px)}
+/* top sign */
+.sign{display:flex;align-items:stretch;gap:2px;margin-top:clamp(10px,2vw,24px)}
+.sign a{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--panel);color:var(--white);text-decoration:none;font-weight:700;font-size:15px;border-radius:4px}
+.sign a .pict{width:26px;height:26px;border-radius:3px;background:var(--white);color:var(--panel);display:grid;place-items:center;font-weight:900;font-size:14px}
+.sign a.here{background:var(--yellow);color:var(--panel)}
+.sign a.here .pict{background:var(--panel);color:var(--yellow)}
+.sign .grow{flex:1;background:var(--panel);border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding:0 16px;color:var(--grey);font-family:'Overpass Mono';font-size:13px}
+/* main panel */
+.board{margin-top:2px;background:var(--panel);color:var(--white);border-radius:4px;padding:clamp(18px,3vw,44px)}
+.board__top{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:28px;border-bottom:2px solid #2d2f29}
+.name{font-weight:800;font-size:clamp(44px,7.6vw,128px);line-height:.86;letter-spacing:-.035em}
+.name .c{position:relative}.name .c:after{content:'ç';position:absolute;left:0;top:0;color:var(--yellow);clip-path:inset(.78em 0 0 0)}
+.role{margin-top:18px;font-size:clamp(17px,1.5vw,22px);color:#cfcdc5;max-width:34ch;line-height:1.35}
+.status{font-family:'Overpass Mono';font-size:13px;color:var(--grey);text-align:right;line-height:1.9}
+.status b{color:var(--yellow);font-weight:600}
+.status .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--yellow);margin-right:8px;animation:blink 2s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.thead,.row{display:grid;grid-template-columns:90px 64px minmax(0,1.6fr) minmax(0,1.3fr) 120px 30px;gap:16px;align-items:center}
+.thead{padding:22px 0 10px;font-family:'Overpass Mono';font-size:12px;letter-spacing:.06em;color:var(--grey);text-transform:uppercase}
+.row{padding:14px 0;border-top:1px solid #2d2f29;color:var(--white);text-decoration:none;position:relative}
+.row:hover{background:linear-gradient(90deg,transparent,#1d1f1b 8%,#1d1f1b 92%,transparent)}
+.row:hover .dest{color:var(--yellow)}
+.bullet{width:44px;height:44px;border-radius:6px;display:grid;place-items:center;font-weight:900;font-size:17px;color:#121310}
+.year,.via,.quai{font-family:'Overpass Mono';font-size:15px}
+.via{color:#bdbbb3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quai{color:var(--grey)}
+.quai.live{color:var(--yellow)}
+.dest{font-family:'Overpass Mono';font-weight:600;font-size:clamp(18px,1.8vw,26px);letter-spacing:.02em;text-transform:uppercase;transition:color .2s}
+.flap{display:inline-block;min-width:.62em;text-align:center;background:var(--panel-2);margin-right:2px;border-radius:2px;padding:2px 0;position:relative}
+.flap:after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:#0b0c0a}
+.arrow{font-size:22px;color:var(--yellow)}
+.legend{display:flex;gap:28px;margin-top:22px;font-family:'Overpass Mono';font-size:12px;color:var(--grey)}
+/* below: experience as service info */
+.info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-top:2px}
+.info section{background:var(--white);border-radius:4px;padding:24px}
+.info h2{font-size:13px;font-family:'Overpass Mono';text-transform:uppercase;letter-spacing:.08em;color:#5f5f57;margin-bottom:14px}
+.info p{font-size:17px;line-height:1.45}
+.info strong{display:block;font-size:21px;margin-bottom:4px}
+@media (max-width:760px){
+  .sign a:not(.here) span:not(.pict){display:none}.sign .grow{display:none}
+  .board__top{grid-template-columns:1fr}.status{text-align:left}
+  .thead{display:none}
+  .row{grid-template-columns:52px 1fr auto;grid-template-areas:"b d a" "b y a" "b v a";gap:2px 14px;padding:16px 0}
+  .row .bullet{grid-area:b;align-self:start}.row .dest{grid-area:d;font-size:17px}.row .year{grid-area:y;font-size:13px;color:var(--grey)}
+  .row .via{grid-area:v;font-size:13px}.row .quai{display:none}.row .arrow{grid-area:a}
+  .flap{min-width:.6em}
+  .info{grid-template-columns:1fr}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel);padding-bottom:env(safe-area-inset-bottom)}
+  .tabbar a{color:var(--white);text-decoration:none;text-align:center;padding:10px 0 12px;font-size:12px;font-weight:700}
+  .tabbar a b{display:block;margin:0 auto 4px;width:26px;height:26px;border-radius:3px;background:var(--white);color:var(--panel);line-height:28px;font-size:13px}
+  .tabbar a.here{color:var(--yellow)}.tabbar a.here b{background:var(--yellow)}
+  body{padding-bottom:70px}
+}
+@media (min-width:761px){.tabbar{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="sign" aria-label="Navigation">
+    <a class="here" href="#"><span class="pict">↓</span><span>Départs</span></a>
+    <a href="#"><span class="pict">P</span><span>Projets</span></a>
+    <a href="#"><span class="pict">≡</span><span>Parcours</span></a>
+    <a href="#"><span class="pict">i</span><span>À propos</span></a>
+    <span class="grow">clementplancon.fr</span>
+    <a href="#"><span class="pict">@</span><span>Contact</span></a>
+  </nav>
+
+  <section class="board" aria-label="Projets">
+    <div class="board__top">
+      <div>
+        <h1 class="name">Clément<br>Plan<span class="c">ç</span>on</h1>
+        <p class="role">Ingénieur logiciel &amp; Tech Lead. Je conçois des applications métiers, du cadrage à la mise en production.</p>
+      </div>
+      <p class="status"><span class="dot"></span><b>EN SERVICE</b><br>Lab. police scientifique de Paris<br>Ministère de l'Intérieur<br>Paris</p>
+    </div>
+    <div class="thead"><span>Année</span><span>Ligne</span><span>Destination</span><span>Via</span><span>Quai</span><span></span></div>
+    <div id="rows"></div>
+    <p class="legend"><span>■ Pro : projets professionnels</span><span>□ Perso : projets personnels</span></p>
+  </section>
+
+  <div class="info">
+    <section><h2>En service</h2><strong>Chef adjoint, section informatique</strong><p>Laboratoire de police scientifique de Paris · depuis 2024</p></section>
+    <section><h2>Correspondance</h2><strong>Coordinateur technique</strong><p>Outils Publics · depuis 2024</p></section>
+    <section><h2>Terminus précédent</h2><strong>Ingénieur logiciel &amp; chef de projet</strong><p>Lab de la Transformation, Bercy · 2022 — 2024</p></section>
+  </div>
+</div>
+<nav class="tabbar"><a class="here" href="#"><b>↓</b>Départs</a><a href="#"><b>≡</b>Parcours</a><a href="#"><b>i</b>À propos</a><a href="#"><b>@</b>Contact</a></nav>
+<script>
+const P=[['2023','BV','var(--l-bv)','Bercy Vert','Flutter · Firebase · Node.js','Pro'],['2023','RI','var(--l-ri)','Référentiel Indicateurs','Next.js · PostgreSQL','Pro'],['2023','SC','var(--l-sc)','Saisines Cour des comptes','UX research · Cadrage','Pro'],['2024','VS','var(--l-vs)','Veille Stratégique','Python · Scrapy · OpenAI','Perso'],['—','SP','var(--l-sp)','SafePing','Mobile · Vie privée','En cours'],['—','DM','var(--l-dm)','Datametre','Dataviz · Open data','Perso']];
+const A='ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈ ';
+const rows=document.getElementById('rows');
+P.forEach(([y,c,col,d,v,q],i)=>{const a=document.createElement('a');a.className='row';a.href='#';
+a.innerHTML=`<span class="year">${y}</span><span class="bullet" style="background:${col}">${c}</span><span class="dest" aria-label="${d}"></span><span class="via">${v}</span><span class="quai ${q==='En cours'?'live':''}">${q}</span><span class="arrow">→</span>`;
+rows.append(a);const el=a.querySelector('.dest');const T=d.toUpperCase();
+const cells=[...T].map(ch=>{const s=document.createElement('span');s.className='flap';s.textContent=' ';s.setAttribute('aria-hidden','true');el.append(s);return [s,ch]});
+cells.forEach(([s,ch],k)=>{let n=0;const max=6+((k+i*3)%9);const t=setInterval(()=>{n++;s.textContent=n>=max?ch:A[(Math.random()*A.length)|0];if(n>=max)clearInterval(t)},45+i*6)});});
+</script>
+</body>
+</html>

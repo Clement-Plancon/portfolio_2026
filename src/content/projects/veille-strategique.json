@@ -2,9 +2,13 @@
   "title": "Veille Stratégique",
   "summary": "Système automatisé de veille technologique : collecte multi-sources, extraction d'entités, résumés par IA et newsletter personnalisée.",
   "kind": "Outil interne · IA",
+  "code": "VS",
+  "pictogram": "radar",
   "category": "perso",
   "organisation": "Projet personnel",
-  "period": { "start": "2024" },
+  "period": {
+    "start": "2024"
+  },
   "context": "Système automatisé de veille technologique et concurrentielle qui agrège, analyse et synthétise les informations provenant de multiples sources web.",
   "contributions": [
     "Collecte automatique de sources configurables",
@@ -14,9 +18,17 @@
     "Tableau de bord des tendances et alertes"
   ],
   "results": [],
-  "technologies": ["Python", "Scrapy", "OpenAI", "MongoDB", "React"],
+  "technologies": [
+    "Python",
+    "Scrapy",
+    "OpenAI",
+    "MongoDB",
+    "React"
+  ],
   "links": [],
-  "cover": { "color": "ocre" },
+  "cover": {
+    "color": "ocre"
+  },
   "gallery": [],
   "featured": false,
   "visible": true,

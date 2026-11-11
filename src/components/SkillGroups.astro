@@ -1,4 +1,5 @@
 ---
+// Skills as a sign directory: one cell per field, assembled in a grid of panels.
 import type { Skills } from '../lib/schemas';
 
 interface Props {
@@ -10,7 +11,7 @@ const { skills } = Astro.props;
 <div class="skills">
   {
     skills.groups.map((g) => (
-      <section class="skills__group reveal">
+      <section class="panel skills__group" aria-label={g.name}>
         <h3>{g.name}</h3>
         {g.description && <p>{g.description}</p>}
         <ul class="slash-list">
@@ -26,7 +27,7 @@ const { skills } = Astro.props;
 <style>
   .skills {
     display: grid;
-    gap: 0 var(--gutter);
+    gap: var(--joint);
   }
   @media (min-width: 40rem) {
     .skills {
@@ -39,20 +40,22 @@ const { skills } = Astro.props;
     }
   }
   .skills__group {
-    padding-block: var(--space-5);
-    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   h3 {
     font-size: var(--step-1);
-    font-weight: 600;
   }
   p {
-    margin-block: var(--space-2) var(--space-3);
     font-size: 0.9375rem;
-    color: var(--ink-2);
+    color: var(--on-panel-2);
   }
   .slash-list {
-    font-size: 0.9375rem;
-    color: var(--ink);
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--panel-line);
+    color: var(--signal);
+    font-size: 0.875rem;
   }
 </style>

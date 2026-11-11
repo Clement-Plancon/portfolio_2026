@@ -1,4 +1,24 @@
-/* Admin UI. Same tokens as the public site (paper, ink, vermillon), denser layout. */
+/* Admin UI: same identity as the public site (signage palette, Overpass), denser layout.
+   The admin keeps its own semantic names, mapped onto the site tokens here. */
+body.admin {
+  --paper: var(--sheet);
+  --paper-2: var(--ground);
+  --surface: #fbfaf7;
+  --line: var(--rule);
+  --line-strong: #a9a69c;
+  --accent: var(--signal);
+  --accent-ink: #8a5a00;
+  --sapin: var(--panel);
+  --font-display: var(--font);
+  --ease-out: var(--ease);
+}
+@media (prefers-color-scheme: dark) {
+  body.admin {
+    --surface: #1f211d;
+    --line-strong: #55574f;
+    --accent-ink: var(--signal);
+  }
+}
 body.admin {
   font-size: 0.9375rem;
   line-height: 1.5;

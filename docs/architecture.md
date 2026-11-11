@@ -90,9 +90,10 @@ L'état des déploiements affiché dans l'admin vient des *commit statuses* que 
 
 ## Design system
 
-- **Couleurs** (`src/styles/global.css`) : papier `#f3efe6`, encre `#17160f`, vermillon `#d9411a` (marques, focus, grands textes) et `#b3340f` pour l'accent en petit texte, vert sapin `#1e3a32` pour le contact. Contrastes vérifiés AA. Thème sombre automatique.
-- **Typographie** : Bricolage Grotesque variable (titres, axes graisse et chasse) + Public Sans (texte). Polices auto-hébergées, sous-ensemble latin, la police des titres est préchargée.
-- **Signature** : la cédille du « ç » de Plançon en vermillon (classe `.cedilla`).
-- **Projets** : index typographique + visionneuse au pointeur sur grand écran ; fiches compactes sur écran tactile ; couvertures réelles ou typographiques (jamais de fausse capture).
-- **Mouvement** : apparitions pilotées par le défilement en CSS (`animation-timeline`), transitions de page natives (View Transitions), tout désactivé avec `prefers-reduced-motion`.
-- **Navigation** : barre haute sur grand écran, barre d'onglets basse sur mobile.
+Direction « Départs » (signalétique d'information) : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
+
+- **Tokens** : `src/styles/global.css` (panneaux, jaune signal, couleurs de ligne, échelle typographique, joint de 2 px). Thème sombre automatique ; l'encre sur jaune (`--on-signal`) reste foncée dans les deux thèmes.
+- **Polices** : Overpass et Overpass Mono, auto-hébergées (`public/fonts/`).
+- **Composants** : `Header` (navigation en panneaux, « vous êtes ici »), `TabBar` (navigation mobile), `ProjectBoard` (tableau à palettes), `LineBadge` (indice de ligne), `Pictogram` (pictogrammes), `ExperienceList` (parcours en arrêts), `SkillGroups`, `PageHead`, `ContactBand` (panneau de sortie).
+- **Identité d'un projet** : `code` (indice, ex. BV), `pictogram` et `cover.color` dans le contenu, modifiables dans l'administration ; `src/lib/lines.ts` calcule l'indice quand il est vide.
+- **Scripts** : `src/scripts/site.ts` et `flap.ts` (amélioration progressive ; tout fonctionne sans).

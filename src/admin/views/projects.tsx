@@ -1,24 +1,25 @@
-import { COVER_COLORS } from '../../lib/schemas';
+import { lineCode } from '../../lib/lines';
+import { COVER_COLORS, PICTOGRAMS } from '../../lib/schemas';
 import type { Entry } from '../api';
 import { FormActions, ImageField, LinkList, Select, StringList, TagInput, TextArea, TextInput, Thumb, Toggle } from '../ui';
 import { CollectionList, useEntryEditor } from './collection';
 import { EditorShell, NotFound, SeoFields, SlugField } from './shared';
 
 const COLOR_LABELS: Record<(typeof COVER_COLORS)[number], string> = {
-  vermillon: 'Vermillon',
-  sapin: 'Vert sapin',
-  ardoise: 'Bleu ardoise',
-  ocre: 'Ocre',
-  prune: 'Prune',
+  vermillon: 'Rouge',
+  sapin: 'Vert',
+  ardoise: 'Bleu',
+  ocre: 'Orange',
+  prune: 'Violet',
   sable: 'Sable',
 };
 const COLOR_HEX: Record<string, string> = {
-  vermillon: '#c2391a',
-  sapin: '#1e3a32',
-  ardoise: '#24384f',
-  ocre: '#c9932f',
-  prune: '#4a2a3a',
-  sable: '#d8cbb0',
+  vermillon: '#c8361f',
+  sapin: '#00a86b',
+  ardoise: '#2a62c4',
+  ocre: '#f28c28',
+  prune: '#7b43b0',
+  sable: '#d6c49a',
 };
 
 export function ProjectList() {
@@ -40,7 +41,7 @@ export function ProjectList() {
             <Thumb src={d.cover.image.src} size="sm" />
           ) : (
             <span class="swatch" style={{ background: COLOR_HEX[d.cover?.color ?? 'sapin'] }} aria-hidden="true">
-              {d.title.charAt(0)}
+              {lineCode(d as { title: string; code?: string })}
             </span>
           ),
         };
@@ -53,6 +54,8 @@ type ProjectForm = {
   title: string;
   summary: string;
   kind?: string;
+  code?: string;
+  pictogram?: (typeof PICTOGRAMS)[number];
   category: 'pro' | 'perso';
   organisation?: string;
   period?: { start: string; end?: string };
@@ -141,10 +144,19 @@ export function ProjectEditor({ id }: { id: string }) {
       </section>
 
       <section class="panel" aria-labelledby="p-couverture">
-        <h2 id="p-couverture">Couverture</h2>
-        <p class="hint">Sans image, le site affiche une couverture typographique (titre et nature du projet) dans la couleur choisie.</p>
+        <h2 id="p-couverture">Ligne et visuel</h2>
+        <p class="hint">Chaque projet est une « ligne » : un indice coloré (ex. BV) et un pictogramme. Sans capture, la page projet affiche le pictogramme sur la couleur de ligne, présenté comme une interprétation graphique.</p>
+        <div class="grid-2">
+          <TextInput label="Indice de ligne" hint={`1 à 3 caractères. Vide : « ${lineCode({ title: f.title || '?' })} » (calculé).`} value={f.code} maxLength={3} error={e.code} onInput={(v) => set('code', opt(v.toUpperCase()))} />
+          <Select
+            label="Pictogramme"
+            value={f.pictogram ?? ''}
+            options={[{ value: '', label: 'Aucun' }, ...PICTOGRAMS.map((p) => ({ value: p, label: p.charAt(0).toUpperCase() + p.slice(1) }))]}
+            onChange={(v) => set('pictogram', (v || undefined) as ProjectForm['pictogram'])}
+          />
+        </div>
         <fieldset class="swatches">
-          <legend>Couleur</legend>
+          <legend>Couleur de ligne</legend>
           {COVER_COLORS.map((c) => (
             <label class="swatch-option">
               <input type="radio" name="cover-color" value={c} checked={f.cover.color === c} onChange={() => set('cover', { ...f.cover, color: c })} />

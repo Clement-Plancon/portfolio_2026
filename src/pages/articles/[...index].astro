@@ -22,21 +22,18 @@ const articles = getArticles();
   image={getMedia(page.ogImage ?? seo.defaultOgImage)}
   noindex={page.noindex}
 >
-  <PageHead title="Articles" lead="Notes techniques sur l'architecture, le développement et la conception de produits." />
-  <section class="section wrap" aria-label="Liste des articles">
+  <PageHead label={`${articles.length} article${articles.length > 1 ? 's' : ''}`} title="Articles" lead="Notes techniques sur l'architecture, le développement et la conception de produits." />
+  <section class="wrap list" aria-label="Liste des articles">
     <ol role="list" class="articles">
       {
         articles.map((a) => (
           <li>
-            <a href={`/articles/${a.id}/`}>
-              <span class="articles__date">
-                {a.status === 'draft' ? 'Brouillon' : formatDate(a.publishedAt)}
+            <a class="panel panel--sheet article-row" href={`/articles/${a.id}/`}>
+              <span class="label">
+                {a.status === 'draft' ? 'Brouillon' : formatDate(a.publishedAt)} · {readingTime(a.body)} min
               </span>
-              <span class="articles__body">
-                <h2>{a.title}</h2>
-                <span class="articles__excerpt">{a.excerpt}</span>
-              </span>
-              <span class="articles__time">{readingTime(a.body)} min</span>
+              <h2>{a.title}</h2>
+              <span class="article-row__excerpt">{a.excerpt}</span>
             </a>
           </li>
         ))
@@ -46,41 +43,28 @@ const articles = getArticles();
 </Base>
 
 <style>
+  .list {
+    padding-top: var(--joint);
+  }
   .articles {
-    border-top: 1px solid var(--ink);
-  }
-  li {
-    border-bottom: 1px solid var(--line);
-  }
-  a {
     display: grid;
-    gap: var(--space-2) var(--gutter);
-    padding-block: var(--space-5);
-    text-decoration: none;
+    gap: var(--joint);
   }
-  @media (min-width: 48rem) {
-    a {
-      grid-template-columns: 11rem minmax(0, 1fr) auto;
-      align-items: baseline;
-    }
+  .article-row {
+    display: grid;
+    gap: 0.5rem;
+    text-decoration: none;
+    border-left: 6px solid var(--panel);
+    transition: border-color var(--dur-1) ease;
+  }
+  .article-row:hover {
+    border-left-color: var(--signal);
   }
   h2 {
     font-size: var(--step-2);
-    font-weight: 600;
-    transition: color var(--dur-1) ease;
   }
-  a:hover h2 {
-    color: var(--accent-ink);
-  }
-  .articles__excerpt {
-    display: block;
-    margin-top: var(--space-2);
+  .article-row__excerpt {
     max-width: var(--measure);
     color: var(--ink-2);
-  }
-  .articles__date,
-  .articles__time {
-    font-size: var(--step--1);
-    color: var(--ink-3);
   }
 </style>

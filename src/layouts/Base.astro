@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import Seo from '../components/Seo.astro';
 import TabBar from '../components/TabBar.astro';
-import { getArticles, getProfile } from '../lib/content';
+import { getArticles, getExperiences, getProfile } from '../lib/content';
 
 interface Props {
   title: string;
@@ -22,6 +22,9 @@ interface Props {
 const { contactBand = true, ...seo } = Astro.props;
 const profile = getProfile();
 const showArticles = getArticles().length > 0;
+// The nav shows the current position like a live status line.
+const current = getExperiences().find((e) => !e.end);
+const status = current ? `En service · ${current.organisation}` : undefined;
 ---
 
 <!doctype html>
@@ -30,18 +33,19 @@ const showArticles = getArticles().length > 0;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <Seo {...seo} />
-    <link rel="preload" href="/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/overpass-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/overpass-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141310" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#e7e5df" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0b09" media="(prefers-color-scheme: dark)" />
     <meta name="author" content={profile.name} />
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
-    <Header name={profile.name} showArticles={showArticles} />
+    <Header name={profile.name} status={status} showArticles={showArticles} />
     <main id="contenu" tabindex="-1">
       <slot />
     </main>
