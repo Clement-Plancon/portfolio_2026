@@ -1,185 +1,122 @@
 ---
-// The exit sign: every page ends on a signal-yellow panel that leads to the e-mail.
+// Every page ends on one last print: a large Prussian blue sheet that leads to the e-mail.
+import { photogram } from '../lib/photogram';
 import type { Profile } from '../lib/schemas';
 
 interface Props {
   profile: Profile;
   headingLevel?: 'h1' | 'h2';
-  title?: string;
 }
-const { profile, headingLevel = 'h2', title = 'Écrire à Clément' } = Astro.props;
-const H = headingLevel;
+const { profile, headingLevel: H = 'h2' } = Astro.props;
 const cvHref = profile.cv?.startsWith('files/') ? `/${profile.cv}` : profile.cv;
+const { edge } = photogram('contact-band');
+const firstName = profile.name.split(' ')[0];
 ---
 
-<section class="wrap exit" aria-labelledby="exit-title">
-  <div class="exit__sign">
-    <p class="label">Contact</p>
-    <H id="exit-title" class="exit__title">{title}</H>
-    <a class="exit__email" href={`mailto:${profile.email}`}>
-      <span class="exit__arrow" aria-hidden="true">→</span>
-      <span>{profile.email}</span>
-    </a>
-    <p class="exit__note">
-      Un projet, un poste, une question technique : je réponds personnellement.
-      <button type="button" class="copy" data-copy={profile.email}><span data-copy-label>Copier l'adresse</span></button>
+<section class="wrap contact" aria-labelledby="contact-title">
+  <div class="contact__sheet" style="clip-path:url(#edge-contact)">
+    <p class="eyebrow contact__eyebrow">Contact</p>
+    <H id="contact-title" class="contact__title">Écrire à <em>{firstName}</em></H>
+    <a class="contact__email" href={`mailto:${profile.email}`}>{profile.email}</a>
+    <div class="contact__row">
+      <button type="button" class="pill contact__copy" data-copy={profile.email}><span data-copy-label>Copier l'adresse</span></button>
       <span class="visually-hidden" role="status" data-copy-status></span>
-    </p>
+      <ul role="list" class="contact__links">
+        {
+          profile.socials.map((s) => (
+            <li>
+              <a href={s.url} rel="me noopener" target="_blank">
+                {s.label}
+                <span class="visually-hidden"> (nouvel onglet)</span> <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))
+        }
+        {
+          cvHref && (
+            <li>
+              <a href={cvHref}>CV (PDF)</a>
+            </li>
+          )
+        }
+      </ul>
+      <p class="contact__place">{profile.location}</p>
+    </div>
   </div>
-  <ul role="list" class="exit__links">
-    {
-      profile.socials.map((s) => (
-        <li>
-          <a href={s.url} rel="me noopener" target="_blank">
-            {s.label}
-            <span class="visually-hidden"> (nouvel onglet)</span>
-            <span class="ext" aria-hidden="true">↗</span>
-          </a>
-        </li>
-      ))
-    }
-    {
-      cvHref && (
-        <li>
-          <a href={cvHref}>
-            CV (PDF) <span class="ext" aria-hidden="true">↓</span>
-          </a>
-        </li>
-      )
-    }
-    <li class="exit__place"><span class="label">Basé à</span> {profile.location}</li>
-  </ul>
+  <svg width="0" height="0" aria-hidden="true" focusable="false" class="contact__defs">
+    <clipPath id="edge-contact" clipPathUnits="objectBoundingBox"><path d={edge}></path></clipPath>
+  </svg>
 </section>
 
 <style>
-  .exit {
-    display: grid;
-    gap: var(--joint);
-    margin-top: var(--joint);
+  .contact {
+    padding-block: clamp(2rem, 1rem + 4vw, 5rem);
   }
-  @media (min-width: 64rem) {
-    .exit {
-      grid-template-columns: minmax(0, 1fr) 20rem;
-    }
+  .contact__sheet {
+    background: var(--prussian);
+    color: var(--on-prussian);
+    padding: clamp(2.5rem, 1.5rem + 5vw, 7rem) clamp(1.75rem, 1rem + 5vw, 7rem);
   }
-  .exit__sign {
-    padding: var(--pad);
-    padding-block: clamp(2rem, 1.5rem + 3vw, 4rem);
-    background: var(--signal);
-    color: var(--on-signal);
-    border-radius: var(--radius);
+  .contact__eyebrow {
+    color: var(--on-prussian-2);
   }
-  .exit__title {
-    margin-top: 0.75rem;
-    font-size: var(--step-3);
+  .contact__title {
+    margin-top: 1rem;
+    font-size: var(--step-5);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
   }
-  .exit__email {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-    max-width: 100%;
-    margin-top: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
-    /* sized so the address never breaks on a 320px screen */
-    font-size: clamp(1rem, 5.1vw, 3.25rem);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    text-decoration: none;
+  .contact__title em {
+    font-style: italic;
   }
-  .exit__email span:last-child {
+  .contact__email {
+    display: inline-block;
+    margin-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+    font-size: clamp(1.15rem, 0.7rem + 2.6vw, 2.75rem);
+    line-height: 1.2;
     overflow-wrap: anywhere;
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
   }
-  .exit__arrow {
-    display: inline-grid;
-    place-items: center;
-    flex: none;
-    width: 1.3em;
-    height: 1.3em;
-    border-radius: 6px;
-    background: var(--panel);
-    color: var(--signal);
-    transition: transform var(--dur-2) var(--ease);
+  .contact__email:hover {
+    color: inherit;
+    text-decoration-thickness: 2px;
   }
-  .exit__email:hover .exit__arrow,
-  .exit__email:focus-visible .exit__arrow {
-    transform: translateX(6px);
-  }
-  .exit__note {
+  .contact__row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem 1rem;
-    margin-top: 1.25rem;
-    font-size: var(--step--1);
-    font-weight: 600;
+    gap: 1rem 2rem;
+    margin-top: 2.5rem;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
   }
-  .copy {
-    min-height: 40px;
-    padding: 0.4rem 0.85rem;
-    border: 2px solid var(--ink);
-    border-radius: var(--radius);
-    background: transparent;
-    font-weight: 800;
+  .contact__copy:hover {
+    background: var(--on-prussian);
+    color: var(--prussian);
   }
-  .copy:hover {
-    background: var(--ink);
-    color: var(--signal);
-  }
-  .exit :focus-visible {
-    outline-color: var(--ink);
-    box-shadow: 0 0 0 5px var(--signal);
-  }
-  .exit__links {
-    display: grid;
-    gap: var(--joint);
-    align-content: stretch;
-  }
-  .exit__links li {
+  .contact__links {
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
   }
-  .exit__links a,
-  .exit__place {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: 3.5rem;
-    padding: 0 var(--pad);
-    padding-inline: 1.25rem;
-    background: var(--panel);
-    color: var(--on-panel);
-    border-radius: var(--radius);
-    font-weight: 800;
+  .contact__links a {
+    display: inline-block;
+    padding-block: 0.6rem;
     text-decoration: none;
   }
-  .exit__links a:hover .ext {
-    transform: translate(2px, -2px);
+  .contact__links a:hover {
+    color: inherit;
+    text-decoration: underline;
   }
-  .ext {
-    color: var(--signal);
-    transition: transform var(--dur-2) var(--ease);
+  .contact__place {
+    color: var(--on-prussian-2);
   }
-  .exit__links a:focus-visible {
-    outline-color: var(--signal);
-    box-shadow: 0 0 0 5px var(--ground);
+  .contact :focus-visible {
+    outline-color: var(--on-prussian);
   }
-  .exit__place .label {
-    color: var(--on-panel-2);
-  }
-  .exit__place {
-    justify-content: flex-start;
-    font-weight: 600;
-  }
-  @media (max-width: 63.99rem) {
-    .exit__links {
-      grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-    }
-    .exit__links .exit__place {
-      grid-column: 1 / -1;
-    }
+  .contact__defs {
+    position: absolute;
   }
 </style>

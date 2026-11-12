@@ -8,7 +8,7 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'static',
   compressHTML: true,
-  build: { inlineStylesheets: 'never', format: 'directory' },
+  build: { inlineStylesheets: 'always', format: 'directory' },
   vite: { build: { assetsInlineLimit: 0 } },
   integrations: [
     preact(),

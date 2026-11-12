@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype A — Le fil rouge</title>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&family=Literata:ital,opsz,wght@0,7..72,300..600;1,7..72,300..600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fbfaf6;--ink:#151413;--ink-2:#5e5b55;--red:#e0321b;--grot:'Schibsted Grotesk',system-ui,sans-serif;--text:'Literata',Georgia,serif}
+*{box-sizing:border-box;margin:0}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--text);overflow-x:hidden}
+a{color:inherit}
+header{position:fixed;inset:0 0 auto;display:flex;justify-content:space-between;padding:20px clamp(16px,4vw,56px);z-index:10;font:500 14px var(--grot)}
+header nav{display:flex;gap:26px}header a{text-decoration:none}
+#thread{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:visible}
+#thread path{fill:none;stroke:var(--red);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+main{position:relative}
+.intro{min-height:100svh;display:grid;align-content:center;padding:0 clamp(16px,4vw,56px)}
+.intro .who{font:500 15px var(--grot);color:var(--ink-2);margin-bottom:28px}
+.intro h1{font:800 clamp(52px,10.5vw,170px)/.88 var(--grot);letter-spacing:-.045em;max-width:9ch;position:relative;z-index:2}
+.intro h1 span{color:transparent;-webkit-text-stroke:1.5px var(--ink)}
+.intro p{max-width:34ch;margin-top:32px;font-size:19px}
+.projects{padding:10vh 0 20vh}
+.proj{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;padding:0 clamp(16px,4vw,56px);min-height:88vh;align-items:center}
+.fig{grid-column:2/7;aspect-ratio:1;position:relative}
+.fig img{position:absolute;inset:12%;width:76%;height:76%;object-fit:cover;object-position:top;filter:grayscale(1) contrast(1.05);mix-blend-mode:multiply;transition:filter .6s}
+.proj:hover .fig img{filter:none}
+.txt{grid-column:8/12;position:relative;z-index:2}
+.proj:nth-child(even) .fig{grid-column:7/12;grid-row:1}
+.proj:nth-child(even) .txt{grid-column:2/6;grid-row:1}
+.num{font:500 14px var(--grot);color:var(--red)}
+.txt h2{font:800 clamp(40px,5.4vw,84px)/.92 var(--grot);letter-spacing:-.04em;margin:10px 0 18px}
+.txt p{max-width:38ch;color:var(--ink-2)}
+.txt a.more{display:inline-flex;gap:10px;margin-top:22px;font:600 15px var(--grot);text-decoration:none;border-bottom:2px solid var(--red);padding-bottom:3px}
+.minimap{position:fixed;right:clamp(16px,2vw,28px);top:50%;transform:translateY(-50%);z-index:10;display:grid;gap:14px}
+.minimap a{display:flex;align-items:center;gap:10px;justify-content:flex-end;text-decoration:none;font:500 12px var(--grot);color:var(--ink-2)}
+.minimap a span{opacity:0;transform:translateX(6px);transition:.3s}
+.minimap a:hover span,.minimap a[aria-current] span{opacity:1;transform:none}
+.minimap a i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--red);transition:.3s}
+.minimap a[aria-current] i{background:var(--red);transform:scale(1.3)}
+.page{position:fixed;inset:0;background:var(--paper);z-index:20;overflow:auto;display:none;padding:90px clamp(16px,4vw,56px)}
+.page.open{display:block}
+.page h2{font:800 clamp(56px,12vw,200px)/.85 var(--grot);letter-spacing:-.05em;max-width:10ch}
+.page svg{width:min(60vw,520px);display:block;margin:40px 0}
+.page svg path{fill:none;stroke:var(--red);stroke-width:2.2;stroke-linecap:round}
+.page .close{position:fixed;top:16px;right:16px;font:600 14px var(--grot);background:var(--ink);color:var(--paper);border:0;padding:12px 18px;border-radius:99px}
+@media (max-width:760px){
+  header nav{display:none}
+  .proj{grid-template-columns:1fr;min-height:auto;padding-top:8vh;padding-bottom:8vh}
+  .fig,.proj:nth-child(even) .fig{grid-column:1;grid-row:1;width:78%;margin-left:auto}
+  .proj:nth-child(even) .fig{margin:0 auto 0 0}
+  .txt,.proj:nth-child(even) .txt{grid-column:1;grid-row:2}
+  .minimap{top:auto;bottom:0;left:0;right:0;transform:none;display:flex;justify-content:space-around;background:var(--ink);padding:16px 12px calc(16px + env(safe-area-inset-bottom))}
+  .minimap a span{display:none}.minimap a i{width:12px;height:12px}
+}
+@media (prefers-reduced-motion:reduce){#thread path{stroke-dashoffset:0!important}}
+</style>
+</head>
+<body>
+<header><a href="#">Clément Plançon</a><nav><a href="#">Projets</a><a href="#">Parcours</a><a href="#">Contact</a></nav></header>
+<main id="main">
+  <svg id="thread" aria-hidden="true"><path id="tp"/></svg>
+  <section class="intro" id="intro">
+    <p class="who">Ingénieur logiciel &amp; Tech Lead — Paris</p>
+    <h1>Démêler le <span>complexe.</span></h1>
+    <p>Je transforme des besoins flous en logiciels clairs. Aujourd'hui au Laboratoire de police scientifique de Paris.</p>
+  </section>
+  <section class="projects" id="projects"></section>
+</main>
+<nav class="minimap" id="mm" aria-label="Projets"></nav>
+<article class="page" id="page"><button class="close" id="close">Fermer</button><p class="num" id="pn"></p><h2 id="pt"></h2><svg id="ps" viewBox="-10 -10 120 120"><path id="pp"/></svg><p id="pd" style="max-width:52ch;font-size:21px"></p></article>
+<script>
+const P=[
+ {t:'Bercy Vert',s:"Logiciel pour la transition écologique du ministère de l'Économie : centraliser les actions BEGES et structurer les mesures SPE.",f:'leaf'},
+ {t:'Datametre',s:"Observatoire éditorial des données publiques françaises.",f:'frame',img:'../../../src/assets/media/datametre-apercu.webp'},
+ {t:'Saisines de la Cour des comptes',s:"Recherche utilisateur et cadrage technique pour structurer le traitement des saisines.",f:'envelope'},
+ {t:'Référentiel Indicateurs',s:"Centraliser et visualiser les indicateurs métiers des décideurs.",f:'gauge'},
+ {t:'Veille Stratégique',s:"Collecte multi-sources, extraction d'entités et résumés automatisés.",f:'lens'},
+ {t:'SafePing',s:"Alerter discrètement des proches de confiance, en quelques secondes.",f:'ping'},
+];
+// One-line figures in a 0..100 box, each starts at the top centre and ends at the bottom centre.
+const F={
+ leaf:()=>{const a=[[50,0],[50,8]];for(let t=0;t<=1;t+=.05)a.push([50+Math.sin(t*Math.PI)*34,10+t*80]);a.push([50,92]);for(let t=1;t>=0;t-=.05)a.push([50-Math.sin(t*Math.PI)*34,10+t*80]);a.push([50,10],[50,100]);return a},
+ envelope:()=>[[50,0],[50,14],[6,14],[94,14],[94,82],[6,82],[6,14],[50,52],[94,14],[94,82],[50,82],[50,100]],
+ gauge:()=>{const a=[[50,0],[50,18]];for(let t=0;t<=1;t+=.04){const g=Math.PI*(1+t);a.push([50+Math.cos(g)*44,70+Math.sin(g)*44])}a.push([50,70],[72,38],[50,70],[50,100]);return a},
+ lens:()=>{const a=[[50,0],[50,8]];for(let t=0;t<=1.02;t+=.03){const g=-Math.PI/2+t*Math.PI*2;a.push([42+Math.cos(g)*34,42+Math.sin(g)*34])}a.push([66,66],[92,92],[66,66],[50,78],[50,100]);return a},
+ ping:()=>{const a=[[50,0]];for(let t=0;t<=1;t+=.012){const r=4+t*44,g=-Math.PI/2+t*Math.PI*8;a.push([50+Math.cos(g)*r,50+Math.sin(g)*r])}a.push([50,100]);return a},
+ frame:()=>[[50,0],[50,8],[8,8],[8,92],[92,92],[92,8],[50,8],[50,8],[50,92],[50,100]].filter((_,i)=>i!==8),
+};
+const root=document.getElementById('projects'),mm=document.getElementById('mm');
+root.innerHTML=P.map((p,i)=>`<article class="proj" id="p${i}"><div class="fig" data-f="${p.f}">${p.img?`<img src="${p.img}" alt="Capture réelle de Datametre">`:''}</div><div class="txt"><span class="num">${String(i+1).padStart(2,'0')} / 06</span><h2>${p.t}</h2><p>${p.s}</p><a class="more" href="#p${i}" data-i="${i}">Lire le projet →</a></div></article>`).join('');
+mm.innerHTML=P.map((p,i)=>`<a href="#p${i}"><span>${p.t}</span><i></i></a>`).join('');
+
+// Build the single thread: a tangle around the headline, then down through every figure.
+const svg=document.getElementById('thread'),path=document.getElementById('tp');
+function build(){
+  const main=document.getElementById('main').getBoundingClientRect(),top=scrollY;
+  svg.setAttribute('width',innerWidth);svg.setAttribute('height',document.body.scrollHeight);
+  const h1=document.querySelector('.intro h1').getBoundingClientRect();
+  let s=1;const rnd=()=>((s=s*16807%2147483647)/2147483647);
+  const pts=[];const cx=h1.left+h1.width*.55,cy=h1.top+top+h1.height*.62;
+  for(let i=0;i<26;i++)pts.push([cx+(rnd()-.5)*h1.width*.9,cy+(rnd()-.5)*h1.height*.5]);
+  // the tangle relaxes: later points converge towards a straight descent
+  const d=[`M${pts[0]}`];
+  const cr=a=>{for(let i=1;i<a.length-2;i++){const[p0,p1,p2,p3]=[a[i-1],a[i],a[i+1],a[i+2]];d.push(`C${p1[0]+(p2[0]-p0[0])/6},${p1[1]+(p2[1]-p0[1])/6} ${p2[0]-(p3[0]-p1[0])/6},${p2[1]-(p3[1]-p1[1])/6} ${p2}`)}};
+  const all=[...pts];
+  document.querySelectorAll('.fig').forEach(fig=>{const r=fig.getBoundingClientRect(),x=r.left,y=r.top+top,w=r.width;
+    const f=F[fig.dataset.f]();all.push([x+w/2,y-90]);f.forEach(([u,v])=>all.push([x+u/100*w,y+v/100*w]));all.push([x+w/2,y+w+90]);});
+  all.push([innerWidth/2,document.body.scrollHeight-40]);
+  // figures need sharp corners: draw tangle as curve, figures as polylines
+  cr(pts.concat([[pts.at(-1)[0],pts.at(-1)[1]+200]]));
+  for(const p of all.slice(pts.length))d.push(`L${p}`);
+  path.setAttribute('d',d.join(''));
+  len=path.getTotalLength();path.style.strokeDasharray=len;
+  // y -> length lookup so the pen is always just ahead of the reader
+  lut=[];let maxY=0;for(let l=0;l<=len;l+=6){const q=path.getPointAtLength(l);maxY=Math.max(maxY,q.y);lut.push([maxY,l]);}
+  draw();
+}
+let len=1,lut=[];
+function draw(){const y=scrollY+innerHeight*.8;let l=len;for(const[py,pl]of lut){if(py>y){l=pl;break}}path.style.strokeDashoffset=len-l;
+  const cur=[...document.querySelectorAll('.proj')].findLastIndex(p=>p.getBoundingClientRect().top<innerHeight*.5);
+  mm.querySelectorAll('a').forEach((a,i)=>a.toggleAttribute('aria-current',i===cur));}
+addEventListener('scroll',draw,{passive:true});addEventListener('resize',build);
+document.fonts.ready.then(build);
+// Project page: the figure is redrawn large.
+const page=document.getElementById('page');
+root.addEventListener('click',e=>{const a=e.target.closest('a.more');if(!a)return;e.preventDefault();const i=+a.dataset.i,p=P[i];
+  pn.textContent=`${String(i+1).padStart(2,'0')} / 06`;pt.textContent=p.t;pd.textContent=p.s;
+  const f=F[p.f]();pp.setAttribute('d','M'+f.join('L'));const L=pp.getTotalLength();pp.style.strokeDasharray=L;pp.style.strokeDashoffset=L;
+  page.classList.add('open');pp.getBoundingClientRect();pp.style.transition='stroke-dashoffset 1.6s cubic-bezier(.2,.7,.1,1)';pp.style.strokeDashoffset=0;});
+close.onclick=()=>page.classList.remove('open');
+</script>
+</body>
+</html>

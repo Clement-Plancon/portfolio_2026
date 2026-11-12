@@ -1,58 +1,59 @@
 # Revue UX
 
-Revue menée sur le build de production servi localement, dans Chromium (Playwright), aux largeurs 320, 375, 390, 430, 768, 1024, 1440 et 1920 px, plus téléphone en paysage (844 × 390), hauteur réduite (1440 × 700, 375 × 560), zoom 200 % (640 px CSS, densité 2) et mode sombre.
+Revue menée le 12 novembre 2026 sur le build de production servi localement. Captures dans Chromium (Playwright) à 320, 390, 768, 1024, 1440 et 1920 px, en paysage mobile (844 × 390), à 720 × 450 (équivalent d'un zoom 200 % sur 1440 × 900) et en mode sombre. Les 8 largeurs demandées (320 à 1920) sont aussi vérifiées automatiquement (débordement horizontal, navigation atteignable). Les captures finales sont dans `docs/captures/`.
 
-## Ce que voit un visiteur dans les 5 premières secondes
+Ce document distingue ce qui a été **vérifié automatiquement**, ce qui a été **examiné à l'œil sur captures**, et ce qui **n'a pas été testé** : aucun test n'a été mené avec de vraies personnes.
 
-**Desktop (1440 × 900)** : nom, titre « Ingénieur logiciel & Tech Lead », phrase de positionnement, poste actuel (« En service — Laboratoire de police scientifique de Paris, ministère de l'Intérieur ») et les **six projets** avec année, type et technologies. Rien à faire défiler pour comprendre le profil.
+## Boucle de critique
 
-**Mobile (390 × 844)** : nom, titre, phrase, poste actuel, puis les premiers projets avec leur résumé. La barre de navigation du bas est visible en permanence.
-
-## Parcours par profil
-
-| Visiteur | Ce qu'il cherche | Où il le trouve |
+### Prototypes (avant de choisir la direction)
+| Prototype | Défauts observés sur captures | Correction |
 |---|---|---|
-| Recruteur | poste actuel, expérience, contact | accueil (« En service »), Parcours, panneau jaune en bas de chaque page |
-| CTO / Engineering Manager | responsabilités, approche, encadrement | Parcours (responsabilités détaillées), « Ma façon de travailler » |
-| Développeur | technologies, nature des projets | colonne Technologies du tableau, pages projet |
-| Non technique | qui, quoi, comment le joindre | libellés en clair (« Projets », « Parcours », « Contact »), pas de jargon dans la navigation |
+| B Révélateur | Bord « au pinceau » trop haché (effet glitch) ; tirages plus hauts que l'écran ; capture Datametre délavée ; en-tête mélangé aux tirages | Bruit plus doux, tirages dimensionnés sur la hauteur, capture inversée (texte blanc sur bleu), en-tête sur fond papier |
+| A Fil rouge | Le fil se dessinait en retard sur le défilement : la figure du premier projet était vide | Calcul du tracé selon la position verticale réelle du chemin |
+| C Récit | Passages cliquables cassant la ligne sur mobile ; fiche dépliée hors champ | Affichage en ligne et défilement vers la fiche. Le défaut de fond reste : un bouton dans un paragraphe ne se comporte pas comme du texte |
 
-## Critique de la première version, et ce qui a été changé
+### Site (direction retenue)
+| Tour | Défaut observé | Correction |
+|---|---|---|
+| 1 | Bords d'émulsion en dents de scie (papier déchiré plutôt que pinceau) | 90 points par côté, bruit lissé, fines « fibres » de pinceau |
+| 1 | Fougères régulières comme des sapins | Folioles alternées, longueurs et angles variés, frondes qui divergent |
+| 1 | Galerie épinglée : le titre « Tirages » passait sous l'en-tête | Hauteur des tirages calculée pour que titre, tirage et légende tiennent dans l'écran |
+| 1 | Espace parasite avant les virgules (« Paris , Ministère ») | Organisation et rattachement assemblés en une seule chaîne |
+| 2 | Capture Datametre recadrée au centre : le titre était coupé (« …prendre la ») | Cadrage en haut à gauche, là où les interfaces placent leur titre |
+| 2 | Sur mobile, le tirage arrivait après tout le texte de la page projet | Le tirage passe en tête (c'est l'image que le visiteur vient de toucher) |
+| 2 | Page 404 avec un rectangle plat | Même bord brossé que les tirages |
+| 2 | Image de partage : fougères en sapin, contenu décentré | Nouvelles frondes, centrage vertical |
 
-| Problème observé | Correction |
-|---|---|
-| La cédille jaune du nom était décalée (métriques d'Overpass différentes de la police précédente). | Nouvelle technique : dégradé de couleur coupé à la ligne de base, juste à toutes les tailles. |
-| Dans la navigation, la cédille faisait éclater le nom (« Plan ç on ») : le texte était un enfant direct d'un conteneur flex. | Nom enveloppé dans un élément. |
-| La navigation desktop débordait de 335 px sur mobile (sélecteur trop faible face au style des panneaux). | Sélecteurs corrigés ; test de débordement sur les 8 largeurs. |
-| Un grand vide séparait le contenu du panneau de contact : il cassait la règle de l'assemblage bord à bord. | Contact collé au reste avec le joint de 2 px. |
-| L'adresse e-mail se coupait au milieu sur mobile. | Taille calculée pour tenir sur une ligne dès 320 px. |
-| « Projet personnel » affiché deux fois (Cadre et Type) ; « En cours » répété (Période et État). | Champs redondants masqués. |
-| Le tableau rejouait son animation à chaque retour sur l'accueil. | Une fois par page et par visite. |
-| En mode sombre, le texte des panneaux jaunes devenait clair, donc illisible. | Encre dédiée au jaune, identique dans les deux thèmes ; test axe en mode sombre ajouté. |
-| Libellés gris trop pâles sur certains panneaux noirs (axe : contraste). | Couleur secondaire des panneaux appliquée. |
-| En paysage, le panneau d'état de la navigation laissait voir un texte tronqué. | Texte masqué sous 1200 px (le point « en service » reste). |
+## Scénarios d'usage (vérifiés en navigateur automatisé, pas par des personnes)
 
-## Navigation
+**Recruteur**
+- Comprendre le poste : le nom et le poste sont la première ligne du titre principal ; « En poste » et l'organisation sont au premier écran (vérifié en captures et par le test « short screens »).
+- Trouver les projets : lien « Voir les projets ↓ » au premier écran, galerie au deuxième, entrée « Projets » dans la navigation.
+- Lire une réalisation : un tirage ouvre sa page (test « gallery … keyboard opens a project ») ; sommaire, contexte, contributions, technologies.
+- Consulter l'expérience : version courte sur l'accueil, page Parcours complète.
+- Trouver le contact : bloc contact en bas de chaque page, entrée « Contact » dans la navigation, bouton « Copier l'adresse ».
 
-- Toujours visible : rangée de panneaux en haut (≥ 768 px) ou barre en bas (< 768 px), avec libellé + pictogramme.
-- Page courante en jaune (« vous êtes ici ») et `aria-current`.
-- Retour explicite sur chaque page projet (« ← Tous les projets »), projet précédent / suivant en bas.
-- Plan de ligne sur les pages projet pour sauter à une section.
-- Lien d'évitement « Aller au contenu ».
+**Visiteur curieux**
+- Explorer : la galerie avance avec le défilement ; chaque tirage réagit au survol ; la page projet propose le tirage suivant.
+- Revenir en arrière : « ← Tous les projets » en haut de chaque projet ; le bouton Précédent du navigateur fonctionne (pages statiques, pas de routage JavaScript).
+- Savoir où il est : page courante en bleu avec un point (desktop) ou inversée (mobile) ; sommaire qui suit la lecture ; compteur « 02 / 06 » dans la galerie.
 
-## Tactile
+**Téléphone**
+- Tout le contenu est présent (aucun contenu réservé au desktop ; test sans débordement de 320 à 430 px).
+- Une main : navigation en bas d'écran ; galerie au balayage.
+- Pas de dépendance au survol : les légendes sont toujours visibles ; les couleurs réelles d'une capture s'obtiennent par un bouton.
 
-- Zones de toucher ≥ 44 px (barre du bas : 60 px de haut).
-- Aucun contenu accessible seulement au survol : le résumé que la bande affiche au survol sur desktop est écrit dans chaque ligne sur mobile.
-- Le plan de ligne mobile se fait défiler du doigt et se recentre sur la section lue.
+## Accessibilité
+- axe (WCAG 2.1 AA) sans violation sur 7 pages en clair et 4 en sombre.
+- Un seul `h1` par page ; titres hiérarchisés ; liens explicites.
+- Contraste : encre `#14203f` sur papier `#f1ede3` ≈ 13,7:1 ; texte secondaire `#47506a` ≈ 6,8:1 ; liens et italiques `#1c3e8c` ≈ 8,5:1 ; papier sur bleu de Prusse ≈ 12:1 ; en sombre, texte secondaire ≈ 9,4:1.
+- Focus visible partout (contour bleu ; sur les tirages, contour autour du papier).
+- Mouvement réduit : voir [interaction-system.md](interaction-system.md).
 
-## Sans animation, sans JavaScript
-
-- `prefers-reduced-motion` : aucune animation, aucune transition de page ; le tableau s'affiche directement.
-- Sans JavaScript : toutes les pages, tous les liens, tous les contenus sont présents (HTML pré-rendu). Seuls la copie de l'e-mail, la bande d'information et le marquage de l'arrêt courant disparaissent.
-
-## Ce qui reste perfectible
-
-- Le tableau tronque les technologies au-delà de trois (« Next.js · Node.js · Post… ») : la liste complète est sur la page projet. Choix assumé pour garder une ligne par projet.
-- Les dates de SafePing et Datametre ne sont pas renseignées dans l'historique : le tableau affiche « — » plutôt que d'inventer une année.
-- La revue d'accessibilité est automatique (axe) et manuelle au clavier ; elle n'a pas été faite avec un lecteur d'écran réel (NVDA, VoiceOver).
+## Limites connues
+- **Captures réelles** : seul Datametre en a une. Les cinq autres projets n'ont que des photogrammes, présentés comme tels. La qualité perçue des pages projet dépendra des captures ajoutées dans l'administration.
+- **Contenu des projets** : plusieurs projets n'ont qu'un contexte et une liste de technologies ; leurs pages sont courtes.
+- **Pas de test utilisateur réel**, pas de test avec un vrai lecteur d'écran (NVDA, VoiceOver).
+- **Safari** n'a pas été testé (Chromium uniquement). Les filtres SVG appliqués aux images et les View Transitions entre documents s'y comportent différemment : les tirages et la navigation restent fonctionnels, mais le rendu exact n'a pas été vérifié.
+- **Netlify** : rien n'a été testé sur le déploiement réel (Identity, GitHub, aperçu de branche).

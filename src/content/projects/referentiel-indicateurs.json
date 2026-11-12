@@ -2,7 +2,6 @@
   "title": "Référentiel Indicateurs",
   "summary": "Plateforme de centralisation et de visualisation des indicateurs métiers pour les décideurs : import automatique multi-sources, alertes sur seuils critiques, rapports générés.",
   "kind": "Application web · Tableau de bord",
-  "code": "RI",
   "pictogram": "jauge",
   "category": "pro",
   "organisation": "Administration publique",

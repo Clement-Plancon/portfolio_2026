@@ -1,12 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import LineBadge from '../../components/LineBadge.astro';
-import Pictogram from '../../components/Pictogram.astro';
+import Print from '../../components/Print.astro';
 import Base from '../../layouts/Base.astro';
 import { getProjects, getSeo, type ProjectEntry, paragraphs } from '../../lib/content';
 import { formatPeriod } from '../../lib/format';
-import { lineCode, lineStyle } from '../../lib/lines';
 import { getMedia } from '../../lib/media';
+import { PHOTOGRAM_LABELS, photogram } from '../../lib/photogram';
 import { breadcrumbLd, PERSON_ID, SITE } from '../../lib/structured-data';
 
 export function getStaticPaths() {
@@ -15,6 +14,8 @@ export function getStaticPaths() {
     params: { slug: project.id },
     props: {
       project,
+      index: i,
+      total: projects.length,
       prev: projects[(i - 1 + projects.length) % projects.length],
       next: projects[(i + 1) % projects.length],
     },
@@ -23,19 +24,24 @@ export function getStaticPaths() {
 
 interface Props {
   project: ProjectEntry;
+  index: number;
+  total: number;
   prev: ProjectEntry;
   next: ProjectEntry;
 }
-const { project: p, prev, next } = Astro.props;
+const { project: p, index, total, prev, next } = Astro.props;
 const seo = getSeo();
 const period = p.period?.start ? formatPeriod(p.period.start, p.period.end, p.status === 'en-cours') : '';
 const path = `/projets/${p.id}/`;
 const cover = getMedia(p.cover.image?.src);
+const pg = photogram(p.id, p.cover.color, p.pictogram);
+const no = String(index + 1).padStart(2, '0');
+const numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
 
-const meta = [
-  { label: 'Période', value: period || undefined },
+const facts = [
   { label: 'Cadre', value: p.organisation === 'Projet personnel' ? undefined : p.organisation },
-  { label: 'Type', value: p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel' },
+  { label: 'Période', value: period || undefined },
+  { label: 'Nature', value: p.kind },
   { label: 'État', value: p.status === 'en-cours' ? 'En développement' : p.status === 'termine' ? 'Terminé' : undefined },
 ].filter((m) => m.value);
 
@@ -46,8 +52,7 @@ const texts = [
   { id: 'approche', title: 'Approche', text: p.approach },
 ].filter((s) => s.text);
 
-// The line map: one stop per section actually present on the page.
-const stops = [
+const sections = [
   ...texts.map((t) => ({ id: t.id, title: t.title })),
   ...(p.contributions.length ? [{ id: 'contributions', title: p.category === 'pro' ? 'Contributions' : 'Fonctionnalités' }] : []),
   ...(p.results.length ? [{ id: 'resultats', title: 'Résultats' }] : []),
@@ -55,6 +60,7 @@ const stops = [
   ...(p.gallery.length ? [{ id: 'images', title: 'Images' }] : []),
   ...(p.links.length ? [{ id: 'liens', title: 'Liens' }] : []),
 ];
+const num = (id: string) => numerals[sections.findIndex((s) => s.id === id)];
 
 const ogImage = getMedia(p.seo.ogImage ?? p.cover.image?.src ?? seo.defaultOgImage);
 const jsonLd = [
@@ -86,180 +92,188 @@ const jsonLd = [
   type="article"
   jsonLd={jsonLd}
 >
-  <article class="wrap project" style={lineStyle(p.cover.color)}>
-    <div class="crumbs">
-      <a class="go go--back" href="/projets/">Tous les projets</a>
-      <span class="crumbs__line" aria-hidden="true">Ligne {lineCode(p)}</span>
-    </div>
-
-    <header class="head">
-      <div class="panel head__info">
-        <p class="label">
-          {p.kind}
-          {!p.visible && <span class="draft">Masqué : visible seulement dans l'aperçu</span>}
-        </p>
-        <h1>{p.title}</h1>
-        <p class="head__summary">{p.summary}</p>
-        <dl class="head__meta">
+  <article class="project">
+    <header class="wrap head">
+      <a class="arrow arrow--back head__back" href="/projets/">Tous les projets</a>
+      <div class="head__grid">
+        <div class="head__text">
+          <p class="eyebrow">
+            Tirage {no} / {String(total).padStart(2, '0')} · {p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel'}
+          </p>
+          <h1>{p.title}</h1>
+          <p class="lede head__lede">{p.summary}</p>
           {
-            meta.map((m) => (
-              <div>
-                <dt>{m.label}</dt>
-                <dd>{m.value}</dd>
-              </div>
-            ))
+            facts.length > 0 && (
+              <dl class="facts">
+                {facts.map((f) => (
+                  <div>
+                    <dt class="eyebrow">{f.label}</dt>
+                    <dd>{f.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )
           }
-        </dl>
+        </div>
+        <figure class="head__print" id="project-print">
+          <Print project={p} transition eager sizes="(min-width: 64rem) 38vw, 90vw" />
+          <figcaption class="meta">
+            {
+              cover ? (
+                <>
+                  <span>Capture réelle, tirée en cyanotype.</span>
+                  <button type="button" class="pill head__toggle" data-true-colors aria-pressed="false" aria-controls="project-print">
+                    Voir en couleurs réelles
+                  </button>
+                </>
+              ) : (
+                <span>
+                  Photogramme ({PHOTOGRAM_LABELS[pg.kind].toLowerCase()}) : un visuel de présentation, pas une capture du produit.
+                </span>
+              )
+            }
+          </figcaption>
+        </figure>
       </div>
-
-      {
-        cover && p.cover.image ? (
-          <figure class="head__sign head__sign--screen">
-            <div class="screen">
-              <Image
-                src={cover}
-                alt={p.cover.image.alt}
-                widths={[480, 800, 1200]}
-                sizes="(min-width: 64rem) 42vw, 100vw"
-                loading="eager"
-                fetchpriority="high"
-              />
-            </div>
-            <figcaption>
-              <LineBadge project={p} size="md" transition />
-              <span>Capture réelle du site</span>
-            </figcaption>
-          </figure>
-        ) : (
-          <figure class="head__sign" aria-label={`Pictogramme de la ligne ${lineCode(p)} (interprétation graphique)`}>
-            <LineBadge project={p} size="xl" transition />
-            {p.pictogram && <Pictogram name={p.pictogram} size={240} class="head__picto" />}
-            <figcaption class="label">Interprétation graphique — pas une capture du produit</figcaption>
-          </figure>
-        )
-      }
     </header>
 
-    <div class="body">
-      {
-        stops.length > 1 && (
-          <nav class="route" aria-label="Sections de la page" data-route>
-            <ol role="list">
-              {stops.map((s) => (
-                <li>
-                  <a href={`#${s.id}`}>{s.title}</a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )
-      }
-
-      <div class="sections">
-        {
-          texts.map((s) => (
-            <section class="panel panel--sheet block" id={s.id} aria-labelledby={`${s.id}-t`}>
-              <h2 id={`${s.id}-t`}>{s.title}</h2>
-              <div class="prose">
-                {paragraphs(s.text).map((t) => (
-                  <p>{t}</p>
-                ))}
-              </div>
-            </section>
-          ))
-        }
-
-        {
-          p.contributions.length > 0 && (
-            <section class="panel panel--sheet block" id="contributions" aria-labelledby="contributions-t">
-              <h2 id="contributions-t">{p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</h2>
-              <ul role="list" class="items">
-                {p.contributions.map((c) => (
-                  <li>{c}</li>
-                ))}
-              </ul>
-            </section>
-          )
-        }
-
-        {
-          p.results.length > 0 && (
-            <section class="panel panel--sheet block" id="resultats" aria-labelledby="resultats-t">
-              <h2 id="resultats-t">Résultats</h2>
-              <ul role="list" class="items">
-                {p.results.map((r) => (
-                  <li>{r}</li>
-                ))}
-              </ul>
-            </section>
-          )
-        }
-
-        {
-          p.technologies.length > 0 && (
-            <section class="panel block" id="technologies" aria-labelledby="technologies-t">
-              <h2 id="technologies-t">Technologies</h2>
-              <ul role="list" class="techs">
-                {p.technologies.map((t) => (
-                  <li>{t}</li>
-                ))}
-              </ul>
-            </section>
-          )
-        }
-
-        {
-          p.gallery.length > 0 && (
-            <section class="panel panel--sheet block" id="images" aria-labelledby="images-t">
-              <h2 id="images-t">Images</h2>
-              <div class="gallery">
-                {p.gallery.map((g) => (
-                  <figure>
-                    <Image src={getMedia(g.src)!} alt={g.alt} widths={[480, 900, 1400]} sizes="(min-width: 64rem) 40vw, 100vw" loading="lazy" />
-                    {g.caption && <figcaption>{g.caption}</figcaption>}
-                  </figure>
-                ))}
-              </div>
-            </section>
-          )
-        }
-
-        {
-          p.links.length > 0 && (
-            <section class="panel panel--signal block" id="liens" aria-labelledby="liens-t">
-              <h2 id="liens-t">Liens</h2>
-              <ul role="list" class="links">
-                {p.links.map((l) => (
+    {
+      sections.length > 0 && (
+        <div class="wrap body">
+          {sections.length > 1 && (
+            <nav class="toc" aria-label="Sommaire du projet" data-toc>
+              <p class="eyebrow">Sommaire</p>
+              <ol role="list">
+                {sections.map((s, i) => (
                   <li>
-                    <a class="go" href={l.url} rel="noopener" target="_blank">
-                      {l.label}
-                      <span class="visually-hidden"> (nouvel onglet)</span>
+                    <a href={`#${s.id}`}>
+                      <span aria-hidden="true">{numerals[i]}.</span> {s.title}
                     </a>
                   </li>
                 ))}
-              </ul>
-            </section>
-          )
-        }
-      </div>
-    </div>
+              </ol>
+            </nav>
+          )}
+
+          <div class="sections">
+            {texts.map((s) => (
+              <section class="block" id={s.id} aria-labelledby={`${s.id}-t`}>
+                <h2 id={`${s.id}-t`}>
+                  <span class="block__no" aria-hidden="true">
+                    {num(s.id)}.
+                  </span>
+                  {s.title}
+                </h2>
+                <div class="prose">
+                  {paragraphs(s.text).map((t) => (
+                    <p>{t}</p>
+                  ))}
+                </div>
+              </section>
+            ))}
+
+            {p.contributions.length > 0 && (
+              <section class="block" id="contributions" aria-labelledby="contributions-t">
+                <h2 id="contributions-t">
+                  <span class="block__no" aria-hidden="true">
+                    {num('contributions')}.
+                  </span>
+                  {p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}
+                </h2>
+                <ol role="list" class="items">
+                  {p.contributions.map((c) => (
+                    <li>{c}</li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {p.results.length > 0 && (
+              <section class="block" id="resultats" aria-labelledby="resultats-t">
+                <h2 id="resultats-t">
+                  <span class="block__no" aria-hidden="true">
+                    {num('resultats')}.
+                  </span>
+                  Résultats
+                </h2>
+                <ol role="list" class="items">
+                  {p.results.map((r) => (
+                    <li>{r}</li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {p.technologies.length > 0 && (
+              <section class="block" id="technologies" aria-labelledby="technologies-t">
+                <h2 id="technologies-t">
+                  <span class="block__no" aria-hidden="true">
+                    {num('technologies')}.
+                  </span>
+                  Technologies
+                </h2>
+                <ul role="list" class="techs">
+                  {p.technologies.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {p.gallery.length > 0 && (
+              <section class="block" id="images" aria-labelledby="images-t">
+                <h2 id="images-t">
+                  <span class="block__no" aria-hidden="true">
+                    {num('images')}.
+                  </span>
+                  Images
+                </h2>
+                <div class="shots">
+                  {p.gallery.map((g) => (
+                    <figure>
+                      <Image src={getMedia(g.src)!} alt={g.alt} widths={[480, 900, 1400]} sizes="(min-width: 64rem) 50vw, 100vw" loading="lazy" />
+                      {g.caption && <figcaption class="meta">{g.caption}</figcaption>}
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {p.links.length > 0 && (
+              <section class="block" id="liens" aria-labelledby="liens-t">
+                <h2 id="liens-t">
+                  <span class="block__no" aria-hidden="true">
+                    {num('liens')}.
+                  </span>
+                  Liens
+                </h2>
+                <ul role="list" class="links">
+                  {p.links.map((l) => (
+                    <li>
+                      <a class="pill" href={l.url} rel="noopener" target="_blank">
+                        {l.label} <span aria-hidden="true">↗</span>
+                        <span class="visually-hidden"> (nouvel onglet)</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
+        </div>
+      )
+    }
 
     {
-      prev.id !== p.id && (
-        <nav class="pager" aria-label="Autres projets">
-          <a href={`/projets/${prev.id}/`} rel="prev" style={lineStyle(prev.cover.color)}>
-            <span class="label">← Projet précédent</span>
-            <span class="pager__line">
-              <LineBadge project={prev} size="sm" />
-              {prev.title}
-            </span>
+      next.id !== p.id && (
+        <nav class="wrap pager" aria-label="Autres projets">
+          <a class="pager__prev arrow arrow--back" href={`/projets/${prev.id}/`} rel="prev">
+            {prev.title}
           </a>
-          <a href={`/projets/${next.id}/`} rel="next" class="pager__next" style={lineStyle(next.cover.color)}>
-            <span class="label">Projet suivant →</span>
-            <span class="pager__line">
-              {next.title}
-              <LineBadge project={next} size="sm" />
-            </span>
+          <a class="pager__next" href={`/projets/${next.id}/`} rel="next" data-card>
+            <span class="eyebrow">Tirage suivant</span>
+            <span class="pager__title">{next.title}</span>
+            <Print project={next} transition sizes="(min-width: 64rem) 22vw, 60vw" />
           </a>
         </nav>
       )
@@ -268,374 +282,222 @@ const jsonLd = [
 </Base>
 
 <style>
-  .project {
-    display: grid;
-    gap: var(--joint);
-    padding-top: var(--joint);
-  }
-  .crumbs {
-    display: flex;
-    gap: var(--joint);
-  }
-  .crumbs > * {
-    display: flex;
-    align-items: center;
-    min-height: 3rem;
-    padding: 0 1rem;
-    border-radius: var(--radius);
-    background: var(--panel);
-    color: var(--on-panel);
-  }
-  .crumbs .go {
-    font-size: 0.9375rem;
-  }
-  .crumbs .go::before {
-    background: var(--panel-2);
-  }
-  .crumbs__line {
-    flex: 1;
-    justify-content: flex-end;
-    font-family: var(--mono);
-    font-size: 0.8125rem;
-    color: var(--on-panel-2);
-    border-right: 10px solid var(--line);
-  }
-
-  /* --- Head: the information panel + the line sign --- */
   .head {
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(3rem, 2rem + 4vw, 6rem);
+  }
+  .head__back {
+    margin-bottom: clamp(2rem, 1.5rem + 3vw, 4rem);
+  }
+  .head__grid {
     display: grid;
-    gap: var(--joint);
+    gap: clamp(2.5rem, 2rem + 3vw, 5rem);
+    align-items: start;
   }
   @media (min-width: 64rem) {
-    .head {
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    .head__grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    }
+    .head__print {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
     }
   }
-  .head__info {
-    padding-block: clamp(1.5rem, 1rem + 2.5vw, 3.25rem);
-  }
-  .draft {
-    display: inline-block;
-    margin-left: 0.75rem;
-    padding: 0.1rem 0.5rem;
-    background: var(--signal);
-    color: var(--on-signal);
-    border-radius: 3px;
+  @media (max-width: 63.99rem) {
+    /* On phones the print comes first: it is the image the visitor just tapped. */
+    .head__print {
+      order: -1;
+      width: min(100%, 26rem);
+    }
   }
   .head h1 {
-    margin-top: 0.75rem;
+    margin-top: 1.25rem;
     font-size: var(--step-4);
+    font-weight: 300;
+    line-height: 0.95;
     letter-spacing: -0.035em;
   }
-  .head__summary {
-    margin-top: 1.1rem;
-    max-width: 42rem;
-    font-size: var(--step-1);
+  .head__lede {
+    margin-top: 1.75rem;
+    max-width: 32ch;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+  .facts dd {
+    margin-top: 0.35rem;
+    font-size: 1.0625rem;
     line-height: 1.4;
-    color: var(--on-panel-2);
   }
-  .head__meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: var(--joint);
-    margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
-  }
-  .head__meta > div {
-    padding: 0.7rem 0.9rem;
-    background: var(--panel-2);
-    border-radius: 3px;
-  }
-  .head__meta dt {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--on-panel-2);
-  }
-  .head__meta dd {
-    margin-top: 0.15rem;
-    font-weight: 800;
-  }
-
-  .head__sign {
-    position: relative;
-    display: grid;
-    place-items: center;
-    min-height: clamp(16rem, 12rem + 16vw, 30rem);
-    padding: var(--pad);
-    border-radius: var(--radius);
-    background: var(--line);
-    color: var(--line-text);
-    overflow: hidden;
-  }
-  .head__sign > :global(.badge) {
-    position: absolute;
-    top: var(--pad);
-    left: var(--pad);
-    background: var(--panel);
-    color: var(--line);
-  }
-  .head__sign :global(.head__picto) {
-    width: min(62%, 15rem);
-    height: auto;
-    stroke-width: 1.5;
-  }
-  .head__sign figcaption.label {
-    position: absolute;
-    left: var(--pad);
-    right: var(--pad);
-    bottom: 1rem;
-    font-size: 0.6875rem;
-    color: inherit;
-  }
-  .head__sign--screen {
-    background: var(--panel);
-    color: var(--on-panel);
-    place-items: stretch;
-    grid-template-rows: 1fr auto;
-    gap: 1rem;
-  }
-  .screen {
-    display: grid;
-    place-items: center;
-    padding: clamp(0.5rem, 1.5vw, 1rem);
-    background: #000;
-    border-radius: 6px;
-    border: 3px solid var(--line);
-  }
-  .screen :global(img) {
-    width: 100%;
-    border-radius: 2px;
-  }
-  .head__sign--screen figcaption {
+  .head__print figcaption {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
-    font-family: var(--mono);
-    font-size: 0.8125rem;
-    color: var(--on-panel-2);
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin-top: 1.25rem;
+  }
+  .head__toggle[aria-pressed='true'] {
+    background: var(--ink);
+    color: var(--bg);
   }
 
-  /* --- Body: line map + sections --- */
   .body {
     display: grid;
-    gap: var(--joint);
+    gap: 3rem;
+    padding-bottom: clamp(3rem, 2rem + 4vw, 6rem);
   }
   @media (min-width: 64rem) {
     .body {
       grid-template-columns: 15rem minmax(0, 1fr);
-      align-items: start;
+      gap: clamp(3rem, 2rem + 4vw, 7rem);
+    }
+    .toc {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      align-self: start;
     }
   }
-  .route {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--panel);
-    color: var(--on-panel);
-    border-radius: var(--radius);
-    padding: 1.25rem 1rem;
+  .toc ol {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.15rem;
   }
-  .route ol {
-    position: relative;
-  }
-  .route ol::before {
-    content: '';
-    position: absolute;
-    left: 7px;
-    top: 1rem;
-    bottom: 1rem;
-    width: 4px;
-    border-radius: 2px;
-    background: var(--line);
-  }
-  .route a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-height: 2.5rem;
-    padding-left: 2rem;
-    color: var(--on-panel-2);
-    font-weight: 700;
+  .toc a {
+    display: block;
+    padding-block: 0.4rem;
+    color: var(--ink-2);
     text-decoration: none;
+    transition: color var(--dur-1) ease;
   }
-  .route a::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--panel);
-    border: 4px solid var(--line);
-    transition:
-      background-color var(--dur-1) ease,
-      transform var(--dur-2) var(--ease);
+  .toc a span {
+    display: inline-block;
+    min-width: 2.25rem;
+    font-style: italic;
+    color: var(--ink-3);
   }
-  .route a:hover {
-    color: var(--on-panel);
+  .toc a[aria-current='location'] {
+    color: var(--ink);
   }
-  .route a[aria-current='location'] {
-    color: var(--signal);
+  .toc a[aria-current='location'] span {
+    color: var(--blue);
   }
-  .route a[aria-current='location']::before {
-    background: var(--signal);
-    transform: scale(1.15);
-  }
-  @media (min-width: 64rem) {
-    .route {
-      top: 1rem;
-    }
-  }
-  /* Phones and tablets: the map becomes a horizontal line of stops, stuck to the top. */
   @media (max-width: 63.99rem) {
-    .route {
-      padding: 0.25rem 0.5rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .route ol {
+    .toc ol {
       display: flex;
-      width: max-content;
-    }
-    .route ol::before {
-      top: auto;
-      bottom: 12px;
-      left: 1rem;
-      right: 1rem;
-      width: auto;
-      height: 4px;
-    }
-    .route a {
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 0.35rem;
-      min-height: 3.25rem;
-      padding: 0.5rem 0.9rem 0;
-      font-size: 0.8125rem;
-      white-space: nowrap;
-    }
-    .route a::before {
-      position: static;
-      order: 2;
-      width: 16px;
-      height: 16px;
-      border-width: 3px;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.25rem;
     }
   }
 
   .sections {
     display: grid;
-    gap: var(--joint);
-    min-width: 0;
-  }
-  .block h2 {
-    margin-bottom: 1rem;
-    font-size: var(--step-2);
+    gap: clamp(3rem, 2.5rem + 3vw, 5.5rem);
   }
   .block {
-    scroll-margin-top: 5rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.75rem;
   }
-  .prose {
-    font-size: var(--step-0);
+  .block h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: var(--step-3);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+  .block__no {
+    font-style: italic;
+    font-size: 0.55em;
+    color: var(--blue);
+    min-width: 2.5rem;
+  }
+  .block .prose {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 38ch;
   }
   .items {
     display: grid;
-    gap: var(--joint);
+    gap: 1rem;
+    max-width: 44rem;
+    counter-reset: item;
   }
   .items li {
-    position: relative;
-    padding: 0.75rem 1rem 0.75rem 2.75rem;
-    background: var(--ground);
-    border-radius: 3px;
+    counter-increment: item;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    font-size: var(--step-1);
+    line-height: 1.4;
   }
   .items li::before {
-    content: '';
-    position: absolute;
-    left: 1rem;
-    top: 1.15rem;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 3px solid var(--panel);
-    background: var(--line);
+    content: counter(item, decimal-leading-zero);
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+    padding-top: 0.45em;
   }
   .techs {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--joint);
+    gap: 0.6rem;
   }
   .techs li {
-    padding: 0.55rem 0.85rem;
-    background: var(--panel-2);
-    border-radius: 3px;
-    font-family: var(--mono);
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    font-family: var(--sans);
     font-size: 0.9375rem;
   }
+  .shots {
+    display: grid;
+    gap: 2rem;
+  }
+  .shots figcaption {
+    margin-top: 0.75rem;
+  }
   .links {
-    display: grid;
-    gap: 0.5rem;
-  }
-  .links .go {
-    font-size: var(--step-1);
-  }
-  .gallery {
-    display: grid;
-    gap: 1rem;
-  }
-  @media (min-width: 48rem) {
-    .gallery {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  .gallery :global(img) {
-    width: 100%;
-    border-radius: 3px;
-  }
-  .gallery figcaption {
-    margin-top: 0.4rem;
-    font-size: var(--step--1);
-    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
 
-  /* --- Pager --- */
   .pager {
     display: grid;
-    gap: var(--joint);
+    gap: 2.5rem;
+    align-items: end;
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem) clamp(1rem, 0.5rem + 2vw, 3rem);
+    border-top: 1px solid var(--rule);
   }
   @media (min-width: 48rem) {
     .pager {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr minmax(14rem, 22rem);
     }
   }
-  .pager a {
-    display: grid;
-    gap: 0.6rem;
-    padding: var(--pad);
-    border-radius: var(--radius);
-    background: var(--panel);
-    color: var(--on-panel);
-    text-decoration: none;
-    border-bottom: 6px solid var(--line);
-    transition: background-color var(--dur-1) ease;
-  }
-  .pager a:hover {
-    background: var(--panel-2);
-  }
-  .pager .label {
-    color: var(--on-panel-2);
-  }
-  .pager__line {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    font-size: var(--step-2);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
+  .pager__prev {
+    justify-self: start;
   }
   .pager__next {
-    justify-items: end;
-    text-align: right;
+    display: grid;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+  .pager__title {
+    font-size: var(--step-2);
+    line-height: 1.05;
+  }
+  .pager__next :global(.print) {
+    margin-top: 0.75rem;
+    transition: transform var(--dur-3) var(--ease);
+  }
+  .pager__next:hover :global(.print) {
+    transform: translateY(-6px) rotate(0.6deg);
+  }
+  .pager__next:hover :global(.print__light) {
+    opacity: 1;
   }
 </style>

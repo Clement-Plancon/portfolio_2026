@@ -1,5 +1,66 @@
 # Recherche créative
 
+## Troisième recherche — 12 novembre 2026 (direction « Révélateur »)
+
+Menée après l'abandon de la direction « Départs ». Méthode :
+- **Galeries** (Awwwards *Portfolio*, CSS Design Awards *WOTD*, SiteInspire *Portfolio*) parcourues dans le navigateur intégré de l'application : liste des lauréats, puis adresse réelle de chaque site.
+- **Sites** chargés dans Chromium (Playwright) en 1440 × 900 puis 390 × 844 tactile. Pour chacun, deux captures (haut de page et après défilement) assemblées en planche.
+- **Examen approfondi** de Dennis Snellenberg, Locomotive et Lusion dans le navigateur intégré : survol, page projet, préchargement.
+
+### Ce que je n'ai pas pu consulter, ou seulement en partie
+| Site | Ce qui s'est passé |
+|---|---|
+| Godly | Redirige désormais vers recent.design (galerie généraliste). Non exploité. |
+| Active Theory | « Your browser is not supported » dans Chromium sans GPU ; seul l'écran d'accueil 3D est visible. |
+| Resn | Objet 3D sur fond noir et « Click & hold » ; la navigation n'a pas été explorée. |
+| Unseen Studio | Desktop : écran d'entrée « Enter / Enter without audio ». Mobile : scène 3D et titre. |
+| Robin Noguier, Bruno Simon, igloo.inc | Rendu WebGL impossible (capture vide ou navigateur arrêté). Non analysés. |
+| Lusion (page Projets) | Préchargement de plus de 12 s dans le navigateur intégré ; contenu lu en texte seulement. |
+| Henry Heffernan | Écran « Click start to begin » ; l'expérience 3D n'a pas été lancée. |
+
+### Références analysées
+
+| # | Site | Ce qui le rend mémorable | Ce qui aide (ou gêne) l'usage | Ce que j'en retiens |
+|---|---|---|---|---|
+| 1 | AUGE Experience (Awwwards SOTD) | Collage d'images de projets qui tombe en cascade au-dessus d'un mot-logo géant | Les projets sont visibles au premier écran ; étiquette « View project » au survol | Les projets doivent être l'image, pas une liste |
+| 2 | Lucas Lima | Grandes vignettes cadrées, tailles variées, fond pointillé discret | Très lisible, mais générique : on pourrait changer le nom | La lisibilité seule ne suffit pas |
+| 3 | Douglus Nguyen | Lavis d'encre et silhouette ; bascule « Layout : Fine / Bold » laissée au visiteur | Bascule amusante, peu utile | Une matière picturale peut porter une identité |
+| 4 | Adam Perlis | Intro en faux terminal (« npx start ») dans une bulle de verre irisée | Il faut « exécuter » pour entrer | Contre-exemple : exactement le cliché à éviter |
+| 5 | Fragment | Plaques de verre 3D en cascade sur fond noir | Belle mais interchangeable avec des dizaines de studios | Le « genre Awwwards » : verre, noir, 3D |
+| 6 | JLD'2nd | Avatar en pixel art, mode « Developer / Creative » | Thème jeu vidéo, peu sérieux pour un Tech Lead | Contre-exemple |
+| 7 | Hanusek Studio | Titre « Now agentic » sur photo sombre, schémas en fil de fer | Grille technique décorative | Contre-exemple : diagrammes décoratifs |
+| 8 | Oblik | Images d'architecture pleine largeur, texte minimal | Excellent mobile : grille d'images à deux colonnes | La qualité des images fait tout |
+| 9 | ALLER Studio | Barre flottante avec heures de Lima et New York, « Fully booked » | Informations vivantes utiles ; reste une landing page SaaS | Un détail vrai (disponibilité) vaut mieux qu'un effet |
+| 10 | Locomotive | Photo rouge monochrome, puis liste de projets en serif condensée pleine largeur | Intro animée de 8 s avant le contenu | La liste typographique peut être luxueuse ; jamais d'attente |
+| 11 | Lusion | Objets 3D brillants dans un cadre arrondi, titres découpés lettre par lettre | Préchargement long ; texte dupliqué quatre fois pour l'animation, illisible pour un lecteur d'écran | Ne jamais casser le texte pour un effet |
+| 12 | Dennis Snellenberg | Survol d'une ligne : l'aperçu du projet suit le pointeur avec une bulle « View » | Même lui utilise un tableau Client / Lieu / Services / Année ; les pages projet sont minces | L'effet tient au survol, pas à la structure |
+| 13 | Aristide Benoist | Bandeau de bandes verticales d'images en noir et blanc, très peu de texte | Énigmatique, peu d'information | Une signature peut tenir à un seul geste |
+| 14 | Lynn Fisher | Sommaire de livre avec chiffres romains et points de conduite, papier texturé | Très clair, chaleureux | Les codes de l'édition donnent de la confiance |
+| 15 | Exo Ape | Photo plein cadre, grand titre « Work » et bulle « Scroll » | Classique et soigné | Rien de spécifique |
+| 16 | Cosmos | Vignettes en rotation flottant autour d'un champ de recherche | Ludique, mais c'est un produit | Le mouvement d'objets dispersés attire l'œil |
+| 17 | Obys | Colonne centrale de vignettes avec un viseur à crochets qui sélectionne le projet | Liste de projets à gauche lisible ; mobile minuscule | Un cadre qui « fait la mise au point » sur le projet courant |
+| 18 | Immersive Garden | Bas-relief blanc d'oiseaux et de plantes qui sort du papier au défilement | Écran d'accueil presque vide | Voisin le plus proche de « Révélateur » (matière, botanique) ; je m'en distingue par la couleur, l'image projet et l'absence de 3D |
+| 19 | Brittany Chiang | Colonne gauche fixe avec sommaire, colonne droite de contenu | Référence de lisibilité ; layout déjà vu partout | Le sommaire qui suit la lecture, repris sur les pages projet |
+| 20 | Unseen Studio (mobile) | Escalier 3D pastel et titre en serif italique | Écran d'entrée sur desktop | La serif italique fine donne du raffinement |
+| 21 | Resn (mobile) | Personnage illustré à l'accordéon, très singulier | Navigation non trouvée | L'audace d'illustration se retient |
+| 22 | Galerie Awwwards Portfolio | Majorité de nominés : 3D sombre, verre, gros titres, avatars | — | La « créativité Awwwards » est devenue un genre à part entière |
+| 23 | CSS Design Awards WOTD | Lauréats récents : portfolios Arthur Engel, Carter Ogunsola, Long Hoang (adresses non résolues depuis la fiche) | — | Liste consultée ; sites non ouverts |
+| 24 | SiteInspire Portfolio | Majorité de studios d'architecture et de design : grilles d'images sobres | — | La sobriété éditoriale reste la norme hors Awwwards |
+
+### Synthèse
+
+1. **Le genre Awwwards se reconnaît** : 3D sombre, verre irisé, préchargement, écran d'entrée, faux terminal. S'en écarter est déjà une signature.
+2. **Les sites qui marquent ont une matière** (le lavis de Douglus, le plâtre d'Immersive Garden, le papier de Lynn Fisher), pas seulement un effet.
+3. **Les projets doivent être l'image** (AUGE, Oblik). Une ligne de tableau, même animée, ne donne pas envie de cliquer.
+4. **Aucun délai avant le contenu** : les meilleurs effets observés (survol de Snellenberg, viseur d'Obys) n'empêchent jamais de lire.
+5. **Rien ne doit casser le texte** : les titres découpés lettre par lettre (Lusion) sont illisibles pour les lecteurs d'écran.
+
+D'où le concept retenu : une **matière** (le cyanotype), des **images de projets** honnêtes (photogrammes), **un geste** (le développement) et une typographie éditoriale. Voir [art-direction.md](art-direction.md).
+
+---
+
+## Recherche précédente — 10 novembre 2026 (direction « Départs », abandonnée)
+
 Deuxième recherche, menée le 10 novembre 2026 pour la refonte « signature ». Elle complète [design-research.md](design-research.md) (16 portfolios étudiés le 8 novembre) en élargissant vers les studios créatifs, la typographie, la signalétique, l'édition et les interfaces de produits.
 
 Méthode : chaque site a été chargé dans Chromium (Playwright) en 1440 × 900 puis 390 × 844 (émulation tactile), avec une capture après défilement. Les bannières de cookies ont été refusées quand un bouton « refuser » existait. Une capture ne montre ni le son ni toutes les interactions : je l'indique quand c'est une limite.

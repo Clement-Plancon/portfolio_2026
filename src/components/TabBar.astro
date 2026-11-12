@@ -1,14 +1,12 @@
 ---
-// Phone navigation: a sign panel fixed within thumb reach, pictogram + label, "you are here" in yellow.
-import Pictogram, { type PictogramName } from './Pictogram.astro';
-
+// Phone navigation, within thumb reach: a floating bar at the bottom of the screen.
 const path = Astro.url.pathname;
-const tabs: { href: string; label: string; icon: PictogramName }[] = [
-  { href: '/', label: 'Accueil', icon: 'accueil' },
-  { href: '/projets/', label: 'Projets', icon: 'projets' },
-  { href: '/parcours/', label: 'Parcours', icon: 'parcours' },
-  { href: '/a-propos/', label: 'À propos', icon: 'apropos' },
-  { href: '/contact/', label: 'Contact', icon: 'contact' },
+const tabs = [
+  { href: '/', label: 'Accueil' },
+  { href: '/projets/', label: 'Projets' },
+  { href: '/parcours/', label: 'Parcours' },
+  { href: '/a-propos/', label: 'À propos' },
+  { href: '/contact/', label: 'Contact' },
 ];
 const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
@@ -19,10 +17,7 @@ const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(
       tabs.map((t) => (
         <li>
           <a href={t.href} aria-current={active(t.href) ? 'page' : undefined}>
-            <span class="plate">
-              <Pictogram name={t.icon} size={18} />
-            </span>
-            <span>{t.label}</span>
+            {t.label}
           </a>
         </li>
       ))
@@ -38,52 +33,42 @@ const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(
     .tabbar {
       display: block;
       position: fixed;
-      inset: auto 0 0 0;
-      z-index: 50;
-      padding: var(--joint) var(--joint) calc(var(--joint) + env(safe-area-inset-bottom));
-      background: var(--ground);
-      view-transition-name: tabbar;
+      z-index: 60;
+      left: 0.5rem;
+      right: 0.5rem;
+      bottom: calc(0.5rem + env(safe-area-inset-bottom));
+      padding: 0.3rem;
+      border-radius: 99px;
+      background: var(--prussian);
+      color: var(--on-prussian);
+      box-shadow: 0 12px 30px -12px rgb(8 16 39 / 0.6);
     }
-    ul {
+    .tabbar ul {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: var(--joint);
+      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
-    a {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      height: calc(var(--tabbar-h) - 2 * var(--joint));
-      background: var(--panel);
-      color: var(--on-panel-2);
-      border-radius: var(--radius);
-      font-size: 0.6875rem;
-      font-weight: 800;
-      text-decoration: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .plate {
+    .tabbar a {
       display: grid;
       place-items: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 3px;
-      background: var(--on-panel);
-      color: var(--panel);
-      transition: transform var(--dur-1) ease;
+      min-height: 3rem;
+      border-radius: 99px;
+      font-family: var(--sans);
+      font-size: clamp(0.75rem, 0.62rem + 0.6vw, 0.875rem);
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background var(--dur-1) ease;
     }
-    a:active .plate {
-      transform: scale(0.9);
+    .tabbar a:hover {
+      color: inherit;
     }
-    a[aria-current='page'] {
-      background: var(--signal);
-      color: var(--on-signal);
+    .tabbar a[aria-current='page'] {
+      background: var(--on-prussian);
+      color: var(--prussian);
     }
-    a[aria-current='page'] .plate {
-      background: var(--panel);
-      color: var(--signal);
+    .tabbar a:focus-visible {
+      outline-color: var(--on-prussian);
+      outline-offset: -3px;
     }
   }
 </style>

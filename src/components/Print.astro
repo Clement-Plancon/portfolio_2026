@@ -1,0 +1,124 @@
+---
+// A project shown as a cyanotype print. With a real capture, the capture is toned blue (true colours
+// on hover / on demand). Without one, a photogram generated from the project (see lib/photogram.ts).
+import { Image } from 'astro:assets';
+import type { ProjectEntry } from '../lib/content';
+import { getMedia } from '../lib/media';
+import { PHOTOGRAM_LABELS, photogram } from '../lib/photogram';
+
+interface Props {
+  project: ProjectEntry;
+  /** Shared element between the gallery and the project page (cross-document view transition). */
+  transition?: boolean;
+  eager?: boolean;
+  sizes?: string;
+  /** Makes clip-path ids unique when the same project is printed twice on a page. */
+  idSuffix?: string;
+  class?: string;
+}
+
+const { project: p, transition = false, eager = false, sizes = '(min-width: 64rem) 34vw, 80vw', idSuffix = '', class: cls } = Astro.props;
+const pg = photogram(p.id, p.cover.color, p.pictogram);
+const img = getMedia(p.cover.image?.src);
+const clip = `edge-${p.id}${idSuffix}`;
+const vt = transition ? `view-transition-name: print-${p.id};` : '';
+---
+
+<div class:list={['print', img ? 'print--photo' : 'print--photogram', cls]} data-print={p.id} style={`--tone:${pg.tone}`}>
+  <div class="print__emulsion" style={`clip-path:url(#${clip});${vt}`}>
+    {
+      img ? (
+        <>
+          <Image class="print__img" src={img} alt={p.cover.image?.alt ?? ''} widths={[480, 800, 1200]} sizes={sizes} loading={eager ? 'eager' : 'lazy'} fetchpriority={eager ? 'high' : undefined} />
+          <Image class="print__img print__img--true" src={img} alt="" aria-hidden="true" widths={[480, 800, 1200]} sizes={sizes} loading={eager ? 'eager' : 'lazy'} />
+        </>
+      ) : (
+        <svg class="print__art" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Photogramme de présentation pour ${p.title} : ${PHOTOGRAM_LABELS[pg.kind].toLowerCase()}`}>
+          <rect width="400" height="500" fill="var(--tone)" />
+          <rect width="400" height="500" fill="url(#pg-exposure)" />
+          <g filter="url(#pg-soft)" opacity=".5" set:html={pg.objects} />
+          <g set:html={pg.objects} />
+        </svg>
+      )
+    }
+    <span class="print__raw" aria-hidden="true"></span>
+    <span class="print__light" aria-hidden="true"></span>
+  </div>
+  <svg class="print__defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <clipPath id={clip} clipPathUnits="objectBoundingBox"><path d={pg.edge}></path></clipPath>
+  </svg>
+</div>
+
+<style>
+  .print {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: var(--sheet);
+    padding: 6% 5.5%;
+    box-shadow:
+      0 1px 0 rgb(20 32 63 / 0.06),
+      0 22px 40px -28px rgb(20 32 63 / 0.55);
+  }
+  .print__emulsion {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    background: var(--tone);
+  }
+  .print__art,
+  .print__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+  /* Screenshots are wider than the print: keep their top-left corner, where interfaces put their title. */
+  .print--photo .print__img {
+    object-position: 6% 0;
+  }
+  /* A real capture printed as a cyanotype: light areas take the blue, dark text stays paper white. */
+  .print__img {
+    filter: url(#pg-cyano);
+  }
+  .print__img--true {
+    filter: none;
+    opacity: 0;
+    transition: opacity var(--dur-3) var(--ease);
+  }
+  :global(.is-true-colors) .print__img--true {
+    opacity: 1;
+  }
+  /* The sensitised layer that fades as the print develops (driven by site.ts, opacity only). */
+  .print__raw {
+    position: absolute;
+    inset: 0;
+    background: var(--raw);
+    opacity: 0;
+    pointer-events: none;
+  }
+  :global(.is-raw) .print__raw {
+    opacity: 1;
+  }
+  :global(.is-developing) .print__raw {
+    opacity: 0;
+    transition: opacity 1.9s cubic-bezier(0.3, 0.1, 0.2, 1);
+  }
+  /* Light under the pointer, as if the print were held under a lamp. */
+  .print__light {
+    position: absolute;
+    inset: -20%;
+    pointer-events: none;
+    background: radial-gradient(closest-side, rgb(255 255 255 / 0.32), transparent);
+    width: 70%;
+    height: 70%;
+    translate: var(--lx, 30%) var(--ly, 30%);
+    opacity: 0;
+    transition: opacity var(--dur-2) ease;
+    mix-blend-mode: soft-light;
+  }
+  .print__defs {
+    position: absolute;
+  }
+</style>

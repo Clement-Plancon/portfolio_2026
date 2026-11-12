@@ -1,5 +1,7 @@
 ---
-// Title panel of inner pages: a black sign with a mono label, the title and an optional lead.
+// Title block of inner pages. `title` accepts *word* for an italic, developing word.
+import { emphasis } from '../lib/format';
+
 interface Props {
   title: string;
   lead?: string;
@@ -9,31 +11,25 @@ const { title, lead, label } = Astro.props;
 ---
 
 <header class="wrap page-head">
-  <div class="panel page-head__panel">
-    {label && <p class="label">{label}</p>}
-    <h1>{title}</h1>
-    {lead && <p class="page-head__lead">{lead}</p>}
-    <slot />
-  </div>
+  {label && <p class="eyebrow">{label}</p>}
+  <h1 set:html={emphasis(title)} />
+  {lead && <p class="lede">{lead}</p>}
+  <slot />
 </header>
 
 <style>
   .page-head {
-    padding-top: var(--joint);
+    padding-block: clamp(3rem, 2rem + 5vw, 7rem) clamp(2rem, 1.5rem + 3vw, 4rem);
   }
-  .page-head__panel {
-    padding-block: clamp(1.75rem, 1rem + 3vw, 3.5rem);
-  }
-  h1 {
-    margin-top: 0.6rem;
-    font-size: var(--step-4);
-    letter-spacing: -0.035em;
-  }
-  .page-head__lead {
+  .page-head h1 {
     margin-top: 1rem;
-    max-width: 44rem;
-    font-size: var(--step-1);
-    line-height: 1.4;
-    color: var(--on-panel-2);
+    font-size: var(--step-4);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    max-width: 16ch;
+  }
+  .page-head .lede {
+    margin-top: 1.5rem;
   }
 </style>

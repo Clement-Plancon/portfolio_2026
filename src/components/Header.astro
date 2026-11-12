@@ -1,140 +1,120 @@
 ---
-// Main navigation as a row of sign panels. The current page's panel turns signal yellow:
-// "you are here". On phones this row is reduced to the name; the tab bar takes over.
-import Name from './Name.astro';
-import Pictogram, { type PictogramName } from './Pictogram.astro';
-
+// Desktop header: the name, the sections, and a dot marking where you are. On phones the
+// sections move to the tab bar at the bottom of the screen (TabBar.astro).
 interface Props {
   name: string;
-  status?: string;
   showArticles: boolean;
 }
-const { name, status, showArticles } = Astro.props;
+const { name, showArticles } = Astro.props;
 const path = Astro.url.pathname;
+const [first, ...rest] = name.split(' ');
 
-const links: { href: string; label: string; icon: PictogramName }[] = [
-  { href: '/projets/', label: 'Projets', icon: 'projets' },
-  { href: '/parcours/', label: 'Parcours', icon: 'parcours' },
-  { href: '/a-propos/', label: 'À propos', icon: 'apropos' },
-  ...(showArticles ? [{ href: '/articles/', label: 'Articles', icon: 'articles' as const }] : []),
+const links = [
+  { href: '/projets/', label: 'Projets' },
+  { href: '/parcours/', label: 'Parcours' },
+  { href: '/a-propos/', label: 'À propos' },
+  ...(showArticles ? [{ href: '/articles/', label: 'Articles' }] : []),
+  { href: '/contact/', label: 'Contact' },
 ];
 const here = (href: string) => path.startsWith(href);
 ---
 
-<header class="nav-wrap">
-  <nav class="wrap nav" aria-label="Navigation principale">
-    <a class="nav__name" href="/" aria-current={path === '/' ? 'page' : undefined}>
-      <span><Name text={name} /></span>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="mark" href="/" aria-current={path === '/' ? 'page' : undefined}>
+      {first} <em>{rest.join(' ')}</em>
     </a>
-    {
-      links.map((l) => (
-        <a class="nav__item" href={l.href} aria-current={here(l.href) ? 'page' : undefined}>
-          <span class="plate">
-            <Pictogram name={l.icon} size={18} />
-          </span>
-          {l.label}
-        </a>
-      ))
-    }
-    <span class="nav__status" aria-hidden="true">{status}</span>
-    <a class="nav__item nav__item--exit" href="/contact/" aria-current={here('/contact/') ? 'page' : undefined}>
-      Contact
-      <span class="plate plate--arrow">→</span>
-    </a>
-  </nav>
+    <nav class="nav" aria-label="Navigation principale">
+      <ul role="list">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={here(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
 </header>
 
 <style>
-  .nav-wrap {
-    padding-top: var(--joint);
-    view-transition-name: site-nav;
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
   }
-  .nav {
-    display: flex;
-    gap: var(--joint);
-  }
-  .nav > * {
+  .bar {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    min-height: var(--nav-h);
-    padding: 0 1rem;
-    background: var(--panel);
-    color: var(--on-panel);
-    border-radius: var(--radius);
-    font-weight: 800;
-    font-size: 0.9375rem;
+    justify-content: space-between;
+    gap: 2rem;
+    height: var(--header-h);
+  }
+  .mark {
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
   }
-  .nav__name {
-    font-size: 1.0625rem;
-    letter-spacing: -0.01em;
+  .mark em {
+    font-style: italic;
+    color: var(--blue);
   }
-  .nav__status {
-    flex: 1;
-    justify-content: flex-end;
-    min-width: 0;
-    overflow: hidden;
-    font-family: var(--mono);
+  .nav ul {
+    display: flex;
+    gap: clamp(1rem, 0.5rem + 1.5vw, 2.25rem);
+  }
+  .nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.75rem;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
     font-weight: 500;
-    font-size: 0.8125rem;
-    color: var(--on-panel-2);
+    text-decoration: none;
   }
-  .nav__status::before {
+  .nav a::after {
     content: '';
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--signal);
-    flex: none;
-  }
-  .plate {
-    display: inline-grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 3px;
-    background: var(--on-panel);
-    color: var(--panel);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.45rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
     transition: transform var(--dur-2) var(--ease);
   }
-  .plate--arrow {
-    background: var(--panel-2);
-    color: var(--signal);
-    font-weight: 900;
+  .nav a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
   }
-  .nav > a:hover .plate {
-    transform: translateY(-2px);
+  /* You are here: a blue exposure dot */
+  .nav a[aria-current='page'] {
+    color: var(--blue);
   }
-  .nav > a:hover .plate--arrow {
-    transform: translateX(3px);
-  }
-  /* You are here */
-  .nav > a[aria-current='page'] {
-    background: var(--signal);
-    color: var(--on-signal);
-  }
-  .nav > a[aria-current='page'] .plate {
-    background: var(--panel);
-    color: var(--signal);
-  }
-  .nav > a:focus-visible {
-    box-shadow: 0 0 0 5px var(--ground);
-  }
-  @media (max-width: 74.99rem) {
-    .nav > .nav__status {
-      font-size: 0;
-      flex: 1;
-    }
+  .nav a[aria-current='page']::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0.1rem;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: currentColor;
   }
   @media (max-width: 47.99rem) {
-    .nav > .nav__item,
-    .nav > .nav__status {
-      display: none;
+    .site-header {
+      position: relative;
+      background: none;
     }
-    .nav__name {
-      flex: 1;
+    .nav {
+      display: none;
     }
   }
 </style>
