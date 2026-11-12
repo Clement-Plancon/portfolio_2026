@@ -1,0 +1,145 @@
+---
+// Home page gallery of prints. Without JavaScript it is a native horizontal scroller (swipe, trackpad,
+// keyboard). On desktop, site.ts pins it and lets the vertical scroll drive the prints sideways.
+import type { ProjectEntry } from '../lib/content';
+import PrintCard from './PrintCard.astro';
+
+interface Props {
+  projects: ProjectEntry[];
+}
+const { projects } = Astro.props;
+---
+
+<section class="gallery" data-gallery aria-labelledby="tirages-title">
+  <div class="gallery__pin">
+    <div class="gallery__head wrap">
+      <h2 class="gallery__title" id="tirages-title">
+        <span class="eyebrow">Projets</span>
+        <span class="gallery__big">Tirages <em>développés</em></span>
+      </h2>
+      <p class="gallery__count meta" aria-hidden="true"><span data-count>01</span> / {String(projects.length).padStart(2, '0')}</p>
+      <a class="arrow" href="/projets/">Tous les projets</a>
+    </div>
+    <ol class="gallery__track" role="list" data-track tabindex="-1">
+      {
+        projects.map((p, i) => (
+          <li class="gallery__item">
+            <PrintCard project={p} index={i} total={projects.length} sizes="(min-width: 64rem) 30vw, 78vw" />
+          </li>
+        ))
+      }
+    </ol>
+    <div class="gallery__rail wrap" aria-hidden="true"><span data-progress></span></div>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    position: relative;
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem) 0;
+  }
+  .gallery__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: end;
+    gap: 1.5rem;
+    margin-bottom: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+  .gallery__title {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .gallery__big {
+    font-size: var(--step-3);
+    font-weight: 300;
+    line-height: 1;
+  }
+  .gallery__big em {
+    font-style: italic;
+    color: var(--blue);
+  }
+  .gallery__count {
+    font-variant-numeric: tabular-nums;
+  }
+  .gallery__track {
+    display: flex;
+    gap: clamp(1.5rem, 1rem + 2.4vw, 4rem);
+    padding-inline: var(--gutter);
+    padding-block: 1rem 2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .gallery__track::-webkit-scrollbar {
+    display: none;
+  }
+  .gallery__track:focus {
+    outline: none;
+  }
+  .gallery__item {
+    flex: 0 0 auto;
+    width: min(78vw, 24rem);
+    scroll-snap-align: start;
+  }
+  .gallery__item:nth-child(even) {
+    padding-top: clamp(0rem, -2rem + 6vw, 3rem);
+  }
+  .gallery__rail {
+    height: 1px;
+    position: relative;
+    margin-top: 0.5rem;
+  }
+  .gallery__rail::before,
+  .gallery__rail span {
+    content: '';
+    position: absolute;
+    inset: 0 var(--gutter);
+    background: var(--rule);
+  }
+  .gallery__rail span {
+    background: var(--ink);
+    transform-origin: left;
+    transform: scaleX(var(--p, 0.08));
+  }
+
+  /* Pinned mode (desktop, set by site.ts): the section is as tall as the horizontal travel. */
+  :global(.is-pinned).gallery {
+    height: var(--pin-h, auto);
+    padding-top: 0;
+  }
+  :global(.is-pinned) .gallery__pin {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: calc(var(--header-h) + 0.5rem);
+  }
+  :global(.is-pinned) .gallery__head {
+    margin-bottom: clamp(1rem, 0.5rem + 1.5vw, 2rem);
+  }
+  :global(.is-pinned) .gallery__track {
+    overflow: visible;
+    scroll-snap-type: none;
+    will-change: transform;
+    transform: translate3d(var(--x, 0px), 0, 0);
+  }
+  :global(.is-pinned) .gallery__item {
+    /* the print, its caption and the heading must fit in one screen */
+    width: min(28vw, calc((100svh - var(--header-h) - 21rem) * 0.8));
+  }
+
+  @media (max-width: 47.99rem) {
+    .gallery__head {
+      grid-template-columns: 1fr auto;
+    }
+    .gallery__head .arrow {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+</style>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype C — Le récit</title>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Work+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f5f0;--ink:#1a1714;--ink-2:#6b655d;--serif:'Bodoni Moda',Didot,serif;--sans:'Work Sans',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--sans);overflow-x:hidden}
+header{display:flex;justify-content:space-between;padding:22px clamp(16px,4vw,56px);font-size:14px}
+.story{padding:8vh clamp(16px,4vw,56px) 20vh;max-width:1500px}
+.story p{font:400 clamp(30px,4.6vw,72px)/1.12 var(--serif);letter-spacing:-.015em;margin-bottom:.6em}
+.story p em{font-style:italic}
+.k{display:inline;text-align:inherit;font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-thickness:.05em;text-underline-offset:.12em;text-decoration-color:var(--c);transition:color .3s}
+.k sup{font:600 .28em var(--sans);vertical-align:1.9em;margin-left:.15em;color:var(--c)}
+.k:hover,.k[aria-expanded=true]{color:var(--c)}
+.k:focus-visible{outline:2px solid var(--c);outline-offset:4px}
+.insert{display:grid;grid-template-rows:0fr;transition:grid-template-rows .7s cubic-bezier(.2,.7,.1,1);margin:-.2em 0 .6em}
+.insert>div{overflow:hidden}
+.insert.open{grid-template-rows:1fr}
+.card{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,4fr);gap:clamp(20px,3vw,48px);background:var(--c);color:var(--on,#fff);padding:clamp(20px,3vw,40px);margin:12px 0 28px}
+.card .vis{aspect-ratio:16/10;background:rgba(255,255,255,.12);display:grid;place-items:center;overflow:hidden;position:relative}
+.card .vis img{width:100%;height:100%;object-fit:cover;object-position:top}
+.card .vis span{font:italic 400 clamp(60px,9vw,150px)/1 var(--serif);opacity:.9}
+.card .vis small{position:absolute;left:12px;bottom:10px;font-size:11px;opacity:.75}
+.card h3{font:400 clamp(30px,3vw,46px)/1 var(--serif);margin-bottom:14px}
+.card p{font-size:16px;max-width:42ch}
+.card dl{display:flex;gap:28px;margin-top:20px;font-size:13px}.card dt{opacity:.7}
+.card a{display:inline-block;margin-top:22px;color:inherit;font-weight:600}
+nav.toc{position:fixed;left:clamp(16px,4vw,56px);bottom:20px;display:flex;gap:20px;font-size:13px;background:var(--bg);padding:8px 0}
+nav.toc a{color:var(--ink-2);text-decoration:none}nav.toc a[aria-current]{color:var(--ink)}
+@media (max-width:760px){.card{grid-template-columns:1fr}.story p{font-size:clamp(28px,8.4vw,40px)}nav.toc{left:0;right:0;bottom:0;justify-content:space-around;padding:14px;border-top:1px solid #0002}}
+@media (prefers-reduced-motion:reduce){.insert{transition:none}}
+</style>
+</head>
+<body>
+<header><span>Clément Plançon</span><span>Paris</span></header>
+<main class="story" id="story">
+  <p>Je m'appelle Clément. Je suis ingénieur logiciel et <em>Tech Lead</em> : j'encadre quatre développeurs au Laboratoire de police scientifique de Paris.</p>
+  <p>Avant cela, au ministère de l'Économie, j'ai aidé <button class="k" data-p="0">à verdir ses propres pratiques<sup>01</sup></button>, j'ai donné aux décideurs <button class="k" data-p="1">un seul endroit pour lire leurs indicateurs<sup>02</sup></button> et j'ai écouté ceux qui traitent <button class="k" data-p="2">les saisines de la Cour des comptes<sup>03</sup></button>.</p>
+  <p>Le soir, je construis <button class="k" data-p="3">un observatoire des données publiques<sup>04</sup></button>, <button class="k" data-p="4">une veille qui se lit toute seule<sup>05</sup></button> et <button class="k" data-p="5">une alarme qui ressemble à des notes<sup>06</sup></button>.</p>
+  <p>Je préfère le code qu'on comprend encore six mois plus tard. <a href="#" style="color:inherit">Écrivez-moi.</a></p>
+</main>
+<nav class="toc" aria-label="Sections"><a href="#" aria-current="true">Récit</a><a href="#">Projets</a><a href="#">Parcours</a><a href="#">Contact</a></nav>
+<script>
+const P=[
+ {t:'Bercy Vert',c:'#2f6b46',s:"Logiciel pour la transition écologique du ministère : actions BEGES et mesures SPE centralisées.",y:'2023',k:'Conception de logiciel'},
+ {t:'Référentiel Indicateurs',c:'#2b4f9e',s:"Plateforme de centralisation et de visualisation des indicateurs métiers.",y:'2022',k:'Application web'},
+ {t:'Saisines de la Cour des comptes',c:'#6d3f86',s:"Cadrage technique et recherche utilisateur pour structurer le traitement des saisines.",y:'2023',k:'Recherche utilisateur'},
+ {t:'Datametre',c:'#c9b78e',on:'#1a1714',s:"Observatoire éditorial des données publiques françaises.",y:'Perso',k:'Dataviz',img:'../../../src/assets/media/datametre-apercu.webp'},
+ {t:'Veille Stratégique',c:'#d2702b',s:"Collecte multi-sources, extraction d'entités et résumés automatisés.",y:'Perso',k:'Outil interne · IA'},
+ {t:'SafePing',c:'#b8321f',s:"Alerter discrètement des proches de confiance, avec un mode façade « Notes ».",y:'En cours',k:'Application mobile'},
+];
+document.querySelectorAll('.k').forEach(b=>{const p=P[b.dataset.p];b.style.setProperty('--c',p.c);b.setAttribute('aria-expanded','false');
+  const id='ins'+b.dataset.p;b.setAttribute('aria-controls',id);
+  const ins=document.createElement('div');ins.className='insert';ins.id=id;ins.style.setProperty('--c',p.c);if(p.on)ins.style.setProperty('--on',p.on);
+  ins.innerHTML=`<div><div class="card"><div class="vis">${p.img?`<img src="${p.img}" alt="Capture réelle de Datametre">`:`<span>${p.t.split(' ')[0]}</span><small>Visuel de présentation</small>`}</div><div><h3>${p.t}</h3><p>${p.s}</p><dl><div><dt>Nature</dt><dd>${p.k}</dd></div><div><dt>Période</dt><dd>${p.y}</dd></div></dl><a href="#">Lire le projet →</a></div></div></div>`;
+  b.closest('p').after(ins);ins.hidden=false;
+  b.addEventListener('click',()=>{const open=b.getAttribute('aria-expanded')!=='true';
+    // one insert per paragraph: opening one closes its siblings
+    b.closest('p').querySelectorAll('.k').forEach(o=>{if(o!==b&&o.getAttribute('aria-expanded')==='true'){o.setAttribute('aria-expanded','false');document.getElementById(o.getAttribute('aria-controls')).classList.remove('open')}});
+    b.setAttribute('aria-expanded',open);ins.classList.toggle('open',open);if(open)setTimeout(()=>ins.scrollIntoView({block:'nearest',behavior:'smooth'}),250);});
+});
+// inserts must sit in document order after their own paragraph
+document.querySelectorAll('.story p').forEach(p=>{let n=p.nextElementSibling;const list=[];while(n&&n.classList.contains('insert')){list.push(n);n=n.nextElementSibling}list.sort((a,b)=>a.id.localeCompare(b.id)).forEach(x=>p.parentNode.insertBefore(x,n))});
+</script>
+</body>
+</html>

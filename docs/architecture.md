@@ -90,10 +90,12 @@ L'état des déploiements affiché dans l'admin vient des *commit statuses* que 
 
 ## Design system
 
-Direction « Départs » (signalétique d'information) : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
+Direction « Révélateur » (cyanotype) : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
 
-- **Tokens** : `src/styles/global.css` (panneaux, jaune signal, couleurs de ligne, échelle typographique, joint de 2 px). Thème sombre automatique ; l'encre sur jaune (`--on-signal`) reste foncée dans les deux thèmes.
-- **Polices** : Overpass et Overpass Mono, auto-hébergées (`public/fonts/`).
-- **Composants** : `Header` (navigation en panneaux, « vous êtes ici »), `TabBar` (navigation mobile), `ProjectBoard` (tableau à palettes), `LineBadge` (indice de ligne), `Pictogram` (pictogrammes), `ExperienceList` (parcours en arrêts), `SkillGroups`, `PageHead`, `ContactBand` (panneau de sortie).
-- **Identité d'un projet** : `code` (indice, ex. BV), `pictogram` et `cover.color` dans le contenu, modifiables dans l'administration ; `src/lib/lines.ts` calcule l'indice quand il est vide.
-- **Scripts** : `src/scripts/site.ts` et `flap.ts` (amélioration progressive ; tout fonctionne sans).
+- **Tokens** : `src/styles/global.css` (papier, encre, bleu de Prusse, papier sensibilisé, échelle typographique). Thème sombre automatique.
+- **Polices** : Newsreader et Instrument Sans, auto-hébergées et réduites (`public/fonts/`).
+- **Tirages** : `src/lib/photogram.ts` génère au build, de façon déterministe, le photogramme (objets), le bord d'émulsion et le virage de chaque projet ; `Print.astro` les assemble, ou tire la vraie capture en cyanotype (filtre SVG `#pg-cyano` défini dans `Base.astro`).
+- **Composants** : `Header`, `TabBar` (navigation mobile), `Gallery` (galerie de l'accueil), `PrintCard` (tirage + légende), `Print`, `ExperienceList`, `SkillGroups`, `PageHead`, `ContactBand`.
+- **Identité d'un projet** : `pictogram` (objets du photogramme) et `cover.color` (virage) dans le contenu, modifiables dans l'administration ; une capture dans `cover.image` remplace le photogramme.
+- **Script** : `src/scripts/site.ts` (amélioration progressive ; tout fonctionne sans).
+- **Image de partage** : `scripts/generate-og.mjs` réutilise le générateur de photogrammes.

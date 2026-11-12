@@ -1,57 +1,75 @@
 ---
 import Base from '../layouts/Base.astro';
+import { photogram } from '../lib/photogram';
+
+const { edge } = photogram('page-introuvable');
 ---
 
 <Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas ou a été déplacée." noindex contactBand={false}>
   <section class="wrap notfound">
-    <div class="panel notfound__sign">
-      <p class="label">Erreur 404</p>
-      <h1>Cette page n'existe pas.</h1>
-      <p>Elle a peut-être été déplacée. Choisissez une direction :</p>
+    <div class="notfound__text">
+      <p class="eyebrow">Erreur 404</p>
+      <h1>Ce tirage n'a pas été <em>développé</em>.</h1>
+      <p class="lede">La page n'existe pas, ou elle a été déplacée.</p>
+      <ul role="list" class="notfound__ways">
+        <li><a class="arrow" href="/">Accueil</a></li>
+        <li><a class="arrow" href="/projets/">Projets</a></li>
+        <li><a class="arrow" href="/parcours/">Parcours</a></li>
+        <li><a class="arrow" href="/contact/">Contact</a></li>
+      </ul>
     </div>
-    <ul role="list" class="notfound__ways">
-      <li><a class="go" href="/">Accueil</a></li>
-      <li><a class="go" href="/projets/">Projets</a></li>
-      <li><a class="go" href="/parcours/">Parcours</a></li>
-      <li><a class="go" href="/contact/">Contact</a></li>
-    </ul>
+    <div class="notfound__print" aria-hidden="true">
+      <span style="clip-path:url(#edge-404)"></span>
+      <svg width="0" height="0"><clipPath id="edge-404" clipPathUnits="objectBoundingBox"><path d={edge}></path></clipPath></svg>
+    </div>
   </section>
 </Base>
 
 <style>
   .notfound {
     display: grid;
-    gap: var(--joint);
-    padding-top: var(--joint);
-    min-height: 60dvh;
+    gap: 3rem;
+    align-items: center;
+    min-height: calc(100svh - var(--header-h) - var(--tabbar-h) - 6rem);
+    padding-block: 3rem;
   }
-  h1 {
-    margin-top: 0.75rem;
-    font-size: var(--step-4);
-  }
-  .notfound__sign p:not(.label) {
-    margin-top: 1rem;
-    color: var(--on-panel-2);
-  }
-  .notfound__ways {
-    display: grid;
-    gap: var(--joint);
-  }
-  @media (min-width: 48rem) {
-    .notfound__ways {
-      grid-template-columns: repeat(4, 1fr);
+  @media (min-width: 56rem) {
+    .notfound {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
     }
   }
-  .notfound__ways .go {
-    width: 100%;
-    justify-content: space-between;
-    min-height: 4rem;
-    padding: 0 1.25rem;
-    background: var(--panel);
-    color: var(--on-panel);
-    border-radius: var(--radius);
+  h1 {
+    margin-top: 1rem;
+    font-size: var(--step-4);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
   }
-  .notfound__ways .go::after {
-    background: var(--panel-2);
+  h1 em {
+    font-style: italic;
+    color: var(--blue);
+  }
+  .lede {
+    margin-top: 1.5rem;
+  }
+  .notfound__ways {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin-top: 2.5rem;
+  }
+  /* An unexposed sheet: sensitised paper that never saw the light. */
+  .notfound__print {
+    aspect-ratio: 4 / 5;
+    max-width: 24rem;
+    background: var(--sheet);
+    padding: 6% 5.5%;
+    box-shadow: 0 22px 40px -28px rgb(20 32 63 / 0.55);
+    rotate: 2deg;
+  }
+  .notfound__print span {
+    display: block;
+    height: 100%;
+    background: var(--raw);
   }
 </style>

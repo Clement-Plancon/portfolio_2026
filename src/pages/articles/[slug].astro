@@ -44,10 +44,10 @@ const html = renderMarkdown(a.body);
   ]}
 >
   <article class="wrap article">
-    <a class="panel go go--back article__back" href="/articles/">Tous les articles</a>
-    <header class="panel article__head">
+    <a class="arrow arrow--back article__back" href="/articles/">Tous les articles</a>
+    <header class="article__head">
       {a.status === 'draft' && <p class="draft-flag">Brouillon : visible seulement dans l'aperçu</p>}
-      <p class="label">
+      <p class="eyebrow">
         {a.publishedAt && <time datetime={a.publishedAt}>{formatDate(a.publishedAt)}</time>}
         {a.publishedAt && ' · '}
         {readingTime(a.body)} min de lecture
@@ -60,7 +60,7 @@ const html = renderMarkdown(a.body);
         <Image src={cover} alt={a.cover.alt} widths={[640, 1000, 1400]} sizes="(min-width: 64rem) 60rem, 100vw" class="article__cover" loading="eager" />
       )
     }
-    <div class="panel panel--sheet article__body">
+    <div class="article__body">
       <div class="prose" set:html={html} />
     </div>
   </article>
@@ -69,43 +69,42 @@ const html = renderMarkdown(a.body);
 <style>
   .article {
     display: grid;
-    gap: var(--joint);
-    padding-top: var(--joint);
+    gap: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    padding-block: clamp(1.5rem, 1rem + 2vw, 3rem) clamp(3rem, 2rem + 4vw, 6rem);
   }
   .article__back {
     justify-self: start;
-    padding: 0 1rem;
-  }
-  .article__back::before {
-    background: var(--panel-2);
   }
   .draft-flag {
     display: inline-block;
-    margin-bottom: 0.75rem;
-    padding: 0.15rem 0.5rem;
-    background: var(--signal);
-    color: var(--on-signal);
-    border-radius: 3px;
-    font-weight: 800;
+    margin-bottom: 1rem;
+    padding: 0.2rem 0.7rem;
+    background: var(--raw);
+    color: #14203f;
+    border-radius: 99px;
+    font-family: var(--sans);
+    font-size: 0.875rem;
+    font-weight: 600;
   }
   h1 {
-    margin-top: 0.75rem;
-    max-width: 52rem;
+    margin-top: 1rem;
+    max-width: 18ch;
     font-size: var(--step-4);
-    letter-spacing: -0.03em;
+    font-weight: 300;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
   }
   .article__excerpt {
-    margin-top: 1rem;
-    max-width: 42rem;
+    margin-top: 1.5rem;
+    max-width: 36ch;
     font-size: var(--step-1);
-    color: var(--on-panel-2);
+    line-height: 1.45;
+    color: var(--ink-2);
   }
   .article__cover {
     width: 100%;
-    border-radius: var(--radius);
   }
   .article__body {
-    padding-block: clamp(1.5rem, 1rem + 3vw, 3.5rem);
     font-size: var(--step-0);
     line-height: 1.7;
   }

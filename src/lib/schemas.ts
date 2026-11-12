@@ -56,17 +56,16 @@ export const seoSchema = z
   })
   .default({});
 
+/** Toning of the project's cyanotype print (src/lib/photogram.ts). Names kept from earlier designs so content stays valid. */
 export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable'] as const;
 
-/** Pictograms drawn in src/components/Pictogram.astro (a graphic interpretation, never a screenshot). */
+/** Objects laid on the print in the project's photogram (src/lib/photogram.ts): a presentation visual, never a screenshot. */
 export const PICTOGRAMS = ['feuille', 'jauge', 'dossier', 'radar', 'alerte', 'graphique', 'code', 'mobile', 'equipe'] as const;
 
 export const projectSchema = z.object({
   title: text(120).min(1, 'Titre requis'),
   summary: text(320).min(1, 'Résumé requis'),
   kind: optText(80),
-  /** Line code shown in the coloured badge (e.g. BV). Derived from the title when empty. */
-  code: z.string().trim().regex(/^[A-Z0-9]{1,3}$/, '1 à 3 lettres majuscules ou chiffres').optional(),
   pictogram: z.enum(PICTOGRAMS).optional(),
   category: z.enum(['pro', 'perso']),
   organisation: optText(120),
@@ -127,6 +126,8 @@ export const profileSchema = z.object({
   name: text(80).min(1),
   jobTitle: text(120).min(1),
   headline: text(200).min(1),
+  /** Home page statement; *word* is set in italic. Falls back to the headline. */
+  statement: optText(90),
   intro: text(600).min(1),
   bio: text(6000).min(1),
   location: text(120).min(1),

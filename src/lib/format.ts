@@ -24,3 +24,15 @@ export function formatDate(iso?: string): string {
     timeZone: 'UTC',
   });
 }
+
+const ESCAPES: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+/** Escapes text, then sets *word* in italic (the word that "develops"). Safe for set:html. */
+export function emphasis(text: string): string {
+  return text.replace(/[&<>"']/g, (c) => ESCAPES[c]).replace(/\*([^*]+)\*/g, '<em class="develop">$1</em>');
+}
+
+/** Same text without the markers, for titles and metadata. */
+export function plain(text: string): string {
+  return text.replace(/\*([^*]+)\*/g, '$1');
+}

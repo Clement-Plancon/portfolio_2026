@@ -1,9 +1,0 @@
----
-// A name with the "ç" signature: the cedilla is painted in signal yellow.
-interface Props {
-  text: string;
-}
-const { text } = Astro.props;
----
-
-{[...text].map((c) => (c === 'ç' ? <span class="cedilla">ç</span> : c))}

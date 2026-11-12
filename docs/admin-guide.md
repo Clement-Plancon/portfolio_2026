@@ -25,7 +25,7 @@ Nombre de projets, expériences, articles et médias ; état du site public et d
 
 **Fiche projet**
 - *L'essentiel* : titre, adresse de la page (générée depuis le titre), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
-- *Ligne et visuel* : l'indice de ligne (1 à 3 caractères, ex. BV ; calculé depuis le titre s'il est vide), le pictogramme, la couleur de ligne, et une capture réelle si vous en avez une. Sans capture, la page projet affiche le pictogramme sur la couleur de ligne, présenté comme une interprétation graphique.
+- *Tirage* : chaque projet est présenté comme un cyanotype. Choisissez les objets du photogramme (fougères, règles, enveloppes…), le virage (bleu de Prusse, indigo, thé…) et, si vous en avez une, une capture réelle : elle remplace le photogramme et apparaît virée au bleu, avec ses couleurs réelles au survol et sur demande. Sans capture, la page projet précise qu'il s'agit d'un visuel de présentation.
 - *Page détaillée* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
 - *Images de la page* : galerie avec texte alternatif et légende.
 - *Référencement* : titre et description pour Google, image de partage, aperçu du résultat de recherche.
@@ -45,7 +45,7 @@ Intitulé, organisation (et organisation de rattachement, ex. ministère), dates
 
 ## Profil et compétences
 
-- **Profil** : nom, titre professionnel, accroche et introduction de l'accueil, biographie (page À propos), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail.
+- **Profil** : nom, titre professionnel, phrase d'ouverture de l'accueil (un mot entre astérisques est mis en valeur : `Je rends *lisible*…`), accroche et introduction de l'accueil, biographie (page À propos), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail.
 - **Compétences** : groupes (nom, courte description, éléments), réordonnables.
 
 ## Médias

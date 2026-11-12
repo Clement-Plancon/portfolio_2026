@@ -1,6 +1,6 @@
 ---
 import PageHead from '../../components/PageHead.astro';
-import ProjectBoard from '../../components/ProjectBoard.astro';
+import PrintCard from '../../components/PrintCard.astro';
 import Base from '../../layouts/Base.astro';
 import { getProjects, getSeo } from '../../lib/content';
 import { getMedia } from '../../lib/media';
@@ -10,8 +10,8 @@ const seo = getSeo();
 const page = seo.pages.projects;
 const projects = getProjects();
 const groups = [
-  { id: 'pro', title: 'Projets professionnels', label: 'Projet', items: projects.filter((p) => p.category === 'pro') },
-  { id: 'perso', title: 'Projets personnels', label: 'Projet', items: projects.filter((p) => p.category === 'perso') },
+  { id: 'pro', title: 'Projets professionnels', items: projects.filter((p) => p.category === 'pro') },
+  { id: 'perso', title: 'Projets personnels', items: projects.filter((p) => p.category === 'perso') },
 ].filter((g) => g.items.length > 0);
 ---
 
@@ -24,13 +24,13 @@ const groups = [
 >
   <PageHead
     label={`${projects.length} projets`}
-    title="Projets"
-    lead="Logiciels pour l'administration, recherche utilisateur, donnée publique et application mobile. Chaque projet a sa ligne : choisissez-en une."
+    title="La planche *contact*"
+    lead="Logiciels pour l'administration, recherche utilisateur, données publiques, application mobile. Chaque projet est un tirage : ouvrez celui qui vous intrigue."
   >
     <nav class="jump" aria-label="Catégories de projets">
       {
         groups.map((g) => (
-          <a href={`#${g.id}`}>
+          <a class="pill" href={`#${g.id}`}>
             {g.title} <span>{g.items.length}</span>
           </a>
         ))
@@ -38,57 +38,72 @@ const groups = [
     </nav>
   </PageHead>
 
-  <div class="wrap groups">
-    {
-      groups.map((g) => (
-        <section class="panel" id={g.id} aria-labelledby={`${g.id}-title`}>
-          <h2 id={`${g.id}-title`} class="group__title">
-            {g.title}
-          </h2>
-          <ProjectBoard projects={g.items} id={`board-${g.id}`} label={g.label} />
-        </section>
-      ))
-    }
-  </div>
+  {
+    groups.map((g) => (
+      <section class="wrap sheet" id={g.id} aria-labelledby={`${g.id}-title`}>
+        <h2 id={`${g.id}-title`} class="sheet__title">
+          {g.title}
+        </h2>
+        <ol role="list" class="sheet__grid">
+          {g.items.map((p) => (
+            <li>
+              <PrintCard project={p} index={projects.indexOf(p)} total={projects.length} sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 45vw, 90vw" />
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
 </Base>
 
 <style>
   .jump {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--joint);
-    margin-top: 1.5rem;
-  }
-  .jump a {
-    display: inline-flex;
-    align-items: center;
     gap: 0.75rem;
-    min-height: 44px;
-    padding: 0 0.9rem;
-    background: var(--panel-2);
-    border-radius: 3px;
-    font-weight: 800;
-    text-decoration: none;
-  }
-  .jump a:hover {
-    background: var(--signal);
-    color: var(--on-signal);
+    margin-top: 2rem;
   }
   .jump span {
-    font-family: var(--mono);
-    font-weight: 500;
-    color: var(--signal);
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
   }
   .jump a:hover span {
-    color: var(--on-signal);
+    color: inherit;
   }
-  .groups {
-    display: grid;
-    gap: var(--joint);
-    padding-top: var(--joint);
+  .sheet {
+    padding-block: clamp(2rem, 1.5rem + 3vw, 5rem);
   }
-  .group__title {
-    margin-bottom: 1.5rem;
+  .sheet__title {
     font-size: var(--step-2);
+    font-style: italic;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .sheet__grid {
+    display: grid;
+    gap: clamp(3rem, 2rem + 3vw, 5rem) clamp(1.5rem, 1rem + 3vw, 4.5rem);
+  }
+  @media (min-width: 40rem) {
+    .sheet__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sheet__grid li:nth-child(even) {
+      margin-top: clamp(3rem, 1rem + 6vw, 7rem);
+    }
+  }
+  @media (min-width: 64rem) {
+    .sheet__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .sheet__grid li:nth-child(even) {
+      margin-top: 0;
+    }
+    .sheet__grid li:nth-child(3n + 2) {
+      margin-top: clamp(4rem, 2rem + 6vw, 9rem);
+    }
+    .sheet__grid li:nth-child(3n) {
+      margin-top: clamp(2rem, 1rem + 3vw, 4.5rem);
+    }
   }
 </style>

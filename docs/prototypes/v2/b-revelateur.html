@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype B — Révélateur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Instrument+Sans:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f1ede3; --paper-2:#e6e0d1; --ink:#14203f; --ink-2:#4a5470;
+  --blue:#1c3e8c; --blue-deep:#0f2660; --raw:#cfd0a3; /* sensitized, unexposed paper */
+  --serif:'Newsreader',Georgia,serif; --sans:'Instrument Sans',system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.7,.1,1);
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+/* paper grain over everything */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .35 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+header{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:baseline;padding:22px clamp(16px,4vw,48px);z-index:20;background:linear-gradient(var(--paper) 60%,#f1ede300)}
+.mark{font:500 19px/1 var(--serif);text-decoration:none;letter-spacing:-.01em}
+.mark i{font-style:italic;color:var(--blue)}
+nav ul{display:flex;gap:28px;list-style:none;padding:0}
+nav a{font-size:14px;text-decoration:none;position:relative}
+nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+nav a:hover::after,nav a[aria-current]::after{transform:none}
+
+/* Intro */
+.intro{min-height:92svh;display:grid;align-content:end;padding:0 clamp(16px,4vw,48px) 7vh;position:relative}
+.intro h1{font:300 clamp(44px,9.4vw,152px)/.92 var(--serif);letter-spacing:-.035em;max-width:13ch}
+.intro h1 em{font-style:italic;font-weight:400;color:var(--blue);position:relative}
+.intro .meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:6vh;max-width:980px;font-size:15px;color:var(--ink-2)}
+.intro .meta b{display:block;font-weight:500;color:var(--ink);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.intro .meta .now::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);margin-right:8px;vertical-align:1px;box-shadow:0 0 0 4px #1c3e8c22}
+
+/* The developing word: raw → blue as if exposed */
+.develop{animation:expose 2.6s var(--ease) .3s both}
+@keyframes expose{from{color:var(--raw)}to{color:var(--blue)}}
+
+/* Gallery of prints: vertical scroll drives a horizontal track */
+.gallery{position:relative;height:calc(var(--n) * 78vh + 100vh)}
+.track-wrap{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.gallery-head{position:absolute;top:84px;left:clamp(16px,4vw,48px);right:clamp(16px,4vw,48px);display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2)}
+.gallery-head strong{font:italic 400 22px/1 var(--serif);color:var(--ink)}
+.track{display:flex;gap:clamp(28px,4vw,64px);padding:0 clamp(16px,4vw,48px);will-change:transform}
+.print{flex:0 0 auto;width:min(46vw,calc(58svh * .8));text-decoration:none;display:block}
+.print:nth-child(even){margin-top:7vh}
+.sheet{position:relative;aspect-ratio:4/5;background:var(--paper-2);box-shadow:0 1px 0 #0001,0 18px 40px -24px #14203f66;transition:transform .7s var(--ease)}
+.sheet svg{display:block;width:100%;height:100%}
+.print:hover .sheet,.print:focus-visible .sheet{transform:translateY(-8px) rotate(-.4deg)}
+.cap{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin-top:18px;align-items:baseline}
+.cap .no{font:400 13px/1 var(--sans);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.cap h3{font:400 clamp(26px,2.6vw,38px)/1.02 var(--serif);letter-spacing:-.02em}
+.cap p{grid-column:2;font-size:14px;color:var(--ink-2)}
+.cap .tag{grid-column:2;font:italic 400 13px var(--serif);color:var(--blue)}
+.print:focus-visible{outline:none}
+.print:focus-visible h3{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+.progress{position:absolute;left:clamp(16px,4vw,48px);right:clamp(16px,4vw,48px);bottom:28px;height:1px;background:#14203f22}
+.progress i{display:block;height:100%;background:var(--ink);transform-origin:left;transform:scaleX(0)}
+
+/* Exposure state driven by --x (0 unexposed → 1 fully developed) */
+.emulsion{fill:color-mix(in oklab,var(--raw),var(--blue-deep) calc(var(--x,0) * 100%))}
+.ghost{opacity:calc(.25 + var(--x,0) * .75)}
+
+/* Project page (opened in place) */
+.page{position:fixed;inset:0;z-index:40;background:var(--paper);overflow:auto;visibility:hidden}
+.page.open{visibility:visible}
+.page .hero{position:relative;height:78svh;background:var(--blue-deep);color:#f4f1e8;display:grid;align-content:end;padding:0 clamp(16px,4vw,48px) 6vh;overflow:hidden}
+.page .hero svg{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.page .hero h2{position:relative;font:300 clamp(48px,10vw,150px)/.9 var(--serif);letter-spacing:-.035em}
+.page .hero p{position:relative;margin-top:16px;font:italic 400 18px var(--serif);opacity:.85}
+.page .body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:clamp(24px,5vw,80px);padding:8vh clamp(16px,4vw,48px);max-width:1280px}
+.page dl{font-size:14px;display:grid;gap:18px;align-content:start}
+.page dt{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.page .lead{font:400 clamp(22px,2.2vw,30px)/1.3 var(--serif);letter-spacing:-.01em;max-width:30ch}
+.page .body ul{margin-top:28px;padding:0;list-style:none;display:grid;gap:12px;max-width:60ch}
+.page .body li{padding-left:28px;position:relative}
+.page .body li::before{content:"";position:absolute;left:0;top:.7em;width:16px;height:1px;background:var(--blue)}
+.close{position:fixed;top:18px;right:clamp(16px,4vw,48px);z-index:45;background:#f4f1e8;color:var(--ink);border:0;border-radius:99px;padding:10px 16px;font:500 14px var(--sans);cursor:pointer}
+.label-honest{position:absolute;right:clamp(16px,4vw,48px);top:80px;font:italic 400 13px var(--serif);opacity:.75}
+
+/* Mobile */
+@media (max-width:760px){
+  nav ul{display:none}
+  header{position:absolute}
+  .tabbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:flex;justify-content:space-around;background:var(--ink);color:#f4f1e8;border-radius:99px;padding:6px}
+  .tabbar a{flex:1;text-align:center;text-decoration:none;font-size:13px;padding:12px 4px;border-radius:99px}
+  .tabbar a[aria-current]{background:#f4f1e8;color:var(--ink)}
+  .intro .meta{grid-template-columns:1fr;gap:14px}
+  .gallery{height:auto}
+  .track-wrap{position:relative;height:auto;padding:110px 0 120px}
+  .track{overflow-x:auto;scroll-snap-type:x mandatory;transform:none!important;padding-bottom:10px;scrollbar-width:none}
+  .print{width:80vw;scroll-snap-align:center}
+  .print:nth-child(even){margin-top:0}
+  .progress{bottom:80px}
+  .page .body{grid-template-columns:1fr}
+}
+@media (min-width:761px){.tabbar{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.develop{color:var(--blue)}}
+</style>
+</head>
+<body>
+<header>
+  <a class="mark" href="#top">Clément <i>Plançon</i></a>
+  <nav aria-label="Principale"><ul><li><a href="#travaux" aria-current="page">Travaux</a></li><li><a href="#">Parcours</a></li><li><a href="#">À propos</a></li><li><a href="#">Contact</a></li></ul></nav>
+</header>
+<nav class="tabbar" aria-label="Principale (mobile)"><a href="#travaux" aria-current="page">Travaux</a><a href="#">Parcours</a><a href="#">Contact</a></nav>
+
+<main id="top">
+  <section class="intro">
+    <h1>Je rends <em class="develop">lisible</em> ce qui est complexe.</h1>
+    <div class="meta">
+      <p><b>Clément Plançon</b>Ingénieur logiciel &amp; Tech Lead, Paris.</p>
+      <p class="now"><b>Aujourd'hui</b>Chef adjoint de la section informatique, Laboratoire de police scientifique de Paris.</p>
+      <p><b>Méthode</b>Comprendre avant de construire. Simple avant d'être malin.</p>
+    </div>
+  </section>
+
+  <section class="gallery" id="travaux" aria-label="Travaux">
+    <div class="track-wrap">
+      <div class="gallery-head"><strong>Tirages</strong><span>six projets · glisser ou défiler</span></div>
+      <div class="track" id="track"></div>
+      <div class="progress"><i id="bar"></i></div>
+    </div>
+  </section>
+</main>
+
+<article class="page" id="page" aria-hidden="true">
+  <button class="close" id="close">Fermer ✕</button>
+  <div class="hero"><span class="label-honest">Photogramme — visuel de présentation, pas une capture</span><svg id="pageArt" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice"></svg><h2 id="pTitle"></h2><p id="pKind"></p></div>
+  <div class="body"><dl id="pMeta"></dl><div><p class="lead" id="pLead"></p><ul id="pList"></ul></div></div>
+</article>
+
+<script>
+const P=[
+ {slug:'bercy-vert',t:'Bercy Vert',k:'Conception de logiciel · Transition écologique',y:'2023',org:"Ministère de l'Économie et des Finances",art:'fern',lead:"Un logiciel pour accompagner la transition écologique du ministère : centraliser les actions issues du BEGES et structurer les mesures SPE.",li:['Cadrage et expression des besoins avec les parties prenantes','Conception et développement du proof of concept','Recueil et restitution des retours utilisateurs']},
+ {slug:'datametre',t:'Datametre',k:'Dataviz · Open data',y:'Perso',org:'Projet personnel',art:'photo',lead:"Un observatoire éditorial des données publiques françaises.",li:['Datavisualisation éditoriale','Open data']},
+ {slug:'saisines',t:'Saisines de la Cour des comptes',k:'Recherche utilisateur · Conception',y:'2023',org:'Cour des comptes',art:'letters',lead:"Cadrage technique et recherche utilisateur pour structurer les outils de traitement des saisines.",li:['Entretiens terrain','Arbitrages de conception avec le studio de design']},
+ {slug:'referentiel',t:'Référentiel Indicateurs',k:'Application web',y:'2022',org:"Ministère de l'Économie et des Finances",art:'rulers',lead:"Centraliser et visualiser les indicateurs métiers pour les décideurs.",li:['Import multi-sources','Alertes sur seuils']},
+ {slug:'veille',t:'Veille Stratégique',k:'Outil interne · IA',y:'Perso',org:'Projet personnel',art:'lens',lead:"Un système de veille automatisé : collecte, extraction, résumés.",li:['Collecte multi-sources','Résumés par IA']},
+ {slug:'safeping',t:'SafePing',k:'Application mobile',y:'En cours',org:'Projet personnel',art:'key',lead:"Alerter discrètement des proches de confiance.",li:['Position GPS optionnelle','Mode façade « Notes »']},
+];
+// deterministic PRNG so each print is identical on every visit
+const rng=s=>()=>((s=Math.imul(s^s>>>15,1|s)+0x6d2b79f5|0,((s^s>>>7)>>>0)%10000)/10000);
+
+// Photogram objects: translucent white shapes, overlaps get whiter like real paper objects on emulsion.
+function art(kind,seed){
+  const r=rng(seed),o=[];
+  if(kind==='fern'){ // procedural fern frond, Anna Atkins style
+    for(let f=0;f<2;f++){const x0=150+f*110,y0=470,len=380-f*90,bend=(f?-1:1)*.35;
+      let d='';const pts=[];for(let i=0;i<=40;i++){const t=i/40;const x=x0+Math.sin(t*1.6)*bend*120,y=y0-t*len;pts.push([x,y]);}
+      o.push(`<path d="M${pts.map(p=>p.join(',')).join('L')}" stroke="#fff" stroke-width="3" fill="none" opacity=".9"/>`);
+      for(let i=3;i<38;i++){const [x,y]=pts[i],t=i/40,s=(1-t)*48+6;for(const side of[-1,1]){const a=side*(1.05-t*.3);
+        o.push(`<ellipse cx="${x+Math.cos(a)*s*.55*side}" cy="${y-Math.sin(Math.abs(a))*s*.25}" rx="${s*.55}" ry="${s*.14}" transform="rotate(${side*-28+r()*8} ${x} ${y})" fill="#fff" opacity=".78"/>`);}}}
+  } else if(kind==='letters'){ // stacked translucent envelopes and a paper clip
+    for(let i=0;i<5;i++){const x=60+r()*120,y=60+i*70+r()*20,w=200+r()*60,h=130,a=-14+r()*28;
+      o.push(`<g transform="rotate(${a} ${x+w/2} ${y+h/2})" opacity=".42"><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#fff"/><path d="M${x} ${y}L${x+w/2} ${y+h*.55}L${x+w} ${y}" stroke="#0f2660" stroke-opacity=".35" stroke-width="2" fill="none"/></g>`);}
+    o.push(`<path d="M300 70v150a26 26 0 0 1-52 0V90a16 16 0 0 1 32 0v120" stroke="#fff" stroke-width="5" fill="none"/>`);
+  } else if(kind==='rulers'){ // translucent graduated strips
+    for(let i=0;i<4;i++){const y=90+i*95,a=-20+i*12+r()*6;let ticks='';for(let k=0;k<34;k++)ticks+=`<rect x="${30+k*11}" y="${y}" width="2" height="${k%5?10:22}" fill="#0f2660" opacity=".5"/>`;
+      o.push(`<g transform="rotate(${a} 200 ${y})" opacity=".55"><rect x="20" y="${y}" width="390" height="46" fill="#fff"/>${ticks}</g>`);}
+  } else if(kind==='lens'){ // magnifier + strips of newsprint
+    for(let i=0;i<6;i++){const y=40+i*72;o.push(`<rect x="${30+r()*40}" y="${y}" width="${250+r()*80}" height="${20+r()*10}" fill="#fff" opacity=".35" transform="rotate(${-4+r()*8} 200 ${y})"/>`);}
+    o.push(`<circle cx="230" cy="220" r="110" fill="#fff" opacity=".22"/><circle cx="230" cy="220" r="110" stroke="#fff" stroke-width="16" fill="none"/><path d="M308 300l70 110" stroke="#fff" stroke-width="30" stroke-linecap="round"/>`);
+  } else if(kind==='key'){ // key on a ring, and a thread
+    o.push(`<circle cx="160" cy="150" r="58" stroke="#fff" stroke-width="7" fill="none"/><g transform="rotate(32 210 250)"><circle cx="210" cy="190" r="44" fill="#fff"/><circle cx="210" cy="190" r="15" fill="#0f2660" opacity=".9"/><rect x="200" y="228" width="20" height="200" fill="#fff"/><rect x="220" y="360" width="34" height="14" fill="#fff"/><rect x="220" y="392" width="24" height="14" fill="#fff"/></g>`);
+    o.push(`<path d="M30 470C120 380 60 300 160 210" stroke="#fff" stroke-width="2" fill="none" opacity=".7"/>`);
+  }
+  return o.join('');
+}
+// The brushed emulsion edge (hand-coated border) is a turbulence-displaced rectangle.
+function print(p,i){
+  const id='e'+i;
+  const inner=p.art==='photo'
+    ? `<image href="../../../src/assets/media/datametre-apercu.webp" x="28" y="50" width="344" height="400" preserveAspectRatio="xMidYMid slice" filter="url(#cy${i})" mask="url(#m${i})"/>`
+    : `<g mask="url(#m${i})"><rect class="emulsion" width="400" height="500"/><g class="ghost" filter="url(#soft${i})">${art(p.art,i*97+11)}</g><g class="ghost">${art(p.art,i*97+11)}</g></g>`;
+  return `<a class="print" href="#${p.slug}" data-i="${i}" style="--x:0">
+    <div class="sheet"><svg viewBox="0 0 400 500" role="img" aria-label="Photogramme de présentation : ${p.t}">
+      <defs>
+        <filter id="brush${i}"><feTurbulence type="fractalNoise" baseFrequency=".012 .16" numOctaves="4" seed="${i+3}"/><feDisplacementMap in="SourceGraphic" scale="24"/><feGaussianBlur stdDeviation=".7"/></filter>
+        <filter id="soft${i}"><feGaussianBlur stdDeviation="6"/></filter>
+        <filter id="cy${i}"><feColorMatrix type="matrix" values=".33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 1 0"/><feComponentTransfer><feFuncR type="table" tableValues=".95 .06"/><feFuncG type="table" tableValues=".94 .15"/><feFuncB type="table" tableValues=".9 .38"/></feComponentTransfer></filter>
+        <mask id="m${i}"><rect x="34" y="40" width="332" height="420" fill="#fff" filter="url(#brush${i})"/></mask>
+      </defs>
+      ${inner}
+    </svg></div>
+    <div class="cap"><span class="no">${String(i+1).padStart(2,'0')}</span><h3>${p.t}</h3><p>${p.k}</p><span class="tag">${p.y}</span></div>
+  </a>`;
+}
+const track=document.getElementById('track');
+track.innerHTML=P.map(print).join('');
+document.querySelector('.gallery').style.setProperty('--n',P.length);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Exposure: each print develops once when it comes into view (paper goes from yellow-green to Prussian blue).
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;io.unobserve(e.target);
+  if(reduce){e.target.style.setProperty('--x',1);return;}
+  const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/1800);e.target.style.setProperty('--x',1-Math.pow(1-k,3));if(k<1)requestAnimationFrame(f);})(t0);
+}),{threshold:.35});
+document.querySelectorAll('.print').forEach(p=>io.observe(p));
+
+// Desktop: vertical scroll drives the horizontal track.
+const gal=document.querySelector('.gallery'),bar=document.getElementById('bar');
+function onScroll(){if(innerWidth<=760)return;const r=gal.getBoundingClientRect(),max=gal.offsetHeight-innerHeight,k=Math.min(1,Math.max(0,-r.top/max));
+  track.style.transform=`translateX(${-k*(track.scrollWidth-innerWidth)}px)`;bar.style.transform=`scaleX(${k})`;}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+track.addEventListener('scroll',()=>{bar.style.transform=`scaleX(${track.scrollLeft/(track.scrollWidth-track.clientWidth)})`},{passive:true});
+
+// Open a project: the print grows into the page (View Transition when available).
+const page=document.getElementById('page');
+function open(i){const p=P[i];
+  const fill=()=>{document.getElementById('pTitle').textContent=p.t;document.getElementById('pKind').textContent=p.k;document.getElementById('pLead').textContent=p.lead;
+    document.getElementById('pList').innerHTML=p.li.map(x=>`<li>${x}</li>`).join('');
+    document.getElementById('pMeta').innerHTML=`<div><dt>Cadre</dt><dd>${p.org}</dd></div><div><dt>Période</dt><dd>${p.y}</dd></div><div><dt>Nature</dt><dd>${p.k}</dd></div>`;
+    document.getElementById('pageArt').innerHTML=p.art==='photo'?'':`<g opacity=".9">${art(p.art,i*97+11)}</g>`;
+    page.classList.add('open');page.setAttribute('aria-hidden','false');page.scrollTop=0;document.getElementById('close').focus();};
+  const s=document.querySelector(`.print[data-i="${i}"] .sheet`);
+  if(document.startViewTransition&&!reduce){s.style.viewTransitionName='print';document.querySelector('.page .hero').style.viewTransitionName='';
+    document.startViewTransition(()=>{s.style.viewTransitionName='';document.querySelector('.page .hero').style.viewTransitionName='print';fill();});}
+  else fill();}
+track.addEventListener('click',e=>{const a=e.target.closest('.print');if(!a)return;e.preventDefault();open(+a.dataset.i);});
+document.getElementById('close').onclick=()=>{const h=document.querySelector('.page .hero');const go=()=>{page.classList.remove('open');page.setAttribute('aria-hidden','true');};
+  document.startViewTransition&&!reduce?document.startViewTransition(go):go();};
+</script>
+</body>
+</html>

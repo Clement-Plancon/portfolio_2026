@@ -7,42 +7,23 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="wrap footer">
-  <p>© {year} {name} · Ingénieur logiciel &amp; Tech Lead · Paris</p>
-  <ul role="list">
-    <li><a href="/projets/">Projets</a></li>
-    <li><a href="/parcours/">Parcours</a></li>
-    <li><a href="/a-propos/">À propos</a></li>
-    <li><a href="/contact/">Contact</a></li>
-    <li><a href="#top">Haut de page ↑</a></li>
-  </ul>
+  <p>© {year} {name}, Paris</p>
+  <p class="footer__colophon">Composé en Newsreader et Instrument Sans. Cyanotypes calculés à la construction du site.</p>
+  <a href="#top">Haut de page ↑</a>
 </footer>
 
 <style>
   .footer {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     justify-content: space-between;
-    gap: 0.25rem 2rem;
-    padding-block: 1.5rem calc(1.5rem + var(--tabbar-h) + env(safe-area-inset-bottom));
-    font-family: var(--mono);
-    font-size: var(--step--1);
+    gap: 0.5rem 2rem;
+    padding-block: 2rem calc(2rem + env(safe-area-inset-bottom));
+    font-family: var(--sans);
+    font-size: 0.8125rem;
     color: var(--ink-3);
   }
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 1.25rem;
-  }
-  a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    color: var(--ink-2);
+  .footer a {
     text-decoration: none;
-  }
-  a:hover {
-    color: var(--ink);
-    text-decoration: underline;
   }
 </style>

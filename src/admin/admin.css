@@ -1,25 +1,31 @@
-/* Admin UI: same identity as the public site (signage palette, Overpass), denser layout.
-   The admin keeps its own semantic names, mapped onto the site tokens here. */
 body.admin {
-  --paper: var(--sheet);
-  --paper-2: var(--ground);
-  --surface: #fbfaf7;
+  --paper: #f7f4ed;
+  --paper-2: var(--bg);
+  --surface: #fbfaf6;
   --line: var(--rule);
   --line-strong: #a9a69c;
-  --accent: var(--signal);
-  --accent-ink: #8a5a00;
-  --sapin: var(--panel);
-  --font-display: var(--font);
+  --accent: var(--blue);
+  --accent-ink: #1c3e8c;
+  --sapin: var(--prussian);
+  --font-display: var(--serif);
   --ease-out: var(--ease);
+  font-family: var(--sans);
 }
 @media (prefers-color-scheme: dark) {
   body.admin {
-    --surface: #1f211d;
-    --line-strong: #55574f;
-    --accent-ink: var(--signal);
+    --paper: #111d3d;
+    --surface: #16244a;
+    --line-strong: #4a5675;
+    --accent-ink: #a9bff3;
+    --sapin: #a9bff3;
   }
 }
+/* The paper grain and tab bar space belong to the public site. */
+body.admin::after {
+  content: none;
+}
 body.admin {
+  padding-bottom: 0;
   font-size: 0.9375rem;
   line-height: 1.5;
   background: var(--paper-2);

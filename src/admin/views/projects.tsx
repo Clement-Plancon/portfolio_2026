@@ -1,26 +1,13 @@
-import { lineCode } from '../../lib/lines';
 import { COVER_COLORS, PICTOGRAMS } from '../../lib/schemas';
 import type { Entry } from '../api';
 import { FormActions, ImageField, LinkList, Select, StringList, TagInput, TextArea, TextInput, Thumb, Toggle } from '../ui';
 import { CollectionList, useEntryEditor } from './collection';
 import { EditorShell, NotFound, SeoFields, SlugField } from './shared';
 
-const COLOR_LABELS: Record<(typeof COVER_COLORS)[number], string> = {
-  vermillon: 'Rouge',
-  sapin: 'Vert',
-  ardoise: 'Bleu',
-  ocre: 'Orange',
-  prune: 'Violet',
-  sable: 'Sable',
-};
-const COLOR_HEX: Record<string, string> = {
-  vermillon: '#c8361f',
-  sapin: '#00a86b',
-  ardoise: '#2a62c4',
-  ocre: '#f28c28',
-  prune: '#7b43b0',
-  sable: '#d6c49a',
-};
+import { PHOTOGRAM_LABELS, TONES } from '../../lib/photogram';
+
+const COLOR_LABELS: Record<(typeof COVER_COLORS)[number], string> = Object.fromEntries(COVER_COLORS.map((c) => [c, TONES[c].label])) as never;
+const COLOR_HEX: Record<string, string> = Object.fromEntries(COVER_COLORS.map((c) => [c, TONES[c].deep]));
 
 export function ProjectList() {
   return (
@@ -40,9 +27,7 @@ export function ProjectList() {
           thumb: d.cover?.image ? (
             <Thumb src={d.cover.image.src} size="sm" />
           ) : (
-            <span class="swatch" style={{ background: COLOR_HEX[d.cover?.color ?? 'sapin'] }} aria-hidden="true">
-              {lineCode(d as { title: string; code?: string })}
-            </span>
+            <span class="swatch" style={{ background: COLOR_HEX[d.cover?.color ?? 'ardoise'] }} aria-hidden="true" />
           ),
         };
       }}
@@ -54,7 +39,6 @@ type ProjectForm = {
   title: string;
   summary: string;
   kind?: string;
-  code?: string;
   pictogram?: (typeof PICTOGRAMS)[number];
   category: 'pro' | 'perso';
   organisation?: string;
@@ -144,19 +128,17 @@ export function ProjectEditor({ id }: { id: string }) {
       </section>
 
       <section class="panel" aria-labelledby="p-couverture">
-        <h2 id="p-couverture">Ligne et visuel</h2>
-        <p class="hint">Chaque projet est une « ligne » : un indice coloré (ex. BV) et un pictogramme. Sans capture, la page projet affiche le pictogramme sur la couleur de ligne, présenté comme une interprétation graphique.</p>
-        <div class="grid-2">
-          <TextInput label="Indice de ligne" hint={`1 à 3 caractères. Vide : « ${lineCode({ title: f.title || '?' })} » (calculé).`} value={f.code} maxLength={3} error={e.code} onInput={(v) => set('code', opt(v.toUpperCase()))} />
-          <Select
-            label="Pictogramme"
-            value={f.pictogram ?? ''}
-            options={[{ value: '', label: 'Aucun' }, ...PICTOGRAMS.map((p) => ({ value: p, label: p.charAt(0).toUpperCase() + p.slice(1) }))]}
-            onChange={(v) => set('pictogram', (v || undefined) as ProjectForm['pictogram'])}
-          />
-        </div>
+        <h2 id="p-couverture">Tirage</h2>
+        <p class="hint">Chaque projet est présenté comme un cyanotype. Avec une capture réelle, le tirage montre la capture virée au bleu (en couleurs au survol et sur la page projet). Sans capture, il montre un photogramme : des objets posés sur le papier, présenté comme un visuel de présentation.</p>
+        <Select
+          label="Objets du photogramme"
+          hint="Utilisé quand il n'y a pas de capture réelle."
+          value={f.pictogram ?? ''}
+          options={[{ value: '', label: 'Automatique' }, ...PICTOGRAMS.map((p) => ({ value: p, label: PHOTOGRAM_LABELS[p] }))]}
+          onChange={(v) => set('pictogram', (v || undefined) as ProjectForm['pictogram'])}
+        />
         <fieldset class="swatches">
-          <legend>Couleur de ligne</legend>
+          <legend>Virage du tirage</legend>
           {COVER_COLORS.map((c) => (
             <label class="swatch-option">
               <input type="radio" name="cover-color" value={c} checked={f.cover.color === c} onChange={() => set('cover', { ...f.cover, color: c })} />

@@ -75,35 +75,69 @@ test('home exposes Person and ProfilePage structured data, with real facts', asy
   expect(data.some((d) => d['@type'] === 'ProfilePage')).toBe(true);
 });
 
-test('project board: flap names are real text, focus updates the info strip, row opens the project', async ({ page }) => {
+test('gallery: prints are real links with real titles, keyboard opens a project', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  // Screen readers get the real name, not the flap cells.
   await expect(page.getByRole('heading', { name: 'Référentiel Indicateurs', level: 3 })).toHaveCount(1);
-  const row = page.locator('[data-row]').nth(1);
-  await row.focus();
-  await expect(page.locator('[data-strip-code]')).toHaveText('RI');
-  await row.press('Enter');
+  // Photograms say what they are; the real capture is described by its alt text.
+  await expect(page.getByRole('img', { name: /Photogramme de présentation pour Bercy Vert/ })).toHaveCount(1);
+  const card = page.locator('[data-gallery] [data-card]').nth(1);
+  await card.focus();
+  await expect(card).toBeInViewport();
+  await card.press('Enter');
   await expect(page).toHaveURL(/\/projets\/referentiel-indicateurs\/$/);
-  await expect(page.getByRole('heading', { name: 'Contexte' })).toBeVisible();
-  await expect(page.getByRole('navigation', { name: 'Sections de la page' })).toBeVisible();
-  await expect(page.getByRole('link', { name: /Tous les projets/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Contexte/ })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Sommaire du projet' })).toBeVisible();
+  await expect(page.getByText(/visuel de présentation, pas une capture du produit/)).toBeVisible();
 });
 
-test('flaps settle on the real names (animation leaves no scrambled text)', async ({ page }) => {
+test('desktop gallery: the vertical scroll moves the prints sideways, then the page continues', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  await page.waitForTimeout(3000);
-  const texts = await page.locator('.flaps').evaluateAll((els) => els.map((e) => e.textContent?.replace(/\s+/g, '')));
-  expect(texts).toContain('BERCYVERT');
-  expect(texts).toContain('SAISINESDELACOURDESCOMPTES');
+  const gallery = page.locator('[data-gallery]');
+  await expect(gallery).toHaveClass(/is-pinned/);
+  const last = page.locator('[data-gallery] [data-card]').last();
+  await expect(last).not.toBeInViewport();
+  const box = await gallery.boundingBox();
+  await page.evaluate((y) => window.scrollTo(0, y), (box?.y ?? 0) + (box?.height ?? 0) - 900);
+  await expect(last).toBeInViewport();
+  await expect(page.locator('[data-count]')).toHaveText('06');
 });
 
-test('reduced motion: no flap animation', async ({ page }) => {
+test('phones: the gallery is a native horizontal swipe, no pinning', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  await page.goto('/');
+  await expect(page.locator('[data-gallery]')).not.toHaveClass(/is-pinned/);
+  const track = page.locator('[data-track]');
+  expect(await track.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+  await ctx.close();
+});
+
+test('prints develop once they come into view (opacity only), and stay developed', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/projets/');
+  const last = page.locator('.print').last();
+  await expect(last).toHaveClass(/is-raw/);
+  await last.scrollIntoViewIfNeeded();
+  await expect(last).toHaveClass(/is-developing/);
+  await expect(last).not.toHaveClass(/is-raw/);
+});
+
+test('reduced motion: prints are shown developed, never raw', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/');
-  await page.waitForTimeout(150);
-  const first = await page.locator('.flaps').first().textContent();
-  expect(first?.replace(/\s+/g, '')).toBe('BERCYVERT');
+  await page.goto('/projets/');
+  await page.waitForTimeout(300);
+  await expect(page.locator('.print.is-raw')).toHaveCount(0);
+});
+
+test('real capture: true colours on demand', async ({ page }) => {
+  await page.goto('/projets/datametre/');
+  const btn = page.getByRole('button', { name: 'Voir en couleurs réelles' });
+  await expect(btn).toHaveAttribute('aria-pressed', 'false');
+  await btn.click();
+  await expect(btn).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#project-print')).toHaveClass(/is-true-colors/);
 });
 
 test('sitemap and robots', async ({ request }) => {

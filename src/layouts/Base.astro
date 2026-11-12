@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import Seo from '../components/Seo.astro';
 import TabBar from '../components/TabBar.astro';
-import { getArticles, getExperiences, getProfile } from '../lib/content';
+import { getArticles, getProfile } from '../lib/content';
 
 interface Props {
   title: string;
@@ -22,9 +22,6 @@ interface Props {
 const { contactBand = true, ...seo } = Astro.props;
 const profile = getProfile();
 const showArticles = getArticles().length > 0;
-// The nav shows the current position like a live status line.
-const current = getExperiences().find((e) => !e.end);
-const status = current ? `En service · ${current.organisation}` : undefined;
 ---
 
 <!doctype html>
@@ -33,19 +30,34 @@ const status = current ? `En service · ${current.organisation}` : undefined;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <Seo {...seo} />
-    <link rel="preload" href="/fonts/overpass-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/overpass-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#e7e5df" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0a0b09" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f1ede3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c1631" media="(prefers-color-scheme: dark)" />
     <meta name="author" content={profile.name} />
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
-    <Header name={profile.name} status={status} showArticles={showArticles} />
+    <!-- Shared by every print: soft halo of objects, uneven exposure, cyanotype toning of real captures. -->
+    <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="pg-soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="7"></feGaussianBlur></filter>
+      <radialGradient id="pg-exposure" cx="42%" cy="38%" r="75%">
+        <stop offset="0" stop-color="#fff" stop-opacity=".1"></stop>
+        <stop offset="1" stop-color="#000" stop-opacity=".22"></stop>
+      </radialGradient>
+      <filter id="pg-cyano" color-interpolation-filters="sRGB">
+        <feColorMatrix type="matrix" values=".3 .59 .11 0 0 .3 .59 .11 0 0 .3 .59 .11 0 0 0 0 0 1 0"></feColorMatrix>
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues=".96 .3 .06 .05"></feFuncR>
+          <feFuncG type="table" tableValues=".95 .42 .16 .14"></feFuncG>
+          <feFuncB type="table" tableValues=".9 .62 .42 .38"></feFuncB>
+        </feComponentTransfer>
+      </filter>
+    </svg>
+    <Header name={profile.name} showArticles={showArticles} />
     <main id="contenu" tabindex="-1">
       <slot />
     </main>
@@ -61,5 +73,8 @@ const status = current ? `En service · ${current.organisation}` : undefined;
 <style>
   main:focus {
     outline: none;
+  }
+  .defs {
+    position: absolute;
   }
 </style>

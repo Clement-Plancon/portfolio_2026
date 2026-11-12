@@ -1,0 +1,108 @@
+---
+// A print with its caption, linking to the project page.
+import type { ProjectEntry } from '../lib/content';
+import Print from './Print.astro';
+
+interface Props {
+  project: ProjectEntry;
+  index: number;
+  total: number;
+  headingLevel?: 'h2' | 'h3';
+  sizes?: string;
+}
+const { project: p, index, total, headingLevel: H = 'h3', sizes } = Astro.props;
+const year = p.period?.start?.slice(0, 4);
+const state = p.status === 'en-cours' ? 'En cours' : year;
+const no = String(index + 1).padStart(2, '0');
+---
+
+<a class="card" href={`/projets/${p.id}/`} data-card>
+  <Print project={p} transition sizes={sizes} />
+  <span class="card__cap">
+    <span class="card__no" aria-hidden="true">{no}<span>/{String(total).padStart(2, '0')}</span></span>
+    <H class="card__title">{p.title}</H>
+    <span class="card__meta">
+      {p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')}
+    </span>
+    <span class="card__tag">{[p.category === 'pro' ? 'Professionnel' : 'Personnel', state].filter(Boolean).join(' · ')}</span>
+  </span>
+</a>
+
+<style>
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card :global(.print) {
+    transition:
+      transform var(--dur-3) var(--ease),
+      box-shadow var(--dur-3) var(--ease);
+  }
+  .card:hover :global(.print),
+  .card:focus-visible :global(.print) {
+    transform: translateY(-6px) rotate(-0.6deg);
+    box-shadow:
+      0 1px 0 rgb(20 32 63 / 0.06),
+      0 34px 50px -30px rgb(20 32 63 / 0.6);
+  }
+  .card:hover :global(.print__light) {
+    opacity: 1;
+  }
+  .card:hover :global(.print__img--true) {
+    opacity: 1;
+  }
+  .card:focus-visible {
+    outline: none;
+  }
+  .card:focus-visible :global(.print) {
+    outline: 2px solid var(--blue);
+    outline-offset: 6px;
+  }
+  .card__cap {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    row-gap: 0.2rem;
+    margin-top: 1.25rem;
+    align-items: baseline;
+  }
+  .card__no {
+    grid-row: span 3;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.375rem;
+    line-height: 1;
+    color: var(--blue);
+    font-variant-numeric: oldstyle-nums;
+  }
+  .card__no span {
+    font-size: 0.6em;
+    color: var(--ink-3);
+    margin-left: 0.1em;
+  }
+  .card__title {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.16em;
+    transition: text-decoration-color var(--dur-2) ease;
+  }
+  .card:hover .card__title,
+  .card:focus-visible .card__title {
+    text-decoration-color: currentColor;
+  }
+  .card__meta {
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .card__tag {
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+  }
+</style>

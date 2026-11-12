@@ -28,21 +28,18 @@ const profile = getProfile();
   ]}
 >
   <div class="contact-page">
-    <ContactBand profile={profile} headingLevel="h1" title="Contact" />
+    <ContactBand profile={profile} headingLevel="h1" />
   </div>
 </Base>
 
 <style>
-  .contact-page :global(.exit) {
-    margin-top: var(--joint);
-    min-height: calc(100dvh - var(--nav-h) - 6rem - var(--tabbar-h));
+  .contact-page :global(.contact) {
+    padding-top: clamp(1rem, 0.5rem + 2vw, 2.5rem);
   }
-  .contact-page :global(.exit__sign) {
+  .contact-page :global(.contact__sheet) {
+    min-height: calc(100svh - var(--header-h) - var(--tabbar-h) - 9rem);
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-  .contact-page :global(.exit__title) {
-    font-size: var(--step-4);
   }
 </style>

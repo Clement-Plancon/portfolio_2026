@@ -1,5 +1,5 @@
 ---
-// Career as stops along one line: each position is a panel, the line runs through all of them.
+// Career as an editorial list: years in italic on the left, the position and what it involved on the right.
 import type { ExperienceEntry } from '../lib/content';
 import { formatPeriod } from '../lib/format';
 
@@ -8,23 +8,20 @@ interface Props {
 }
 const { experiences } = Astro.props;
 const current = experiences.filter((e) => !e.end);
-const state = (e: ExperienceEntry) => (e.end ? 'Terminé' : e === current[0] ? 'En service' : 'En parallèle');
 ---
 
 <ol role="list" class="xp">
   {
     experiences.map((e) => (
-      <li class:list={['panel panel--sheet xp__item', { 'is-now': !e.end, 'is-main': e === current[0] }]}>
+      <li class="xp__item">
         <div class="xp__when">
-          <span class="xp__state">{state(e)}</span>
           <span class="xp__period">{formatPeriod(e.start, e.end, !e.end)}</span>
+          {!e.end && <span class:list={['xp__state', { 'is-main': e === current[0] }]}>{e === current[0] ? 'En poste' : 'En parallèle'}</span>}
         </div>
         <div class="xp__body">
           <h3 class="xp__role">{e.role}</h3>
           <p class="xp__org">
-            {e.url ? <a href={e.url}>{e.organisation}</a> : <strong>{e.organisation}</strong>}
-            {e.parentOrganisation && <span> · {e.parentOrganisation}</span>}
-            {e.location && <span> · {e.location}</span>}
+            {e.url ? <a href={e.url}>{e.organisation}</a> : e.organisation}{e.parentOrganisation && `, ${e.parentOrganisation}`}{e.location && ` · ${e.location}`}
           </p>
           {e.summary && <p class="xp__summary">{e.summary}</p>}
           {e.responsibilities.length > 0 && (
@@ -35,7 +32,7 @@ const state = (e: ExperienceEntry) => (e.end ? 'Terminé' : e === current[0] ? '
             </ul>
           )}
           {e.skills.length > 0 && (
-            <ul class="slash-list xp__skills" aria-label="Technologies">
+            <ul role="list" class="xp__skills" aria-label="Technologies et pratiques">
               {e.skills.map((s) => (
                 <li>{s}</li>
               ))}
@@ -49,110 +46,96 @@ const state = (e: ExperienceEntry) => (e.end ? 'Terminé' : e === current[0] ? '
 
 <style>
   .xp {
-    display: grid;
-    gap: var(--joint);
+    border-top: 1px solid var(--rule);
   }
   .xp__item {
-    position: relative;
     display: grid;
-    gap: 1rem var(--gutter);
-    padding-left: calc(var(--pad) + 2.25rem);
-  }
-  /* The line through all panels, and the stop of each position. */
-  .xp__item::before {
-    content: '';
-    position: absolute;
-    left: calc(var(--pad) + 7px);
-    top: 0;
-    bottom: calc(-1 * var(--joint));
-    width: 4px;
-    background: var(--panel);
-  }
-  .xp__item:last-child::before {
-    bottom: 50%;
-  }
-  .xp__item:first-child::before {
-    top: calc(var(--pad) + 0.3rem);
-  }
-  .xp__item::after {
-    content: '';
-    position: absolute;
-    left: var(--pad);
-    top: calc(var(--pad) + 0.15rem);
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--sheet);
-    border: 4px solid var(--panel);
-  }
-  .xp__item.is-now::after {
-    background: var(--signal);
+    gap: 1rem 3rem;
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+    border-bottom: 1px solid var(--rule);
   }
   @media (min-width: 56rem) {
     .xp__item {
-      grid-template-columns: 11rem minmax(0, 1fr);
+      grid-template-columns: minmax(12rem, 1fr) minmax(0, 2.6fr);
     }
   }
   .xp__when {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem 0.75rem;
-  }
-  @media (min-width: 56rem) {
-    .xp__when {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-  .xp__state {
-    padding: 0.15rem 0.5rem;
-    border-radius: 3px;
-    background: var(--panel);
-    color: var(--on-panel);
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .is-main .xp__state {
-    background: var(--signal);
-    color: var(--on-signal);
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
   }
   .xp__period {
-    font-family: var(--mono);
-    font-size: 0.875rem;
-    color: var(--ink-3);
+    font-style: italic;
+    font-size: var(--step-2);
+    line-height: 1.05;
+    color: var(--blue);
+    font-variant-numeric: oldstyle-nums;
+  }
+  .xp__state {
+    font-family: var(--sans);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .xp__state.is-main::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 0.5rem;
+    border-radius: 50%;
+    background: var(--blue);
+    vertical-align: 0.05em;
   }
   .xp__role {
     font-size: var(--step-2);
-    max-width: 40rem;
+    font-weight: 400;
+    line-height: 1.1;
+    max-width: 26ch;
   }
   .xp__org {
-    margin-top: 0.5rem;
-  }
-  .xp__org span {
+    margin-top: 0.6rem;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
     color: var(--ink-2);
   }
   .xp__summary {
-    margin-top: 0.75rem;
-    max-width: var(--measure);
-    color: var(--ink-2);
+    margin-top: 1.25rem;
+    max-width: 40rem;
+    font-size: var(--step-1);
+    line-height: 1.45;
   }
   .xp__resp {
     display: grid;
-    gap: var(--joint);
-    margin-top: 1rem;
-    max-width: 48rem;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    max-width: 42rem;
   }
   .xp__resp li {
-    padding: 0.6rem 0.9rem;
-    background: var(--ground);
-    border-radius: 3px;
-    font-size: 0.9375rem;
+    position: relative;
+    padding-left: 1.75rem;
+  }
+  .xp__resp li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 1rem;
+    height: 1px;
+    background: var(--blue);
   }
   .xp__skills {
-    margin-top: 1rem;
-    color: var(--ink-2);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .xp__skills li {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    font-family: var(--sans);
+    font-size: 0.8125rem;
   }
 </style>

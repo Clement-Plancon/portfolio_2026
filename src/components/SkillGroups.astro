@@ -1,5 +1,5 @@
 ---
-// Skills as a sign directory: one cell per field, assembled in a grid of panels.
+// Skills as a typographic index: one column per field.
 import type { Skills } from '../lib/schemas';
 
 interface Props {
@@ -11,10 +11,10 @@ const { skills } = Astro.props;
 <div class="skills">
   {
     skills.groups.map((g) => (
-      <section class="panel skills__group" aria-label={g.name}>
+      <section class="skills__group" aria-label={g.name}>
         <h3>{g.name}</h3>
-        {g.description && <p>{g.description}</p>}
-        <ul class="slash-list">
+        {g.description && <p class="skills__desc">{g.description}</p>}
+        <ul role="list">
           {g.items.map((it) => (
             <li>{it}</li>
           ))}
@@ -27,35 +27,27 @@ const { skills } = Astro.props;
 <style>
   .skills {
     display: grid;
-    gap: var(--joint);
-  }
-  @media (min-width: 40rem) {
-    .skills {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-  @media (min-width: 64rem) {
-    .skills {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 3rem clamp(2rem, 1rem + 3vw, 4rem);
   }
   .skills__group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
   }
-  h3 {
+  .skills__group h3 {
     font-size: var(--step-1);
+    font-style: italic;
   }
-  p {
-    font-size: 0.9375rem;
-    color: var(--on-panel-2);
-  }
-  .slash-list {
-    margin-top: auto;
-    padding-top: 0.75rem;
-    border-top: 1px solid var(--panel-line);
-    color: var(--signal);
+  .skills__desc {
+    margin-top: 0.4rem;
+    font-family: var(--sans);
     font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+  .skills__group ul {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.25rem;
+    font-size: 1.0625rem;
   }
 </style>

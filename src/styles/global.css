@@ -1,100 +1,98 @@
 /* ---------------------------------------------------------------
-   « Départs » — design system
-   Everything is a sign panel, assembled edge to edge with a 2px joint.
-   Black panels, signal yellow for "you are here" and actions, one line
-   colour per project. See docs/art-direction.md.
+   « Révélateur » — design system
+   The site is a set of cyanotypes: cotton paper, Prussian blue, prints
+   that develop when they come into the light. Light theme = the sheet,
+   dark theme = the exposed sheet. See docs/art-direction.md.
    --------------------------------------------------------------- */
 @font-face {
-  font-family: 'Overpass';
-  src: url('/fonts/overpass-latin.woff2') format('woff2-variations');
-  font-weight: 100 900;
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader.woff2') format('woff2-variations');
+  font-weight: 300 500;
+  font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Overpass Mono';
-  src: url('/fonts/overpass-mono-latin.woff2') format('woff2-variations');
-  font-weight: 300 700;
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader-italic.woff2') format('woff2-variations');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/instrument-sans.woff2') format('woff2-variations');
+  font-weight: 400 700;
   font-display: swap;
 }
 
 :root {
   color-scheme: light;
 
-  --ground: #e7e5df; /* page background: light concrete */
-  --panel: #141513; /* sign panel */
-  --panel-2: #20221e; /* flap cells, hover */
-  --panel-line: #2e302b; /* rules inside panels */
-  --on-panel: #f4f2ec;
-  --on-panel-2: #a6a59d;
-  --signal: #ffd21f;
-  --on-signal: #121310; /* text on yellow stays dark in both themes */
-  --ink: #121310;
-  --ink-2: #45463f;
-  --ink-3: #5d5e56;
-  --sheet: #f4f2ec; /* light panel on the ground */
-  --rule: #cfccc3;
+  --bg: #f1ede3; /* cotton paper */
+  --bg-2: #e8e2d4; /* paper in shadow */
+  --sheet: #f7f4ed; /* the print's own paper, lighter than the page */
+  --ink: #14203f;
+  --ink-2: #47506a;
+  --ink-3: #5a6178;
+  --rule: rgb(20 32 63 / 0.16);
+  --blue: #1c3e8c; /* links, the one accent */
+  --prussian: #0f2a68; /* full-bleed blue surfaces */
+  --on-prussian: #f4f1e8;
+  --on-prussian-2: #c9d1e6;
+  --raw: #cfd0a0; /* sensitised, unexposed paper */
+  --grain-opacity: 0.32;
 
-  /* Line colours (one per project) and the text colour that reads on them */
-  --line-sapin: #00a86b;
-  --line-sapin-text: #121310;
-  --line-ardoise: #2a62c4;
-  --line-ardoise-text: #f4f2ec;
-  --line-prune: #7b43b0;
-  --line-prune-text: #f4f2ec;
-  --line-ocre: #f28c28;
-  --line-ocre-text: #121310;
-  --line-vermillon: #c8361f;
-  --line-vermillon-text: #f4f2ec;
-  --line-sable: #d6c49a;
-  --line-sable-text: #121310;
+  --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font: var(--sans);
 
-  --font: 'Overpass', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --mono: 'Overpass Mono', ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  --step--1: 0.875rem;
+  --step-0: clamp(1.0625rem, 1.02rem + 0.2vw, 1.1875rem);
+  --step-1: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.3rem + 1.2vw, 2.25rem);
+  --step-3: clamp(2.2rem, 1.6rem + 2.6vw, 3.75rem);
+  --step-4: clamp(2.9rem, 1.9rem + 4.6vw, 6.25rem);
+  --step-5: clamp(3.1rem, 1.6rem + 7.4vw, 9.5rem);
 
-  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
-  --step-0: clamp(1.0625rem, 1.02rem + 0.18vw, 1.1875rem);
-  --step-1: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
-  --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
-  --step-3: clamp(2rem, 1.55rem + 2vw, 3.25rem);
-  --step-4: clamp(2.6rem, 1.8rem + 3.6vw, 5.25rem);
-
-  --joint: 2px; /* gap between assembled panels: the signature of the layout */
-  --pad: clamp(1rem, 0.6rem + 1.8vw, 2.5rem);
-  --gutter: clamp(0.75rem, 0.4rem + 1.6vw, 2.5rem);
-  --max: 90rem;
-  --measure: 38rem;
+  --gutter: clamp(1rem, 0.5rem + 2.6vw, 3.5rem);
+  --max: 92rem;
+  --measure: 36rem;
   --radius: 4px;
-  --nav-h: 3.5rem;
+  --header-h: 4.5rem;
   --tabbar-h: 0px;
 
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --dur-1: 140ms;
-  --dur-2: 260ms;
-  --dur-3: 480ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 700ms;
 }
 
 @media (max-width: 47.99rem) {
   :root {
-    --tabbar-h: 64px;
+    --tabbar-h: 4.75rem;
+    --header-h: 3.75rem;
   }
 }
 
-/* Dark mode: the ground goes dark, panels stay panels (separated by their lighter joints). */
+/* Dark theme: the sheet after exposure. Prints keep their light paper, like photos on a blue table. */
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --ground: #0a0b09;
-    --sheet: #1a1c18;
-    --ink: #ecebe5;
-    --ink-2: #c4c3bb;
-    --ink-3: #a6a59d;
-    --rule: #34362f;
+    --bg: #0c1631;
+    --bg-2: #101d3e;
+    --sheet: #ece7da;
+    --ink: #ebe6d9;
+    --ink-2: #b7bccb;
+    --ink-3: #a3a9bb;
+    --rule: rgb(235 230 217 / 0.16);
+    --blue: #a9bff3;
+    --prussian: #081027;
+    --on-prussian: #ebe6d9;
+    --on-prussian-2: #b7bccb;
+    --grain-opacity: 0.18;
   }
 }
 
-/* ---------------------------------------------------------------
-   Base
-   --------------------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -106,7 +104,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--nav-h) + 2rem);
+  scroll-padding-top: calc(var(--header-h) + 1rem);
 }
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -114,15 +112,32 @@ html {
   }
 }
 body {
-  min-height: 100dvh;
-  background: var(--ground);
+  background: var(--bg);
   color: var(--ink);
-  font-family: var(--font);
+  font-family: var(--serif);
   font-size: var(--step-0);
-  line-height: 1.55;
+  line-height: 1.6;
+  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
+  padding-bottom: var(--tabbar-h);
+}
+/* Paper grain: one small tile, multiplied over everything. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .38 0 0 0 0 .32 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  body::after {
+    mix-blend-mode: screen;
+  }
 }
 img,
 svg,
@@ -145,8 +160,8 @@ h1,
 h2,
 h3,
 h4 {
-  font-weight: 800;
-  line-height: 1.02;
+  font-weight: 400;
+  line-height: 1.05;
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
@@ -154,35 +169,28 @@ p,
 li,
 dd {
   text-wrap: pretty;
-  overflow-wrap: break-word;
 }
 ul[role='list'],
 ol[role='list'] {
   list-style: none;
   padding: 0;
 }
-::selection {
-  background: var(--signal);
-  color: var(--on-signal);
-}
 a {
   color: inherit;
-  text-decoration-line: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 0.2em;
-  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
-  transition: text-decoration-color var(--dur-1) ease;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
 }
 a:hover {
-  text-decoration-color: currentColor;
+  color: var(--blue);
 }
-
-/* Focus: a thick signal-yellow ring with a dark halo, readable on any panel or ground. */
 :focus-visible {
-  outline: 3px solid var(--signal);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 5px var(--panel);
-  border-radius: var(--radius);
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+::selection {
+  background: var(--prussian);
+  color: var(--on-prussian);
 }
 
 .visually-hidden {
@@ -197,255 +205,217 @@ a:hover {
   border: 0;
 }
 .skip-link {
-  position: fixed;
-  left: 0.75rem;
-  top: 0.75rem;
-  z-index: 100;
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
   padding: 0.75rem 1rem;
-  background: var(--signal);
-  color: var(--on-signal);
-  font-weight: 800;
-  border-radius: var(--radius);
-  transform: translateY(-200%);
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--sans);
+  border-radius: 99px;
 }
 .skip-link:focus {
-  transform: none;
+  top: 1rem;
 }
 
-/* ---------------------------------------------------------------
-   Layout: the panel assembly
-   --------------------------------------------------------------- */
 .wrap {
   width: 100%;
-  max-width: calc(var(--max) + 2 * var(--gutter));
+  max-width: var(--max);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
-/* A stack of panels joined by 2px. */
-.assembly {
-  display: grid;
-  gap: var(--joint);
-}
-.panel {
-  background: var(--panel);
-  color: var(--on-panel);
-  border-radius: var(--radius);
-  padding: var(--pad);
-}
-.panel--sheet {
-  background: var(--sheet);
-  color: var(--ink);
-}
-.panel--signal {
-  background: var(--signal);
-  color: var(--on-signal);
-}
-/* Inside a yellow sign every "ink" token resolves to the dark signal ink, whatever the theme. */
-.panel--signal,
-.exit__sign,
-.nav > a[aria-current='page'],
-.tabbar a[aria-current='page'] {
-  --ink: var(--on-signal);
-  --ink-2: var(--on-signal);
-  --ink-3: var(--on-signal);
-}
-.panel :focus-visible {
-  box-shadow: 0 0 0 5px var(--panel);
-}
 
-/* Small label in mono capitals: the voice of the sign system. */
-.label {
-  font-family: var(--mono);
-  font-size: var(--step--1);
+/* Small sans labels: the only "interface" voice of the site. */
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
-.panel .label {
-  color: var(--on-panel-2);
-}
-.panel--signal .label {
-  color: var(--ink);
-}
-
-/* Technologies etc.: mono, separated by thin slashes (no pill tags). */
-.slash-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.15rem 0;
-  padding: 0;
-  list-style: none;
-  font-family: var(--mono);
+.meta {
+  font-family: var(--sans);
   font-size: var(--step--1);
+  color: var(--ink-2);
 }
-.slash-list li:not(:last-child)::after {
-  content: '/' / '';
-  margin-inline: 0.55em;
-  opacity: 0.45;
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.45;
+  max-width: 34ch;
+  color: var(--ink-2);
 }
 
-/* The arrow is the only mark of action. */
-.go {
+/* The arrow link: text, a thin rule, and an arrow that moves on hover. */
+.arrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.2em;
+}
+.arrow::after {
+  content: '→';
+  transition: transform var(--dur-2) var(--ease);
+}
+.arrow:hover::after,
+.arrow:focus-visible::after {
+  transform: translateX(0.3em);
+}
+.arrow--back::after {
+  content: none;
+}
+.arrow--back::before {
+  content: '←';
+  transition: transform var(--dur-2) var(--ease);
+}
+.arrow--back:hover::before {
+  transform: translateX(-0.3em);
+}
+
+.pill {
   display: inline-flex;
   align-items: center;
   gap: 0.5em;
-  min-height: 44px;
-  font-weight: 800;
+  min-height: 2.75rem;
+  padding: 0.6rem 1.15rem;
+  border: 1px solid currentColor;
+  border-radius: 99px;
+  background: none;
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
   text-decoration: none;
+  transition:
+    background var(--dur-1) ease,
+    color var(--dur-1) ease;
 }
-.go::after {
-  content: '→' / '';
-  color: var(--signal);
-  background: var(--panel);
-  width: 1.6em;
-  height: 1.6em;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 3px;
-  transition: transform var(--dur-2) var(--ease);
-}
-.panel .go::after {
-  background: var(--panel-2);
-}
-.go:hover::after,
-.go:focus-visible::after {
-  transform: translateX(4px);
-}
-.go--back::after {
-  content: none;
-}
-.go--back::before {
-  content: '←' / '';
-  color: var(--signal);
-  background: var(--panel);
-  width: 1.6em;
-  height: 1.6em;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 3px;
-  transition: transform var(--dur-2) var(--ease);
-}
-.go--back:hover::before {
-  transform: translateX(-4px);
+.pill:hover {
+  background: var(--ink);
+  color: var(--bg);
 }
 
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6em;
-  min-height: 48px;
-  padding: 0.7rem 1.1rem;
-  border: 0;
-  border-radius: var(--radius);
-  background: var(--signal);
-  color: var(--on-signal);
-  font-weight: 800;
-  text-decoration: none;
-  transition: filter var(--dur-1) ease;
+/* A word that develops from raw paper to Prussian blue, once. */
+.develop {
+  font-style: italic;
+  color: var(--blue);
 }
-.button:hover {
-  filter: brightness(1.06);
+@media (prefers-reduced-motion: no-preference) {
+  .develop {
+    animation: develop 2.4s var(--ease) 0.25s both;
+  }
 }
-.button--panel {
-  background: var(--panel-2);
-  color: var(--on-panel);
+@keyframes develop {
+  from {
+    color: var(--raw);
+  }
 }
 
-/* The cedilla of "Plançon" in signal yellow: the glyph is painted with a two-colour gradient that
-   switches at the baseline. Overpass: ascent 0.88em, descent 0.38em, so the baseline sits at 70%
-   of an inline box, whatever the line-height. */
-.cedilla {
-  background-image: linear-gradient(currentColor 70%, var(--signal) 70%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.section {
+  padding-block: clamp(4rem, 3rem + 6vw, 9rem);
+}
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+}
+.section__title {
+  font-size: var(--step-3);
+  font-weight: 300;
+}
+.section__title em {
+  font-style: italic;
 }
 
-/* Long-form text. */
+/* Long-form text (projects, articles, about). */
 .prose {
   max-width: var(--measure);
 }
 .prose > * + * {
-  margin-top: 1.05em;
+  margin-top: 1.1em;
 }
 .prose h2 {
   font-size: var(--step-2);
-  margin-top: 1.8em;
+  margin-top: 2em;
 }
 .prose h3 {
   font-size: var(--step-1);
-  margin-top: 1.5em;
+  margin-top: 1.6em;
 }
 .prose ul,
 .prose ol {
-  padding-left: 1.2em;
+  padding-left: 1.25em;
 }
 .prose li + li {
-  margin-top: 0.35em;
+  margin-top: 0.4em;
 }
 .prose li::marker {
-  color: var(--ink-3);
+  color: var(--blue);
 }
 .prose blockquote {
-  padding: 0.6em 1em;
-  border-left: 4px solid var(--signal);
-  background: var(--sheet);
+  font-style: italic;
+  font-size: var(--step-1);
+  border-left: 1px solid var(--blue);
+  padding-left: 1.25em;
 }
 .prose code {
-  font-family: var(--mono);
-  font-size: 0.9em;
-  padding: 0.1em 0.3em;
-  background: var(--sheet);
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: var(--bg-2);
+  padding: 0.1em 0.35em;
   border-radius: 3px;
 }
 .prose pre {
   overflow-x: auto;
-  padding: 1rem;
-  background: var(--panel);
-  color: var(--on-panel);
+  padding: 1rem 1.25rem;
+  background: var(--prussian);
+  color: var(--on-prussian);
   border-radius: var(--radius);
-  font-size: var(--step--1);
-  line-height: 1.5;
+  font-size: 0.875rem;
 }
 .prose pre code {
-  padding: 0;
   background: none;
+  padding: 0;
 }
 .prose img {
-  border-radius: var(--radius);
+  border-radius: 2px;
 }
 .prose hr {
   border: 0;
-  border-top: 2px solid var(--rule);
+  border-top: 1px solid var(--rule);
 }
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--step--1);
-  display: block;
-  overflow-x: auto;
+  font-family: var(--sans);
+  font-size: 0.9375rem;
 }
 .prose th,
 .prose td {
-  padding: 0.5em 0.75em;
-  border-bottom: 1px solid var(--rule);
   text-align: left;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--rule);
 }
 
-/* ---------------------------------------------------------------
-   Motion: page transitions only. Content never fades in on scroll.
-   --------------------------------------------------------------- */
+/* Cross-document transitions: a calm cross-fade; prints keep their identity between pages. */
 @view-transition {
   navigation: auto;
 }
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: var(--dur-2);
+  animation-duration: 0.38s;
+  animation-timing-function: var(--ease);
 }
 ::view-transition-group(*) {
-  animation-duration: 420ms;
+  animation-duration: 0.6s;
   animation-timing-function: var(--ease);
 }
 
@@ -457,14 +427,9 @@ a:hover {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  @view-transition {
-    navigation: none;
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
-}
-
-/* On yellow (current page, exit sign) the cedilla would vanish: keep it in ink there. */
-.panel--signal .cedilla,
-[aria-current='page'] .cedilla {
-  background-image: none;
-  -webkit-text-fill-color: currentColor;
 }
