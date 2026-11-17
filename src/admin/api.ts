@@ -16,7 +16,7 @@ export type Entry<T = Record<string, unknown>> = { type: ContentType; id?: strin
 
 export interface ContentPayload {
   ref: { branch: string; sha: string; isDraft: boolean; date: string };
-  collections: { project: Entry[]; experience: Entry[]; article: Entry[] };
+  collections: { project: Entry[]; experience: Entry[] };
   singletons: Partial<Record<'profile' | 'skills' | 'seo' | 'media', Entry>>;
   mediaFiles: { ref: string; sha: string; size: number }[];
 }

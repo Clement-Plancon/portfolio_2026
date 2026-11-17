@@ -56,17 +56,13 @@ export const seoSchema = z
   })
   .default({});
 
-/** Toning of the project's cyanotype print (src/lib/photogram.ts). Names kept from earlier designs so content stays valid. */
+/** Paper stock of the project's leaf (src/lib/stocks.ts). Names kept from earlier designs so content stays valid. */
 export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable'] as const;
-
-/** Objects laid on the print in the project's photogram (src/lib/photogram.ts): a presentation visual, never a screenshot. */
-export const PICTOGRAMS = ['feuille', 'jauge', 'dossier', 'radar', 'alerte', 'graphique', 'code', 'mobile', 'equipe'] as const;
 
 export const projectSchema = z.object({
   title: text(120).min(1, 'Titre requis'),
   summary: text(320).min(1, 'Résumé requis'),
   kind: optText(80),
-  pictogram: z.enum(PICTOGRAMS).optional(),
   category: z.enum(['pro', 'perso']),
   organisation: optText(120),
   period: z
@@ -110,18 +106,6 @@ export const experienceSchema = z
   })
   .refine((e) => !e.end || e.end >= e.start, { message: 'La date de fin précède le début', path: ['end'] });
 
-export const articleSchema = z.object({
-  title: text(160).min(1, 'Titre requis'),
-  excerpt: text(320).min(1, 'Chapeau requis'),
-  body: z.string().max(100_000).default(''),
-  cover: imageSchema.optional(),
-  tags: list(10, 40),
-  status: z.enum(['draft', 'published']).default('draft'),
-  publishedAt: z.iso.date().optional(),
-  seo: seoSchema,
-  updatedAt: z.iso.datetime().optional(),
-});
-
 export const profileSchema = z.object({
   name: text(80).min(1),
   jobTitle: text(120).min(1),
@@ -149,7 +133,8 @@ export const skillsSchema = z.object({
   updatedAt: z.iso.datetime().optional(),
 });
 
-export const SEO_PAGES = ['home', 'projects', 'experience', 'about', 'articles', 'contact'] as const;
+/** The public site is a single page. */
+export const SEO_PAGES = ['home'] as const;
 
 export const seoSettingsSchema = z.object({
   siteName: text(80).min(1),
@@ -181,7 +166,6 @@ export const mediaManifestSchema = z.object({
 
 export type Project = z.infer<typeof projectSchema>;
 export type Experience = z.infer<typeof experienceSchema>;
-export type Article = z.infer<typeof articleSchema>;
 export type Profile = z.infer<typeof profileSchema>;
 export type Skills = z.infer<typeof skillsSchema>;
 export type SeoSettings = z.infer<typeof seoSettingsSchema>;

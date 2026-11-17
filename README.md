@@ -2,8 +2,8 @@
 
 Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
-- **Site public** : Astro, pages statiques pré-rendues, direction artistique « Révélateur » (cyanotypes générés au build), 4 Ko de JavaScript (1,75 Ko compressé), thème clair/sombre automatique.
-- **Administration** (`/admin/`) : projets, expériences, articles, profil, compétences, médias, référencement ; brouillon, aperçu réel et publication.
+- **Site public** : une seule page (`/`) pré-rendue par Astro : couverture, À propos, Projets, Parcours, Compétences, Contact. Direction artistique « Expliquer » (*explicare* : déplier) : la page est un dépliant dont chaque entrée et chaque détail est un pli, en CSS 3D. 4,5 Ko de JavaScript (1,9 Ko compressé), lisible sans, thème clair/sombre automatique.
+- **Administration** (`/admin/`) : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu réel et publication.
 - **Contenus** : fichiers JSON versionnés dans ce dépôt (`src/content/`), écrits par l'administration via l'API GitHub.
 - **Hébergement** : Netlify (site statique + une fonction serverless + Netlify Identity).
 
@@ -21,12 +21,12 @@ npm run dev
 | `npm run check` | vérification des types |
 | `npm run lint` | lint (Biome) |
 | `npm test` | tests unitaires et API (Vitest) |
-| `npm run test:e2e` | tests navigateur (Playwright) : 8 largeurs d'écran, accessibilité axe, SEO, parcours admin |
+| `npm run test:e2e` | tests navigateur (Playwright) : 8 largeurs d'écran, accessibilité axe, SEO, clavier, sans JS, mouvement réduit, parcours admin |
 
 ## Documentation
 
-- [docs/art-direction.md](docs/art-direction.md) — les trois concepts prototypés, le choix « Révélateur » et son système
-- [docs/interaction-system.md](docs/interaction-system.md) — développement des tirages, galerie, transitions
+- [docs/art-direction.md](docs/art-direction.md) — les trois concepts prototypés (`docs/prototypes/v3/`), le choix « Expliquer » et son système
+- [docs/interaction-system.md](docs/interaction-system.md) — plis, états (sans JS, mouvement réduit), clavier, mobile
 - [docs/captures/](docs/captures/) — captures des vues principales (desktop, mobile, sombre)
 - [docs/ux-review.md](docs/ux-review.md) — revue UX, corrections, limites
 - [docs/performance-review.md](docs/performance-review.md) — mesures Lighthouse et choix de performance
@@ -41,8 +41,8 @@ Les fichiers de `src/content/` peuvent aussi être édités à la main : ils son
 
 ## Référencement
 
-`sitemap-index.xml` et `robots.txt` sont générés au build (les pages masquées et brouillons en sont exclus). Pour Google Search Console / Bing Webmaster Tools : vérifier la propriété par DNS (aucune balise à ajouter au code), puis soumettre `https://clementplancon.fr/sitemap-index.xml`.
+`sitemap-index.xml` et `robots.txt` sont générés au build (une seule adresse : la page unique ; les anciennes pages redirigent en 301 vers leur section). Pour Google Search Console / Bing Webmaster Tools : vérifier la propriété par DNS (aucune balise à ajouter au code), puis soumettre `https://clementplancon.fr/sitemap-index.xml`.
 
 ## Licences
 
-Polices Newsreader et Instrument Sans : SIL Open Font License 1.1 (`public/fonts/`).
+Polices Mona Sans, Newsreader et Instrument Sans : SIL Open Font License 1.1 (`public/fonts/`).

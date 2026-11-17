@@ -65,7 +65,7 @@ export class Cms {
       }),
     );
 
-    const collections: Record<string, unknown[]> = { project: [], experience: [], article: [] };
+    const collections: Record<string, unknown[]> = { project: [], experience: [] };
     const singletons: Record<string, unknown> = {};
     for (const item of parsed) {
       if (CONTENT_TYPES[item.type].kind === 'collection') collections[item.type].push(item);

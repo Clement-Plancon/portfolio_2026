@@ -1,29 +1,25 @@
 ---
 interface Props {
   name: string;
+  location: string;
 }
-const { name } = Astro.props;
+const { name, location } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="wrap footer">
-  <p>© {year} {name}, Paris</p>
-  <p class="footer__colophon">Composé en Newsreader et Instrument Sans. Cyanotypes calculés à la construction du site.</p>
-  <a href="#top">Haut de page ↑</a>
+<footer class="foot wrap">
+  <p>© {year} {name} — {location}</p>
+  <p><a class="link" href="/#top">Revenir à la couverture ↑</a></p>
 </footer>
 
 <style>
-  .footer {
+  .foot {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 0.5rem 2rem;
-    padding-block: 2rem calc(2rem + env(safe-area-inset-bottom));
-    font-family: var(--sans);
-    font-size: 0.8125rem;
-    color: var(--ink-3);
-  }
-  .footer a {
-    text-decoration: none;
+    gap: 0.75rem 2rem;
+    padding-block: 2rem 2.5rem;
+    font-size: 0.875rem;
+    color: var(--ink-2);
   }
 </style>

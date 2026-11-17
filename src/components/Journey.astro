@@ -1,0 +1,183 @@
+---
+import type { ExperienceEntry } from '../lib/content';
+import { formatYearMonth } from '../lib/format';
+
+interface Props {
+  experiences: ExperienceEntry[];
+}
+const { experiences } = Astro.props;
+// Read left to right, like a triptych: oldest first.
+// Same start year: the main position (lower order) takes the middle pane.
+const panes = [...experiences].sort((a, b) => a.start.localeCompare(b.start) || a.order - b.order);
+const years = (e: ExperienceEntry) => (e.end ? `${formatYearMonth(e.start)}–${formatYearMonth(e.end).slice(-2)}` : `${formatYearMonth(e.start)} →`);
+---
+
+<section class="journey section" id="parcours" aria-labelledby="journey-title">
+  <div class="wrap">
+    <header class="sec-head" data-fold>
+      <h2 id="journey-title" class="display">Parcours</h2>
+      <p>Un triptyque : de la modernisation des services publics à Bercy jusqu'à la police scientifique, avec un collectif d'outils publics en parallèle.</p>
+    </header>
+
+    <ol class="trip" role="list" data-trip>
+      {
+        panes.map((e, i) => (
+          <li class="pane" data-fold data-pane={i === 0 ? 'left' : i === panes.length - 1 ? 'right' : 'middle'}>
+            <p class="pane__years display" aria-hidden="true">
+              {years(e)}
+            </p>
+            <h3 class="pane__role">{e.role}</h3>
+            <p class="pane__org">
+              {e.url ? (
+                <a class="link" href={e.url} rel="noopener">
+                  {e.organisation}
+                </a>
+              ) : (
+                e.organisation
+              )}
+              {e.parentOrganisation && <span> · {e.parentOrganisation}</span>}
+            </p>
+            <p class="pane__when label">
+              <span class="visually-hidden">Période : </span>
+              {e.end ? `${formatYearMonth(e.start)} — ${formatYearMonth(e.end)}` : `Depuis ${formatYearMonth(e.start)}`}
+              {e.location && ` · ${e.location}`}
+              {!e.end && <span class="pane__live">En poste</span>}
+            </p>
+            {e.summary && <p class="pane__summary">{e.summary}</p>}
+            {e.responsibilities.length > 0 && (
+              <ul role="list" class="pane__list">
+                {e.responsibilities.map((r) => (
+                  <li>{r}</li>
+                ))}
+              </ul>
+            )}
+            {e.skills.length > 0 && <p class="pane__skills">{e.skills.join(' · ')}</p>}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .trip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    perspective: 2200px;
+  }
+  .pane {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.25rem, 2.2vw, 2rem);
+    background: var(--leaf);
+    box-shadow: inset 1px 0 0 var(--crease);
+  }
+  .pane:first-child {
+    box-shadow: none;
+  }
+  /* The light falls from the left: each pane is slightly darker near its left crease. */
+  .pane::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 30%;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgb(0 0 0 / 0.045), rgb(0 0 0 / 0));
+  }
+  .pane__years {
+    font-size: clamp(3rem, 1.8rem + 3.4vw, 5rem);
+  }
+  .pane__role {
+    margin-top: 1.5rem;
+    font-size: clamp(1.2rem, 1rem + 0.5vw, 1.45rem);
+    font-weight: 680;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .pane__org {
+    margin-top: 0.4rem;
+    font-size: 0.9688rem;
+  }
+  .pane__when {
+    margin-top: 0.9rem;
+    color: var(--ink-2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .pane__live {
+    padding: 0.15rem 0.45rem;
+    background: var(--signal);
+    color: var(--on-signal);
+    letter-spacing: 0.1em;
+  }
+  .pane__summary {
+    margin-top: 1.25rem;
+  }
+  .pane__list {
+    margin-top: 1rem;
+  }
+  .pane__list li {
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--crease);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .pane__skills {
+    margin-top: auto;
+    padding-top: 1.25rem;
+    font-weight: 600;
+    font-stretch: 110%;
+    font-size: 0.9375rem;
+  }
+
+  /* The triptych opens: the outer panes swing out from the middle one. */
+  :global(.motion) .pane[data-fold] {
+    transition:
+      transform 1.1s var(--ease-fold),
+      filter 1.1s var(--ease-fold);
+  }
+  :global(.motion) .pane[data-pane='left'] {
+    transform-origin: 100% 50%;
+  }
+  :global(.motion) .pane[data-pane='right'] {
+    transform-origin: 0 50%;
+  }
+  :global(.motion) .pane[data-pane='left']:not(.is-flat) {
+    transform: rotateY(68deg);
+    filter: brightness(0.86);
+  }
+  :global(.motion) .pane[data-pane='right']:not(.is-flat) {
+    transform: rotateY(-68deg);
+    filter: brightness(0.86);
+  }
+  :global(.motion) .pane[data-pane='middle']:not(.is-flat) {
+    transform: translateZ(-60px);
+  }
+
+  @media (max-width: 56.24rem) {
+    .trip {
+      grid-auto-flow: row;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .pane {
+      box-shadow: inset 0 1px 0 var(--crease);
+    }
+    .pane::before {
+      inset: 0 0 auto;
+      width: auto;
+      height: 25%;
+      background: linear-gradient(rgb(0 0 0 / 0.045), rgb(0 0 0 / 0));
+    }
+    :global(.motion) .pane[data-fold] {
+      transform-origin: 50% 0;
+    }
+    :global(.motion) .pane[data-fold]:not(.is-flat) {
+      transform: rotateX(-64deg);
+    }
+  }
+</style>

@@ -1,75 +1,40 @@
 ---
 import Base from '../layouts/Base.astro';
-import { photogram } from '../lib/photogram';
-
-const { edge } = photogram('page-introuvable');
 ---
 
-<Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas ou a été déplacée." noindex contactBand={false}>
-  <section class="wrap notfound">
-    <div class="notfound__text">
-      <p class="eyebrow">Erreur 404</p>
-      <h1>Ce tirage n'a pas été <em>développé</em>.</h1>
-      <p class="lede">La page n'existe pas, ou elle a été déplacée.</p>
-      <ul role="list" class="notfound__ways">
-        <li><a class="arrow" href="/">Accueil</a></li>
-        <li><a class="arrow" href="/projets/">Projets</a></li>
-        <li><a class="arrow" href="/parcours/">Parcours</a></li>
-        <li><a class="arrow" href="/contact/">Contact</a></li>
-      </ul>
-    </div>
-    <div class="notfound__print" aria-hidden="true">
-      <span style="clip-path:url(#edge-404)"></span>
-      <svg width="0" height="0"><clipPath id="edge-404" clipPathUnits="objectBoundingBox"><path d={edge}></path></clipPath></svg>
-    </div>
+<Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas : tout le site tient sur une seule page." noindex nav={false}>
+  <section class="nf wrap">
+    <p class="label">Erreur 404</p>
+    <h1 class="display">Ce pli<br />n'existe pas.</h1>
+    <p class="lead">Tout le site tient désormais sur une seule feuille.</p>
+    <ul role="list" class="nf__ways">
+      <li><a class="link" href="/#projets">Les projets</a></li>
+      <li><a class="link" href="/#parcours">Le parcours</a></li>
+      <li><a class="link" href="/#contact">Le contact</a></li>
+      <li><a class="link" href="/">La couverture</a></li>
+    </ul>
   </section>
 </Base>
 
 <style>
-  .notfound {
-    display: grid;
-    gap: 3rem;
-    align-items: center;
-    min-height: calc(100svh - var(--header-h) - var(--tabbar-h) - 6rem);
-    padding-block: 3rem;
+  .nf {
+    min-height: 80svh;
+    padding-top: calc(var(--header-h) + 4rem);
+    padding-bottom: 4rem;
   }
-  @media (min-width: 56rem) {
-    .notfound {
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    }
-  }
-  h1 {
+  .nf h1 {
     margin-top: 1rem;
-    font-size: var(--step-4);
-    font-weight: 300;
-    line-height: 0.95;
-    letter-spacing: -0.035em;
+    font-size: clamp(3.6rem, 1.5rem + 9vw, 10rem);
   }
-  h1 em {
-    font-style: italic;
-    color: var(--blue);
-  }
-  .lede {
+  .nf .lead {
     margin-top: 1.5rem;
+    color: var(--ink-2);
   }
-  .notfound__ways {
+  .nf__ways {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem 2rem;
-    margin-top: 2.5rem;
-  }
-  /* An unexposed sheet: sensitised paper that never saw the light. */
-  .notfound__print {
-    aspect-ratio: 4 / 5;
-    max-width: 24rem;
-    background: var(--sheet);
-    padding: 6% 5.5%;
-    box-shadow: 0 22px 40px -28px rgb(20 32 63 / 0.55);
-    rotate: 2deg;
-  }
-  .notfound__print span {
-    display: block;
-    height: 100%;
-    background: var(--raw);
+    margin-top: 2rem;
+    font-weight: 620;
   }
 </style>

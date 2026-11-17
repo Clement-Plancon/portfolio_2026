@@ -1,0 +1,202 @@
+/* Base styles of the administration: fonts, tokens and element defaults.
+   Kept separate from the public site's stylesheet so the site's art direction can change
+   without touching the admin. */
+@font-face {
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader.woff2') format('woff2-variations');
+  font-weight: 300 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('/fonts/newsreader-italic.woff2') format('woff2-variations');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/instrument-sans.woff2') format('woff2-variations');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  --bg: #f1ede3; /* cotton paper */
+  --bg-2: #e8e2d4; /* paper in shadow */
+  --sheet: #f7f4ed; /* the print's own paper, lighter than the page */
+  --ink: #14203f;
+  --ink-2: #47506a;
+  --ink-3: #5a6178;
+  --rule: rgb(20 32 63 / 0.16);
+  --blue: #1c3e8c; /* links, the one accent */
+  --prussian: #0f2a68; /* full-bleed blue surfaces */
+  --on-prussian: #f4f1e8;
+  --on-prussian-2: #c9d1e6;
+  --raw: #cfd0a0; /* sensitised, unexposed paper */
+  --grain-opacity: 0.32;
+
+  --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font: var(--sans);
+
+  --step--1: 0.875rem;
+  --step-0: clamp(1.0625rem, 1.02rem + 0.2vw, 1.1875rem);
+  --step-1: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.3rem + 1.2vw, 2.25rem);
+  --step-3: clamp(2.2rem, 1.6rem + 2.6vw, 3.75rem);
+  --step-4: clamp(2.9rem, 1.9rem + 4.6vw, 6.25rem);
+  --step-5: clamp(3.1rem, 1.6rem + 7.4vw, 9.5rem);
+
+  --gutter: clamp(1rem, 0.5rem + 2.6vw, 3.5rem);
+  --max: 92rem;
+  --measure: 36rem;
+  --radius: 4px;
+  --header-h: 4.5rem;
+  --tabbar-h: 0px;
+
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 700ms;
+}
+
+@media (max-width: 47.99rem) {
+  :root {
+    --tabbar-h: 4.75rem;
+    --header-h: 3.75rem;
+  }
+}
+
+/* Dark theme: the sheet after exposure. Prints keep their light paper, like photos on a blue table. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0c1631;
+    --bg-2: #101d3e;
+    --sheet: #ece7da;
+    --ink: #ebe6d9;
+    --ink-2: #b7bccb;
+    --ink-3: #a3a9bb;
+    --rule: rgb(235 230 217 / 0.16);
+    --blue: #a9bff3;
+    --prussian: #081027;
+    --on-prussian: #ebe6d9;
+    --on-prussian-2: #b7bccb;
+    --grain-opacity: 0.18;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  padding-bottom: var(--tabbar-h);
+}
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:hover {
+  color: var(--blue);
+}
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+::selection {
+  background: var(--prussian);
+  color: var(--on-prussian);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  padding: 0.75rem 1rem;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--sans);
+  border-radius: 99px;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+

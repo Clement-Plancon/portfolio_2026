@@ -1,5 +1,5 @@
 // schema.org data. Only facts present in the content files are emitted.
-import type { ExperienceEntry } from './content';
+import type { ExperienceEntry, ProjectEntry } from './content';
 import type { Profile } from './schemas';
 
 export const SITE = 'https://clementplancon.fr';
@@ -44,15 +44,24 @@ export function profilePageLd(path: string, name: string, dateModified?: string)
   };
 }
 
-export function breadcrumbLd(items: { name: string; path: string }[]) {
+/** The projects of the one-page site, each with its own anchor. Only facts from the content files. */
+export function projectsLd(projects: ProjectEntry[]) {
   return {
     '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((it, i) => ({
+    '@type': 'ItemList',
+    name: 'Projets',
+    itemListElement: projects.map((p, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      name: it.name,
-      item: `${SITE}${it.path}`,
+      item: {
+        '@type': 'CreativeWork',
+        name: p.title,
+        description: p.summary,
+        url: `${SITE}/#projet-${p.id}`,
+        creator: { '@id': PERSON_ID },
+        ...(p.period?.start && { dateCreated: p.period.start }),
+        ...(p.technologies.length && { keywords: p.technologies.join(', ') }),
+      },
     })),
   };
 }

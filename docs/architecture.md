@@ -2,7 +2,7 @@
 
 ## En une phrase
 
-Un site **Astro statique** (HTML pré-rendu, quasiment sans JavaScript) dont le contenu vit dans des **fichiers JSON versionnés dans GitHub**, édités depuis une **administration Preact** qui passe par **une Netlify Function** protégée par **Netlify Identity**.
+Un site **Astro statique d'une seule page** (HTML pré-rendu, un petit script d'amélioration progressive) dont le contenu vit dans des **fichiers JSON versionnés dans GitHub**, édités depuis une **administration Preact** qui passe par **une Netlify Function** protégée par **Netlify Identity**.
 
 ```
 Navigateur (admin)                 Netlify                              GitHub
@@ -39,13 +39,13 @@ Alternative écartée : **Decap CMS**. Son interface générique ne permet pas l
 src/
   content/            Contenus (JSON) — la seule chose que l'admin modifie
     profile.json  skills.json  seo.json  media.json
-    projects/*.json  experiences/*.json  articles/*.json
+    projects/*.json  experiences/*.json
   assets/media/       Images (optimisées par Astro au build : WebP/AVIF, tailles multiples)
   lib/                Code partagé site / admin / API
     schemas.ts          Schémas zod : validation au build ET côté serveur
     content-types.ts    Type de contenu → chemin du fichier
     content.ts          Lecture des contenus au build (+ filtrage brouillons)
-    markdown.ts         Rendu Markdown sûr (HTML brut échappé, liens filtrés)
+    stocks.ts           Papiers des projets (couleur + encre), partagés site / admin
     media.ts  format.ts  structured-data.ts
   components/  layouts/  pages/  styles/  scripts/   Site public
   admin/              Application d'administration (Preact)
@@ -54,15 +54,15 @@ src/
     handler.ts  auth.ts  cms.ts  github.ts  media.ts  http.ts
 netlify/functions/admin.mts   Point d'entrée Netlify (quelques lignes)
 public/               Polices, favicon, image de partage, fichiers PDF (public/files)
-tests/unit/           Vitest : API complète sur un GitHub simulé, Markdown, schémas
-tests/e2e/            Playwright : site public (8 largeurs, axe, SEO) et parcours admin
+tests/unit/           Vitest : API complète sur un GitHub simulé, schémas, redirections, contraste des papiers
+tests/e2e/            Playwright : page unique (8 largeurs, axe clair/sombre, SEO, clavier, sans JS, mouvement réduit) et parcours admin
 scripts/generate-og.mjs   Génère public/og-default.png
 ```
 
 ## Modèle de publication
 
 - **Enregistrer** = un commit sur `cms-draft` (créée depuis `main` au premier enregistrement). Le site public ne change pas.
-- **Aperçu** = le déploiement de branche Netlify de `cms-draft`. Il affiche aussi les contenus masqués et les articles en brouillon (avec un bandeau), et il est en `noindex` (`robots.txt` fermé, balise `robots`).
+- **Aperçu** = le déploiement de branche Netlify de `cms-draft`. Il affiche aussi les contenus masqués (avec un bandeau), et il est en `noindex` (`robots.txt` fermé, balise `robots`).
 - **Publier** = fusion de `cms-draft` dans `main` (API GitHub *merges*), puis réalignement de `cms-draft` sur `main`. Netlify reconstruit la production.
 - **Abandonner** = suppression de `cms-draft`.
 - **Masquer / brouillon** = un champ du contenu (`visible`, `status`) : le contenu est publié mais filtré du build de production.
@@ -84,18 +84,25 @@ L'état des déploiements affiché dans l'admin vient des *commit statuses* que 
 - **Jeton GitHub** : variable d'environnement serveur, jamais renvoyée ni journalisée. Jeton *fine-grained* limité au dépôt (Contents : lecture/écriture, Commit statuses : lecture).
 - **Validation** : schémas zod partagés, identifiants restreints à `[a-z0-9-]`, chemins calculés côté serveur (pas de traversée), URL limitées à `http(s)` et `mailto`.
 - **Médias** : type déterminé par les octets (WebP, PNG, JPEG, AVIF, PDF) ; SVG et HTML refusés ; 4 Mo max ; nom de fichier réécrit ; suppression refusée si le média est encore utilisé.
-- **XSS** : le site n'insère jamais de HTML non maîtrisé ; le Markdown passe par `lib/markdown.ts` (HTML brut échappé, liens `javascript:`/`data:` supprimés). Même moteur dans l'aperçu de l'admin.
+- **XSS** : le site n'insère jamais de HTML non maîtrisé : tous les textes sont échappés par Astro ; la seule mise en valeur (`*mot*` de la phrase de couverture) est convertie après échappement.
 - **En-têtes** (`netlify.toml`) : CSP sans script inline (`script-src 'self'`), `frame-ancestors 'none'`, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy`. `/admin/` n'est ni mis en cache ni indexé.
 - **Journaux** : seulement la route et le code d'erreur, jamais le corps des requêtes ni les jetons.
 
+## Une seule page
+
+- `src/pages/index.astro` assemble les sections : `Cover` (couverture, `h1`), `About` (`#a-propos`), `Projects` (`#projets`), `Journey` (`#parcours`), `Skills` (`#competences`), `Contact` (`#contact`). Les ancres sont stables.
+- **Projets** : chaque projet est un `<article id="projet-…">` suivi de son détail `<section id="detail-…">`, **présent dans le HTML** (lisible sans JavaScript, indexable). Le script replie les détails, ouvre celui choisi sous sa rangée (bouton `aria-expanded`, `inert` sur les détails fermés) et tient l'adresse à jour (`/#projet-…`).
+- **Anciennes adresses** : `/projets/…`, `/parcours/`, `/a-propos/`, `/contact/`, `/articles/…` redirigent en 301 vers leur ancre (`netlify.toml`, testé dans `tests/unit/site.test.ts`).
+- **Routes restantes** : `/`, `/404.html`, `/admin/`, `sitemap-*.xml`, `robots.txt`.
+- **Données structurées** : `Person`, `ProfilePage`, et une `ItemList` de `CreativeWork` (un par projet, URL `/#projet-…`).
+
 ## Design system
 
-Direction « Révélateur » (cyanotype) : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
+Direction « Expliquer » (le dépliant) : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
 
-- **Tokens** : `src/styles/global.css` (papier, encre, bleu de Prusse, papier sensibilisé, échelle typographique). Thème sombre automatique.
-- **Polices** : Newsreader et Instrument Sans, auto-hébergées et réduites (`public/fonts/`).
-- **Tirages** : `src/lib/photogram.ts` génère au build, de façon déterministe, le photogramme (objets), le bord d'émulsion et le virage de chaque projet ; `Print.astro` les assemble, ou tire la vraie capture en cyanotype (filtre SVG `#pg-cyano` défini dans `Base.astro`).
-- **Composants** : `Header`, `TabBar` (navigation mobile), `Gallery` (galerie de l'accueil), `PrintCard` (tirage + légende), `Print`, `ExperienceList`, `SkillGroups`, `PageHead`, `ContactBand`.
-- **Identité d'un projet** : `pictogram` (objets du photogramme) et `cover.color` (virage) dans le contenu, modifiables dans l'administration ; une capture dans `cover.image` remplace le photogramme.
-- **Script** : `src/scripts/site.ts` (amélioration progressive ; tout fonctionne sans).
-- **Image de partage** : `scripts/generate-og.mjs` réutilise le générateur de photogrammes.
+- **Tokens** : `src/styles/global.css` (papier, feuille, encre, pli, signal vermillon ; deux voix typographiques `.display` et `.label`). Thème sombre automatique (papier noir).
+- **Police** : Mona Sans variable (graisse 200–900, largeur 75–125), auto-hébergée et réduite (`public/fonts/`). L'administration garde Newsreader et Instrument Sans (`src/admin/base.css`).
+- **Plis** : `@property --a` (angle animable) ; l'ombre de chaque pli est calculée avec `sin(var(--a))`. `Leporello.astro` est un composant récursif (chaque feuille contient la suivante, `preserve-3d`) utilisé pour la bande de couverture et les principes.
+- **Papiers des projets** : `src/lib/stocks.ts` (six couleurs avec leur encre, contraste AA testé) ; `cover.color` dans le contenu.
+- **Script** : `src/scripts/fold.ts` (4,5 Ko, 1,9 Ko compressé) : menu mobile, section active, ouverture des plis à l'entrée dans l'écran, bande de couverture pilotée par le défilement, carte des projets, copie de l'adresse. Sans lui, tout est déplié et lisible.
+- **Image de partage** : `scripts/generate-og.mjs` (nom + bande des papiers réels).

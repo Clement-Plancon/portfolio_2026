@@ -58,7 +58,7 @@ export function ProfileView() {
     <EditorShell
       back={{ href: '#/', label: 'Tableau de bord' }}
       title="Profil"
-      publicPath="/a-propos/"
+      publicPath="/#a-propos"
       actions={<FormActions dirty={s.dirty} saving={s.saving} onSave={s.submit} onCancel={s.reset} />}
       errorCount={Object.keys(e).length}
     >
@@ -68,10 +68,10 @@ export function ProfileView() {
           <TextInput label="Nom" required value={f.name} maxLength={80} error={e.name} onInput={(v) => set('name', v)} />
           <TextInput label="Titre professionnel" required value={f.jobTitle} maxLength={120} error={e.jobTitle} onInput={(v) => set('jobTitle', v)} />
         </div>
-        <TextInput label="Phrase d'ouverture (page d'accueil)" hint="Une phrase courte en très grand. Entourez un mot d'astérisques pour le mettre en valeur : Je rends *lisible*…" value={f.statement} maxLength={90} error={e.statement} onInput={(v) => set('statement', v.trim() ? v : undefined)} />
+        <TextInput label="Phrase de couverture" hint="Une phrase courte, en haut de la page, après « Expliquer, du latin explicare : déplier. » Entourez un mot d'astérisques pour le mettre en valeur : Je rends *lisible*…" value={f.statement} maxLength={90} error={e.statement} onInput={(v) => set('statement', v.trim() ? v : undefined)} />
         <TextArea label="Accroche" required value={f.headline} maxLength={200} rows={2} error={e.headline} onInput={(v) => set('headline', v)} />
-        <TextArea label="Introduction" required hint="Deux phrases sous l'accroche." value={f.intro} maxLength={600} rows={3} error={e.intro} onInput={(v) => set('intro', v)} />
-        <TextArea label="Biographie (page À propos)" required hint="Une ligne vide entre deux paragraphes. Le dernier paragraphe est mis en exergue." value={f.bio} maxLength={6000} rows={10} error={e.bio} onInput={(v) => set('bio', v)} />
+        <TextArea label="Introduction" required hint="Deux phrases, en tête de la section À propos." value={f.intro} maxLength={600} rows={3} error={e.intro} onInput={(v) => set('intro', v)} />
+        <TextArea label="Biographie (section À propos)" required hint="Une ligne vide entre deux paragraphes. Le dernier paragraphe est mis en exergue." value={f.bio} maxLength={6000} rows={10} error={e.bio} onInput={(v) => set('bio', v)} />
         <ImageField label="Photo (facultatif)" value={f.photo} errors={e} prefix="photo" onChange={(v) => set('photo', v)} />
       </section>
       <section class="panel" aria-labelledby="pr-contact">
@@ -127,7 +127,7 @@ export function SkillsView() {
     <EditorShell
       back={{ href: '#/', label: 'Tableau de bord' }}
       title="Compétences"
-      publicPath="/parcours/#competences"
+      publicPath="/#competences"
       actions={<FormActions dirty={s.dirty} saving={s.saving} onSave={s.submit} onCancel={s.reset} />}
       errorCount={Object.keys(e).length}
     >
@@ -161,12 +161,7 @@ type SeoSettings = {
 };
 
 const PAGE_LABELS: Record<(typeof SEO_PAGES)[number], { label: string; path: string }> = {
-  home: { label: 'Accueil', path: '/' },
-  projects: { label: 'Projets', path: '/projets/' },
-  experience: { label: 'Parcours', path: '/parcours/' },
-  about: { label: 'À propos', path: '/a-propos/' },
-  articles: { label: 'Articles', path: '/articles/' },
-  contact: { label: 'Contact', path: '/contact/' },
+  home: { label: 'Titre et description du site', path: '/' },
 };
 
 export function SeoView() {
@@ -191,7 +186,7 @@ export function SeoView() {
         <SeoFields
           key={p}
           prefix={`pages.${p}`}
-          heading={`Page « ${PAGE_LABELS[p].label} »`}
+          heading={PAGE_LABELS[p].label}
           value={f.pages[p] ?? {}}
           errors={e}
           onChange={(v) => set('pages', { ...f.pages, [p]: v })}

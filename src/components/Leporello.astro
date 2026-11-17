@@ -1,0 +1,34 @@
+---
+// A leporello (accordion fold): each leaf is nested in the previous one, so the fold
+// angle (--a) accumulates and the strip zigzags. --a = 0 is the flat, unfolded strip.
+export interface LeafItem {
+  title: string;
+  kicker?: string;
+  text?: string;
+  href?: string;
+  paper: string;
+  ink: string;
+}
+interface Props {
+  items: LeafItem[];
+  index?: number;
+  /** Links duplicated elsewhere on the page can stay out of the tab order. */
+  focusable?: boolean;
+}
+const { items, index = 0, focusable = true } = Astro.props;
+const item = items[index];
+const Tag = item?.href ? 'a' : 'div';
+---
+
+{
+  item && (
+    <div class="leaf" data-odd={index % 2 === 1 ? '' : undefined} style={`--paper:${item.paper};--paper-ink:${item.ink};--dir:${index % 2 ? 1 : -1}`}>
+      <Tag class="leaf__face" href={item.href} tabindex={item.href && !focusable ? -1 : undefined}>
+        {item.kicker && <span class="leaf__kicker label">{item.kicker}</span>}
+        <span class="leaf__title">{item.title}</span>
+        {item.text && <span class="leaf__text">{item.text}</span>}
+      </Tag>
+      {index + 1 < items.length && <Astro.self items={items} index={index + 1} focusable={focusable} />}
+    </div>
+  )
+}

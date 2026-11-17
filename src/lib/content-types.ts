@@ -2,7 +2,6 @@
 // Used by the admin API to turn "save project bercy-vert" into a file path.
 import type { z } from 'zod';
 import {
-  articleSchema,
   experienceSchema,
   mediaManifestSchema,
   profileSchema,
@@ -20,7 +19,6 @@ type SingletonType = { kind: 'singleton'; file: string; schema: z.ZodType };
 export const CONTENT_TYPES = {
   project: { kind: 'collection', dir: `${CONTENT_ROOT}/projects`, schema: projectSchema },
   experience: { kind: 'collection', dir: `${CONTENT_ROOT}/experiences`, schema: experienceSchema },
-  article: { kind: 'collection', dir: `${CONTENT_ROOT}/articles`, schema: articleSchema },
   profile: { kind: 'singleton', file: `${CONTENT_ROOT}/profile.json`, schema: profileSchema },
   skills: { kind: 'singleton', file: `${CONTENT_ROOT}/skills.json`, schema: skillsSchema },
   seo: { kind: 'singleton', file: `${CONTENT_ROOT}/seo.json`, schema: seoSettingsSchema },

@@ -1,8 +1,6 @@
 // Build-time access to content files. Every file is validated: an invalid file fails the build,
 // so a broken edit never reaches production.
 import {
-  type Article,
-  articleSchema,
   type Experience,
   experienceSchema,
   type Profile,
@@ -40,7 +38,6 @@ function collection<S extends z.ZodType>(files: Record<string, unknown>, schema:
 
 export type ProjectEntry = Project & { id: string };
 export type ExperienceEntry = Experience & { id: string };
-export type ArticleEntry = Article & { id: string };
 
 const byOrder = (a: { order: number; id: string }, b: { order: number; id: string }) =>
   a.order - b.order || a.id.localeCompare(b.id);
@@ -69,16 +66,6 @@ export function getExperiences(): ExperienceEntry[] {
     experienceSchema,
   ) as ExperienceEntry[];
   return all.filter((e) => SHOW_DRAFTS || e.visible).sort(byOrder);
-}
-
-export function getArticles(): ArticleEntry[] {
-  const all = collection(
-    import.meta.glob('../content/articles/*.json', { eager: true }),
-    articleSchema,
-  ) as ArticleEntry[];
-  return all
-    .filter((a) => SHOW_DRAFTS || a.status === 'published')
-    .sort((a, b) => (b.publishedAt ?? '').localeCompare(a.publishedAt ?? ''));
 }
 
 /** Text fields use blank lines between paragraphs. */
