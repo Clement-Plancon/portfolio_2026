@@ -1,4 +1,4 @@
-// Browser client for the admin API. Auth travels in the nf_jwt cookie set by Netlify Identity.
+// Browser client for the admin API. Auth travels in an HttpOnly session cookie set by the API itself.
 import type { ContentType } from '../lib/content-types';
 
 export class ApiError extends Error {
@@ -49,7 +49,7 @@ export const setUnauthenticatedHandler = (fn: () => void) => {
   onUnauthenticated = fn;
 };
 
-async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+async function request<T>(method: string, path: string, body?: unknown, { quiet401 = false } = {}): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`/api/admin${path}`, {
@@ -69,14 +69,17 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   }
   if (!res.ok) {
     const err = data?.error;
-    if (res.status === 401) onUnauthenticated?.();
+    if (res.status === 401 && !quiet401) onUnauthenticated?.();
     throw new ApiError(res.status, err?.code ?? 'http', err?.message ?? `Erreur ${res.status}`, err?.details ?? []);
   }
   return data as T;
 }
 
 export const api = {
-  session: () => request<{ email: string; configured: boolean; previewUrl: string | null }>('GET', '/session'),
+  session: () => request<{ user: string; expiresAt: number; configured: boolean; previewUrl: string | null }>('GET', '/session', undefined, { quiet401: true }),
+  login: (password: string) => request<{ expiresAt: number }>('POST', '/auth/login', { password }, { quiet401: true }),
+  logout: () => request<{ loggedOut: boolean }>('POST', '/auth/logout', {}, { quiet401: true }),
+  logoutAll: () => request<{ loggedOut: boolean }>('POST', '/auth/logout-all', {}),
   content: () => request<ContentPayload>('GET', '/content'),
   status: () => request<StatusPayload>('GET', '/status'),
   save: (message: string, changes: SaveChange[]) =>

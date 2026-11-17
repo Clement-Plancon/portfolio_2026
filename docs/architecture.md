@@ -2,18 +2,18 @@
 
 ## En une phrase
 
-Un site **Astro statique d'une seule page** (HTML pré-rendu, un petit script d'amélioration progressive) dont le contenu vit dans des **fichiers JSON versionnés dans GitHub**, édités depuis une **administration Preact** qui passe par **une Netlify Function** protégée par **Netlify Identity**.
+Un site **Astro statique d'une seule page** (HTML pré-rendu, un petit script d'amélioration progressive) dont le contenu vit dans des **fichiers JSON versionnés dans GitHub**, édités depuis une **administration Preact** qui passe par **une Netlify Function** protégée par **une authentification propre au site** (un administrateur, mot de passe Argon2id, sessions dans Netlify Blobs).
 
 ```
 Navigateur (admin)                 Netlify                              GitHub
 ──────────────────                 ───────                              ──────
-/admin/  ── login ──────────────▶  Identity (/.netlify/identity)
-         ◀── cookie nf_jwt ──────
+/admin/  ── mot de passe ───────▶  Function admin.mts  /api/admin/auth/login
+                                     Argon2id (ADMIN_PASSWORD_HASH), limite de tentatives ──▶ Netlify Blobs
+         ◀── cookie __Host-cms_session (HttpOnly, Secure, SameSite=Strict, signé)
          ── /api/admin/* ───────▶  Function admin.mts
-                                     1. vérifie le JWT (runtime Netlify)
-                                     2. e-mail ∈ ADMIN_EMAILS ?
-                                     3. Origin + en-tête X-CMS-Request
-                                     4. valide les données (zod)       ──▶ commit sur cms-draft
+                                     1. Origin + Sec-Fetch-Site + en-tête X-CMS-Request (mutations)
+                                     2. signature HMAC, expiration, session présente ──▶ Netlify Blobs
+                                     3. valide les données (zod)       ──▶ commit sur cms-draft
                                                                         ◀── (jeton GitHub, côté serveur)
                                    Build de branche cms-draft  ◀─────── push cms-draft  = APERÇU
          ── Publier ────────────▶  Function: merge cms-draft → main ──▶ merge
@@ -27,7 +27,7 @@ Navigateur (admin)                 Netlify                              GitHub
 | Site rapide, indexable | Astro, sortie statique | Pages pré-rendues, aucun contenu essentiel chargé en JavaScript. Optimisation d'images intégrée. Moins de dépendances que Next.js, pas de serveur. |
 | Contenus durables et versionnés | Fichiers JSON dans `src/content/` | Chaque modification est un commit : historique, retour arrière, revue possible. Rien ne dépend d'une base de données. |
 | Administration réelle sans serveur permanent | Une Netlify Function (`/api/admin/*`) | Compatible avec l'hébergement Netlify ; le jeton GitHub reste côté serveur. |
-| Authentification | Netlify Identity + `@netlify/identity` 2.x | Inscription fermée, invitation, réinitialisation, renouvellement de session. Netlify a confirmé le maintien d'Identity (février 2026) et recommande ce paquet pour les nouveaux projets. |
+| Authentification | Propre au site : Argon2id (`hash-wasm`, sans binaire natif) + sessions signées, stockées dans Netlify Blobs | Un seul administrateur : ni invitations ni e-mails. Le mot de passe ne quitte jamais le serveur et n'est stocké que haché ; les secrets se génèrent en local (`npm run admin:setup`). Netlify Blobs partage sessions et compteurs entre instances, sans base de données à gérer. |
 | Aperçu fidèle | Branche `cms-draft` + déploiement de branche Netlify | L'aperçu *est* le vrai site construit avec le brouillon, pas une imitation. |
 | Interface d'administration | Preact (alternative légère à React) | Formulaires riches sans alourdir le site public (Preact n'est chargé que sur `/admin/`). |
 
@@ -51,12 +51,13 @@ src/
   admin/              Application d'administration (Preact)
     main.tsx  store.tsx  api.ts  auth.ts  ui.tsx  admin.css  views/*
   server/             Logique de l'API (testée sans Netlify ni GitHub)
-    handler.ts  auth.ts  cms.ts  github.ts  media.ts  http.ts
+    handler.ts  auth.ts  session.ts  cms.ts  github.ts  media.ts  http.ts
 netlify/functions/admin.mts   Point d'entrée Netlify (quelques lignes)
 public/               Polices, favicon, image de partage, fichiers PDF (public/files)
-tests/unit/           Vitest : API complète sur un GitHub simulé, schémas, redirections, contraste des papiers
+tests/unit/           Vitest : authentification (sessions, révocation, tentatives, CSRF, configuration), API complète sur un GitHub simulé, schémas, redirections, contraste des papiers
 tests/e2e/            Playwright : page unique (8 largeurs, axe clair/sombre, SEO, clavier, sans JS, mouvement réduit) et parcours admin
 scripts/generate-og.mjs   Génère public/og-default.png
+scripts/admin-setup.mjs   npm run admin:setup : hachage du mot de passe et secret de session, en local
 ```
 
 ## Modèle de publication
@@ -79,14 +80,42 @@ L'état des déploiements affiché dans l'admin vient des *commit statuses* que 
 
 ## Sécurité
 
-- **Authentification** : JWT Netlify Identity vérifié par le runtime Netlify ; adresse obligatoirement présente dans `ADMIN_EMAILS` (sinon 403). Sans `ADMIN_EMAILS`, l'API refuse tout (503).
-- **CSRF** : toute requête de modification exige une origine identique au site (`verifyRequestOrigin`) et l'en-tête `X-CMS-Request: 1` (impossible à envoyer depuis un autre site sans pré-vol CORS, que l'API n'accepte pas).
+- **Authentification** (`src/server/session.ts`) :
+  - **Mot de passe** :
+    - comparé côté serveur au hachage **Argon2id** de `ADMIN_PASSWORD_HASH` (m = 64 Mio, t = 3, p = 1, sel aléatoire ; le serveur refuse un hachage plus faible que m = 19 Mio, t = 2) ;
+    - jamais stocké en clair ni journalisé ;
+    - erreur générique en cas d'échec ;
+    - corps de requête invalide, mot de passe vide ou de plus de 1024 caractères : même réponse qu'un mauvais mot de passe.
+  - **Session** :
+    - identifiant aléatoire de 256 bits ;
+    - cookie `__Host-cms_session` signé en HMAC-SHA256, `HttpOnly; Secure; SameSite=Strict; Path=/`, sans domaine ;
+    - la clé de signature est dérivée de `ADMIN_SESSION_SECRET` **et** du hachage du mot de passe ;
+    - le JavaScript de l'admin ne voit jamais ni le jeton ni un secret.
+  - **Expiration** : 8 h maximum, et 2 h sans activité ; vérifiées à chaque requête.
+  - **Révocation** :
+    - chaque session existe dans Netlify Blobs (clé = SHA-256 de l'identifiant) ;
+    - la déconnexion supprime l'entrée, donc un cookie copié devient inutilisable ;
+    - « Fermer toutes les sessions » supprime toutes les entrées ;
+    - changer le mot de passe ou le secret change la clé de signature et invalide toutes les sessions.
+  - **Limitation des tentatives** :
+    - comptée **avant** la vérification, dans Netlify Blobs, avec des écritures conditionnelles (ETag), donc valable entre instances ;
+    - par client (adresse IP fournie par Netlify, hachée) : 5 essais par 15 min, puis blocage de 15 min qui double à chaque récidive, jusqu'à 24 h ;
+    - global : 30 essais par heure, puis 15 min de pause ;
+    - en cas de conflit d'écriture répété, la tentative est refusée. La résistance aux rafales parallèles repose sur l'atomicité des écritures conditionnelles, que Netlify documente. Elle est vérifiée avec le stockage en mémoire des tests, mais pas sur Netlify. Le serveur Blobs *local* de `@netlify/blobs` ne l'applique pas de façon atomique : en local, une rafale parallèle n'est pas limitée, alors que des essais successifs le sont.
+  - **Configuration absente ou invalide** : l'API répond 503 partout, connexion comprise. Le journal indique la variable en cause, jamais sa valeur.
+- **CSRF** : toute requête de modification, connexion et déconnexion comprises, doit remplir trois conditions :
+  - une origine identique au site, ou à ses URL Netlify (`URL`, `DEPLOY_PRIME_URL`) ;
+  - `Sec-Fetch-Site: same-origin` quand le navigateur l'envoie ;
+  - l'en-tête `X-CMS-Request: 1`, qu'un autre site ne peut envoyer sans pré-vol CORS, et l'API n'en accorde aucun.
+
+  Le cookie `SameSite=Strict` complète ces vérifications.
 - **Jeton GitHub** : variable d'environnement serveur, jamais renvoyée ni journalisée. Jeton *fine-grained* limité au dépôt (Contents : lecture/écriture, Commit statuses : lecture).
 - **Validation** : schémas zod partagés, identifiants restreints à `[a-z0-9-]`, chemins calculés côté serveur (pas de traversée), URL limitées à `http(s)` et `mailto`.
 - **Médias** : type déterminé par les octets (WebP, PNG, JPEG, AVIF, PDF) ; SVG et HTML refusés ; 4 Mo max ; nom de fichier réécrit ; suppression refusée si le média est encore utilisé.
 - **XSS** : le site n'insère jamais de HTML non maîtrisé : tous les textes sont échappés par Astro ; la seule mise en valeur (`*mot*` de la phrase de couverture) est convertie après échappement.
 - **En-têtes** (`netlify.toml`) : CSP sans script inline (`script-src 'self'`), `frame-ancestors 'none'`, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy`. `/admin/` n'est ni mis en cache ni indexé.
-- **Journaux** : seulement la route et le code d'erreur, jamais le corps des requêtes ni les jetons.
+- **Journaux** : seulement la route et le code d'erreur (et les blocages de connexion), jamais le corps des requêtes, le mot de passe, l'adresse IP, les cookies ni les jetons.
+- **Cache** : toutes les réponses de l'API sont `Cache-Control: no-store` (les médias de l'admin : `private`).
 
 ## Une seule page
 

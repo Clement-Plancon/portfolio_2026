@@ -1,52 +1,19 @@
-// Thin wrapper over @netlify/identity (the library Netlify recommends for new projects).
-// Passwords are only ever sent to Netlify Identity; nothing is stored by this app.
-import {
-  AuthError,
-  acceptInvite,
-  getUser,
-  handleAuthCallback,
-  login,
-  logout,
-  MissingIdentityError,
-  requestPasswordRecovery,
-  updateUser,
-} from '@netlify/identity';
+// Login and logout against the admin API. The session lives in an HttpOnly cookie set by the server:
+// this code never sees a token or a secret, and the password is only sent once, to /api/admin/auth/login.
+import { ApiError, api } from './api';
 
-export type CallbackKind = { type: 'invite'; token: string } | { type: 'recovery' } | { type: 'done' } | null;
-
-export function authMessage(e: unknown, context: 'login' | 'link' | 'other' = 'other'): string {
-  if (e instanceof MissingIdentityError) {
-    return "Netlify Identity n'est pas activé sur ce site. Voir docs/netlify-deployment.md.";
+export function authMessage(e: unknown): string {
+  if (e instanceof ApiError) {
+    if (e.status === 429) return 'Trop de tentatives. Réessayez plus tard.';
+    if (e.status === 401) return 'Connexion refusée. Vérifiez le mot de passe.';
+    if (e.status === 503) return "L'administration n'est pas configurée sur ce site. Voir docs/netlify-deployment.md.";
+    if (e.status === 0) return e.message;
   }
-  if (e instanceof AuthError) {
-    const s = e.status ?? 0;
-    const m = (e.message || '').toLowerCase();
-    if (s === 429) return 'Trop de tentatives. Patientez quelques minutes.';
-    if (context === 'login' && s < 500) return 'E-mail ou mot de passe incorrect.';
-    if (context === 'link' && s < 500) return 'Ce lien a expiré ou a déjà été utilisé. Demandez-en un nouveau.';
-    if (s === 422) return e.message || 'Données refusées par le service d’identité.';
-    if (m.includes('expired') || m.includes('invalid')) return 'Ce lien a expiré ou a déjà été utilisé. Demandez-en un nouveau.';
-    return 'Le service de connexion ne répond pas. Réessayez dans un instant.';
-  }
-  return 'Une erreur inattendue est survenue.';
+  return 'Le service de connexion ne répond pas. Réessayez dans un instant.';
 }
 
 export const auth = {
-  currentUser: () => getUser(),
-  login: (email: string, password: string) => login(email.trim(), password),
-  logout: () => logout(),
-  requestRecovery: (email: string) => requestPasswordRecovery(email.trim()),
-  setPassword: (password: string) => updateUser({ password }),
-  acceptInvite: (token: string, password: string) => acceptInvite(token, password),
-
-  /** Handles links from invitation and password-reset e-mails (tokens in the URL hash). */
-  async callback(): Promise<CallbackKind> {
-    if (!/^#(confirmation_token|recovery_token|invite_token|email_change_token|access_token)=/.test(location.hash)) return null;
-    const r = await handleAuthCallback();
-    history.replaceState(null, '', location.pathname);
-    if (!r) return null;
-    if (r.type === 'invite' && r.token) return { type: 'invite', token: r.token };
-    if (r.type === 'recovery') return { type: 'recovery' };
-    return { type: 'done' };
-  },
+  login: (password: string) => api.login(password),
+  logout: () => api.logout(),
+  logoutEverywhere: () => api.logoutAll(),
 };

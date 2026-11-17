@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { ApiError, api } from '../api';
+import { auth } from '../auth';
 import { useStore } from '../store';
 import { confirmDialog } from '../ui';
 import { DeployBadge, relTime } from './dashboard';
@@ -30,6 +31,26 @@ export function SettingsView({ onLogout }: { onLogout: () => void }) {
     }
   };
 
+  // Revokes every session on the server (other browsers, a forgotten computer), this one included.
+  const logoutEverywhere = async () => {
+    const ok = await confirmDialog({
+      title: 'Fermer toutes les sessions ?',
+      body: 'Toutes les sessions ouvertes, sur tous les appareils, sont révoquées immédiatement, y compris celle-ci.',
+      confirm: 'Fermer toutes les sessions',
+      danger: true,
+    });
+    if (!ok) return;
+    setBusy(true);
+    try {
+      await auth.logoutEverywhere();
+    } catch (e) {
+      toast(e instanceof ApiError ? e.message : 'Action impossible.', 'error');
+      setBusy(false);
+      return;
+    }
+    onLogout();
+  };
+
   return (
     <section class="view">
       <header class="view__head">
@@ -41,11 +62,19 @@ export function SettingsView({ onLogout }: { onLogout: () => void }) {
           <dt>Connecté en tant que</dt>
           <dd>{email}</dd>
           <dt>Mot de passe</dt>
-          <dd>Pour le changer : déconnectez-vous puis « Mot de passe oublié ».</dd>
+          <dd>
+            Il se change hors de l'administration : <code>npm run admin:setup</code> sur votre ordinateur, puis nouvelle valeur de{' '}
+            <code>ADMIN_PASSWORD_HASH</code> dans Netlify (voir <code>docs/admin-guide.md</code>). Toutes les sessions sont alors fermées.
+          </dd>
         </dl>
-        <button type="button" class="btn btn--ghost" onClick={onLogout}>
-          Se déconnecter
-        </button>
+        <div class="btn-row">
+          <button type="button" class="btn btn--ghost" onClick={onLogout}>
+            Se déconnecter
+          </button>
+          <button type="button" class="btn btn--danger-ghost" disabled={busy} onClick={logoutEverywhere}>
+            Fermer toutes les sessions
+          </button>
+        </div>
       </section>
       <section class="panel" aria-labelledby="s-pub">
         <h2 id="s-pub">Publication</h2>
@@ -70,7 +99,7 @@ export function SettingsView({ onLogout }: { onLogout: () => void }) {
       <section class="panel" aria-labelledby="s-help">
         <h2 id="s-help">Aide</h2>
         <p>
-          Le mode d'emploi complet se trouve dans <code>docs/admin-guide.md</code> du dépôt. Chaque enregistrement est un commit Git attribué à votre adresse :
+          Le mode d'emploi complet se trouve dans <code>docs/admin-guide.md</code> du dépôt. Chaque enregistrement est un commit Git :
           rien n'est perdu, tout peut être retrouvé dans l'historique.
         </p>
       </section>

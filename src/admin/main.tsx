@@ -14,7 +14,7 @@ import { ProfileView, SeoView, SkillsView } from './views/singleton';
 
 type Phase =
   | { kind: 'loading' }
-  | { kind: 'login'; notice?: string; mode?: { kind: 'invite'; token: string } | { kind: 'reset' } }
+  | { kind: 'login'; notice?: string }
   | { kind: 'denied'; message: string }
   | { kind: 'ready'; email: string };
 
@@ -34,35 +34,27 @@ function App() {
   // Session expired while working: the app stays mounted (unsaved forms are kept) under a login overlay.
   const [expired, setExpired] = useState(false);
 
+  // The server is the only judge of the session: ask it.
   const check = async () => {
-    const user = await auth.currentUser();
-    if (!user) return setPhase({ kind: 'login' });
     try {
       const s = await api.session();
-      setPhase({ kind: 'ready', email: s.email });
+      setPhase({ kind: 'ready', email: s.user });
     } catch (e) {
-      if (e instanceof ApiError && e.status === 401) return setPhase({ kind: 'login', notice: 'Votre session a expiré. Reconnectez-vous.' });
-      setPhase({ kind: 'denied', message: e instanceof ApiError ? e.message : 'Accès impossible.' });
+      if (e instanceof ApiError && e.status === 401) return setPhase({ kind: 'login' });
+      setPhase({ kind: 'denied', message: e instanceof ApiError && e.status !== 503 ? e.message : authMessage(e) });
     }
   };
 
   useEffect(() => {
     setUnauthenticatedHandler(() => setExpired(true));
-    (async () => {
-      try {
-        const cb = await auth.callback();
-        if (cb?.type === 'invite') return setPhase({ kind: 'login', mode: { kind: 'invite', token: cb.token } });
-        if (cb?.type === 'recovery') return setPhase({ kind: 'login', mode: { kind: 'reset' } });
-      } catch (e) {
-        return setPhase({ kind: 'login', notice: authMessage(e, 'link') });
-      }
-      await check();
-    })();
+    check();
   }, []);
 
   const logout = async () => {
     try {
       await auth.logout();
+    } catch {
+      /* the cookie expires anyway; the screen must not stay open */
     } finally {
       setExpired(false);
       setPhase({ kind: 'login', notice: 'Vous êtes déconnecté.' });
@@ -77,16 +69,16 @@ function App() {
     );
   }
   if (phase.kind === 'login') {
-    return <Login key={phase.notice} initial={phase.mode} notice={phase.notice} onDone={check} />;
+    return <Login key={phase.notice} notice={phase.notice} onDone={check} />;
   }
   if (phase.kind === 'denied') {
     return (
       <main class="center">
         <div class="login__card">
-          <h1>Accès refusé</h1>
+          <h1>Administration indisponible</h1>
           <p role="alert">{phase.message}</p>
-          <button type="button" class="btn" onClick={logout}>
-            Se déconnecter
+          <button type="button" class="btn" onClick={() => location.reload()}>
+            Réessayer
           </button>
         </div>
       </main>

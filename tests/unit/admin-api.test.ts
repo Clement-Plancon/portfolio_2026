@@ -3,13 +3,13 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { Cms } from '../../src/server/cms';
 import type { GitHub } from '../../src/server/github';
 import { createHandler } from '../../src/server/handler';
+import { cookiePair, TEST_PASSWORD, testAuth } from '../helpers/admin-auth';
 import { FakeGitHub } from '../helpers/fake-github';
 
 const ORIGIN = 'https://clementplancon.fr';
-const ADMIN = 'admin@example.com';
 
 let gh: FakeGitHub;
-let user: { email: string } | null;
+let cookie: string;
 let handle: (req: Request) => Promise<Response>;
 
 function req(method: string, path: string, body?: unknown, headers: Record<string, string> = {}) {
@@ -17,6 +17,7 @@ function req(method: string, path: string, body?: unknown, headers: Record<strin
   return new Request(`${ORIGIN}/api/admin${path}`, {
     method,
     headers: {
+      cookie,
       ...(mutation ? { origin: ORIGIN, 'x-cms-request': '1', 'content-type': 'application/json' } : {}),
       ...headers,
     },
@@ -28,49 +29,15 @@ const call = async (method: string, path: string, body?: unknown, headers?: Reco
   return { status: res.status, body: res.headers.get('content-type')?.includes('json') ? await res.json() : null };
 };
 
-beforeEach(() => {
+// Access control and sessions are covered in auth.test.ts; here every request carries a valid session.
+beforeEach(async () => {
   gh = FakeGitHub.fromDir(process.cwd(), ['src/content', 'src/assets/media']);
-  user = { email: ADMIN };
-  handle = createHandler({
-    cms: new Cms(gh as unknown as GitHub, { branch: 'main', draftBranch: 'cms-draft' }),
-    getUser: async () => user,
-    verifyOrigin: (r) => {
-      if (r.headers.get('origin') !== new URL(r.url).origin) throw new Error('bad origin');
-    },
-    adminEmails: [ADMIN],
-    log: () => {},
-  });
-});
-
-describe('access control', () => {
-  it('rejects requests without a session', async () => {
-    user = null;
-    expect((await call('GET', '/content')).status).toBe(401);
-  });
-  it('rejects accounts that are not in ADMIN_EMAILS', async () => {
-    user = { email: 'someone@example.com' };
-    const r = await call('GET', '/content');
-    expect(r.status).toBe(403);
-    expect(r.body.error.code).toBe('forbidden');
-  });
-  it('compares e-mails case-insensitively', async () => {
-    user = { email: 'Admin@Example.com' };
-    expect((await call('GET', '/session')).status).toBe(200);
-  });
-  it('rejects cross-site mutations', async () => {
-    const r = await call('POST', '/discard', {}, { origin: 'https://evil.example' });
-    expect(r.status).toBe(403);
-  });
-  it('rejects mutations without the CMS header', async () => {
-    const res = await handle(
-      new Request(`${ORIGIN}/api/admin/discard`, { method: 'POST', headers: { origin: ORIGIN }, body: '{}' }),
-    );
-    expect(res.status).toBe(403);
-  });
-  it('fails closed when no admin is configured', async () => {
-    handle = createHandler({ cms: null, getUser: async () => user, verifyOrigin: () => {}, adminEmails: [], log: () => {} });
-    expect((await call('GET', '/session')).status).toBe(503);
-  });
+  const { auth } = await testAuth();
+  handle = createHandler({ cms: new Cms(gh as unknown as GitHub, { branch: 'main', draftBranch: 'cms-draft' }), auth, log: () => {} });
+  cookie = '';
+  const res = await handle(req('POST', '/auth/login', { password: TEST_PASSWORD }));
+  expect(res.status).toBe(200);
+  cookie = cookiePair(res.headers.get('set-cookie'));
 });
 
 describe('content editing', () => {

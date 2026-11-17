@@ -5,7 +5,8 @@ Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris �
 - **Site public** : une seule page (`/`) pré-rendue par Astro : couverture, À propos, Projets, Parcours, Compétences, Contact. Direction artistique « Expliquer » (*explicare* : déplier) : la page est un dépliant dont chaque entrée et chaque détail est un pli, en CSS 3D. 4,5 Ko de JavaScript (1,9 Ko compressé), lisible sans, thème clair/sombre automatique.
 - **Administration** (`/admin/`) : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu réel et publication.
 - **Contenus** : fichiers JSON versionnés dans ce dépôt (`src/content/`), écrits par l'administration via l'API GitHub.
-- **Hébergement** : Netlify (site statique + une fonction serverless + Netlify Identity).
+- **Hébergement** : Netlify (site statique + une fonction serverless + Netlify Blobs pour les sessions).
+- **Authentification** : un seul administrateur, mot de passe vérifié côté serveur (hachage Argon2id), session signée dans un cookie `HttpOnly`, révocable. Aucun service d'identité externe.
 
 ## Démarrer
 
@@ -21,6 +22,7 @@ npm run dev
 | `npm run check` | vérification des types |
 | `npm run lint` | lint (Biome) |
 | `npm test` | tests unitaires et API (Vitest) |
+| `npm run admin:setup` | génère sur votre ordinateur le hachage du mot de passe et le secret de session à copier dans Netlify (Windows, macOS, Linux) |
 | `npm run test:e2e` | tests navigateur (Playwright) : 8 largeurs d'écran, accessibilité axe, SEO, clavier, sans JS, mouvement réduit, parcours admin |
 
 ## Documentation
@@ -32,8 +34,16 @@ npm run dev
 - [docs/performance-review.md](docs/performance-review.md) — mesures Lighthouse et choix de performance
 - [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) — recherche de références
 - [docs/architecture.md](docs/architecture.md) — architecture, publication, sécurité, design system
-- [docs/netlify-deployment.md](docs/netlify-deployment.md) — mise en ligne, Identity, jeton GitHub, variables, vérifications
-- [docs/admin-guide.md](docs/admin-guide.md) — mode d'emploi de l'administration
+- [docs/netlify-deployment.md](docs/netlify-deployment.md) — mise en ligne, secrets de l'administration, jeton GitHub, variables, vérifications
+- [docs/admin-guide.md](docs/admin-guide.md) — mode d'emploi de l'administration, changement de mot de passe, récupération d'accès, rotation des secrets
+
+## Mise en place de l'administration (résumé)
+
+1. Sur votre PC : `npm install`, puis `npm run admin:setup` (le mot de passe ne s'affiche pas pendant la saisie).
+2. Dans Netlify, ajoutez `ADMIN_PASSWORD_HASH` et `ADMIN_SESSION_SECRET` (portée *Functions*, *Contains secret values*), ainsi que les variables GitHub de `.env.example`.
+3. Redéployez, ouvrez `/admin/` et saisissez votre mot de passe.
+
+Détails : [docs/netlify-deployment.md](docs/netlify-deployment.md). Aucun secret n'est versionné : `.env` est ignoré par Git, et la commande n'écrit rien sur le disque.
 
 ## Modifier le contenu sans l'administration
 

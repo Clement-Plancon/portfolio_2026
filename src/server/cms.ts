@@ -13,6 +13,8 @@ export interface CmsConfig {
   draftBranch: string;
 }
 
+/** Commit author shown on GitHub; without one, GitHub attributes the commit to the token owner. */
+export type CommitAuthor = { name: string; email: string };
 export type FileChange = { path: string; content: Uint8Array | null };
 
 export type SaveChange =
@@ -91,7 +93,7 @@ export class Cms {
    * Commits a set of file changes on the draft branch.
    * `build` is re-run if the branch moved during the commit, so checks always see the latest state.
    */
-  async commit(message: string, author: { name: string; email: string }, build: (ctx: BuildCtx) => Promise<FileChange[]>) {
+  async commit(message: string, author: CommitAuthor | undefined, build: (ctx: BuildCtx) => Promise<FileChange[]>) {
     for (let attempt = 0; ; attempt++) {
       let head = await this.gh.getRefSha(this.cfg.draftBranch);
       if (!head) {
@@ -136,7 +138,7 @@ export class Cms {
   }
 
   /** Saves validated content entries. */
-  async save(changes: SaveChange[], message: string, author: { name: string; email: string }) {
+  async save(changes: SaveChange[], message: string, author?: CommitAuthor) {
     const now = new Date().toISOString();
     const prepared = changes.map((c) => {
       if (!isContentType(c.type)) throw new HttpError(400, 'invalid_type', 'Type de contenu inconnu.');
@@ -185,7 +187,7 @@ export class Cms {
 
   async uploadMedia(
     file: { ref: string; bytes: Uint8Array; alt: string; width?: number; height?: number; replace: boolean },
-    author: { name: string; email: string },
+    author?: CommitAuthor,
   ) {
     const path = mediaRepoPath(file.ref);
     return this.commit(`CMS : ${file.replace ? 'remplacement' : 'ajout'} du média ${file.ref}`, author, async (ctx) => {
@@ -211,7 +213,7 @@ export class Cms {
     });
   }
 
-  async deleteMedia(ref: string, author: { name: string; email: string }) {
+  async deleteMedia(ref: string, author?: CommitAuthor) {
     const path = mediaRepoPath(ref);
     return this.commit(`CMS : suppression du média ${ref}`, author, async (ctx) => {
       if (!ctx.files.has(path)) throw new HttpError(404, 'not_found', 'Média introuvable.');
@@ -267,12 +269,12 @@ export class Cms {
     };
   }
 
-  async publish(author: { email: string }) {
+  async publish() {
     const draft = await this.gh.getRefSha(this.cfg.draftBranch);
     if (!draft) throw new HttpError(400, 'nothing', 'Aucune modification à publier.');
     let merged: string | null;
     try {
-      merged = await this.gh.merge(this.cfg.branch, this.cfg.draftBranch, `CMS : publication par ${author.email}`);
+      merged = await this.gh.merge(this.cfg.branch, this.cfg.draftBranch, 'CMS : publication');
     } catch (e) {
       if (e instanceof GitHubError && e.status === 409) {
         throw new HttpError(409, 'merge_conflict', 'Les modifications entrent en conflit avec la branche principale. Résolvez le conflit sur GitHub ou abandonnez les modifications non publiées.');

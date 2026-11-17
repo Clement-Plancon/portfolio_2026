@@ -85,5 +85,5 @@ Ce document distingue trois niveaux de vérification :
 - **Non testé** :
   - tests avec de vraies personnes et avec un vrai lecteur d'écran (NVDA, VoiceOver) ;
   - **Safari et Firefox** : les tests ont été menés uniquement dans Chromium. Les fonctions récentes utilisées (`@property`, `sin()` / `cos()` en CSS, unités `cqw`, `inert`) sont annoncées dans les versions actuelles de Safari et Firefox, mais le rendu des plis 3D n'y a pas été vu ;
-  - **Netlify** : le déploiement réel (Identity, GitHub, aperçu de branche, redirections 301) n'a pas été testé. Les redirections sont vérifiées par un test unitaire qui lit `netlify.toml`, pas par Netlify.
+  - **Netlify** : le déploiement réel (authentification avec Netlify Blobs, GitHub, aperçu de branche, redirections 301) n'a pas été testé. Les redirections sont vérifiées par un test unitaire qui lit `netlify.toml`, pas par Netlify.
 - **Bande de couverture** : elle est réservée aux voyants (`aria-hidden`), puisque ses projets sont repris dans la carte. Sur tablette en portrait, elle se trouve sous la ligne de flottaison.
