@@ -1,0 +1,136 @@
+---
+import { getMedia } from '../lib/media';
+import type { Profile } from '../lib/schemas';
+import { Image } from 'astro:assets';
+import { paragraphs } from '../lib/content';
+import Leporello, { type LeafItem } from './Leporello.astro';
+
+interface Props {
+  profile: Profile;
+}
+const { profile } = Astro.props;
+const bio = paragraphs(profile.bio);
+// The last paragraph of the biography is set apart, as a motto.
+const motto = bio.length > 1 ? bio.at(-1) : undefined;
+const body = motto ? bio.slice(0, -1) : bio;
+const photo = profile.photo ? getMedia(profile.photo.src) : undefined;
+const principles: LeafItem[] = profile.principles.map((p) => ({
+  title: p.title,
+  text: p.text,
+  paper: 'var(--leaf)',
+  ink: 'var(--ink)',
+}));
+---
+
+<section class="about section" id="a-propos" aria-labelledby="about-title">
+  <div class="wrap">
+    <header class="sec-head" data-fold>
+      <h2 id="about-title" class="display">À propos</h2>
+      <p>Qui déplie, et comment.</p>
+    </header>
+
+    <div class="about__grid">
+      <p class="about__intro lead">{profile.intro}</p>
+      <div class="about__bio">
+        {body.map((p) => <p>{p}</p>)}
+      </div>
+      {
+        photo && profile.photo && (
+          <figure class="about__photo">
+            <Image src={photo} alt={profile.photo.alt} widths={[320, 640]} sizes="(max-width: 48rem) 100vw, 20rem" />
+          </figure>
+        )
+      }
+    </div>
+
+    {motto && <p class="about__motto display">{motto}</p>}
+
+    {
+      principles.length > 0 && (
+        <div class="about__principles">
+          <h3 class="label">Ma façon de travailler</h3>
+          <div class="about__stage">
+            <div class="lep lep--ltr" data-unfold style={`--n:${principles.length}`}>
+              <Leporello items={principles} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    row-gap: 1.5rem;
+  }
+  .about__intro {
+    grid-column: 1 / span 5;
+  }
+  .about__bio {
+    grid-column: 7 / span 6;
+    color: var(--ink-2);
+  }
+  .about__bio p + p {
+    margin-top: 1em;
+  }
+  .about__photo {
+    grid-column: 1 / span 3;
+  }
+  .about__motto {
+    max-width: 18ch;
+    margin-top: clamp(3rem, 6vw, 5.5rem);
+    font-size: clamp(2.4rem, 1.2rem + 4.6vw, 5.4rem);
+    font-weight: 800;
+  }
+  .about__principles {
+    margin-top: clamp(3.5rem, 7vw, 6rem);
+  }
+  .about__principles h3 {
+    margin-bottom: 1rem;
+    color: var(--ink-2);
+  }
+  .about__stage {
+    container-type: inline-size;
+    perspective: 1600px;
+    perspective-origin: 20% 40%;
+  }
+  .about__stage .lep {
+    --leaf-w: calc(100cqw / var(--n));
+    --leaf-h: clamp(15.5rem, 13rem + 4vw, 18rem);
+  }
+  .about__stage :global(.leaf__face) {
+    box-shadow: inset 1px 0 0 var(--crease);
+  }
+  .about__stage :global(.leaf__title) {
+    margin-top: 0;
+    font-size: clamp(1.35rem, 0.9rem + 1vw, 1.8rem);
+  }
+  .about__stage :global(.leaf__text) {
+    margin-top: auto;
+    color: var(--ink-2);
+  }
+  @media (max-width: 56.24rem) {
+    .about__intro,
+    .about__bio,
+    .about__photo {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .about__stage .lep {
+      --leaf-w: 100cqw;
+      --leaf-h: 11rem;
+      height: calc(var(--leaf-h) * var(--n));
+    }
+    .about__stage :global(.leaf__face) {
+      box-shadow: inset 0 1px 0 var(--crease);
+    }
+    .about__stage :global(.leaf__text) {
+      margin-top: 0.5rem;
+    }
+  }
+</style>

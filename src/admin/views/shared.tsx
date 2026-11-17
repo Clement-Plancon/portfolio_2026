@@ -58,9 +58,9 @@ export function NotFound({ back }: { back: string }) {
 export function SlugField(p: { prefix: string; value: string; onInput: (v: string) => void; error?: string; isNew: boolean }) {
   return (
     <TextInput
-      label="Adresse de la page"
+      label="Adresse du projet"
       prefix={p.prefix}
-      hint={p.isNew ? 'Générée depuis le titre. Modifiable.' : "Changer l'adresse casse les liens existants vers cette page."}
+      hint={p.isNew ? 'Générée depuis le titre. Modifiable.' : "Changer l'adresse casse les liens existants vers ce projet."}
       value={p.value}
       error={p.error}
       maxLength={80}

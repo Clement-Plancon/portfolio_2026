@@ -23,7 +23,7 @@ interface Store {
 const Ctx = createContext<Store | null>(null);
 export const useStore = () => useContext(Ctx)!;
 
-const COLLECTION_KEY = { project: 'project', experience: 'experience', article: 'article' } as const;
+const COLLECTION_KEY = { project: 'project', experience: 'experience' } as const;
 
 export function StoreProvider({ email, children }: { email: string; children: ComponentChildren }) {
   const [data, setData] = useState<ContentPayload | null>(null);
@@ -77,7 +77,6 @@ export function StoreProvider({ email, children }: { email: string; children: Co
         collections: {
           project: d.collections.project.filter((e) => files[e.path] !== null).map(fix),
           experience: d.collections.experience.filter((e) => files[e.path] !== null).map(fix),
-          article: d.collections.article.filter((e) => files[e.path] !== null).map(fix),
         },
         singletons: Object.fromEntries(Object.entries(d.singletons).map(([k, e]) => [k, e && fix(e)])),
       };

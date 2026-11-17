@@ -6,7 +6,7 @@ import type { Entry } from '../api';
 import { go, useStore, useUnsavedGuard } from '../store';
 import { confirmDialog, type Errors, Icon, IconButton, issuesToErrors } from '../ui';
 
-export type CollectionType = 'project' | 'experience' | 'article';
+export type CollectionType = 'project' | 'experience';
 
 export const slugify = (s: string) =>
   s
@@ -79,7 +79,8 @@ export function CollectionList(p: ListProps) {
     const copy = {
       ...e.data,
       ...('title' in e.data ? { title: `${title} (copie)` } : { role: `${title} (copie)` }),
-      ...(p.type === 'article' ? { status: 'draft' } : { visible: false, featured: false }),
+      visible: false,
+      featured: false,
       order: Math.max(0, ...entries.map((x) => (x.data.order as number) ?? 0)) + 10,
     };
     setBusy(true);
@@ -141,7 +142,7 @@ export function CollectionList(p: ListProps) {
         <ol class="rows">
           {list.map((e, i) => {
             const d = p.describe(e);
-            const hidden = p.type === 'article' ? e.data.status !== 'published' : e.data.visible === false;
+            const hidden = e.data.visible === false;
             return (
               <li
                 key={e.id}
@@ -169,7 +170,7 @@ export function CollectionList(p: ListProps) {
                   {e.error && <span class="error">{e.error}</span>}
                 </a>
                 <span class={`badge${hidden ? ' badge--muted' : ' badge--ok'}`}>
-                  {p.type === 'article' ? (hidden ? 'Brouillon' : 'Publié') : hidden ? 'Masqué' : 'Visible'}
+                  {hidden ? 'Masqué' : 'Visible'}
                 </span>
                 <div class="row-actions">
                   {p.reorderable && (
@@ -180,35 +181,19 @@ export function CollectionList(p: ListProps) {
                   )}
                   {p.featured && (
                     <IconButton
-                      label={e.data.featured ? 'Retirer de la page d’accueil' : 'Mettre en avant sur la page d’accueil'}
+                      label={e.data.featured ? 'Retirer de la couverture' : 'Mettre sur la couverture'}
                       icon="star"
                       pressed={!!e.data.featured}
                       disabled={busy}
-                      onClick={() => patch(e, { featured: !e.data.featured }, `Mise en avant de ${e.id}`, e.data.featured ? 'Retiré de la page d’accueil.' : 'Mis en avant sur la page d’accueil.')}
+                      onClick={() => patch(e, { featured: !e.data.featured }, `Mise en avant de ${e.id}`, e.data.featured ? 'Retiré de la couverture.' : 'Ajouté à la couverture.')}
                     />
                   )}
-                  {p.type === 'article' ? (
-                    <IconButton
-                      label={hidden ? 'Publier l’article' : 'Repasser en brouillon'}
-                      icon={hidden ? 'eyeOff' : 'eye'}
-                      disabled={busy}
-                      onClick={() =>
-                        patch(
-                          e,
-                          { status: hidden ? 'published' : 'draft', publishedAt: (e.data.publishedAt as string) ?? new Date().toISOString().slice(0, 10) },
-                          `Statut de ${e.id}`,
-                          hidden ? 'Article marqué publié (en ligne après publication du site).' : 'Article repassé en brouillon.',
-                        )
-                      }
-                    />
-                  ) : (
-                    <IconButton
-                      label={hidden ? 'Afficher sur le site' : 'Masquer du site'}
-                      icon={hidden ? 'eyeOff' : 'eye'}
-                      disabled={busy}
-                      onClick={() => patch(e, { visible: hidden }, `Visibilité de ${e.id}`, hidden ? 'Contenu affiché.' : 'Contenu masqué.')}
-                    />
-                  )}
+                  <IconButton
+                    label={hidden ? 'Afficher sur le site' : 'Masquer du site'}
+                    icon={hidden ? 'eyeOff' : 'eye'}
+                    disabled={busy}
+                    onClick={() => patch(e, { visible: hidden }, `Visibilité de ${e.id}`, hidden ? 'Contenu affiché.' : 'Contenu masqué.')}
+                  />
                   <IconButton label="Dupliquer" icon="copy" disabled={busy} onClick={() => duplicate(e)} />
                   <IconButton label="Supprimer" icon="trash" danger disabled={busy} onClick={() => remove(e)} />
                 </div>
@@ -278,7 +263,7 @@ export function useEntryEditor<T extends Record<string, unknown>>(type: Collecti
       return;
     }
     if (slug !== id) {
-      go(`${type === 'project' ? 'projets' : type === 'experience' ? 'experiences' : 'articles'}/${slug}`, true);
+      go(`${type === 'project' ? 'projets' : 'experiences'}/${slug}`, true);
     }
   };
 

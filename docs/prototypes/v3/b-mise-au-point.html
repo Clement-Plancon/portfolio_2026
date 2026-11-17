@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype B — Mise au point</title>
+<style>
+@font-face { font-family: 'Instrument Sans'; src: url(fonts/instrument-sans.woff2) format('woff2'); font-weight: 400 700; font-stretch: 75% 100%; }
+:root { --table: #eceee9; --glass: rgba(255,255,255,.55); --ink: #101315; --ink-2: #4c5359; --line: rgba(16,19,21,.12); --signal: #1f6bff; --g: clamp(18px, 3.4vw, 48px); --ease: cubic-bezier(.2,.8,.2,1); }
+* { box-sizing: border-box; margin: 0; }
+body { font-family: 'Instrument Sans', system-ui, sans-serif; color: var(--ink); background: radial-gradient(120vw 80vh at 60% 0%, #fbfcfa, var(--table) 70%) fixed; font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+a { color: inherit; } button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+.top { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; justify-content: space-between; padding: 18px var(--g); }
+.top nav { display: flex; gap: 24px; font-size: 14px; } .top a { text-decoration: none; }
+.hero { min-height: 100svh; padding: 120px var(--g) 60px; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 40px; }
+.hero h1 { font-weight: 600; font-stretch: 82%; font-size: clamp(64px, 9vw, 150px); line-height: .9; letter-spacing: -.04em; animation: focus 1.1s var(--ease) both; }
+.hero h1 small { display: block; margin-top: 22px; font-size: clamp(22px, 2.2vw, 32px); font-weight: 500; font-stretch: 100%; letter-spacing: -.01em; color: var(--ink-2); }
+@keyframes focus { from { filter: blur(14px); opacity: .4; letter-spacing: .02em; } }
+.hero p { max-width: 30em; margin-top: 26px; color: var(--ink-2); }
+.lens { justify-self: center; width: min(40vw, 520px); aspect-ratio: 1; border-radius: 50%; position: relative; background: #fff; box-shadow: 0 0 0 1px var(--line), 0 0 0 14px rgba(255,255,255,.6), 0 0 0 15px var(--line), 0 40px 80px -40px rgba(0,0,0,.35); overflow: hidden; display: grid; place-items: center; }
+.lens__scale { position: absolute; inset: 0; background: repeating-conic-gradient(from 0deg, var(--line) 0 .4deg, transparent .4deg 6deg); mask: radial-gradient(circle, transparent 64%, #000 65%, #000 69%, transparent 70%); }
+.lens__in { text-align: center; padding: 18%; font-weight: 500; }
+.lens__in b { display: block; font-size: clamp(30px, 3.4vw, 50px); font-stretch: 80%; letter-spacing: -.03em; line-height: 1; }
+.lens__in span { display: block; margin-top: 12px; color: var(--ink-2); font-size: 14px; }
+.sec { padding: 120px var(--g) 40px; }
+.sec h2 { font-weight: 600; font-stretch: 80%; font-size: clamp(48px, 6vw, 96px); letter-spacing: -.035em; line-height: .9; }
+.sec__lead { margin: 14px 0 44px; color: var(--ink-2); max-width: 34em; }
+.slides { display: grid; grid-template-columns: repeat(2, 1fr); gap: 46px 56px; }
+.slide { position: relative; aspect-ratio: 3 / 1.25; background: var(--glass); backdrop-filter: blur(2px); border: 1px solid rgba(16,19,21,.16); box-shadow: inset 0 0 0 6px rgba(255,255,255,.5), 0 18px 30px -24px rgba(0,0,0,.4); text-align: left; display: grid; grid-template-columns: 34% 1fr; transform: rotate(var(--r, 0deg)); transition: transform .5s var(--ease), box-shadow .5s; }
+.slide:hover, .slide:focus-visible { transform: rotate(0deg) translateY(-4px); box-shadow: inset 0 0 0 6px rgba(255,255,255,.5), 0 30px 40px -24px rgba(0,0,0,.45); outline: none; }
+.slide__label { background: var(--c); color: #fff; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between; }
+.slide__label b { font-size: clamp(20px, 1.8vw, 26px); line-height: 1.02; font-stretch: 82%; letter-spacing: -.02em; }
+.slide__label small { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .85; }
+.slide__spec { position: relative; display: grid; place-items: center; overflow: hidden; }
+.slide__spec p { font-size: 9.5px; line-height: 1.35; color: var(--ink-2); padding: 18px; filter: blur(1.2px); transition: filter .5s var(--ease); }
+.slide:hover .slide__spec p, .slide:focus-visible .slide__spec p { filter: none; }
+.slide__spec img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; filter: blur(1.5px) saturate(.6); transition: filter .5s; }
+.slide:hover .slide__spec img { filter: none; }
+/* the eyepiece: details seen "under the objective" */
+.eye { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(12,14,16,.72); clip-path: circle(0 at var(--x, 50%) var(--y, 50%)); transition: clip-path .75s var(--ease); pointer-events: none; }
+.eye.is-open { clip-path: circle(150% at var(--x, 50%) var(--y, 50%)); pointer-events: auto; }
+.eye__disc { width: min(86vmin, 820px); aspect-ratio: 1; border-radius: 50%; background: #fbfcfa; display: grid; place-items: center; overflow: hidden; box-shadow: 0 0 0 14px rgba(255,255,255,.12); }
+.eye__body { width: 72%; max-height: 72%; overflow: auto; filter: blur(10px); opacity: 0; transition: filter .9s var(--ease) .25s, opacity .5s .25s; }
+.eye.is-open .eye__body { filter: none; opacity: 1; }
+.eye__body h3 { font-size: clamp(30px, 3.4vw, 48px); font-stretch: 80%; letter-spacing: -.03em; line-height: 1; }
+.eye__body p { margin-top: 12px; color: var(--ink-2); font-size: 15.5px; }
+.eye__body ul { margin-top: 14px; padding-left: 18px; font-size: 15px; }
+.eye__close { position: absolute; top: 22px; right: 26px; color: #fff; font-size: 15px; }
+@media (max-width: 760px) {
+  .top nav { display: none; }
+  .hero { grid-template-columns: 1fr; padding-top: 96px; }
+  .lens { width: 78vw; }
+  .slides { grid-template-columns: 1fr; gap: 26px; }
+  .slide { aspect-ratio: 3 / 1.6; }
+  .eye__disc { width: 94vw; }
+  .eye__body { width: 80%; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top"><b>Clément Plançon</b><nav><a href="#projets">Projets</a><a href="#">Parcours</a><a href="#">À propos</a><a href="#">Contact</a></nav></header>
+<main>
+<section class="hero">
+  <div><h1>Clément Plançon<small>Ingénieur logiciel &amp; Tech Lead</small></h1>
+  <p>Je rends lisible ce qui est complexe : je fais la mise au point entre un besoin flou et un logiciel net, du cadrage à la mise en production.</p></div>
+  <div class="lens" aria-hidden="true"><div class="lens__scale"></div><div class="lens__in"><b>Six projets</b><span>sous l'objectif — glissez sur une lame pour faire le point</span></div></div>
+</section>
+<section class="sec" id="projets"><h2>Projets</h2><p class="sec__lead">Chaque projet est une lame : le cartouche dit ce qu'il est, l'échantillon devient net quand on s'en approche.</p>
+  <div class="slides" id="slides"></div></section>
+</main>
+<div class="eye" id="eye" role="dialog" aria-modal="true" aria-label="Détail du projet"><button class="eye__close" id="eyeClose">Fermer ✕</button><div class="eye__disc"><div class="eye__body" id="eyeBody"></div></div></div>
+<script src="data.js"></script>
+<script>
+const D = window.DATA;
+const col = { vermillon: '#d9472c', sapin: '#1f5a46', ardoise: '#3c4754', ocre: '#b9802a', prune: '#5f2c47', sable: '#8a7a5c' };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const years = (p) => p.period ? (p.period.end ? `${p.period.start}–${p.period.end}` : p.period.start) : 'En cours';
+const host = document.getElementById('slides');
+D.projects.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.className = 'slide';
+  b.style.cssText = `--c:${col[p.cover.color]}; --r:${[-1.2, .8, .6, -.9, 1.1, -.5][i]}deg`;
+  b.innerHTML = `<span class="slide__label"><small>${p.category === 'pro' ? 'Pro' : 'Perso'} · ${esc(years(p))}</small><b>${esc(p.title)}</b></span>
+   <span class="slide__spec">${p.cover.image ? '<img src="datametre-apercu.webp" alt="">' : `<p>${esc([p.summary, ...p.contributions, p.technologies.join(' · ')].join(' — '))}</p>`}</span>`;
+  b.addEventListener('click', (ev) => open(p, ev));
+  host.appendChild(b);
+});
+const eye = document.getElementById('eye'), body = document.getElementById('eyeBody');
+function open(p, ev) {
+  const r = ev.currentTarget.getBoundingClientRect();
+  eye.style.setProperty('--x', `${r.left + r.width / 2}px`); eye.style.setProperty('--y', `${r.top + r.height / 2}px`);
+  body.innerHTML = `<p style="margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase">${esc(p.kind || '')}</p><h3>${esc(p.title)}</h3><p>${esc(p.context || p.summary)}</p><ul>${p.contributions.map((c) => `<li>${esc(c)}</li>`).join('')}</ul><p><b>${esc(p.technologies.join(' · '))}</b></p>`;
+  eye.classList.add('is-open'); document.getElementById('eyeClose').focus();
+}
+document.getElementById('eyeClose').addEventListener('click', () => eye.classList.remove('is-open'));
+</script>
+</body>
+</html>

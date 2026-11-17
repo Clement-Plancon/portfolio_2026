@@ -11,5 +11,11 @@ export default defineConfig({
     reuseExistingServer: true,
     timeout: 180_000,
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  // CHROMIUM_PATH: use an already installed Chromium when the one matching this Playwright version is absent.
+  projects: [
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], launchOptions: process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {} },
+    },
+  ],
 });

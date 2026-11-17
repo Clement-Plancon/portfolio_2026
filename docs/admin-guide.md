@@ -12,40 +12,32 @@ La barre du haut indique toujours s'il reste des modifications non publiées. Ch
 
 ## Tableau de bord
 
-Nombre de projets, expériences, articles et médias ; état du site public et de l'aperçu (en ligne, en cours, échec) ; liste des modifications non publiées ; derniers contenus modifiés.
+Nombre de projets, expériences et médias ; état du site public et de l'aperçu (en ligne, en cours, échec) ; liste des modifications non publiées ; derniers contenus modifiés.
 
 ## Projets
 
 **Liste**
 - L'ordre de la liste est celui du site. Glissez une ligne (souris) ou utilisez les flèches ↑ ↓, puis **Enregistrer l'ordre**.
-- ★ : mettre en avant sur la page d'accueil.
+- ★ : mettre le projet **sur la couverture** (la bande dépliée sous le nom, en haut du site). Sans aucun projet étoilé, tous les projets y figurent.
 - 👁 : afficher / masquer sur le site. Un projet masqué reste visible dans l'aperçu.
 - ⧉ : dupliquer (la copie est créée masquée).
 - 🗑 : supprimer (confirmation demandée).
 
 **Fiche projet**
-- *L'essentiel* : titre, adresse de la page (générée depuis le titre), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
-- *Tirage* : chaque projet est présenté comme un cyanotype. Choisissez les objets du photogramme (fougères, règles, enveloppes…), le virage (bleu de Prusse, indigo, thé…) et, si vous en avez une, une capture réelle : elle remplace le photogramme et apparaît virée au bleu, avec ses couleurs réelles au survol et sur demande. Sans capture, la page projet précise qu'il s'agit d'un visuel de présentation.
-- *Page détaillée* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
-- *Images de la page* : galerie avec texte alternatif et légende.
-- *Référencement* : titre et description pour Google, image de partage, aperçu du résultat de recherche.
+- *L'essentiel* : titre, adresse du projet (générée depuis le titre ; le projet s'ouvre à l'adresse `clementplancon.fr/#projet-…`), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
+- *Papier* : chaque projet est un volet du dépliant, imprimé sur un papier de couleur (vermillon, vert sapin, ardoise, ocre, prune, sable). Ces six papiers sont vérifiés pour le contraste du texte. Si vous avez une **capture réelle** du projet, ajoutez-la : elle apparaît sur le volet et dans le détail. Sans capture, le volet reste un aplat de couleur : aucune image n'est inventée.
+- *Détail déplié* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
+- *Images du détail* : galerie avec texte alternatif et légende.
 
-Changer l'adresse d'un projet casse les liens existants vers l'ancienne adresse.
+Changer l'adresse d'un projet casse les liens existants vers l'ancienne adresse. Les anciennes pages `/projets/…` de la version précédente du site redirigent vers le projet ouvert dans la page unique.
 
 ## Expériences
 
-Intitulé, organisation (et organisation de rattachement, ex. ministère), dates, lieu, résumé, responsabilités, compétences. **Sans date de fin, le poste est affiché « En poste »** et repris en haut de la page d'accueil.
-
-## Articles
-
-- Éditeur Markdown avec barre d'outils et aperçu (côte à côte sur grand écran, onglets sur petit écran). L'aperçu utilise exactement le même moteur que le site.
-- Statut **Brouillon** : visible seulement dans l'aperçu du site. **Publié** : en ligne à la prochaine publication. La date est remplie automatiquement au passage en « Publié ».
-- La rubrique *Articles* n'apparaît sur le site qu'à partir du premier article publié.
-- Le HTML collé dans un article est affiché comme du texte (protection contre l'injection de code).
+Intitulé, organisation (et organisation de rattachement, ex. ministère), dates, lieu, résumé, responsabilités, compétences. **Sans date de fin, le poste est affiché « En poste »** et repris sur la couverture du site.
 
 ## Profil et compétences
 
-- **Profil** : nom, titre professionnel, phrase d'ouverture de l'accueil (un mot entre astérisques est mis en valeur : `Je rends *lisible*…`), accroche et introduction de l'accueil, biographie (page À propos), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail.
+- **Profil** : nom, titre professionnel, phrase de la couverture (un mot entre astérisques est mis en valeur : `Je rends *lisible*…`), accroche, introduction et biographie de la section À propos (le dernier paragraphe de la biographie est mis en exergue), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail (affichés en accordéon de papier dans À propos).
 - **Compétences** : groupes (nom, courte description, éléments), réordonnables.
 
 ## Médias
@@ -57,7 +49,7 @@ Intitulé, organisation (et organisation de rattachement, ex. ministère), dates
 
 ## Référencement
 
-Valeurs par défaut (nom du site, description, image de partage) et réglages par page : titre, description, image, « ne pas indexer ». Champs vides = valeurs par défaut.
+Valeurs par défaut (nom du site, description, image de partage) et réglages de la page unique : titre, description, image, « ne pas indexer ». Champs vides = valeurs par défaut.
 
 ## Paramètres
 

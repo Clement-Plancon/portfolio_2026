@@ -1,0 +1,94 @@
+---
+import type { Skills } from '../lib/schemas';
+
+interface Props {
+  skills: Skills;
+}
+const { skills } = Astro.props;
+---
+
+<section class="skills section" id="competences" aria-labelledby="skills-title">
+  <div class="wrap">
+    <header class="sec-head" data-fold>
+      <h2 id="skills-title" class="display">Compétences</h2>
+      <p>Au dos du dépliant : ce avec quoi je travaille, regroupé par usage plutôt qu'en catalogue.</p>
+    </header>
+    <div class="back">
+      {
+        skills.groups.map((g, i) => (
+          <section class="group" aria-labelledby={`skill-${i}`}>
+            <h3 id={`skill-${i}`} class="group__name">
+              {g.name}
+            </h3>
+            {g.description && <p class="group__desc">{g.description}</p>}
+            <ul role="list" class="group__items">
+              {g.items.map((it) => (
+                <li>{it}</li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The back of the leaflet: six columns of fine print between creases. */
+  .back {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--crease);
+  }
+  .group {
+    padding: 1.5rem clamp(1rem, 2vw, 1.75rem) 2rem 0;
+    border-bottom: 1px solid var(--crease);
+  }
+  .group:not(:nth-child(3n + 1)) {
+    padding-left: clamp(1rem, 2vw, 1.75rem);
+    border-left: 1px solid var(--crease);
+  }
+  .group__name {
+    font-stretch: 78%;
+    font-weight: 800;
+    font-size: clamp(1.6rem, 1.1rem + 1.3vw, 2.25rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+  }
+  .group__desc {
+    margin-top: 0.6rem;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+  }
+  .group__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    font-stretch: 110%;
+    font-size: 0.9375rem;
+  }
+  @media (max-width: 64rem) {
+    .back {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .group:not(:nth-child(3n + 1)) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .group:nth-child(2n) {
+      padding-left: clamp(1rem, 2vw, 1.75rem);
+      border-left: 1px solid var(--crease);
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .back {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .group:nth-child(2n) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>

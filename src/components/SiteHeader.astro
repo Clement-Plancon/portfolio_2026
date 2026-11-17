@@ -1,0 +1,181 @@
+---
+interface Props {
+  name: string;
+  nav: boolean;
+}
+const { name, nav } = Astro.props;
+
+const SECTIONS = [
+  { id: 'a-propos', label: 'À propos' },
+  { id: 'projets', label: 'Projets' },
+  { id: 'parcours', label: 'Parcours' },
+  { id: 'competences', label: 'Compétences' },
+  { id: 'contact', label: 'Contact' },
+];
+---
+
+<header class="top">
+  <div class="top__bar wrap">
+    <a class="top__name" href="/#top">{name}</a>
+    {
+      nav && (
+        <>
+          <button class="top__menu label" type="button" aria-expanded="false" aria-controls="sommaire" hidden>
+            Sommaire
+            <span class="top__menu-fold" aria-hidden="true" />
+          </button>
+          <nav class="top__nav" id="sommaire" aria-label="Sommaire">
+            <ul role="list">
+              {SECTIONS.map((s) => (
+                <li>
+                  <a href={`/#${s.id}`} data-nav={s.id}>
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </>
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .top {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    box-shadow: 0 1px 0 var(--crease);
+    backdrop-filter: blur(6px);
+  }
+  .top__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: var(--header-h);
+  }
+  .top__name {
+    font-stretch: 82%;
+    font-weight: 780;
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .top__nav ul {
+    display: flex;
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+  .top__nav a {
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 0;
+    font-size: 0.9375rem;
+    font-weight: 560;
+    font-stretch: 108%;
+    text-decoration: none;
+  }
+  /* The active section: a small dog-eared corner, the page that is open. */
+  .top__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.2rem;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform var(--dur-2) var(--ease);
+  }
+  .top__nav a:hover::after,
+  .top__nav a[aria-current='true']::after {
+    transform: scaleX(1);
+  }
+  .top__nav a[aria-current='true']::before {
+    content: '';
+    position: absolute;
+    right: -0.6rem;
+    top: 0.45rem;
+    border: 4px solid transparent;
+    border-top-color: var(--signal);
+    border-right-color: var(--signal);
+  }
+
+  .top__menu {
+    display: none;
+    min-height: 2.75rem;
+    padding: 0 0.25rem;
+  }
+  /* A corner that folds down while the table of contents is open. */
+  .top__menu-fold {
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-left: 0.6rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-0.15rem) rotate(45deg);
+    transition: transform var(--dur-2) var(--ease);
+  }
+  .top__menu[aria-expanded='true'] .top__menu-fold {
+    transform: translateY(0.2rem) rotate(225deg);
+  }
+
+  /* Small screens: the table of contents unfolds from the header, like a flap. */
+  @media (max-width: 56.24rem) {
+    :global(html.js) .top__menu {
+      display: inline-flex;
+      align-items: center;
+    }
+    :global(html.js) .top__nav {
+      position: absolute;
+      inset: 100% 0 auto;
+      background: var(--paper);
+      box-shadow: 0 1px 0 var(--crease), 0 30px 40px -30px rgb(0 0 0 / 0.35);
+      transform-origin: 50% 0;
+      transform: perspective(900px) rotateX(-92deg);
+      visibility: hidden;
+      transition:
+        transform var(--dur-2) var(--ease-fold),
+        visibility 0s linear var(--dur-2);
+    }
+    :global(html.js) .top__nav.is-open {
+      transform: none;
+      visibility: visible;
+      transition:
+        transform var(--dur-2) var(--ease-fold),
+        visibility 0s;
+    }
+    :global(html.js) .top__nav ul {
+      flex-direction: column;
+      gap: 0;
+      padding: 0.5rem var(--g) 1.25rem;
+    }
+    :global(html.js) .top__nav a {
+      display: block;
+      padding: 0.85rem 0;
+      font-stretch: 78%;
+      font-weight: 800;
+      font-size: 2.1rem;
+      line-height: 1;
+      border-bottom: 1px solid var(--crease);
+    }
+    :global(html.js) .top__nav a::after,
+    :global(html.js) .top__nav a::before {
+      display: none;
+    }
+    /* Without JavaScript the links simply wrap under the name. */
+    :global(html:not(.js)) .top__bar {
+      flex-wrap: wrap;
+      padding-block: 0.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .top__nav,
+    .top__nav a::after {
+      transition: none !important;
+    }
+  }
+</style>

@@ -1,31 +1,25 @@
-# Revue de performance
+# Performance
 
-Mesures faites le 12 novembre 2026 sur le build de production (`npm run build`) servi par `astro preview`, avec Lighthouse 12 en configuration mobile par défaut (Moto G Power simulé, 4G lente simulée, CPU ralenti ×4). Ce sont des mesures de laboratoire en local, pas encore sur Netlify.
+## Mesures (Lighthouse 12.8, local)
 
-## Résultats
+Mesuré sur le build de production servi par `astro preview` (sans CDN Netlify ni compression Brotli), avec Chromium 153 sans interface et le profil mobile par défaut de Lighthouse (Moto G Power, 4G lente, CPU ×4) puis le profil desktop.
 
-| Page | Performance | Accessibilité | Bonnes pratiques | SEO | FCP | LCP | CLS | TBT |
-|---|---|---|---|---|---|---|---|---|
-| `/` | 98 | 100 | 100 | 100 | 1,5 s | 2,3 s | 0,014 | 0 ms |
-| `/projets/` | 98 | 100 | 100 | 100 | 1,5 s | 2,3 s | 0 | 0 ms |
-| `/projets/bercy-vert/` | 98 | 100 | 100 | 100 | 1,5 s | 2,3 s | 0 | 0 ms |
+| Profil | Performance | Accessibilité | Bonnes pratiques | SEO | FCP | LCP | CLS | TBT | Poids total |
+|---|---|---|---|---|---|---|---|---|---|
+| Mobile | 100 | 100 | 100 | 100 | 1,0 s | 1,5 s | 0 | 0 ms | 115 Ko |
+| Desktop | 100 | 100 | 100 | 100 | 0,3 s | 0,4 s | 0 | 0 ms | 143 Ko |
 
-Mesures précédentes avec les feuilles de style externes : performance 96 à 98, LCP 2,3 à 2,5 s (`/projets/datametre/` 97, `/parcours/` 98).
+Ces chiffres viennent d'une seule exécution par profil, en local. Ils ne garantissent pas les mesures de terrain (Core Web Vitals) une fois en ligne.
 
-Objectifs du cahier des charges : performance ≥ 90, accessibilité / bonnes pratiques / SEO ≥ 95, LCP ≤ 2,5 s, CLS ≤ 0,1. INP n'est pas mesurable en laboratoire ; le seul script public ne fait que des écritures de propriétés CSS, sans calcul lourd.
+Points relevés par Lighthouse sans effet sur la note :
 
-## Ce qui a été fait
+- **Travail du fil principal** : 2,2 s sur mobile avec le CPU ralenti, surtout du calcul de style et de mise en page dû aux transformations 3D des plis. À suivre sur des téléphones d'entrée de gamme.
+- **Reflow forcé** : la carte des projets lit `gridTemplateColumns` au chargement pour placer les détails sous leur rangée. C'est une seule lecture, plus une à chaque redimensionnement.
 
-- **CSS dans la page** (`build.inlineStylesheets: 'always'`, la CSP autorise déjà les styles en ligne) : cinq petites feuilles bloquaient le rendu. Effet mesuré : FCP de 1,8 à 1,5 s, LCP de 2,5 à 2,3 s.
-- **Polices** auto-hébergées et réduites avec fontTools au latin et à la ponctuation française. Newsreader romain : 105 Ko, avec les axes graisse (300–500) et taille optique (14–72) limités à ce que le design utilise ; il est préchargé. Italique : 55 Ko. Instrument Sans : 28 Ko. `font-display: swap`.
-- **Tirages** générés au build en SVG en ligne : pas d'image à télécharger pour les photogrammes.
-- **Animation** du développement en opacité seule ; galerie déplacée par `transform` ; aucune animation de propriété de mise en page.
-- **JavaScript public** : 4,0 Ko (1,75 Ko compressé), aucune dépendance ajoutée. GSAP, Three.js ou une bibliothèque de défilement n'apportaient rien que CSS, `IntersectionObserver` et View Transitions ne fassent déjà.
-- **Captures réelles** : Astro produit WebP et plusieurs largeurs (480, 800, 1200) ; la même URL sert la version cyanotype et la version en couleurs (un seul téléchargement).
-- **Poids des pages** : 203 à 239 Ko au total, dont environ 190 Ko de polices (mises en cache d'une page à l'autre).
+## Choix
 
-## Points de vigilance
-
-- Les **filtres SVG** (flou des objets, virage des captures) sont calculés au premier affichage de chaque tirage. Sans ralentissement visible en Chromium, mais non mesuré sur un vrai téléphone d'entrée de gamme.
-- Le **grain du papier** est une couche fixe en `mix-blend-mode` : peu coûteux, mais c'est le premier élément à retirer si un appareil montrait des saccades au défilement.
-- Le **LCP** dépend surtout du serveur (TTFB simulé 450 ms en local) ; sur le CDN de Netlify il devrait baisser.
+- **Une page, une requête HTML** : les styles sont intégrés au HTML (`inlineStylesheets: 'always'`), donc aucune feuille de style ne bloque le rendu.
+- **Une seule police** préchargée : Mona Sans variable, réduite au latin et à la ponctuation française (98 → 87 Ko). Ses axes de largeur et de graisse remplacent une seconde famille.
+- **JavaScript public** : un seul module de 4,5 Ko (1,9 Ko compressé), sans bibliothèque. Ni GSAP ni WebGL : les plis sont en CSS 3D, et `@property` anime l'angle sans JavaScript.
+- **Images** : seuls les projets qui ont une vraie capture chargent une image. Elle est optimisée par Astro (WebP, plusieurs tailles) et chargée en différé.
+- **Pas de layout shift** : les plis sont des transformations, qui ne déplacent pas la mise en page. Le nom de la couverture est dimensionné en CSS (`clamp`, `svh`), sans mesure en JavaScript.

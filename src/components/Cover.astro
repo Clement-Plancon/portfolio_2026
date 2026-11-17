@@ -1,0 +1,229 @@
+---
+import type { ExperienceEntry, ProjectEntry } from '../lib/content';
+import { emphasis, formatPeriod } from '../lib/format';
+import type { Profile } from '../lib/schemas';
+import { STOCKS } from '../lib/stocks';
+import Leporello, { type LeafItem } from './Leporello.astro';
+
+interface Props {
+  profile: Profile;
+  projects: ProjectEntry[];
+  experiences: ExperienceEntry[];
+}
+const { profile, projects, experiences } = Astro.props;
+
+const [first, ...rest] = profile.name.split(' ');
+const current = experiences.filter((e) => !e.end);
+const featured = projects.filter((p) => p.featured);
+const leaves: LeafItem[] = (featured.length ? featured : projects).map((p) => ({
+  title: p.title,
+  kicker: [p.category === 'pro' ? 'Pro' : 'Perso', formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '')].filter(Boolean).join(' · '),
+  text: p.kind,
+  href: `#projet-${p.id}`,
+  paper: STOCKS[p.cover.color].paper,
+  ink: STOCKS[p.cover.color].ink,
+}));
+const where = [profile.location, current[0]?.parentOrganisation].filter(Boolean).join(' · ');
+---
+
+<section class="cover" aria-labelledby="cover-title">
+  <div class="cover__text wrap">
+    <p class="cover__where label">{where}</p>
+    <h1 id="cover-title" class="cover__title">
+      <span class="cover__name display"><span>{first}</span> <span>{rest.join(' ')}</span></span>
+      <span class="cover__role">{profile.jobTitle}</span>
+    </h1>
+    <p class="cover__etym">
+      <strong>Expliquer</strong>, du latin <i lang="la">explicare</i> : déplier.
+      {profile.statement && <Fragment set:html={emphasis(profile.statement)} />}
+    </p>
+    <div class="cover__side">
+      <p class="cover__headline">{profile.headline}</p>
+      {
+        current.length > 0 && (
+          <dl class="cover__now">
+            {current.map((e, i) => (
+              <div>
+                <dt class="label">{i === 0 ? 'En poste' : 'En parallèle'}</dt>
+                <dd>
+                  {e.role.split(' — ')[0]}
+                  <span>{e.organisation}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+      <p class="cover__go">
+        <a class="link" href="#projets">Déplier les projets ↓</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Shortcuts for the pointer: the same projects are listed, accessibly, in #projets. -->
+  <div class="cover__stage" aria-hidden="true">
+    <div class="lep lep--ltr" data-scrub style={`--n:${leaves.length}`}>
+      <Leporello items={leaves} focusable={false} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .cover {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-height: 100svh;
+    padding-top: calc(var(--header-h) + clamp(1.25rem, 2.6vw, 2.5rem));
+  }
+  .cover__text {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    align-items: start;
+  }
+  .cover__where {
+    grid-column: 1 / -1;
+    color: var(--ink-2);
+  }
+  .cover__title {
+    grid-column: 1 / span 8;
+    margin-top: clamp(0.75rem, 1.4vw, 1.25rem);
+    font-weight: inherit;
+  }
+  .cover__name {
+    display: block;
+    /* Sized on the width and the height: the strip of projects must stay in the first view. */
+    font-size: clamp(4.6rem, min(1.5rem + 11.6vw, 21svh), 14rem);
+    line-height: 0.8;
+  }
+  .cover__name > span {
+    display: block;
+  }
+  .cover__role {
+    display: block;
+    margin-top: clamp(1.4rem, 2.6vw, 2.6rem);
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 2.35rem);
+    font-weight: 520;
+    font-stretch: 106%;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+  .cover__etym {
+    grid-column: 1 / span 6;
+    margin-top: 1rem;
+    max-width: 30rem;
+    color: var(--ink-2);
+  }
+  .cover__etym strong,
+  .cover__etym :global(em) {
+    color: var(--ink);
+    font-weight: 650;
+    font-style: normal;
+  }
+  .cover__etym i {
+    font-style: italic;
+  }
+  .cover__side {
+    grid-column: 9 / -1;
+    grid-row: 2 / span 2;
+    align-self: start;
+    margin-top: clamp(1rem, 2vw, 1.75rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--crease);
+  }
+  .cover__headline {
+    font-size: 1.0625rem;
+    font-weight: 480;
+  }
+  .cover__now {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .cover__now dt {
+    color: var(--ink-2);
+  }
+  .cover__now dd {
+    margin: 0.2rem 0 0;
+    font-size: 0.9375rem;
+  }
+  .cover__now dd span {
+    display: block;
+    color: var(--ink-2);
+  }
+  .cover__go {
+    margin-top: 1.5rem;
+    font-weight: 620;
+  }
+
+  .cover__stage {
+    container-type: inline-size;
+    align-self: end;
+    margin: clamp(1.5rem, 3vw, 2.5rem) var(--g) 0;
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    max-width: calc(var(--max) - 2 * var(--g));
+    width: calc(100% - 2 * var(--g));
+    justify-self: center;
+    perspective: 1500px;
+    perspective-origin: 75% 30%;
+  }
+  .cover__stage .lep {
+    --leaf-w: calc(100cqw / var(--n));
+    --leaf-h: clamp(11rem, 25svh, 19rem);
+    /* Keep the folded stack against the right edge: a folded strip is cos(a) as wide as the flat one. */
+    transform: translateX(calc(100cqw * (1 - cos(var(--a))))) rotateX(calc(var(--ty, 0) * 1deg)) rotateY(calc(var(--tx, 0) * 1deg));
+    transition: transform 0.6s var(--ease);
+  }
+  /* Before the script measures the scroll, the strip waits folded (only when it will be unfolded by the script). */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .cover__stage .lep {
+      --a: 70deg;
+    }
+  }
+
+  @media (max-width: 56.24rem) {
+    .cover__title,
+    .cover__etym,
+    .cover__side {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+    .cover__side {
+      margin-top: 1.75rem;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .cover {
+      min-height: 0;
+    }
+    .cover__name {
+      font-size: clamp(3.6rem, 22vw, 6.5rem);
+    }
+    .cover__stage {
+      margin-top: 2rem;
+      perspective-origin: 50% 0;
+    }
+    .cover__stage .lep {
+      --leaf-w: 100cqw;
+      --leaf-h: 4.25rem;
+      transform: none;
+      height: calc(var(--leaf-h) * var(--n));
+    }
+    .cover__stage :global(.leaf__face) {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+      padding-block: 0;
+    }
+    .cover__stage :global(.leaf__title) {
+      margin-top: 0;
+      margin-left: auto;
+      font-size: 1.3rem;
+      text-align: right;
+    }
+    .cover__stage :global(.leaf__text) {
+      display: none;
+    }
+  }
+</style>

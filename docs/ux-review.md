@@ -1,59 +1,89 @@
 # Revue UX
 
-Revue menée le 12 novembre 2026 sur le build de production servi localement. Captures dans Chromium (Playwright) à 320, 390, 768, 1024, 1440 et 1920 px, en paysage mobile (844 × 390), à 720 × 450 (équivalent d'un zoom 200 % sur 1440 × 900) et en mode sombre. Les 8 largeurs demandées (320 à 1920) sont aussi vérifiées automatiquement (débordement horizontal, navigation atteignable). Les captures finales sont dans `docs/captures/`.
+Revue menée le 17 novembre 2026 sur le build de production servi localement.
 
-Ce document distingue ce qui a été **vérifié automatiquement**, ce qui a été **examiné à l'œil sur captures**, et ce qui **n'a pas été testé** : aucun test n'a été mené avec de vraies personnes.
+- **Captures** : dans Chromium (Playwright) à 320, 390, 768, 1024, 1440 et 1920 px, en mode sombre, et à mi-animation (images saisies 120, 380 et 900 ms après le début d'un pli).
+- **Contrôles automatiques** : les 8 largeurs demandées (320 à 1920 px) sont testées pour l'absence de débordement horizontal et la navigation.
+- **Emplacement** : les captures finales sont dans `docs/captures/`.
+
+Ce document distingue trois niveaux de vérification :
+
+- **vérifié automatiquement** : par les tests ;
+- **examiné à l'œil** : sur les captures ;
+- **non testé** : en particulier, aucun test n'a été mené avec de vraies personnes.
 
 ## Boucle de critique
 
-### Prototypes (avant de choisir la direction)
-| Prototype | Défauts observés sur captures | Correction |
-|---|---|---|
-| B Révélateur | Bord « au pinceau » trop haché (effet glitch) ; tirages plus hauts que l'écran ; capture Datametre délavée ; en-tête mélangé aux tirages | Bruit plus doux, tirages dimensionnés sur la hauteur, capture inversée (texte blanc sur bleu), en-tête sur fond papier |
-| A Fil rouge | Le fil se dessinait en retard sur le défilement : la figure du premier projet était vide | Calcul du tracé selon la position verticale réelle du chemin |
-| C Récit | Passages cliquables cassant la ligne sur mobile ; fiche dépliée hors champ | Affichage en ligne et défilement vers la fiche. Le défaut de fond reste : un bouton dans un paragraphe ne se comporte pas comme du texte |
+### Prototypes
 
-### Site (direction retenue)
-| Tour | Défaut observé | Correction |
+| Prototype | Défaut observé | Correction |
 |---|---|---|
-| 1 | Bords d'émulsion en dents de scie (papier déchiré plutôt que pinceau) | 90 points par côté, bruit lissé, fines « fibres » de pinceau |
-| 1 | Fougères régulières comme des sapins | Folioles alternées, longueurs et angles variés, frondes qui divergent |
-| 1 | Galerie épinglée : le titre « Tirages » passait sous l'en-tête | Hauteur des tirages calculée pour que titre, tirage et légende tiennent dans l'écran |
-| 1 | Espace parasite avant les virgules (« Paris , Ministère ») | Organisation et rattachement assemblés en une seule chaîne |
-| 2 | Capture Datametre recadrée au centre : le titre était coupé (« …prendre la ») | Cadrage en haut à gauche, là où les interfaces placent leur titre |
-| 2 | Sur mobile, le tirage arrivait après tout le texte de la page projet | Le tirage passe en tête (c'est l'image que le visiteur vient de toucher) |
-| 2 | Page 404 avec un rectangle plat | Même bord brossé que les tirages |
-| 2 | Image de partage : fougères en sapin, contenu décentré | Nouvelles frondes, centrage vertical |
+| A Expliquer | Les feuilles de l'accordéon s'empilaient au lieu de zigzaguer | Sens du pli alterné corrigé (`--dir`) |
+| A Expliquer | Une feuille sur deux disparaissait (face arrière masquée) | `backface-visibility` retirée des feuilles |
+| A Expliquer | La carte de contact ne s'ouvrait jamais en bas de page (seuil inatteignable) | Seuil d'ouverture revu |
+| A Expliquer | En-tête illisible au-dessus des papiers de couleur | Fond plein |
+
+### Site
+
+| Défaut observé | Correction |
+|---|---|
+| La bande de couverture se lisait de droite à gauche | Pli de gauche à droite, avec un décalage calculé (`cos()`) pour qu'elle reste alignée à droite |
+| La couverture dépassait l'écran en 1920 × 900 | Taille du nom calculée aussi sur la hauteur (`21svh`) ; feuilles moins hautes |
+| La bande était presque dépliée dès l'arrivée : le geste ne se voyait pas | Formule de défilement réglée : pliée au premier écran, à plat quand elle atteint le haut |
+| Débordement horizontal pendant les plis en perspective | `overflow-x: clip` sur les sections |
+| Le nom du bouton d'un volet changeait à l'ouverture (« Fermer ») | Nom stable, état porté par `aria-expanded` et un chevron |
+| Bande diagonale « pli » sur les volets : ressemblait à un défaut d'affichage | Retirée ; le coin corné suffit |
+| Parcours : le poste principal (LPS) était à droite du triptyque | Placé au centre |
+| Contact : filet sur toute la largeur de l'écran | Filet limité à la grille |
+| À propos sur mobile : feuilles des principes trop hautes | 11 rem |
+| À 320 px, « En poste » coupait la ligne avant le « · » | Poste et organisation sur deux lignes |
+
+### Captures à mi-animation
+
+- Les plis restent cohérents : les ombres suivent l'angle, et aucune feuille ne traverse une autre.
+- **Défaut restant** : pendant le dépliage de la carte des projets, le bord d'un volet de la troisième colonne passe brièvement par-dessus le texte d'introduction de la section. C'est visible environ 0,4 s, puis tout est à plat.
 
 ## Scénarios d'usage (vérifiés en navigateur automatisé, pas par des personnes)
 
 **Recruteur**
-- Comprendre le poste : le nom et le poste sont la première ligne du titre principal ; « En poste » et l'organisation sont au premier écran (vérifié en captures et par le test « short screens »).
-- Trouver les projets : lien « Voir les projets ↓ » au premier écran, galerie au deuxième, entrée « Projets » dans la navigation.
-- Lire une réalisation : un tirage ouvre sa page (test « gallery … keyboard opens a project ») ; sommaire, contexte, contributions, technologies.
-- Consulter l'expérience : version courte sur l'accueil, page Parcours complète.
-- Trouver le contact : bloc contact en bas de chaque page, entrée « Contact » dans la navigation, bouton « Copier l'adresse ».
+
+| Besoin | Ce que fait le site | Vérification |
+|---|---|---|
+| Comprendre le poste | Le nom et le rôle forment le `h1` ; le poste actuel et le poste en parallèle sont au premier écran. | Test « short screens » : 1440 × 700 et 375 × 560. |
+| Trouver les projets | Lien « Déplier les projets ↓ » au premier écran, entrée « Projets » dans la navigation. | — |
+| Lire une réalisation | Un clic ouvre le détail sur place ; « Volet suivant » enchaîne ; « Replier » revient au volet. | Test clavier. |
+| Partager un projet | L'adresse `/#projet-datametre` ouvre ce projet. | Test. |
 
 **Visiteur curieux**
-- Explorer : la galerie avance avec le défilement ; chaque tirage réagit au survol ; la page projet propose le tirage suivant.
-- Revenir en arrière : « ← Tous les projets » en haut de chaque projet ; le bouton Précédent du navigateur fonctionne (pages statiques, pas de routage JavaScript).
-- Savoir où il est : page courante en bleu avec un point (desktop) ou inversée (mobile) ; sommaire qui suit la lecture ; compteur « 02 / 06 » dans la galerie.
+
+- La bande de couverture se déplie au défilement, et chaque feuille ouvre son projet.
+- Les plis d'entrée donnent le rythme de lecture.
+- Historique : ouvrir un volet dans la carte remplace l'adresse sans ajouter d'entrée, pour que Précédent ne rejoue pas chaque ouverture. Une feuille de la couverture, elle, ajoute une entrée, et Précédent ramène à la couverture. Ce comportement n'est pas couvert par un test.
 
 **Téléphone**
-- Tout le contenu est présent (aucun contenu réservé au desktop ; test sans débordement de 320 à 430 px).
-- Une main : navigation en bas d'écran ; galerie au balayage.
-- Pas de dépendance au survol : les légendes sont toujours visibles ; les couleurs réelles d'une capture s'obtiennent par un bouton.
+
+- Tout le contenu est présent, et aucun débordement n'apparaît de 320 à 430 px.
+- Les accordéons sont verticaux.
+- Le menu « Sommaire » se ferme avec Échap et après un choix.
+- Aucun survol nécessaire.
 
 ## Accessibilité
-- axe (WCAG 2.1 AA) sans violation sur 7 pages en clair et 4 en sombre.
-- Un seul `h1` par page ; titres hiérarchisés ; liens explicites.
-- Contraste : encre `#14203f` sur papier `#f1ede3` ≈ 13,7:1 ; texte secondaire `#47506a` ≈ 6,8:1 ; liens et italiques `#1c3e8c` ≈ 8,5:1 ; papier sur bleu de Prusse ≈ 12:1 ; en sombre, texte secondaire ≈ 9,4:1.
-- Focus visible partout (contour bleu ; sur les tirages, contour autour du papier).
-- Mouvement réduit : voir [interaction-system.md](interaction-system.md).
+
+- **axe (WCAG 2.1 AA)** : aucune violation sur la page en clair et en sombre, avec et sans projet ouvert, ni sur la page 404. Lighthouse Accessibilité : 100.
+- **Structure** : un seul `h1`, des `h2` par section et des `h3` par projet ; ancres stables ; lien d'évitement.
+- **Contrastes calculés** :
+  - encre sur papier : 16,3:1 ; texte secondaire : 8,1:1 ;
+  - en sombre : 15,1:1 et 7,7:1 ;
+  - papiers des projets avec leur encre : vermillon 5,1:1, ocre 7,5:1, vert sapin 8,9:1, ardoise 9,0:1, prune 10,5:1, sable 12,6:1. Un test empêche l'ajout d'un papier sous 4,5:1.
+- **Clavier** : volets en `<button aria-expanded>`, détails fermés `inert`, retour du focus au volet après « Replier », focus visible.
+- **Mouvement réduit et sans JavaScript** : tout est à plat et lisible (tests dédiés).
 
 ## Limites connues
-- **Captures réelles** : seul Datametre en a une. Les cinq autres projets n'ont que des photogrammes, présentés comme tels. La qualité perçue des pages projet dépendra des captures ajoutées dans l'administration.
-- **Contenu des projets** : plusieurs projets n'ont qu'un contexte et une liste de technologies ; leurs pages sont courtes.
-- **Pas de test utilisateur réel**, pas de test avec un vrai lecteur d'écran (NVDA, VoiceOver).
-- **Safari** n'a pas été testé (Chromium uniquement). Les filtres SVG appliqués aux images et les View Transitions entre documents s'y comportent différemment : les tirages et la navigation restent fonctionnels, mais le rendu exact n'a pas été vérifié.
-- **Netlify** : rien n'a été testé sur le déploiement réel (Identity, GitHub, aperçu de branche).
+
+- **Visuels** : 5 projets sur 6 n'ont pas de capture réelle. Leurs volets sont des aplats de papier de couleur avec le titre ; c'est volontaire (rien d'inventé), mais une vraie capture ajoutée dans l'administration les enrichira.
+- **Contenu court** : plusieurs projets n'ont qu'un contexte, des contributions et des technologies ; leur détail déplié est bref.
+- **Non testé** :
+  - tests avec de vraies personnes et avec un vrai lecteur d'écran (NVDA, VoiceOver) ;
+  - **Safari et Firefox** : les tests ont été menés uniquement dans Chromium. Les fonctions récentes utilisées (`@property`, `sin()` / `cos()` en CSS, unités `cqw`, `inert`) sont annoncées dans les versions actuelles de Safari et Firefox, mais le rendu des plis 3D n'y a pas été vu ;
+  - **Netlify** : le déploiement réel (Identity, GitHub, aperçu de branche, redirections 301) n'a pas été testé. Les redirections sont vérifiées par un test unitaire qui lit `netlify.toml`, pas par Netlify.
+- **Bande de couverture** : elle est réservée aux voyants (`aria-hidden`), puisque ses projets sont repris dans la carte. Sur tablette en portrait, elle se trouve sous la ligne de flottaison.

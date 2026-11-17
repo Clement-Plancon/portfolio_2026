@@ -7,13 +7,12 @@ import { confirmDialog, Icon } from '../ui';
 const TYPE_LABEL: Record<string, string> = {
   project: 'Projet',
   experience: 'Expérience',
-  article: 'Article',
   profile: 'Profil',
   skills: 'Compétences',
   seo: 'Référencement',
   media: 'Médiathèque',
 };
-const TYPE_ROUTE: Record<string, string> = { project: 'projets', experience: 'experiences', article: 'articles', profile: 'profil', skills: 'competences', seo: 'seo', media: 'medias' };
+const TYPE_ROUTE: Record<string, string> = { project: 'projets', experience: 'experiences', profile: 'profil', skills: 'competences', seo: 'seo', media: 'medias' };
 
 export function relTime(iso?: string) {
   if (!iso) return '';
@@ -109,15 +108,13 @@ export function PublishBar() {
 export function Dashboard() {
   const { data, status, email } = useStore();
   if (!data) return null;
-  const { project, experience, article } = data.collections;
+  const { project, experience } = data.collections;
   const visible = project.filter((p) => p.data.visible !== false).length;
-  const drafts = article.filter((a) => a.data.status !== 'published').length;
   const hiddenProjects = project.length - visible;
 
   const recent = [
     ...project,
     ...experience,
-    ...article,
     ...Object.values(data.singletons).filter((x) => x && x.type !== 'media'),
   ]
     .filter((e) => e?.data.updatedAt)
@@ -127,7 +124,6 @@ export function Dashboard() {
   const stats = [
     { label: 'Projets', value: project.length, note: hiddenProjects ? `${hiddenProjects} masqué${hiddenProjects > 1 ? 's' : ''}` : 'tous visibles', href: '#/projets' },
     { label: 'Expériences', value: experience.length, note: `${experience.filter((x) => !x.data.end).length} en cours`, href: '#/experiences' },
-    { label: 'Articles', value: article.length, note: drafts ? `${drafts} brouillon${drafts > 1 ? 's' : ''}` : article.length ? 'tous publiés' : 'aucun', href: '#/articles' },
     { label: 'Médias', value: data.mediaFiles.length, note: 'dans la médiathèque', href: '#/medias' },
   ];
 

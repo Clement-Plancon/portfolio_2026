@@ -47,7 +47,7 @@ export function ExperienceEditor({ id }: { id: string }) {
     <EditorShell
       back={{ href: '#/experiences', label: 'Expériences' }}
       title={ed.isNew ? 'Nouvelle expérience' : f.role || 'Sans titre'}
-      publicPath={ed.isNew ? undefined : '/parcours/'}
+      publicPath={ed.isNew ? undefined : '/#parcours'}
       actions={<FormActions dirty={ed.dirty} saving={ed.saving} onSave={ed.submit} onCancel={ed.isNew ? undefined : ed.reset} />}
       errorCount={Object.keys(e).length}
     >

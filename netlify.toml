@@ -42,3 +42,53 @@
   from = "/admin"
   to = "/admin/"
   status = 301
+
+# The public site is a single page since November 2026: former pages point to their section.
+[[redirects]]
+  from = "/projets/:slug/"
+  to = "/#projet-:slug"
+  status = 301
+[[redirects]]
+  from = "/projets/:slug"
+  to = "/#projet-:slug"
+  status = 301
+[[redirects]]
+  from = "/projets/"
+  to = "/#projets"
+  status = 301
+[[redirects]]
+  from = "/projets"
+  to = "/#projets"
+  status = 301
+[[redirects]]
+  from = "/parcours/*"
+  to = "/#parcours"
+  status = 301
+[[redirects]]
+  from = "/parcours"
+  to = "/#parcours"
+  status = 301
+[[redirects]]
+  from = "/a-propos/*"
+  to = "/#a-propos"
+  status = 301
+[[redirects]]
+  from = "/a-propos"
+  to = "/#a-propos"
+  status = 301
+[[redirects]]
+  from = "/contact/*"
+  to = "/#contact"
+  status = 301
+[[redirects]]
+  from = "/contact"
+  to = "/#contact"
+  status = 301
+[[redirects]]
+  from = "/articles/*"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/articles"
+  to = "/"
+  status = 301

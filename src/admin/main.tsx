@@ -4,7 +4,6 @@ import { ApiError, api, setUnauthenticatedHandler } from './api';
 import { auth, authMessage } from './auth';
 import { StoreProvider, useRoute, useStore } from './store';
 import { ConfirmHost, Spinner, Toasts } from './ui';
-import { ArticleEditor, ArticleList } from './views/articles';
 import { Dashboard, PublishBar } from './views/dashboard';
 import { ExperienceEditor, ExperienceList } from './views/experiences';
 import { Login } from './views/login';
@@ -23,7 +22,6 @@ const NAV = [
   { href: '', label: 'Tableau de bord' },
   { href: 'projets', label: 'Projets' },
   { href: 'experiences', label: 'Expériences' },
-  { href: 'articles', label: 'Articles' },
   { href: 'profil', label: 'Profil' },
   { href: 'competences', label: 'Compétences' },
   { href: 'medias', label: 'Médias' },
@@ -136,9 +134,6 @@ function Shell({ onLogout }: { onLogout: () => void }) {
         break;
       case 'experiences':
         view = id ? <ExperienceEditor key={id} id={id} /> : <ExperienceList />;
-        break;
-      case 'articles':
-        view = id ? <ArticleEditor key={id} id={id} /> : <ArticleList />;
         break;
       case 'profil':
         view = <ProfileView />;

@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype A — Expliquer (déplier)</title>
+<style>
+@font-face { font-family: 'Mona Sans'; src: url(fonts/mona-sans.woff2) format('woff2'); font-weight: 200 900; font-stretch: 75% 125%; }
+:root {
+  --paper: #f3f1ec; --paper-2: #e9e6de; --ink: #15140f; --ink-2: #4a4842; --crease: rgba(21,20,15,.14);
+  --vermillon: #e2432a; --sapin: #1f4a3b; --ardoise: #39424e; --ocre: #d69a2e; --prune: #56283f; --sable: #e2d4b8;
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --g: clamp(18px, 3.4vw, 48px);
+}
+* { box-sizing: border-box; margin: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Mona Sans', system-ui, sans-serif; font-size: 17px; line-height: 1.55; color: var(--ink); background: var(--paper); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+.wide { font-stretch: 125%; }
+.label { font-stretch: 125%; font-weight: 560; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+
+/* header */
+.top { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 16px var(--g); background: color-mix(in srgb, var(--paper) 94%, transparent); box-shadow: 0 1px 0 var(--crease); }
+.top__name { font-weight: 760; font-stretch: 85%; font-size: 18px; text-decoration: none; letter-spacing: -.01em; }
+.top nav { display: flex; gap: 26px; }
+.top nav a { text-decoration: none; font-size: 14px; font-stretch: 112%; font-weight: 560; }
+
+/* HERO ---------------------------------------------------------------- */
+.hero { position: relative; min-height: 100svh; padding: 120px var(--g) 0; display: grid; grid-template-rows: auto 1fr; }
+.cover { position: relative; z-index: 2; max-width: 1180px; }
+.cover h1 { font-stretch: 75%; font-weight: 860; font-size: clamp(72px, 13.4vw, 220px); line-height: .82; letter-spacing: -.035em; text-transform: none; }
+.cover h1 span { display: block; }
+.cover__role { margin-top: clamp(30px, 3.4vw, 54px); display: flex; flex-wrap: wrap; gap: 10px 34px; align-items: baseline; }
+.cover__role strong { font-size: clamp(22px, 2.3vw, 34px); font-weight: 520; font-stretch: 108%; letter-spacing: -.01em; }
+.cover__etym { max-width: 23em; color: var(--ink-2); font-size: 15px; }
+.cover__etym em { font-style: normal; font-weight: 640; color: var(--ink); }
+
+/* the leporello: six project leaves, nested so the fold accumulates */
+.lep-stage { position: relative; align-self: end; height: clamp(220px, 34vh, 320px); margin: 40px calc(var(--g) * -1) 0; perspective: 1400px; perspective-origin: 70% 40%; }
+.lep { position: absolute; right: var(--g); bottom: 34px; height: 100%; transform-style: preserve-3d; --a: 72deg; }
+.leaf { display: block; position: absolute; top: 0; right: 0; height: 100%; width: var(--w, 180px); transform-style: preserve-3d; transform-origin: 100% 50%; color: var(--fg); text-decoration: none; }
+.lep > .leaf { position: relative; transform: rotateY(calc(var(--a) * -1)); }
+.leaf .leaf { right: 100%; transform: rotateY(calc(var(--a) * 2 * var(--dir))); }
+.leaf__face { position: absolute; inset: 0; background: var(--bg); padding: 16px 16px 14px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset -1px 0 0 rgba(0,0,0,.08); }
+.leaf__face::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: var(--shade-c); opacity: calc(var(--s, 0) * var(--k)); }
+.leaf[data-odd] > .leaf__face { --shade-c: linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.15)); --k: .9; }
+.leaf:not([data-odd]) > .leaf__face { --shade-c: linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,0)); --k: .7; }
+.leaf__n { font-stretch: 125%; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .8; }
+.leaf__t { font-stretch: 78%; font-weight: 800; font-size: clamp(20px, 1.9vw, 28px); line-height: .95; letter-spacing: -.02em; }
+.lep-hint { position: absolute; left: var(--g); bottom: 40px; max-width: 16em; font-size: 14px; color: var(--ink-2); }
+.lep-hint a { font-weight: 640; color: var(--ink); }
+
+/* PROJECTS: a folded map ------------------------------------------------ */
+.sec { padding: clamp(96px, 14vw, 180px) var(--g) 0; }
+.sec__head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; margin-bottom: 36px; }
+.sec__head h2 { font-stretch: 75%; font-weight: 840; font-size: clamp(54px, 8vw, 128px); line-height: .85; letter-spacing: -.03em; }
+.sec__head p { max-width: 24em; color: var(--ink-2); font-size: 15px; }
+
+.map { display: grid; grid-template-columns: repeat(3, 1fr); perspective: 1800px; }
+.panel { backface-visibility: hidden; position: relative; min-height: clamp(300px, 34vw, 430px); background: var(--bg); color: var(--fg); padding: 22px 22px 20px; display: flex; flex-direction: column; text-align: left; transform-origin: var(--origin, 0 50%); box-shadow: inset 1px 0 0 var(--crease), inset 0 1px 0 var(--crease); }
+.panel::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(var(--sd, 90deg), rgba(0,0,0,.18), rgba(0,0,0,0) 40%); opacity: 0; transition: opacity .4s; }
+.panel:nth-child(3n+2), .panel[data-col="2"] { --origin: 0 50%; }
+.panel__top { display: flex; justify-content: space-between; gap: 12px; }
+.panel__title { margin-top: auto; font-stretch: 76%; font-weight: 830; font-size: clamp(34px, 3.6vw, 58px); line-height: .9; letter-spacing: -.025em; }
+.panel__sum { margin-top: 14px; font-size: 15px; line-height: 1.45; max-width: 26em; opacity: .9; }
+.panel__open { margin-top: 18px; display: inline-flex; align-items: center; gap: 10px; font-stretch: 118%; font-weight: 620; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+.panel__open i { width: 28px; height: 28px; border: 1.5px solid currentColor; display: inline-grid; place-items: center; font-style: normal; transition: transform .5s var(--ease); }
+.panel[aria-expanded="true"] .panel__open i { transform: rotate(180deg); }
+.panel:hover::after, .panel:focus-visible::after { opacity: 1; }
+.panel:focus-visible { outline: 3px solid var(--ink); outline-offset: -3px; }
+.panel__shot { margin: 18px -22px 0; height: 46%; overflow: hidden; mix-blend-mode: multiply; filter: grayscale(.2) contrast(1.05); }
+.panel__shot img { width: 100%; height: 100%; object-fit: cover; object-position: 0 0; display: block; }
+
+/* the map unfolds as it scrolls into view (scroll-driven, Chromium) */
+@supports (animation-timeline: view()) {
+  .panel { animation: unfold-y linear both; animation-timeline: view(); animation-range: entry 10% cover 34%; }
+  .panel[data-col="1"] { animation-name: unfold-x0; }
+  .panel[data-col="2"] { animation-name: unfold-x1; }
+  .panel[data-col="3"] { animation-name: unfold-x2; }
+  @keyframes unfold-x0 { from { transform: rotateX(-34deg); filter: brightness(.86); } }
+  @keyframes unfold-x1 { from { transform: rotateY(-80deg); filter: brightness(.7); } }
+  @keyframes unfold-x2 { from { transform: translateX(-100%) rotateY(-160deg); filter: brightness(.6); } }
+}
+
+/* details flap: unfolds down from the crease under its row */
+.flap { grid-column: 1 / -1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows .7s var(--ease); perspective: 1600px; }
+.flap.is-open { grid-template-rows: 1fr; }
+.flap__in { min-height: 0; overflow: hidden; }
+.flap__sheet { background: var(--bg); color: var(--fg); padding: clamp(28px, 4vw, 56px) clamp(22px, 4vw, 56px); display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px 56px; transform-origin: 50% 0; transform: rotateX(-88deg); transition: transform .8s var(--ease) .05s; box-shadow: inset 0 1px 0 rgba(0,0,0,.25); position: relative; }
+.flap__sheet::before { content: ''; position: absolute; inset: 0 0 auto; height: 40%; background: linear-gradient(rgba(0,0,0,.22), transparent); opacity: 1; transition: opacity .8s var(--ease); pointer-events: none; }
+.flap.is-open .flap__sheet { transform: none; }
+.flap.is-open .flap__sheet::before { opacity: .12; }
+.flap h3 { font-stretch: 76%; font-weight: 830; font-size: clamp(30px, 3vw, 44px); line-height: .95; letter-spacing: -.02em; grid-column: 1 / -1; }
+.flap h4 { margin-bottom: 8px; }
+.flap ul { padding: 0; list-style: none; }
+.flap li { padding: 9px 0; border-top: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 22%, transparent); }
+.flap .techs { display: flex; flex-wrap: wrap; gap: 6px 18px; font-stretch: 112%; font-weight: 560; font-size: 14px; }
+.flap__close { grid-column: 1 / -1; justify-self: start; }
+
+/* PARCOURS: a triptych that opens --------------------------------------- */
+.trip { display: grid; grid-template-columns: repeat(3, 1fr); perspective: 2000px; }
+.trip article { background: #fbfaf7; padding: 26px 26px 30px; min-height: 380px; box-shadow: inset 1px 0 0 var(--crease); position: relative; }
+.trip article::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.08), transparent 35%); pointer-events: none; }
+.trip .when { font-stretch: 75%; font-weight: 820; font-size: 56px; line-height: .9; letter-spacing: -.02em; }
+.trip h3 { margin-top: 22px; font-size: 21px; line-height: 1.2; font-weight: 640; letter-spacing: -.01em; }
+.trip .org { margin-top: 6px; color: var(--ink-2); font-size: 15px; }
+.trip p.sum { margin-top: 18px; font-size: 15px; }
+.trip .live { display: inline-block; margin-left: 10px; padding: 2px 8px; background: var(--vermillon); color: #fff; font-size: 11px; vertical-align: middle; }
+@supports (animation-timeline: view()) {
+  .trip article:first-child { transform-origin: 100% 50%; animation: tri-l linear both; animation-timeline: view(); animation-range: entry 20% cover 45%; }
+  .trip article:last-child { transform-origin: 0 50%; animation: tri-r linear both; animation-timeline: view(); animation-range: entry 20% cover 45%; }
+  @keyframes tri-l { from { transform: rotateY(62deg); filter: brightness(.8); } }
+  @keyframes tri-r { from { transform: rotateY(-62deg); filter: brightness(.8); } }
+}
+
+/* CONTACT: the sheet ends as a card ------------------------------------- */
+.end { padding: clamp(110px, 16vw, 200px) var(--g) 64px; display: grid; place-items: center; perspective: 1600px; }
+.card { width: min(640px, 100%); background: var(--ink); color: var(--paper); transform-style: preserve-3d; position: relative; }
+.card__half { padding: 34px 34px 30px; }
+.card__half--top { transform-origin: 50% 100%; background: var(--vermillon); color: var(--ink); }
+@supports (animation-timeline: view()) {
+  .card__half--top { animation: card-open linear both; animation-timeline: view(); animation-range: entry 10% entry 100%; }
+  @keyframes card-open { from { transform: rotateX(178deg); } }
+}
+.card__name { font-stretch: 75%; font-weight: 860; font-size: clamp(44px, 6vw, 76px); line-height: .85; letter-spacing: -.03em; }
+.card__mail { display: block; margin-top: 8px; font-size: clamp(20px, 2.6vw, 30px); font-weight: 600; font-stretch: 92%; text-decoration: none; }
+.card__links { display: flex; gap: 24px; margin-top: 22px; }
+
+/* MOBILE ------------------------------------------------------------------ */
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  .top nav { display: none; }
+  .hero { padding-top: 92px; }
+  .cover h1 { font-size: 23vw; }
+  .lep-stage { height: auto; min-height: 372px; perspective-origin: 50% 0; margin-top: 28px; }
+  .lep { right: auto; left: var(--g); width: calc(100% - var(--g) * 2); bottom: auto; top: 0; height: auto; }
+  .leaf { width: 100% !important; height: 62px; transform-origin: 50% 0; top: auto; right: auto; left: 0; }
+  .lep > .leaf { transform: rotateX(calc(var(--a) * -1)); }
+  .leaf .leaf { top: 100%; right: auto; transform: rotateX(calc(var(--a) * 2 * var(--dir))); }
+  .leaf__face { flex-direction: row; align-items: center; padding: 0 16px; }
+  .leaf[data-odd] > .leaf__face { --shade-c: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.15)); }
+  .lep-hint { position: static; margin-top: 392px; }
+  .sec__head { grid-template-columns: 1fr; }
+  .map { grid-template-columns: 1fr; }
+  .panel { min-height: 0; padding: 20px 18px 18px; }
+  .panel__title { margin-top: 48px; font-size: 44px; }
+  .panel__shot { height: 170px; margin: 16px -18px 0; }
+  @supports (animation-timeline: view()) {
+    .panel, .panel[data-col] { animation-name: unfold-m; animation-range: entry 0% cover 28%; transform-origin: 50% 0; }
+    @keyframes unfold-m { from { transform: rotateX(-70deg); filter: brightness(.75); } }
+  }
+  .flap__sheet { grid-template-columns: 1fr; }
+  .trip { grid-template-columns: 1fr; }
+  .trip article { min-height: 0; }
+  @supports (animation-timeline: view()) {
+    .trip article:first-child, .trip article:last-child { transform-origin: 50% 0; animation-name: tri-m; }
+    @keyframes tri-m { from { transform: rotateX(-60deg); } }
+  }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .lep { --a: 0deg !important; } }
+</style>
+</head>
+<body>
+<header class="top"><a class="top__name" href="#">Clément Plançon</a>
+  <nav><a href="#projets">Projets</a><a href="#parcours">Parcours</a><a href="#apropos">À propos</a><a href="#contact">Contact</a></nav></header>
+
+<main>
+  <section class="hero">
+    <div class="cover">
+      <h1><span>Clément</span><span>Plançon</span></h1>
+      <div class="cover__role"><strong>Ingénieur logiciel &amp; Tech Lead</strong>
+        <p class="cover__etym"><em>Expliquer</em>, du latin <em>explicare</em> : déplier. Mon métier, c'est rendre lisible ce qui est plié dans le complexe.</p></div>
+    </div>
+    <div class="lep-stage" aria-label="Les six projets">
+      <div class="lep" id="lep"></div>
+      <p class="lep-hint">Six projets, pliés. Faites défiler pour les déplier, ou <a href="#projets">allez directement aux projets</a>.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="projets">
+    <div class="sec__head"><h2>Projets</h2><p>Des logiciels pour l'administration, une enquête de terrain, une application mobile et un observatoire de données : choisissez un volet pour le déplier.</p></div>
+    <div class="map" id="map"></div>
+  </section>
+
+  <section class="sec" id="parcours">
+    <div class="sec__head"><h2>Parcours</h2><p>Trois volets, de Bercy à la police scientifique.</p></div>
+    <div class="trip" id="trip"></div>
+  </section>
+
+  <section class="end" id="contact">
+    <div class="card">
+      <div class="card__half card__half--top"><p class="label">Contact</p><p class="card__name">Clément<br>Plançon</p></div>
+      <div class="card__half"><p>Pour un projet, une opportunité ou un sujet technique :</p>
+        <a class="card__mail" href="mailto:plancon.clem.pro@gmail.com">plancon.clem.pro@gmail.com</a>
+        <div class="card__links"><a href="https://github.com/Clement-Plancon">GitHub</a><a href="https://www.linkedin.com/in/cl%C3%A9ment-plan%C3%A7on-502b1b195/">LinkedIn</a></div></div>
+    </div>
+  </section>
+</main>
+
+<script src="data.js"></script>
+<script>
+const D = window.DATA;
+const tone = { vermillon: ['--vermillon', '#15140f'], sapin: ['--sapin', '#f3f1ec'], ardoise: ['--ardoise', '#f3f1ec'], ocre: ['--ocre', '#15140f'], prune: ['--prune', '#f3f1ec'], sable: ['--sable', '#15140f'] };
+const years = (p) => p.period ? (p.period.end ? `${p.period.start}–${p.period.end}` : p.period.start) : (p.status === 'en-cours' ? 'En cours' : '');
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+
+// Leporello: nested leaves, the fold accumulates from right to left.
+const lep = document.getElementById('lep');
+let host = lep;
+D.projects.forEach((p, i) => {
+  const [bg, fg] = tone[p.cover.color];
+  const a = document.createElement('a');
+  a.className = 'leaf'; a.href = `#p-${p.id}`;
+  if (i % 2) a.dataset.odd = '';
+  a.style.cssText = `--bg: var(${bg}); --fg: ${fg}; --dir: ${i % 2 ? 1 : -1}`;
+  a.innerHTML = `<div class="leaf__face"><span class="leaf__n">${esc(p.category === 'pro' ? 'Pro' : 'Perso')} · ${esc(years(p))}</span><span class="leaf__t">${esc(p.title)}</span></div>`;
+  host.appendChild(a); host = a;
+});
+
+// Map of projects + one flap per row.
+const map = document.getElementById('map');
+const cols = () => (innerWidth <= 760 ? 1 : 3);
+D.projects.forEach((p, i) => {
+  const [bg, fg] = tone[p.cover.color];
+  const b = document.createElement('button');
+  b.className = 'panel'; b.id = `p-${p.id}`; b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-controls', `f-${p.id}`);
+  b.style.cssText = `--bg: var(${bg}); --fg: ${fg}`;
+  b.dataset.col = (i % 3) + 1;
+  b.innerHTML = `<span class="panel__top label"><span>${p.category === 'pro' ? 'Professionnel' : 'Personnel'}</span><span>${esc(years(p))}</span></span>
+    ${p.cover.image ? `<span class="panel__shot"><img src="datametre-apercu.webp" alt=""></span>` : ''}
+    <span class="panel__title">${esc(p.title)}</span>
+    <span class="panel__sum">${esc(p.kind || '')} — ${esc(p.organisation || '')}</span>
+    <span class="panel__open"><i>↓</i>Déplier</span>`;
+  map.appendChild(b);
+  const f = document.createElement('div');
+  f.className = 'flap'; f.id = `f-${p.id}`;
+  f.style.cssText = `--bg: var(${bg}); --fg: ${fg}`;
+  f.innerHTML = `<div class="flap__in"><div class="flap__sheet">
+     <h3>${esc(p.title)}</h3>
+     <div><p class="label">Contexte</p><p style="margin-top:8px">${esc(p.context || p.summary)}</p>
+       ${p.links.length ? `<p style="margin-top:16px"><a href="${esc(p.links[0].url)}">${esc(p.links[0].label)} ↗</a></p>` : ''}</div>
+     <div><p class="label">${p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</p><ul>${p.contributions.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
+       <p class="label" style="margin-top:20px">Technologies</p><p class="techs" style="margin-top:8px">${p.technologies.map((t) => `<span>${esc(t)}</span>`).join('')}</p></div>
+     <button class="flap__close label" type="button">↑ Replier</button>
+   </div></div>`;
+  map.appendChild(f);
+});
+const panels = [...map.querySelectorAll('.panel')];
+const flaps = [...map.querySelectorAll('.flap')];
+function layout() {
+  const c = cols();
+  panels.forEach((p, i) => { p.style.order = i * 2; p.dataset.col = c === 1 ? '' : (i % 3) + 1; });
+  flaps.forEach((f, i) => { f.style.order = (Math.floor(i / c) * c + c - 1) * 2 + 1; });
+}
+layout(); addEventListener('resize', layout);
+function toggle(i) {
+  const open = panels[i].getAttribute('aria-expanded') !== 'true';
+  panels.forEach((p, j) => { p.setAttribute('aria-expanded', String(open && i === j)); flaps[j].classList.toggle('is-open', open && i === j); });
+}
+panels.forEach((p, i) => p.addEventListener('click', () => toggle(i)));
+flaps.forEach((f, i) => f.querySelector('.flap__close').addEventListener('click', () => { toggle(i); panels[i].focus(); }));
+
+// Triptych
+document.getElementById('trip').innerHTML = [...D.experiences].sort((a, b) => a.start.localeCompare(b.start) || a.order - b.order).map((e) => `
+  <article><p class="when">${e.start}${e.end ? `–${e.end.slice(2)}` : '→'}</p>
+  <h3>${esc(e.role)}${e.end ? '' : '<span class="live">en cours</span>'}</h3><p class="org">${esc(e.organisation)}${e.parentOrganisation ? ` · ${esc(e.parentOrganisation)}` : ''}</p>
+  <p class="sum">${esc(e.summary || '')}</p></article>`).join('');
+
+// Scroll unfolds the leporello: fold angle goes from 72° to 0 across the hero.
+const hero = document.querySelector('.hero');
+const leaves = [...lep.querySelectorAll('.leaf')];
+function sizeLeaves() {
+  const g = parseFloat(getComputedStyle(document.querySelector('.cover')).paddingLeft) || Math.min(48, Math.max(18, innerWidth * 0.034));
+  const w = innerWidth <= 760 ? 0 : (document.querySelector('.lep-stage').clientWidth - 2 * Math.min(48, Math.max(18, innerWidth * 0.034))) / 6;
+  leaves.forEach((l) => (l.style.width = innerWidth <= 760 ? '' : `${Math.max(150, w)}px`));
+}
+function onScroll() {
+  const r = hero.getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, -r.top / (r.height * 0.55)));
+  const a = 72 * (1 - p);
+  lep.style.setProperty('--a', `${a}deg`);
+  lep.style.setProperty('--s', Math.sin((a * Math.PI) / 180).toFixed(3));
+  leaves.forEach((l) => l.style.setProperty('--s', Math.sin((a * Math.PI) / 180).toFixed(3)));
+}
+sizeLeaves(); onScroll();
+addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', () => { sizeLeaves(); onScroll(); });
+</script>
+</body>
+</html>

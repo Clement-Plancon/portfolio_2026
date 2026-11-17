@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype C — Variable</title>
+<style>
+@font-face { font-family: 'Archivo'; src: url(fonts/archivo.woff2) format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; }
+:root { --bg: #121211; --bone: #ecebe4; --dim: #8d8b82; --line: rgba(236,235,228,.14); --g: clamp(18px, 3.4vw, 48px); --ease: cubic-bezier(.2,.8,.2,1); }
+* { box-sizing: border-box; margin: 0; }
+body { font-family: 'Archivo', system-ui, sans-serif; background: var(--bg); color: var(--bone); font-size: 17px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: clip; }
+a { color: inherit; } button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; text-align: left; }
+.top { position: fixed; inset: 0 0 auto; z-index: 20; display: flex; justify-content: space-between; padding: 18px var(--g); font-stretch: 112%; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; mix-blend-mode: difference; }
+.top nav { display: flex; gap: 22px; } .top a { text-decoration: none; }
+.hero { min-height: 100svh; display: grid; align-content: end; padding: 0 var(--g) 56px; }
+.name { display: flex; flex-direction: column; line-height: .78; text-transform: uppercase; letter-spacing: -.02em; }
+.name .row { display: flex; justify-content: space-between; font-size: clamp(64px, 15.2vw, 260px); }
+.name .ch { display: inline-block; font-weight: var(--w, 500); font-stretch: var(--s, 70%); transition: font-weight .25s var(--ease), font-stretch .25s var(--ease); }
+.hero__foot { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); }
+.hero__foot b { font-size: clamp(20px, 2.2vw, 32px); font-weight: 500; font-stretch: 100%; }
+.hero__foot p { max-width: 26em; color: var(--dim); font-size: 15px; }
+.sec { padding: 140px var(--g) 80px; }
+.sec__h { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); font-stretch: 115%; margin-bottom: 18px; }
+.idx { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+.idx li { border-bottom: 1px solid var(--line); }
+.idx button { width: 100%; display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 20px; padding: 14px 0 10px; }
+.idx .t { font-size: clamp(44px, 7.6vw, 128px); line-height: .92; text-transform: uppercase; letter-spacing: -.02em; font-weight: var(--w, 300); font-stretch: var(--s, 62%); transition: color .4s; }
+.idx .m { color: var(--dim); font-size: 14px; font-stretch: 112%; text-align: right; }
+.idx li.on .t { color: var(--c); }
+.det { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .6s var(--ease); }
+.det.open { grid-template-rows: 1fr; }
+.det > div { min-height: 0; overflow: hidden; }
+.det .in { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 10px 0 36px; color: var(--bone); }
+.det p { color: #c9c7be; } .det ul { padding-left: 18px; color: #c9c7be; }
+.det img { width: 100%; max-width: 520px; display: block; margin-top: 16px; }
+@media (max-width: 760px) {
+  .top nav { display: none; }
+  .name .row { font-size: 19.4vw; }
+  .hero__foot { flex-direction: column; align-items: start; }
+  .idx button { grid-template-columns: 1fr; }
+  .idx .m { text-align: left; }
+  .idx .t { font-size: 14.5vw; }
+  .det .in { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top"><span>Clément Plançon</span><nav><a href="#projets">Projets</a><a href="#">Parcours</a><a href="#">À propos</a><a href="#">Contact</a></nav></header>
+<main>
+<section class="hero">
+  <h1 class="name" aria-label="Clément Plançon"><span class="row" aria-hidden="true" data-w="Clément"></span><span class="row" aria-hidden="true" data-w="Plançon"></span></h1>
+  <div class="hero__foot"><b>Ingénieur logiciel &amp; Tech Lead</b><p>Applications métiers et produits numériques, du cadrage à la mise en production. Paris, ministère de l'Intérieur.</p></div>
+</section>
+<section class="sec" id="projets"><p class="sec__h">Projets — 6</p><ul class="idx" id="idx"></ul></section>
+</main>
+<script src="data.js"></script>
+<script>
+const D = window.DATA;
+const col = { vermillon: '#ff6a4a', sapin: '#5fc596', ardoise: '#9fb0c4', ocre: '#f1b347', prune: '#d47aa8', sable: '#e8d6ad' };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+document.querySelectorAll('.row').forEach((r) => { r.innerHTML = [...r.dataset.w].map((c) => `<span class="ch">${c}</span>`).join(''); });
+const chars = [...document.querySelectorAll('.ch')];
+// letters swell under the pointer (desktop) or under a slow wave (touch)
+function shape(px, py) {
+  chars.forEach((c) => { const b = c.getBoundingClientRect(); const d = Math.hypot(b.x + b.width / 2 - px, b.y + b.height / 2 - py); const k = Math.max(0, 1 - d / 420); c.style.setProperty('--w', Math.round(300 + 600 * k)); c.style.setProperty('--s', `${62 + 63 * k}%`); });
+}
+addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') shape(e.clientX, e.clientY); });
+shape(innerWidth * 0.3, innerHeight * 0.7);
+const idx = document.getElementById('idx');
+D.projects.forEach((p) => {
+  const li = document.createElement('li'); li.style.setProperty('--c', col[p.cover.color]);
+  const y = p.period ? (p.period.end ? `${p.period.start}–${p.period.end}` : p.period.start) : 'En cours';
+  li.innerHTML = `<button aria-expanded="false"><span class="t">${esc(p.title)}</span><span class="m">${esc(p.kind || '')}<br>${esc(y)}</span></button>
+   <div class="det"><div><div class="in"><div><p>${esc(p.context || p.summary)}</p>${p.cover.image ? '<img src="datametre-apercu.webp" alt="">' : ''}</div><div><ul>${p.contributions.map((c) => `<li>${esc(c)}</li>`).join('')}</ul><p style="margin-top:14px"><b>${esc(p.technologies.join(' · '))}</b></p></div></div></div></div>`;
+  const btn = li.querySelector('button'), det = li.querySelector('.det');
+  btn.addEventListener('click', () => { const o = btn.getAttribute('aria-expanded') !== 'true'; btn.setAttribute('aria-expanded', o); det.classList.toggle('open', o); li.classList.toggle('on', o); });
+  idx.appendChild(li);
+});
+// titles breathe: width axis follows distance to the middle of the screen
+const titles = [...idx.querySelectorAll('.t')];
+function breathe() { const mid = innerHeight / 2; titles.forEach((t) => { const b = t.getBoundingClientRect(); const k = Math.max(0, 1 - Math.abs(b.top + b.height / 2 - mid) / (innerHeight * .45)); t.style.setProperty('--s', `${62 + 63 * k}%`); t.style.setProperty('--w', Math.round(250 + 550 * k)); }); }
+addEventListener('scroll', breathe, { passive: true }); breathe();
+</script>
+</body>
+</html>

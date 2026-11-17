@@ -156,7 +156,7 @@ test('create, reorder, hide and delete', async ({ page }) => {
   await login(page);
   await page.goto('/admin/#/projets/nouveau');
   await page.getByRole('textbox', { name: 'Titre', exact: true }).fill('Projet de test');
-  await expect(page.getByLabel('Adresse de la page')).toHaveValue('projet-de-test');
+  await expect(page.getByLabel('Adresse du projet')).toHaveValue('projet-de-test');
   await page.getByLabel('Résumé').fill('Un projet créé pendant les tests.');
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(page).toHaveURL(/#\/projets\/projet-de-test$/);

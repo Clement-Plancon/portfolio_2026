@@ -1,33 +1,43 @@
-// Generates public/og-default.png (1200×630): the home statement and a fern print, with the real fonts
-// and the same photogram generator as the site.
+// Generates public/og-default.png (1200×630) in the art direction of the site: the name in Mona Sans,
+// and the folded strip of real project papers (colours from src/lib/stocks.ts, titles from the content).
 // Usage: npm run build && npx astro preview --port 4321, then `node scripts/generate-og.mjs` (Node ≥ 22.18).
+import { readdirSync, readFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
-import { photogram } from '../src/lib/photogram.ts';
+import { STOCKS } from '../src/lib/stocks.ts';
 
-const pg = photogram('bercy-vert', 'ardoise', 'feuille');
+const projects = readdirSync('src/content/projects')
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(readFileSync(`src/content/projects/${f}`, 'utf8')))
+  .filter((p) => p.visible !== false)
+  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+const profile = JSON.parse(readFileSync('src/content/profile.json', 'utf8'));
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+const leaves = projects
+  .map((p, i) => {
+    const s = STOCKS[p.cover?.color] ?? STOCKS.sable;
+    const tilt = i % 2 ? -1 : 1;
+    return `<div class="leaf" style="background:${s.paper};color:${s.ink};--t:${tilt}"><span>${esc(p.title)}</span></div>`;
+  })
+  .join('');
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face{font-family:N;src:url(/fonts/newsreader.woff2);font-weight:300 500}
-@font-face{font-family:N;src:url(/fonts/newsreader-italic.woff2);font-style:italic}
-@font-face{font-family:S;src:url(/fonts/instrument-sans.woff2);font-weight:400 700}
-html,body{margin:0;width:1200px;height:630px;background:#f1ede3;color:#14203f}
-body{display:grid;grid-template-columns:1fr 330px;gap:56px;align-items:center;align-content:center;padding:0 72px;box-sizing:border-box;font-family:N}
-.who{font-family:S;font-size:18px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#47506a}
-h1{margin:26px 0 0;font-weight:300;font-size:96px;line-height:.92;letter-spacing:-.04em}
-em{font-style:italic;font-weight:400;color:#1c3e8c}
-.print{background:#f7f4ed;padding:22px 20px;box-shadow:0 30px 50px -30px rgba(20,32,63,.6);rotate:2deg}
-.e{aspect-ratio:4/5;clip-path:url(#edge);background:${pg.tone}}
-svg.art{width:100%;height:100%;display:block}
+@font-face{font-family:M;src:url(/fonts/mona-sans.woff2);font-weight:200 900;font-stretch:75% 125%}
+html,body{margin:0;width:1200px;height:630px;background:#f3f1ec;color:#15140f;font-family:M}
+body{box-sizing:border-box;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
+h1{margin:0;font-stretch:75%;font-weight:840;font-size:150px;line-height:.84;letter-spacing:-.03em}
+.role{margin-top:22px;font-size:34px;font-weight:460}
+.lab{font-stretch:125%;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#4a4842}
+.strip{display:flex;height:150px;perspective:1400px}
+.leaf{flex:1;display:flex;align-items:flex-end;padding:16px;font-stretch:75%;font-weight:800;font-size:24px;line-height:1;
+  transform:rotateY(calc(var(--t) * 14deg));box-shadow:inset calc(var(--t) * 40px) 0 50px -30px rgba(0,0,0,.35)}
 </style></head><body>
-<div><div class="who">Clément Plançon — Ingénieur logiciel &amp; Tech Lead</div>
-<h1>Je rends <em>lisible</em> ce qui est complexe.</h1></div>
-<div class="print"><div class="e"><svg class="art" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
-<defs><filter id="soft"><feGaussianBlur stdDeviation="7"/></filter></defs>
-<rect width="400" height="500" fill="${pg.tone}"/><g filter="url(#soft)" opacity=".5">${pg.objects}</g><g>${pg.objects}</g></svg></div></div>
-<svg width="0" height="0"><clipPath id="edge" clipPathUnits="objectBoundingBox"><path d="${pg.edge}"/></clipPath></svg>
+<div><div class="lab">Expliquer, du latin explicare : déplier</div>
+<h1 style="margin-top:20px">${esc(profile.name)}</h1><div class="role">${esc(profile.jobTitle)}</div></div>
+<div class="strip">${leaves}</div>
 </body></html>`;
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
 // Same origin as the preview server so the fonts load.
 await page.goto('http://localhost:4321/robots.txt');
