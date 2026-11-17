@@ -12,13 +12,15 @@
     "check": "astro check",
     "lint": "biome check .",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "admin:setup": "node scripts/admin-setup.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^6.1.0",
     "@astrojs/sitemap": "^3.7.4",
-    "@netlify/identity": "^2.0.1",
+    "@netlify/blobs": "^11.1.9",
     "astro": "^7.4.1",
+    "hash-wasm": "^4.13.0",
     "preact": "^11.2.0",
     "zod": "^4.6.7"
   },

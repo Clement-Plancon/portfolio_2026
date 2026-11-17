@@ -1,82 +1,36 @@
 // Admin scenarios in a real browser.
-// - Netlify Identity is mocked at /.netlify/identity (token + user endpoints).
-// - /api/admin/* is served by the REAL API handler (src/server) running in the test process,
-//   backed by an in-memory GitHub seeded with the repository's content. State survives page reloads.
-// What these tests cannot cover (real Identity e-mails, real GitHub, real Netlify deploys) is listed
+// - /api/admin/* is served by the REAL API handler (src/server), authentication included (Argon2id hash,
+//   signed HttpOnly session cookie, rate limiting), running in the test process with an in-memory store
+//   in place of Netlify Blobs and an in-memory GitHub seeded with the repository's content.
+// What these tests cannot cover (real Netlify Blobs, real GitHub, real Netlify deploys) is listed
 // in docs/netlify-deployment.md, "Vérifications en conditions réelles".
 import { expect, type Page, test } from '@playwright/test';
 import { Cms } from '../../src/server/cms';
 import type { GitHub } from '../../src/server/github';
 import { createHandler } from '../../src/server/handler';
+import { COOKIE } from '../../src/server/session';
+import { TEST_PASSWORD as PASSWORD, testAuth } from '../helpers/admin-auth';
 import { FakeGitHub } from '../helpers/fake-github';
-
-const ADMIN = 'admin@example.com';
-const PASSWORD = 'correct horse battery staple';
-const OTHER = 'intrus@example.com';
-
-const b64url = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url');
-const jwtFor = (email: string) =>
-  `${b64url({ alg: 'HS256', typ: 'JWT' })}.${b64url({ sub: `id-${email}`, email, exp: Math.floor(Date.now() / 1000) + 3600, app_metadata: {}, user_metadata: {} })}.sig`;
-const emailFromJwt = (jwt?: string) => {
-  try {
-    return JSON.parse(Buffer.from(jwt!.split('.')[1], 'base64url').toString()).email as string;
-  } catch {
-    return null;
-  }
-};
-const cookie = (header: string | undefined, name: string) => header?.match(new RegExp(`(?:^|; )${name}=([^;]*)`))?.[1];
 
 async function setup(page: Page) {
   const gh = FakeGitHub.fromDir(process.cwd(), ['src/content', 'src/assets/media']);
-  const handle = createHandler({
-    cms: new Cms(gh as unknown as GitHub, { branch: 'main', draftBranch: 'cms-draft' }),
-    // Stand-in for Netlify's verification: the runtime would reject forged tokens.
-    getUser: async (req) => {
-      const email = emailFromJwt(decodeURIComponent(cookie(req.headers.get('cookie') ?? undefined, 'nf_jwt') ?? ''));
-      return email ? { email } : null;
-    },
-    verifyOrigin: (req) => {
-      if (req.headers.get('origin') !== new URL(req.url).origin) throw new Error('origin');
-    },
-    adminEmails: [ADMIN],
-    log: () => {},
-  });
-
-  await page.route('**/.netlify/identity/**', async (route) => {
-    const req = route.request();
-    const path = new URL(req.url()).pathname.replace('/.netlify/identity', '');
-    if (path === '/token') {
-      const form = new URLSearchParams(req.postData() ?? '');
-      const email = form.get('username');
-      if (form.get('grant_type') === 'password' && form.get('password') === PASSWORD && (email === ADMIN || email === OTHER)) {
-        return route.fulfill({ json: { access_token: jwtFor(email), token_type: 'bearer', expires_in: 3600, refresh_token: 'r' } });
-      }
-      return route.fulfill({ status: 400, json: { error: 'invalid_grant', error_description: 'Invalid email or password' } });
-    }
-    if (path === '/user') {
-      const email = emailFromJwt(req.headers().authorization?.replace('Bearer ', ''));
-      return email ? route.fulfill({ json: { id: `id-${email}`, email, aud: '', role: '', app_metadata: { provider: 'email' }, user_metadata: {} } }) : route.fulfill({ status: 401, json: {} });
-    }
-    if (path === '/logout') return route.fulfill({ status: 204 });
-    if (path === '/recover') return route.fulfill({ json: {} });
-    if (path === '/settings') return route.fulfill({ json: { external: { email: true }, disable_signup: true, autoconfirm: false } });
-    return route.fulfill({ status: 404, json: {} });
-  });
+  const { auth } = await testAuth();
+  const handle = createHandler({ cms: new Cms(gh as unknown as GitHub, { branch: 'main', draftBranch: 'cms-draft' }), auth, log: () => {} });
 
   await page.route('**/api/admin/**', async (route) => {
     const r = route.request();
     const headers = await r.allHeaders();
     const res = await handle(
       new Request(r.url(), { method: r.method(), headers, body: ['GET', 'HEAD'].includes(r.method()) ? undefined : new Uint8Array(r.postDataBuffer() ?? []) }),
+      { ip: '127.0.0.1' },
     );
     await route.fulfill({ status: res.status, headers: Object.fromEntries(res.headers), body: Buffer.from(await res.arrayBuffer()) });
   });
   return gh;
 }
 
-async function login(page: Page, email = ADMIN, password = PASSWORD) {
+async function login(page: Page, password = PASSWORD) {
   await page.goto('/admin/');
-  await page.getByLabel('Adresse e-mail').fill(email);
   await page.getByLabel('Mot de passe').fill(password);
   await page.getByRole('button', { name: 'Se connecter' }).click();
 }
@@ -84,21 +38,34 @@ async function login(page: Page, email = ADMIN, password = PASSWORD) {
 test('unauthorized access: login screen, and the API refuses anonymous calls', async ({ page }) => {
   await setup(page);
   await page.goto('/admin/');
-  await expect(page.getByRole('heading', { name: 'Connexion' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Administration' })).toBeVisible();
+  // Only a password field: no e-mail, no invitation, no "forgotten password".
+  await expect(page.locator('input:visible')).toHaveCount(1);
+  await expect(page.getByLabel('Adresse e-mail')).toHaveCount(0);
+  await expect(page.getByText(/oublié/i)).toHaveCount(0);
   const status = await page.evaluate(async () => (await fetch('/api/admin/content')).status);
   expect(status).toBe(401);
 });
 
-test('wrong password shows an error', async ({ page }) => {
+test('the session cookie is HttpOnly, Secure and SameSite=Strict, invisible to JavaScript', async ({ page, context }) => {
   await setup(page);
-  await login(page, ADMIN, 'nope');
-  await expect(page.getByRole('alert')).toContainText('incorrect');
+  await login(page);
+  await expect(page.getByRole('heading', { name: 'Bonjour' })).toBeVisible();
+  const c = (await context.cookies()).find((x) => x.name === COOKIE);
+  expect(c).toMatchObject({ httpOnly: true, secure: true, sameSite: 'Strict', path: '/' });
+  expect(await page.evaluate(() => document.cookie)).not.toContain('cms_session');
 });
 
-test('an authenticated account outside ADMIN_EMAILS is denied', async ({ page }) => {
+test('wrong password shows a generic error, then repeated attempts are blocked', async ({ page }) => {
   await setup(page);
-  await login(page, OTHER);
-  await expect(page.getByRole('heading', { name: 'Accès refusé' })).toBeVisible();
+  await login(page, 'nope');
+  await expect(page.getByRole('alert')).toHaveText('Connexion refusée. Vérifiez le mot de passe.');
+  for (let i = 0; i < 5; i++) {
+    await page.getByLabel('Mot de passe').fill(`mauvais ${i}`);
+    await page.getByRole('button', { name: 'Se connecter' }).click();
+    await expect(page.getByRole('button', { name: 'Se connecter' })).toBeEnabled();
+  }
+  await expect(page.getByRole('alert')).toHaveText('Trop de tentatives. Réessayez plus tard.');
 });
 
 test('full flow: login, edit, save, reload, publish, logout', async ({ page }) => {
@@ -144,11 +111,14 @@ test('full flow: login, edit, save, reload, publish, logout', async ({ page }) =
   // 7-8. Main now holds the content the production build will use
   expect(gh.read('main', 'src/content/projects/bercy-vert.json')).toContain('Résumé modifié depuis le back-office.');
 
-  // 9. Logout
+  // 9. Logout: the server forgets the session, so even a copy of the cookie stops working.
+  const before = (await page.context().cookies()).find((c) => c.name === COOKIE)!;
   await page.getByRole('button', { name: 'Se déconnecter' }).click();
   await expect(page.getByText('Vous êtes déconnecté.')).toBeVisible();
+  await page.context().addCookies([before]);
   await page.reload();
-  await expect(page.getByRole('heading', { name: 'Connexion' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Administration' })).toBeVisible();
+  expect(await page.evaluate(async () => (await fetch('/api/admin/content')).status)).toBe(401);
 });
 
 test('create, reorder, hide and delete', async ({ page }) => {
@@ -162,7 +132,9 @@ test('create, reorder, hide and delete', async ({ page }) => {
   await expect(page).toHaveURL(/#\/projets\/projet-de-test$/);
   expect(gh.read('cms-draft', 'src/content/projects/projet-de-test.json')).toContain('"visible": false');
 
-  await page.goto('/admin/#/projets');
+  // Through the menu (a hash-only goto can race with the editor's own redirect after saving).
+  await page.getByRole('navigation', { name: 'Administration' }).getByRole('link', { name: 'Projets' }).click();
+  await expect(page).toHaveURL(/#\/projets$/);
   const row = page.locator('.row', { hasText: 'Projet de test' });
   await row.getByRole('button', { name: 'Monter' }).click();
   await page.getByRole('button', { name: "Enregistrer l'ordre" }).click();
@@ -182,7 +154,6 @@ test('expired session: re-login without losing the open form', async ({ page, co
   await context.clearCookies(); // the session cookie expires
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(page.getByText('Votre session a expiré')).toBeVisible();
-  await page.getByLabel('Adresse e-mail').fill(ADMIN);
   await page.getByLabel('Mot de passe').fill(PASSWORD);
   await page.getByRole('button', { name: 'Se connecter' }).click();
   await expect(page.getByLabel('Résumé')).toHaveValue('Texte saisi avant expiration.');

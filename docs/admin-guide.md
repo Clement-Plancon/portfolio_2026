@@ -2,6 +2,16 @@
 
 Adresse : **https://clementplancon.fr/admin/** (mise en place : voir `netlify-deployment.md`).
 
+## Connexion
+
+Un seul compte, le vôtre : l'écran « Administration » ne demande que le **mot de passe**.
+
+- **Durée** : la session dure 8 heures au plus et se ferme après 2 heures sans activité. Si elle expire pendant une saisie, l'administration redemande le mot de passe sans perdre le formulaire ouvert.
+- **Se déconnecter** (menu de gauche ou Paramètres) ferme la session **sur le serveur** : même une copie du cookie ne fonctionne plus.
+- **Paramètres → Fermer toutes les sessions** ferme les sessions de tous les appareils, y compris l'appareil utilisé. C'est utile après une connexion depuis un ordinateur qui n'est pas le vôtre.
+- **Tentatives** : après 5 mots de passe erronés en 15 minutes, la connexion est bloquée pour votre connexion internet pendant 15 minutes, puis 30 minutes, 1 heure… jusqu'à 24 heures. Au-delà de 30 tentatives par heure, toutes adresses confondues, la connexion est suspendue 15 minutes pour tout le monde (protection contre les attaques réparties).
+
+
 ## Le principe en 30 secondes
 
 - **Enregistrer** met vos modifications dans un **brouillon**. Le site public ne bouge pas.
@@ -53,7 +63,47 @@ Valeurs par défaut (nom du site, description, image de partage) et réglages de
 
 ## Paramètres
 
-Compte connecté, déconnexion, état des déploiements, et **Abandonner les modifications non publiées** (remet le brouillon à l'identique du site en ligne).
+Compte connecté, déconnexion, fermeture de toutes les sessions, état des déploiements, et **Abandonner les modifications non publiées** (remet le brouillon à l'identique du site en ligne).
+
+## Mot de passe et secrets
+
+Le mot de passe ne se change pas depuis l'administration : c'est voulu. Il n'est connu que de vous, et Netlify n'en connaît que le hachage. Toutes les opérations ci-dessous se font sur votre ordinateur, dans PowerShell, à la racine du dépôt (après `npm install`), puis dans Netlify → **Site configuration → Environment variables**. Un nouveau déploiement (**Deploys → Trigger deploy**) les applique.
+
+### Changer le mot de passe
+
+1. `npm run admin:setup -- --password` : saisissez le nouveau mot de passe deux fois.
+2. Dans Netlify, remplacez la valeur de `ADMIN_PASSWORD_HASH` par celle affichée (**Options → Edit**).
+3. Redéployez. Toutes les sessions ouvertes sont fermées ; reconnectez-vous avec le nouveau mot de passe.
+
+### Récupérer l'accès après perte du mot de passe
+
+Il n'y a pas de lien de réinitialisation par e-mail : la récupération passe par Netlify, ce qui suppose l'accès à votre compte Netlify. C'est la même procédure que le changement de mot de passe :
+
+1. `npm run admin:setup -- --password` avec un nouveau mot de passe ;
+2. nouvelle valeur de `ADMIN_PASSWORD_HASH` dans Netlify ;
+3. redéploiement.
+
+L'ancien mot de passe ne sert plus à rien, et les sessions ouvertes sont fermées. Si la connexion est bloquée après des essais manqués, elle se débloque seule (au plus 24 heures). Changer le mot de passe la débloque aussi immédiatement.
+
+### Rotation du secret de session
+
+À faire si vous pensez qu'une session a pu être volée, ou par précaution (par exemple une fois par an) :
+
+1. `npm run admin:setup -- --secret` ;
+2. nouvelle valeur de `ADMIN_SESSION_SECRET` dans Netlify ;
+3. redéploiement.
+
+Toutes les sessions existantes deviennent invalides, mais le mot de passe ne change pas.
+
+`npm run admin:setup` sans option régénère les deux valeurs à la fois.
+
+### Si un secret a fuité
+
+Selon ce qui a fuité :
+
+- **Le hachage** (`ADMIN_PASSWORD_HASH`) ne permet pas de se connecter, mais il permettrait de tester des mots de passe hors ligne : changez le mot de passe.
+- **Le secret de session** : faites une rotation.
+- **Le jeton GitHub** : révoquez-le sur GitHub et créez-en un nouveau (voir `netlify-deployment.md`, étape 5).
 
 ## Messages fréquents
 
@@ -61,7 +111,10 @@ Compte connecté, déconnexion, état des déploiements, et **Abandonner les mod
 |---|---|---|
 | « Ce contenu a été modifié ailleurs… » | Le fichier a changé depuis son ouverture (autre onglet). | Copier votre texte, recharger la page, recommencer. |
 | « Un contenu avec cet identifiant existe déjà » | Adresse déjà prise. | Changer l'adresse de la page. |
-| « Votre session a expiré » | Session Identity expirée. | Se reconnecter ; le formulaire ouvert est conservé. |
+| « Votre session a expiré » | Session expirée (8 h, ou 2 h sans activité) ou fermée ailleurs. | Saisir le mot de passe ; le formulaire ouvert est conservé. |
+| « Connexion refusée. Vérifiez le mot de passe. » | Mauvais mot de passe. Le message est volontairement le même dans tous les cas. | Réessayer, sans dépasser 5 essais en 15 minutes. |
+| « Trop de tentatives. Réessayez plus tard. » | Trop d'essais manqués. | Attendre (15 min au premier blocage), ou changer le mot de passe. |
+| « L'administration n'est pas configurée… » | `ADMIN_PASSWORD_HASH` ou `ADMIN_SESSION_SECRET` absent, mal copié ou trop faible. | Vérifier les variables dans Netlify (valeur entière, sans espace), redéployer. Le journal de la fonction indique laquelle pose problème, sans afficher sa valeur. |
 | « Les modifications entrent en conflit… » | `main` a été modifié sur GitHub en parallèle. | Résoudre sur GitHub ou abandonner le brouillon. |
 | « GitHub refuse l'accès » | Jeton expiré ou permissions insuffisantes. | Régénérer le jeton (voir déploiement, étape 5). |
 | Aperçu : « échec du déploiement » | Le build a échoué (rare : contenu invalide modifié hors admin). | Ouvrir « détails » pour le journal Netlify. Le site public n'est pas affecté. |
