@@ -1,25 +1,26 @@
 ---
-import type { ImageMetadata } from 'astro';
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
 import Seo from '../components/Seo.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { getProfile } from '../lib/content';
+import type { Profile } from '../lib/schemas';
 
 interface Props {
   title: string;
   description: string;
-  image?: ImageMetadata;
+  /** Share image: absolute or site-relative URL. */
+  image?: string;
   imageAlt?: string;
   noindex?: boolean;
   type?: 'website' | 'profile';
   jsonLd?: Record<string, unknown>[];
   /** The 404 page has no sections to link to. */
   nav?: boolean;
+  /** Only name and location are used here (header, footer, author). */
+  profile: Pick<Profile, 'name' | 'location'>;
 }
 
-const { nav = true, ...seo } = Astro.props;
-const profile = getProfile();
+const { nav = true, profile, ...seo } = Astro.props;
 ---
 
 <!doctype html>

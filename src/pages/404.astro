@@ -1,8 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+
+// Built once with the site (no content needed beyond the name in the header and footer).
+const profile = { name: 'Clément Plançon', location: 'Paris' };
 ---
 
-<Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas : tout le site tient sur une seule page." noindex nav={false}>
+<Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas : tout le site tient sur une seule page." noindex nav={false} profile={profile}>
   <section class="nf wrap">
     <p class="label">Erreur 404</p>
     <h1 class="display">Ce pli<br />n'existe pas.</h1>

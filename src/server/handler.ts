@@ -2,19 +2,20 @@
 import { z } from 'zod';
 import { CONTENT_TYPES, isContentType } from '../lib/content-types';
 import { type AuthDeps, notConfigured, requireAdmin } from './auth';
-import type { Cms, CommitAuthor, SaveChange } from './cms';
-import { GitHubError } from './github';
+import type { ContentStore, SaveChange } from './content-store';
 import { errorResponse, HttpError, json, readJson, SECURITY_HEADERS } from './http';
 import { checkSameOrigin, clearedCookie } from './session';
 import { contentTypeOf, isMediaRef, validateUpload } from './media';
 
 export interface HandlerDeps extends AuthDeps {
-  cms: Cms | null; // null when GitHub is not configured
-  previewUrl?: string;
-  /** Optional commit author (CMS_AUTHOR_NAME / CMS_AUTHOR_EMAIL); otherwise GitHub uses the token owner. */
-  commitAuthor?: CommitAuthor;
+  cms: ContentStore;
+  /** Purges the public pages from the CDN after a publication. Returns false if it could not. */
+  purge?: () => Promise<boolean>;
   log?: (msg: string) => void;
 }
+
+/** Path of the admin-only preview of the draft. */
+export const PREVIEW_PATH = '/admin/apercu/';
 
 /** Facts about the request that only the platform knows (Netlify passes the client IP in its context). */
 export interface RequestContext {
@@ -85,21 +86,19 @@ export function createHandler(deps: HandlerDeps) {
       }
 
       const session = await requireAdmin(req, deps, mutation);
-      const author = deps.commitAuthor;
+      const cms = deps.cms;
 
       if (method === 'GET' && route === '/session') {
-        return json({ user: 'administrateur', expiresAt: session.expiresAt, configured: !!deps.cms, previewUrl: deps.previewUrl ?? null });
+        return json({ user: 'administrateur', expiresAt: session.expiresAt, configured: true, previewUrl: PREVIEW_PATH });
       }
       if (method === 'POST' && route === '/auth/logout-all') {
         await deps.auth!.logoutAll();
         return withCookie(json({ loggedOut: true }), clearedCookie());
       }
 
-      const cms = deps.cms;
-      if (!cms) throw new HttpError(503, 'not_configured', "Le dépôt GitHub n'est pas configuré (GITHUB_TOKEN, GITHUB_REPO).");
 
       if (method === 'GET' && route === '/content') return json(await cms.readAll());
-      if (method === 'GET' && route === '/status') return json({ ...(await cms.status()), previewUrl: deps.previewUrl ?? null });
+      if (method === 'GET' && route === '/status') return json({ ...(await cms.status()), previewUrl: PREVIEW_PATH });
 
       if (method === 'POST' && route === '/save') {
         const body = parse(saveBody, await readJson(req, 1_000_000));
@@ -107,41 +106,69 @@ export function createHandler(deps: HandlerDeps) {
           if (!isContentType(c.type)) throw new HttpError(400, 'invalid_type', 'Type de contenu inconnu.');
           if (CONTENT_TYPES[c.type].kind === 'collection' && !c.id) throw new HttpError(400, 'invalid_id', 'Identifiant manquant.');
         }
-        return json(await cms.save(body.changes as SaveChange[], `CMS : ${body.message}`, author));
+        return json(await cms.save(body.changes as SaveChange[]));
       }
 
       if (method === 'POST' && route === '/media') {
         const body = parse(uploadBody, await readJson(req, 6_000_000));
         const file = validateUpload(body);
-        const result = await cms.uploadMedia(
-          { ref: file.ref, bytes: file.bytes, alt: body.alt, width: body.width, height: body.height, replace: !!body.replace },
-          author,
-        );
+        const result = await cms.uploadMedia({
+          ref: file.ref,
+          bytes: file.bytes,
+          contentType: contentTypeOf(file.ref),
+          alt: body.alt,
+          width: body.width,
+          height: body.height,
+          replace: !!body.replace,
+        });
         return json({ ref: file.ref, ...result }, 201);
       }
 
       if (method === 'POST' && route === '/media/delete') {
         const { ref } = parse(z.object({ ref: z.string() }), await readJson(req, 10_000));
         if (!isMediaRef(ref)) throw new HttpError(400, 'bad_request', 'Référence de média invalide.');
-        return json(await cms.deleteMedia(ref, author));
+        return json(await cms.deleteMedia(ref));
       }
 
       if (method === 'GET' && route === '/media/file') {
         const ref = url.searchParams.get('ref');
         if (!isMediaRef(ref)) throw new HttpError(400, 'bad_request', 'Référence de média invalide.');
         const data = await cms.readMedia(ref);
-        return new Response(data, {
+        return new Response(data.bytes as BodyInit, {
           headers: {
             ...SECURITY_HEADERS,
-            'Content-Type': contentTypeOf(ref),
-            'Cache-Control': 'private, max-age=60',
+            'Content-Type': data.contentType,
+            'Cache-Control': 'private, no-store',
             'Content-Disposition': 'inline',
             'Content-Security-Policy': "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox",
           },
         });
       }
 
-      if (method === 'POST' && route === '/publish') return json(await cms.publish());
+      if (method === 'POST' && route === '/publish') {
+        const r = await cms.publish();
+        // The content is published in Blobs; the CDN copy of the page is dropped so visitors see it now.
+        const purged = deps.purge ? await deps.purge() : false;
+        if (!purged) log('[cms] publish: CDN purge failed or unavailable');
+        return json({ ...r, purged });
+      }
+
+      if (method === 'GET' && route === '/backup') {
+        const withFiles = url.searchParams.get('fichiers') === '1';
+        const backup = await cms.exportBackup({ withFiles });
+        const date = backup.exportedAt.slice(0, 10);
+        return new Response(JSON.stringify(backup, null, 2), {
+          headers: {
+            ...SECURITY_HEADERS,
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Disposition': `attachment; filename="clementplancon-sauvegarde-${date}${withFiles ? '-avec-fichiers' : ''}.json"`,
+          },
+        });
+      }
+      if (method === 'POST' && route === '/restore') {
+        const body = parse(z.object({ backup: z.unknown(), expectedRev: z.string().optional() }), await readJson(req, 6_000_000));
+        return json(await cms.restoreBackup(body.backup, body.expectedRev));
+      }
       if (method === 'POST' && route === '/discard') return json(await cms.discard());
 
       throw new HttpError(404, 'not_found', 'Route inconnue.');
@@ -151,18 +178,6 @@ export function createHandler(deps: HandlerDeps) {
         const res = errorResponse(e);
         // A refused or expired session also removes the cookie from the browser.
         return e.status === 401 && route !== '/auth/login' ? withCookie(res, clearedCookie()) : res;
-      }
-      if (e instanceof GitHubError) {
-        // Never log the token or request bodies, only the route and GitHub's status.
-        log(`[cms] ${method} ${route} -> GitHub ${e.status}`);
-        const status = 502;
-        const message =
-          e.status === 401 || e.status === 403
-            ? "GitHub refuse l'accès : vérifiez le jeton GITHUB_TOKEN et ses permissions."
-            : e.status === 404
-              ? 'Dépôt ou branche introuvable sur GitHub : vérifiez GITHUB_REPO et GITHUB_BRANCH.'
-              : 'GitHub est momentanément indisponible. Réessayez dans un instant.';
-        return errorResponse(new HttpError(status, 'github', message));
       }
       log(`[cms] ${method} ${route} -> unexpected ${(e as Error)?.name ?? 'error'}`);
       return errorResponse(new HttpError(500, 'internal', 'Erreur inattendue du serveur.'));

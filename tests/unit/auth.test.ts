@@ -2,18 +2,16 @@
 // Uses the real handler, real Argon2id hashing and an in-memory version of the shared store.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { checkPassword, generateSecret, hashPassword } from '../../scripts/admin-setup.mjs';
-import { Cms } from '../../src/server/cms';
-import type { GitHub } from '../../src/server/github';
 import { createHandler } from '../../src/server/handler';
 import { AdminAuth, COOKIE, type MemoryKV, POLICY, parseAuthConfig } from '../../src/server/session';
 import { cookiePair, TEST_PASSWORD, TEST_SECRET, testAuth, testHash } from '../helpers/admin-auth';
-import { FakeGitHub } from '../helpers/fake-github';
+import { testCms } from '../helpers/cms';
 
 const ORIGIN = 'https://clementplancon.fr';
 let now: number;
 let kv: MemoryKV;
 let auth: AdminAuth;
-let gh: FakeGitHub;
+let gh: ReturnType<typeof testCms>;
 let handle: ReturnType<typeof createHandler>;
 
 const request = (method: string, path: string, opts: { body?: unknown; cookie?: string; headers?: Record<string, string>; ip?: string } = {}) =>
@@ -37,8 +35,8 @@ const login = async (password = TEST_PASSWORD, ip?: string) => {
 beforeEach(async () => {
   now = Date.UTC(2026, 10, 17, 10);
   ({ kv, auth } = await testAuth({ now: () => now }));
-  gh = FakeGitHub.fromDir(process.cwd(), ['src/content', 'src/assets/media']);
-  handle = createHandler({ cms: new Cms(gh as unknown as GitHub, { branch: 'main', draftBranch: 'cms-draft' }), auth, log: () => {} });
+  gh = testCms();
+  handle = createHandler({ cms: gh.cms, auth, log: () => {} });
 });
 
 describe('login', () => {
@@ -185,11 +183,11 @@ describe('sessions', () => {
 
   it('7. rotation: a new session secret or a new password invalidates existing sessions', async () => {
     const { cookie } = await login();
-    const rotatedSecret = createHandler({ cms: null, auth: (await testAuth({ kv, secret: generateSecret() })).auth, log: () => {} });
+    const rotatedSecret = createHandler({ cms: gh.cms, auth: (await testAuth({ kv, secret: generateSecret() })).auth, log: () => {} });
     expect((await rotatedSecret(new Request(`${ORIGIN}/api/admin/session`, { headers: { cookie } }))).status).toBe(401);
     const parsed = parseAuthConfig({ ADMIN_PASSWORD_HASH: await testHash('un tout autre mot de passe'), ADMIN_SESSION_SECRET: TEST_SECRET });
     if ('error' in parsed) throw new Error(parsed.error);
-    const newPassword = createHandler({ cms: null, auth: new AdminAuth({ config: parsed.config, kv, log: () => {} }), log: () => {} });
+    const newPassword = createHandler({ cms: gh.cms, auth: new AdminAuth({ config: parsed.config, kv, log: () => {} }), log: () => {} });
     expect((await newPassword(new Request(`${ORIGIN}/api/admin/session`, { headers: { cookie } }))).status).toBe(401);
   });
 });
@@ -218,7 +216,7 @@ describe('CSRF', () => {
   });
 
   it("accepts the site's own Netlify addresses as origins", async () => {
-    handle = createHandler({ cms: null, auth, siteOrigins: ['https://main--site.netlify.app'], log: () => {} });
+    handle = createHandler({ cms: gh.cms, auth, siteOrigins: ['https://main--site.netlify.app'], log: () => {} });
     const r = await request('POST', '/auth/login', { body: { password: TEST_PASSWORD }, headers: { origin: 'https://main--site.netlify.app' } });
     expect(r.status).toBe(200);
   });
@@ -234,16 +232,16 @@ describe('content after login', () => {
       body: { message: 'Résumé SafePing', changes: [{ op: 'put', type: 'project', id: 'safeping', data: { ...p.data, summary: 'Résumé modifié.' }, baseSha: p.sha }] },
     });
     expect(saved.status).toBe(200);
-    expect(gh.read('cms-draft', 'src/content/projects/safeping.json')).toContain('Résumé modifié.');
-    expect(gh.read('main', 'src/content/projects/safeping.json')).not.toContain('Résumé modifié.');
+    expect(await gh.read('draft', 'src/content/projects/safeping.json')).toContain('Résumé modifié.');
+    expect(await gh.read('published', 'src/content/projects/safeping.json')).not.toContain('Résumé modifié.');
     expect((await request('POST', '/publish', { cookie, body: {} })).status).toBe(200);
-    expect(gh.read('main', 'src/content/projects/safeping.json')).toContain('Résumé modifié.');
+    expect(await gh.read('published', 'src/content/projects/safeping.json')).toContain('Résumé modifié.');
   });
 });
 
 describe('configuration', () => {
   it('11. without valid secrets, everything is refused (503), login included', async () => {
-    handle = createHandler({ cms: null, auth: null, log: () => {} });
+    handle = createHandler({ cms: gh.cms, auth: null, log: () => {} });
     expect((await request('POST', '/auth/login', { body: { password: TEST_PASSWORD } })).status).toBe(503);
     expect((await request('GET', '/session')).status).toBe(503);
     expect((await request('GET', '/content')).status).toBe(503);

@@ -1,0 +1,68 @@
+---
+// The whole public site: one page rendered from content data. Used by "/" (published content) and by the
+// admin preview of the draft ("/admin/apercu/"), so both are guaranteed to look the same.
+import Base from '../layouts/Base.astro';
+import type { MediaResolver } from '../lib/media';
+import type { SiteData } from '../lib/snapshot';
+import { personLd, profilePageLd, projectsLd } from '../lib/structured-data';
+import About from './About.astro';
+import Contact from './Contact.astro';
+import Cover from './Cover.astro';
+import Journey from './Journey.astro';
+import Projects from './Projects.astro';
+import Skills from './Skills.astro';
+
+interface Props {
+  data: SiteData;
+  media: MediaResolver;
+  /** Admin preview: not indexable, with a banner. */
+  preview?: boolean;
+}
+const { data, media, preview = false } = Astro.props;
+const { profile, seo, projects, experiences, skills } = data;
+const page = seo.pages.home;
+const share = media(page.ogImage ?? seo.defaultOgImage);
+---
+
+<Base
+  title={page.title ?? `${profile.name} — ${profile.jobTitle}`}
+  description={page.description ?? seo.defaultDescription}
+  image={share?.src}
+  noindex={preview || page.noindex}
+  profile={profile}
+  type="profile"
+  jsonLd={preview
+    ? []
+    : [personLd(profile, experiences, skills.groups.flatMap((g) => g.items)), profilePageLd('/', page.title ?? profile.name), projectsLd(projects)]}
+>
+  {
+    preview && (
+      <p class="preview-banner" role="note">
+        Aperçu du brouillon, visible par vous seul. <a href="/admin/">Retour à l'administration</a>
+      </p>
+    )
+  }
+  <Cover profile={profile} projects={projects} experiences={experiences} />
+  <About profile={profile} media={media} />
+  <Projects projects={projects} media={media} />
+  <Journey experiences={experiences} />
+  <Skills skills={skills} />
+  <Contact profile={profile} cvUrl={profile.cv?.startsWith('files/') ? media(profile.cv)?.src : undefined} />
+</Base>
+
+<style>
+  .preview-banner {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 60;
+    padding: 0.6rem 1rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+  .preview-banner a {
+    color: inherit;
+    text-decoration: underline;
+  }
+</style>

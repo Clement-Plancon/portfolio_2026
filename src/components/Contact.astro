@@ -3,10 +3,12 @@ import type { Profile } from '../lib/schemas';
 
 interface Props {
   profile: Profile;
+  cvUrl?: string;
 }
 const { profile } = Astro.props;
 const [first, ...rest] = profile.name.split(' ');
-const cv = profile.cv ? (profile.cv.startsWith('files/') ? `/${profile.cv}` : profile.cv) : undefined;
+// A CV from the media library is resolved by the page (published file, or private file in the preview).
+const cv = profile.cv ? (profile.cv.startsWith('files/') ? Astro.props.cvUrl : profile.cv) : undefined;
 ---
 
 <section class="contact section" id="contact" aria-labelledby="contact-title">

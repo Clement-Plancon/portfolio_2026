@@ -1,19 +1,19 @@
 ---
-import { getMedia } from '../lib/media';
+import type { MediaResolver } from '../lib/media';
 import type { Profile } from '../lib/schemas';
-import { Image } from 'astro:assets';
 import { paragraphs } from '../lib/content';
 import Leporello, { type LeafItem } from './Leporello.astro';
 
 interface Props {
   profile: Profile;
+  media: MediaResolver;
 }
-const { profile } = Astro.props;
+const { profile, media } = Astro.props;
 const bio = paragraphs(profile.bio);
 // The last paragraph of the biography is set apart, as a motto.
 const motto = bio.length > 1 ? bio.at(-1) : undefined;
 const body = motto ? bio.slice(0, -1) : bio;
-const photo = profile.photo ? getMedia(profile.photo.src) : undefined;
+const photo = profile.photo ? media(profile.photo.src) : undefined;
 const principles: LeafItem[] = profile.principles.map((p) => ({
   title: p.title,
   text: p.text,
@@ -37,7 +37,7 @@ const principles: LeafItem[] = profile.principles.map((p) => ({
       {
         photo && profile.photo && (
           <figure class="about__photo">
-            <Image src={photo} alt={profile.photo.alt} widths={[320, 640]} sizes="(max-width: 48rem) 100vw, 20rem" />
+            <img src={photo.src} alt={profile.photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
           </figure>
         )
       }

@@ -1,39 +1,27 @@
 ---
-import About from '../components/About.astro';
-import Contact from '../components/Contact.astro';
-import Cover from '../components/Cover.astro';
-import Journey from '../components/Journey.astro';
-import Projects from '../components/Projects.astro';
-import Skills from '../components/Skills.astro';
-import Base from '../layouts/Base.astro';
-import { getExperiences, getProfile, getProjects, getSeo, getSkills } from '../lib/content';
-import { getMedia } from '../lib/media';
-import { personLd, profilePageLd, projectsLd } from '../lib/structured-data';
+// The public one-page, rendered on request from the PUBLISHED content in Netlify Blobs, then cached by
+// Netlify's CDN until the next publication (which purges it). No rebuild is needed to publish.
+import OnePage from '../components/OnePage.astro';
+import { seedSnapshot } from '../lib/seed';
+import { mediaResolver } from '../lib/media';
+import { toSiteData, type Snapshot } from '../lib/snapshot';
+import { setPublicCache } from '../server/public-cache';
+import { contentStore } from '../server/runtime';
 
-const profile = getProfile();
-const seo = getSeo();
-const projects = getProjects();
-const experiences = getExperiences();
-const skills = getSkills();
-const page = seo.pages.home;
+export const prerender = false;
+
+let snap: Snapshot;
+try {
+  snap = await contentStore().published();
+  setPublicCache(Astro.response.headers);
+} catch (e) {
+  // Blobs unreachable: show the repository content rather than an error page, and do not cache it.
+  console.error(`[site] published content unavailable, showing the repository version: ${(e as Error).name}`);
+  snap = seedSnapshot();
+  Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
+  Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, s-maxage=60');
+}
+const data = toSiteData(snap);
 ---
 
-<Base
-  title={page.title ?? `${profile.name} — ${profile.jobTitle}`}
-  description={page.description ?? seo.defaultDescription}
-  image={getMedia(page.ogImage ?? seo.defaultOgImage)}
-  noindex={page.noindex}
-  type="profile"
-  jsonLd={[
-    personLd(profile, experiences, skills.groups.flatMap((g) => g.items)),
-    profilePageLd('/', page.title ?? profile.name),
-    projectsLd(projects),
-  ]}
->
-  <Cover profile={profile} projects={projects} experiences={experiences} />
-  <About profile={profile} />
-  <Projects projects={projects} />
-  <Journey experiences={experiences} />
-  <Skills skills={skills} />
-  <Contact profile={profile} />
-</Base>
+<OnePage data={data} media={mediaResolver(data, 'public')} />
