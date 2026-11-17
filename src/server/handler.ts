@@ -1,4 +1,4 @@
-// Admin API router. Dependencies are injected so the whole flow can be tested without Netlify or GitHub.
+// Admin API router. Dependencies are injected so the whole flow can be tested without Netlify.
 import { z } from 'zod';
 import { CONTENT_TYPES, isContentType } from '../lib/content-types';
 import { type AuthDeps, notConfigured, requireAdmin } from './auth';

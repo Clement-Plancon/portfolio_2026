@@ -6,7 +6,7 @@ import { E2E_PASSWORD } from '../../playwright.config';
 
 test.describe.configure({ mode: 'serial' });
 
-const NEW_SUMMARY = 'Résumé publié depuis le back-office, sans redéploiement.';
+const NEW_SUMMARY = `Résumé publié depuis le back-office, sans redéploiement (${Date.now()}).`;
 
 async function login(page: Page) {
   await page.goto('/admin/');
@@ -80,23 +80,24 @@ test('4, 7, 10, 12. edit a project in the admin, preview the draft, publish, and
 test('13. an image added in the admin stays private until published, then is served publicly', async ({ page, request }) => {
   await login(page);
   const png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(64, 7)]);
+  const name = `essai-e2e-${Date.now()}`; // unique: the server keeps its state between repeated runs
   const upload = await page.evaluate(
-    async (b64) =>
+    async ([b64, fileName]) =>
       (
         await fetch('/api/admin/media', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-CMS-Request': '1' },
-          body: JSON.stringify({ fileName: 'essai-e2e.png', contentBase64: b64, alt: 'Essai' }),
+          body: JSON.stringify({ fileName: `${fileName}.png`, contentBase64: b64, alt: 'Essai' }),
         })
       ).status,
-    png.toString('base64'),
+    [png.toString('base64'), name],
   );
   expect(upload).toBe(201);
-  expect((await request.get('/media/essai-e2e.png')).status()).toBe(404);
-  expect(await page.evaluate(async () => (await fetch('/api/admin/media/file?ref=media/essai-e2e.png')).status)).toBe(200);
+  expect((await request.get(`/media/${name}.png`)).status()).toBe(404);
+  expect(await page.evaluate(async (n) => (await fetch(`/api/admin/media/file?ref=media/${n}.png`)).status, name)).toBe(200);
   const pub = await page.evaluate(async () => (await (await fetch('/api/admin/publish', { method: 'POST', headers: { 'X-CMS-Request': '1' } })).json()) as { published: boolean });
   expect(pub.published).toBe(true);
-  const file = await request.get('/media/essai-e2e.png');
+  const file = await request.get(`/media/${name}.png`);
   expect(file.status()).toBe(200);
   expect(Buffer.from(await file.body())).toEqual(png);
 });

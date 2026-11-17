@@ -1,4 +1,4 @@
-// End-to-end tests of the admin API against an in-memory GitHub, seeded with the real content files.
+// Tests of the admin API on an in-memory Netlify Blobs stand-in, initialised from the real content files.
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createHandler } from '../../src/server/handler';
 import { cookiePair, TEST_PASSWORD, testAuth } from '../helpers/admin-auth';
@@ -210,5 +210,47 @@ describe('media', () => {
     expect(ok.status).toBe(200);
     expect(ok.headers.get('content-type')).toBe('image/webp');
     expect((await call('GET', '/media/file?ref=../../.env')).status).toBe(400);
+  });
+});
+
+describe('11. cache invalidation on publish', () => {
+  it('publishing purges the public cache and says so', async () => {
+    const purges: number[] = [];
+    handle = createHandler({ cms: gh.cms, auth: (await testAuth()).auth, purge: async () => (purges.push(1), true), log: () => {} });
+    const res = await handle(req('POST', '/auth/login', { password: TEST_PASSWORD }));
+    cookie = cookiePair(res.headers.get('set-cookie'));
+    const c = await call('GET', '/content');
+    const p = c.body.singletons.profile;
+    await call('POST', '/save', { message: 'x', changes: [{ op: 'put', type: 'profile', data: { ...p.data, location: 'Lyon' }, baseSha: p.sha }] });
+    const pub = await call('POST', '/publish', {});
+    expect(pub.body).toMatchObject({ published: true, purged: true });
+    expect(purges).toHaveLength(1);
+    // Nothing to publish: no purge either.
+    expect((await call('POST', '/publish', {})).status).toBe(400);
+    expect(purges).toHaveLength(1);
+  });
+
+  it('a failed purge does not undo the publication, it is reported (and can be retried)', async () => {
+    handle = createHandler({ cms: gh.cms, auth: (await testAuth()).auth, purge: async () => false, log: () => {} });
+    const res = await handle(req('POST', '/auth/login', { password: TEST_PASSWORD }));
+    cookie = cookiePair(res.headers.get('set-cookie'));
+    const c = await call('GET', '/content');
+    const p = c.body.singletons.profile;
+    await call('POST', '/save', { message: 'x', changes: [{ op: 'put', type: 'profile', data: { ...p.data, location: 'Lyon' }, baseSha: p.sha }] });
+    expect((await call('POST', '/publish', {})).body).toMatchObject({ published: true, purged: false });
+    expect(await gh.read('published', 'src/content/profile.json')).toContain('Lyon');
+    expect((await call('POST', '/purge', {})).body).toEqual({ purged: false });
+  });
+
+  it('backup and restore routes need a session and the CSRF header', async () => {
+    const saved = cookie;
+    cookie = '';
+    expect((await call('GET', '/backup')).status).toBe(401);
+    cookie = saved;
+    const backup = await handle(req('GET', '/backup'));
+    expect(backup.headers.get('content-disposition')).toMatch(/attachment; filename="clementplancon-sauvegarde-/);
+    expect(backup.headers.get('cache-control')).toBe('no-store');
+    const r = await call('POST', '/restore', { backup: await backup.json() }, { 'x-cms-request': '' });
+    expect(r.status).toBe(403);
   });
 });
