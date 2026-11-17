@@ -193,3 +193,50 @@ Brittany Chiang, Rauno Freiberg, Emil Kowalski, Paco Coursey, Bruno Simon (parti
 4. **La signalétique est le modèle d'UX le plus éprouvé qui soit** (Mijksenaar) : lisible de loin, pressé, en mouvement, par tout le monde. C'est aussi un langage graphique fort et peu utilisé dans les portfolios web.
 5. **Un système graphique strict peut produire une image honnête par projet** (Swissted, The Pudding) : c'est la réponse aux projets sans captures.
 6. **Le caractère « produit »** (états, compteurs, voyants, étiquettes — Basement, Teenage Engineering) rend crédible un profil d'ingénieur, à condition de ne rien inventer.
+
+## Tour 4 — portfolios d'une page (novembre 2026)
+
+Cette recherche a été menée pour le passage à une page unique. Elle porte sur 21 sites :
+
+- **17 sites examinés en desktop et en mobile** : Rauno Freiberg, Emil Kowalski, Locomotive, Gianluca Boccia, Artemii Lebedev, Giordano Betti, Carter Ogunsola, Matteo Courquin, Lee Holmes, Cristiana Araújo, Eddy Naboulet, Juan Mora Romero, Jesper Landberg, Gionatan Nese, Khanh Nguyen, Maria Vasilyeva, Bruno Simon (partiellement).
+- **4 sites bloqués à l'introduction** : Active Theory, Arthur Engel, Long Hoang et Huy Phan.
+
+Les sites viennent des pages « Site of the Day » de CSS Design Awards. Awwwards et SiteInspire ont refusé l'accès automatisé, et ce refus n'a pas été contourné.
+
+### Mécanismes qui rendent une page unique mémorable
+
+- **Un fil visuel continu** sur toute la page (Boccia).
+- **Des chapitres** marqués « lieu · dates » (Khanh, Boccia).
+- **Un même contenu sous deux formes** : spectaculaire en desktop, liste pensée pour le mobile (Landberg, Lebedev, Courquin).
+- **Une liste de projets en grand texte** avec une ligne active (Locomotive, Khanh, Araújo).
+- **Une fiche de projet façon générique de film** : rôle, année, cadre (Betti, Mora).
+- **Une entrée d'image unique**, répétée partout (mosaïque de Holmes, masques de Betti).
+- **Un indicateur de position permanent** (règle de Rauno, compteur de Boccia).
+
+### Pièges observés
+
+- **Introductions bloquantes ou longues** : 4 sites inaccessibles, plusieurs écrans noirs ou blancs au chargement.
+- **Textes illisibles pendant l'animation** : titres brouillés, lignes à moitié masquées.
+- **Contenu au survol** à refaire pour le mobile.
+- **Pages plein écran que le glisser vertical ne fait pas avancer** (Rauno, Betti, dans ce test).
+- **Bandeaux de consentement** qui couvrent un tiers de l'écran sur mobile.
+- **JavaScript lourd pour peu de contenu** : 3,3 à 4,9 Mo. Les récits les plus forts étaient légers : Khanh 228 Ko, Holmes 193 Ko, Boccia 467 Ko.
+
+### Ce que « Expliquer » en retient
+
+| Leçon | Application |
+|---|---|
+| Un fil continu | Le pli est le seul geste du site, de la couverture à la carte de contact. |
+| Deux formes pour un même contenu | Les accordéons horizontaux deviennent verticaux en mobile, au lieu de rétrécir. |
+| Une fiche « générique » | Chaque détail de projet commence par Cadre, Période, Nature. |
+| Pas d'introduction | Le nom et le rôle sont lisibles dès le premier rendu, sans écran de chargement. |
+| Lisibilité en mouvement | Les plis tournent des surfaces entières, ils ne brouillent jamais les lettres. |
+| Mobile au doigt | Rien n'est réservé au survol, le défilement reste natif. |
+| Poids | 4,5 Ko de JavaScript. |
+
+Aucun des sites étudiés ne plie la page.
+
+Éléments écartés :
+
+- **Numérotation des chapitres** et **signes de vie** (visiteurs en ligne, heure locale) : écartés comme clichés ou fausses métriques.
+- **Mosaïque d'images** : inutile, faute de captures réelles.
