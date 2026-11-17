@@ -1,16 +1,17 @@
 ---
 // The whole public site: one page rendered from content data. Used by "/" (published content) and by the
 // admin preview of the draft ("/admin/apercu/"), so both are guaranteed to look the same.
-import Base from '../layouts/Base.astro';
-import type { MediaResolver } from '../lib/media';
-import type { SiteData } from '../lib/snapshot';
-import { personLd, profilePageLd, projectsLd } from '../lib/structured-data';
+// Import order = CSS order: the sections before the layout, as when this markup lived in pages/index.astro.
 import About from './About.astro';
 import Contact from './Contact.astro';
 import Cover from './Cover.astro';
 import Journey from './Journey.astro';
 import Projects from './Projects.astro';
 import Skills from './Skills.astro';
+import Base from '../layouts/Base.astro';
+import type { MediaResolver } from '../lib/media';
+import type { SiteData } from '../lib/snapshot';
+import { personLd, profilePageLd, projectsLd } from '../lib/structured-data';
 
 interface Props {
   data: SiteData;

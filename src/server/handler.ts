@@ -153,6 +153,8 @@ export function createHandler(deps: HandlerDeps) {
         return json({ ...r, purged });
       }
 
+      if (method === 'POST' && route === '/purge') return json({ purged: deps.purge ? await deps.purge() : false });
+
       if (method === 'GET' && route === '/backup') {
         const withFiles = url.searchParams.get('fichiers') === '1';
         const backup = await cms.exportBackup({ withFiles });

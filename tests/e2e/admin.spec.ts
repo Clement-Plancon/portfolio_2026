@@ -1,19 +1,20 @@
 // Admin scenarios in a real browser.
-// - /api/admin/* is served by the REAL API handler (src/server), authentication included (Argon2id hash,
-//   signed HttpOnly session cookie, rate limiting), running in the test process with an in-memory store
-//   in place of Netlify Blobs and an in-memory GitHub seeded with the repository's content.
-// What these tests cannot cover (real Netlify Blobs, real GitHub, real Netlify deploys) is listed
-// in docs/netlify-deployment.md, "Vérifications en conditions réelles".
+// - /api/admin/* is answered by the REAL API handler (src/server), authentication included (Argon2id hash,
+//   signed HttpOnly session cookie, rate limiting), running in the test process on an in-memory store
+//   initialised from the repository content: each test starts from a clean state.
+// - The end-to-end path through the real server and its Netlify Blobs (preview, publication, public page)
+//   is covered by cms.spec.ts.
 import { expect, type Page, test } from '@playwright/test';
 import { createHandler } from '../../src/server/handler';
 import { COOKIE } from '../../src/server/session';
 import { TEST_PASSWORD as PASSWORD, testAuth } from '../helpers/admin-auth';
 import { testCms } from '../helpers/cms';
+import { fsSeed } from '../helpers/seed-fs';
 
 async function setup(page: Page) {
-  const gh = testCms();
+  const gh = testCms({ seed: fsSeed });
   const { auth } = await testAuth();
-  const handle = createHandler({ cms: gh.cms, auth, log: () => {} });
+  const handle = createHandler({ cms: gh.cms, auth, purge: async () => true, log: () => {} });
 
   await page.route('**/api/admin/**', async (route) => {
     const r = route.request();
@@ -104,7 +105,7 @@ test('full flow: login, edit, save, reload, publish, logout', async ({ page }) =
   // 6. Publish
   await page.getByRole('button', { name: 'Publier le site' }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Publier' }).click();
-  await expect(page.getByText('Publication lancée')).toBeVisible();
+  await expect(page.getByText('Publié : le site public est à jour.')).toBeVisible();
   await expect(page.locator('.publish-bar')).toContainText('Le site est à jour');
   // 7-8. Main now holds the content the production build will use
   expect(await gh.read('published', 'src/content/projects/bercy-vert.json')).toContain('Résumé modifié depuis le back-office.');

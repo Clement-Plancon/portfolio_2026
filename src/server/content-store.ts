@@ -14,7 +14,7 @@
 import { createHash } from 'node:crypto';
 import { CONTENT_TYPES, type ContentType, contentPath, isContentType, parseContentPath } from '../lib/content-types';
 import { type MediaManifest, mediaManifestSchema } from '../lib/schemas';
-import { seedFiles, seedSnapshot } from '../lib/seed';
+import type { SeedFile } from '../lib/seed';
 import { SNAPSHOT_FORMAT, type Snapshot, validateSnapshot } from '../lib/snapshot';
 import type { DocStore, FileStore } from './blob-store';
 import { HttpError } from './http';
@@ -38,9 +38,19 @@ export const differs = (a: Snapshot, b: Snapshot) =>
 const conflict = () => new HttpError(409, 'conflict', "Ce contenu a été modifié ailleurs depuis son ouverture. Rechargez-le avant d'enregistrer.");
 const busy = () => new HttpError(503, 'busy', 'Trop de modifications simultanées. Réessayez dans un instant.');
 
+export type SeedLoader = () => Promise<{ snapshot: Snapshot; files: SeedFile[] }>;
+
+/** The repository content (bundled at build time by Vite), loaded only when Blobs is empty. */
+const bundledSeed: SeedLoader = async () => {
+  const m = await import('../lib/seed');
+  return { snapshot: m.seedSnapshot(), files: m.seedFiles() };
+};
+
 export interface ContentStoreOptions {
   docs: DocStore;
   files: FileStore;
+  /** Where the initial content comes from (default: src/content bundled with the site). */
+  seed?: SeedLoader;
   now?: () => string;
   log?: (m: string) => void;
 }
@@ -61,8 +71,9 @@ export class ContentStore {
    */
   async ensureInitialised(): Promise<{ initialised: boolean }> {
     if (await this.o.docs.get('published')) return { initialised: false };
-    const seed = seedSnapshot(this.now());
-    for (const f of seedFiles()) await this.o.files.putFile(f.sha, f.bytes, f.contentType);
+    const loaded = await (this.o.seed ?? bundledSeed)();
+    const seed: Snapshot = { ...loaded.snapshot, rev: 1, updatedAt: this.now() };
+    for (const f of loaded.files) await this.o.files.putFile(f.sha, f.bytes, f.contentType);
     // A copy of what is about to become the first published content.
     await this.o.docs.set(`backups/${this.now().replace(/[:.]/g, '-')}-initialisation`, seed, { onlyIfNew: true });
     const created = await this.o.docs.set('published', seed, { onlyIfNew: true });

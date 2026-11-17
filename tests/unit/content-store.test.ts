@@ -274,3 +274,12 @@ it('entry fingerprints are stable', () => {
   expect(entrySha({ a: 1 })).toBe(entrySha({ a: 1 }));
   expect(entrySha({ a: 1 })).not.toBe(entrySha({ a: 2 }));
 });
+
+it('the node:fs seed used by browser tests matches the bundled seed', async () => {
+  const { fsSeed } = await import('../helpers/seed-fs');
+  const { seedSnapshot } = await import('../../src/lib/seed');
+  const a = (await fsSeed()).snapshot;
+  const b = seedSnapshot();
+  expect(a.entries).toEqual(b.entries);
+  expect(a.media).toEqual(b.media);
+});

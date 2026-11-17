@@ -1,13 +1,13 @@
 // The content store on an in-memory Netlify Blobs stand-in, initialised from the repository content.
 import { MemoryStore } from '../../src/server/blob-store';
-import { ContentStore } from '../../src/server/content-store';
+import { ContentStore, type SeedLoader } from '../../src/server/content-store';
 import type { Snapshot } from '../../src/lib/snapshot';
 
-export function testCms(opts: { now?: () => string } = {}) {
+export function testCms(opts: { now?: () => string; seed?: SeedLoader } = {}) {
   // Two stores, as in production: JSON documents ("cms") and media files ("cms-media").
   const store = new MemoryStore();
   const files = new MemoryStore();
-  const cms = new ContentStore({ docs: store, files, now: opts.now, log: () => {} });
+  const cms = new ContentStore({ docs: store, files, now: opts.now, seed: opts.seed, log: () => {} });
   const snap = async (which: 'draft' | 'published') => (await store.get<Snapshot>(which))?.value;
   return {
     store,

@@ -141,7 +141,7 @@ export function MediaView() {
       <header class="view__head">
         <div>
           <h1>Médiathèque</h1>
-          <p class="lead">{items.length} fichier{items.length > 1 ? 's' : ''}. Les images sont optimisées au moment de la publication (formats et tailles adaptés à chaque écran).</p>
+          <p class="lead">{items.length} fichier{items.length > 1 ? 's' : ''}. Les images sont réduites (2400 px au plus) et converties en WebP dans votre navigateur avant l'envoi. Un fichier ajouté reste privé jusqu'à la publication.</p>
         </div>
       </header>
       <DropZone busy={busy} onFiles={async (files) => {

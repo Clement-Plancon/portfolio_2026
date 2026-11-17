@@ -22,7 +22,7 @@ export function EditorShell(p: {
         {p.publicPath && (
           <div class="view__links">
             {preview && (
-              <a class="btn btn--small btn--ghost" href={`${preview.replace(/\/$/, '')}${p.publicPath}`} target="_blank" rel="noopener">
+              <a class="btn btn--small btn--ghost" href={`${preview}${p.publicPath.replace(/^\//, '')}`} target="_blank" rel="noopener">
                 Aperçu <Icon name="ext" size={14} />
               </a>
             )}

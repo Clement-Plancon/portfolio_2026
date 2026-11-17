@@ -12,7 +12,7 @@ interface Store {
   loadError: string | null;
   reload: () => Promise<void>;
   refreshStatus: () => Promise<void>;
-  /** Commits changes; returns null on success or the API error. Updates local state and shas. */
+  /** Saves changes to the draft; returns null on success or the API error. Updates local state and fingerprints. */
   save: (message: string, changes: SaveChange[], success?: string) => Promise<ApiError | null>;
   applyFiles: (files: Record<string, string | null>) => void;
   toasts: Toast[];
@@ -61,7 +61,7 @@ export function StoreProvider({ email, children }: { email: string; children: Co
     reload();
   }, [reload]);
 
-  // Keep deploy states fresh while the tab is open (cheap: one GitHub call per minute).
+  // Keep the publication state fresh while the tab is open (another tab may have published).
   useEffect(() => {
     const t = setInterval(() => document.visibilityState === 'visible' && refreshStatus(), 60_000);
     return () => clearInterval(t);
