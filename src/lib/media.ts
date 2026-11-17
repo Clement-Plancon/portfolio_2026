@@ -1,18 +1,23 @@
-// Maps content references ("media/x.webp") to images Astro can optimise at build time.
-import type { ImageMetadata } from 'astro';
+// Turns content references ("media/x.webp") into image URLs and dimensions for the page being rendered.
+import { mediaUrl, type SiteData } from './snapshot';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('../assets/media/*.{webp,png,jpg,jpeg,avif}', {
-  eager: true,
-});
+export interface ResolvedMedia {
+  src: string;
+  width?: number;
+  height?: number;
+}
+export type MediaResolver = (ref?: string) => ResolvedMedia | undefined;
 
-const byRef = new Map(
-  Object.entries(files).map(([path, mod]) => [`media/${path.split('/').pop()}`, mod.default]),
-);
-
-export function getMedia(ref?: string): ImageMetadata | undefined {
-  if (!ref) return undefined;
-  const img = byRef.get(ref);
-  // A reference to a missing file is a content error: fail the build instead of shipping a broken image.
-  if (!img) throw new Error(`Image introuvable dans la médiathèque : ${ref}`);
-  return img;
+/**
+ * Visitors get the public, cacheable URLs of published files. The admin preview gets the private admin
+ * endpoint (session required), so files that are not published yet never become public.
+ */
+export function mediaResolver(data: SiteData, mode: 'public' | 'preview'): MediaResolver {
+  return (ref) => {
+    if (!ref) return undefined;
+    const url = mode === 'public' ? mediaUrl(ref, data.media) : data.media[ref] ? `/api/admin/media/file?ref=${encodeURIComponent(ref)}&v=${data.media[ref].sha.slice(0, 12)}` : undefined;
+    if (!url) return undefined; // a missing file: the image is left out rather than broken
+    const m = data.manifest.get(ref);
+    return { src: url, width: m?.width, height: m?.height };
+  };
 }

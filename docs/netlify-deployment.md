@@ -1,12 +1,18 @@
 # Déploiement sur Netlify
 
-Ce guide part d'un compte Netlify et du dépôt `Clement-Plancon/portfolio_2026` sur GitHub. Compter 20 minutes.
+Ce guide part d'un compte Netlify et du dépôt `Clement-Plancon/portfolio_2026` sur GitHub. Compter 15 minutes.
+
+Depuis novembre 2026, le contenu du site vit dans **Netlify Blobs** et la page est rendue à la demande (Astro SSR). Conséquences :
+
+- **Pas de lien entre l'administration et GitHub** : pas de jeton GitHub, pas de branche `cms-draft`, pas d'aperçu par déploiement de branche, pas de commit à chaque modification.
+- **Publication immédiate** : publier ne redéploie rien, la page publique change aussitôt.
+- **GitHub sert au code** : il ne sert qu'au code source et déclenche les déploiements techniques. Un déploiement ne touche jamais au contenu.
+- **Deux variables seulement** : `ADMIN_PASSWORD_HASH` et `ADMIN_SESSION_SECRET`.
 
 > **Ce qui a été testé et ce qui ne l'a pas été.**
 >
-> - **Tests automatisés** : tout le code (site, API, authentification, interface d'administration) est couvert, avec un GitHub simulé et un stockage partagé simulé.
-> - **Hors des tests** : la fonction compilée a aussi été exécutée contre le serveur Netlify Blobs local fourni par `@netlify/blobs`.
-> - **Non exécuté** : les étapes de ce guide n'ont pas pu être faites pendant le développement, faute de compte connecté. Cela concerne les variables dans Netlify, Netlify Blobs en production, le jeton GitHub réel et les déploiements.
+> - **Testé en local** : tout le code (site, API, authentification, administration) est couvert par des tests automatisés. Les tests navigateur tournent sur `netlify serve --offline`, qui exécute la vraie fonction SSR avec Netlify Blobs émulé. `netlify build --offline` réussit.
+> - **Non vérifié** : le fonctionnement sur le vrai compte Netlify n'a pas pu être vérifié (aucun compte connecté). Cela concerne Netlify Blobs en production, la purge du cache CDN et les variables.
 >
 > La liste de contrôle en fin de document dit quoi vérifier une fois en ligne.
 
@@ -14,7 +20,7 @@ Ce guide part d'un compte Netlify et du dépôt `Clement-Plancon/portfolio_2026`
 
 1. Netlify → **Add new project** → **Import an existing project** → GitHub → choisir `portfolio_2026`.
 2. Les réglages de build sont lus dans `netlify.toml` : commande `npm run build`, dossier `dist`, Node 22. Ne rien modifier.
-3. Lancer le premier déploiement. Le site public fonctionne déjà. Tant que les étapes 3 et 5 ne sont pas faites, `/admin/` affiche « L'administration n'est pas configurée » et l'API refuse tout.
+3. Lancer le premier déploiement. Le site public fonctionne déjà : à la première visite, le contenu de `src/content` est copié dans Netlify Blobs (voir *Initialisation* ci-dessous). Tant que les étapes 3 et 5 ne sont pas faites, `/admin/` affiche « L'administration n'est pas configurée » et l'API refuse tout.
 
 ## 2. Domaine
 
@@ -48,59 +54,62 @@ Rangez le mot de passe dans votre gestionnaire de mots de passe. Il n'existe auc
 
 ## 4. Netlify Blobs (rien à faire)
 
-Les sessions et les compteurs de tentatives de connexion sont stockés dans **Netlify Blobs** (magasin `admin-auth`), partagé par toutes les instances de la fonction. Netlify Blobs est fourni automatiquement aux fonctions : il n'y a ni réglage ni clé à créer.
+Netlify Blobs est fourni automatiquement au site : il n'y a ni réglage, ni clé, ni base de données à créer. Trois magasins sont utilisés :
 
-## 5. Créer le jeton GitHub
+| Magasin | Contenu |
+|---|---|
+| `cms` | `published` (contenu en ligne), `draft` (brouillon), `history/…` (20 dernières versions publiées), `backups/…` (copies automatiques) |
+| `cms-media` | fichiers des médias (images, PDF), nommés par leur empreinte SHA-256 |
+| `admin-auth` | sessions et compteurs de tentatives de connexion |
 
-1. GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
-2. **Repository access** : *Only select repositories* → `portfolio_2026`.
-3. **Permissions** du dépôt :
-   - **Contents** : Read and write (lire et écrire les contenus, créer la branche de brouillon, fusionner) ;
-   - **Commit statuses** : Read-only (afficher l'état des déploiements Netlify) ;
-   - **Metadata** : Read-only (obligatoire, ajouté automatiquement).
-4. Choisir une expiration (par exemple 1 an) et noter la date : à l'expiration, l'admin affichera « GitHub refuse l'accès » ; il suffit alors de régénérer le jeton et de remplacer la variable.
+Ils sont visibles dans Netlify → **Blobs**.
 
-## 6. Variables d'environnement
+### Initialisation
+
+À la première requête qui a besoin du contenu (visite de `/` ou ouverture de l'administration), si `published` n'existe pas encore :
+
+1. Les fichiers versionnés sont copiés dans Blobs : `src/content/**` et les médias de `src/assets/media` et `public/files`.
+2. Une copie de ce contenu est enregistrée dans `backups/<date>-initialisation`.
+
+L'opération est **idempotente**. L'écriture est conditionnelle (« seulement si absent ») : un redéploiement, ou deux visites simultanées, ne remplacent jamais un contenu existant. Après l'initialisation, `src/content` ne sert plus qu'à cela, et ses modifications dans Git n'ont **plus d'effet** sur le site.
+
+## 5. Variables d'environnement
 
 Netlify → **Project configuration → Environment variables** (modèle : `.env.example`) :
 
 | Variable | Valeur | Portée |
 |---|---|---|
-| `GITHUB_TOKEN` | le jeton de l'étape 5 | Functions uniquement, **secret** |
-| `GITHUB_REPO` | `Clement-Plancon/portfolio_2026` | Functions |
-| `GITHUB_BRANCH` | `main` | Functions |
-| `GITHUB_DRAFT_BRANCH` | `cms-draft` | Functions |
 | `ADMIN_PASSWORD_HASH` | valeur affichée par `npm run admin:setup` | Functions uniquement, **secret** |
 | `ADMIN_SESSION_SECRET` | valeur affichée par `npm run admin:setup` | Functions uniquement, **secret** |
-| `PREVIEW_URL` | `https://cms-draft--<nom-du-projet>.netlify.app` | Functions |
-| `CMS_AUTHOR_NAME`, `CMS_AUTHOR_EMAIL` | facultatif : auteur affiché sur les commits du CMS | Functions |
 
-Pour chaque variable secrète :
+Si elles sont déjà configurées, ne les changez pas : la migration n'oblige pas à recréer le mot de passe.
 
-1. **Add a variable** et saisissez le nom (`ADMIN_PASSWORD_HASH`…).
+Pour chaque variable :
+
+1. **Add a variable** et saisissez le nom.
 2. Cochez **Contains secret values**.
 3. Dans **Scopes**, ne gardez que **Functions**.
-4. Utilisez la même valeur pour tous les contextes de déploiement, y compris *Branch deploys* : l'aperçu `cms-draft` sert la même administration.
-5. Collez la valeur **telle quelle**, sans espace ni guillemet. Les `$` du hachage font partie de la valeur.
+4. Collez la valeur **telle quelle**, sans espace ni guillemet : les `$` du hachage font partie de la valeur.
 
-Une valeur secrète ne peut plus être relue dans Netlify après enregistrement (seulement remplacée). C'est voulu : pour la changer, on en génère une nouvelle.
+Une valeur secrète ne peut plus être relue dans Netlify après enregistrement : elle peut seulement être remplacée. Si vous utilisez la CLI Netlify en PowerShell, mettez la valeur du hachage entre **apostrophes** (`'$argon2id$…'`).
 
-Si vous utilisez la CLI Netlify plutôt que l'interface : en PowerShell, mettez la valeur du hachage entre **apostrophes** (`'$argon2id$…'`), sinon PowerShell interprète les `$`.
+Puis **Deploys → Trigger deploy**.
 
-Puis **Deploys → Trigger deploy** pour que la fonction prenne les variables.
+**Variables devenues inutiles**, à supprimer sans risque :
 
-L'ancienne variable `ADMIN_EMAILS` n'est plus utilisée et peut être supprimée. Si Netlify Identity avait été activé, il peut être désactivé : **Project configuration → Identity → Disable Identity**.
+- `GITHUB_TOKEN` : révoquez aussi le jeton sur GitHub (*Settings → Developer settings → Personal access tokens*) ;
+- `GITHUB_REPO`, `GITHUB_BRANCH`, `GITHUB_DRAFT_BRANCH`, `PREVIEW_URL` ;
+- `CMS_AUTHOR_NAME`, `CMS_AUTHOR_EMAIL`, `ADMIN_EMAILS`.
 
-## 7. Activer l'aperçu (déploiement de branche)
+**Réglages devenus inutiles** :
 
-Netlify → **Project configuration → Build & deploy → Branches and deploy contexts** → **Branch deploys : Let me add individual branches** → ajouter `cms-draft`.
+- le déploiement de branche `cms-draft` (*Branches and deploy contexts*) ;
+- la branche `cms-draft` sur GitHub, si elle existe.
 
-La branche n'existe qu'après le premier enregistrement dans l'admin ; son URL est `https://cms-draft--<nom-du-projet>.netlify.app` (à reporter dans `PREVIEW_URL`). Ce déploiement affiche les contenus masqués et les brouillons, et il est fermé aux moteurs de recherche.
-
-## 8. Première connexion
+## 6. Première connexion
 
 1. Ouvrez `https://clementplancon.fr/admin/`. L'écran « Administration » ne demande que le **mot de passe**.
-2. Saisissez le mot de passe choisi à l'étape 3, puis **Se connecter**. Le tableau de bord s'affiche.
+2. Saisissez le mot de passe choisi à l'étape 3, puis **Se connecter**. Le tableau de bord s'affiche, avec les 6 projets existants.
 
 Fonctionnement de la session :
 
@@ -114,21 +123,49 @@ Messages possibles :
 - Un mauvais mot de passe affiche « Connexion refusée. Vérifiez le mot de passe. ».
 - Après 5 essais manqués en 15 minutes, la connexion est bloquée pour cette adresse IP. Le blocage dure 15 minutes, puis double à chaque récidive, jusqu'à 24 heures. Le message est alors « Trop de tentatives. Réessayez plus tard. ».
 
-## 9. Ajouter un projet et publier
+## 7. Modifier et publier
 
-1. **Projets → + Nouveau projet**, remplir au moins le titre et le résumé, **Enregistrer**. Le projet est créé masqué.
-2. Activer **Visible sur le site** (ou l'œil dans la liste) quand il est prêt.
-3. **Voir l'aperçu** (barre du haut) : environ une minute après l'enregistrement, le site de prévisualisation est à jour.
-4. **Publier le site** → confirmer. Netlify reconstruit la production (environ une minute) ; le tableau de bord indique « Site public : en ligne » quand c'est terminé.
+1. **Projets → SafePing** (par exemple), modifier le résumé, **Enregistrer**. La modification est dans le **brouillon** : le site public ne change pas.
+2. **Voir l'aperçu** (barre du haut) : la page complète avec le brouillon, sur `/admin/apercu/`. Seule votre session y a accès ; la page n'est jamais mise en cache ni indexée.
+3. **Publier le site** → confirmer. Le message « Publié : le site public est à jour. » s'affiche, et `https://clementplancon.fr/` montre la modification à la visite suivante. Il n'y a ni commit ni build.
+
+## Cache
+
+- **La page publique** :
+  - Elle est rendue à la demande, puis conservée par le CDN de Netlify (`Netlify-CDN-Cache-Control: durable`, étiquette `cms-public`) jusqu'à la publication suivante, qui la purge.
+  - Le navigateur revérifie à chaque visite (`max-age=0, must-revalidate`).
+  - Les visiteurs reçoivent donc une page servie par le CDN, sans exécuter la fonction, sauf juste après une publication.
+- **Les médias publiés** (`/media/…`, `/files/…`) :
+  - Leur adresse contient l'empreinte du fichier (`?v=…`) : ils sont mis en cache un an (`immutable`).
+  - Un fichier remplacé obtient une nouvelle adresse.
+- **Les réponses privées** (administration, API, aperçu, médias non publiés) : `no-store`. Aucune n'est conservée par le CDN.
+- **Si une purge échoue** : l'administration le signale après la publication. **Paramètres → Vider le cache** relance la purge.
+
+## Retour arrière
+
+- **Contenu** :
+  - Les 20 dernières versions publiées sont dans `cms/history/`.
+  - Une sauvegarde téléchargée (Paramètres) se restaure dans le brouillon, puis se publie.
+- **Code** : un redéploiement d'une version précédente (*Deploys → … → Publish deploy*) ne touche pas au contenu.
+- **Revenir à l'ancien fonctionnement** (site statique, CMS par GitHub, état du commit `f3caf40`), en cas de besoin :
+  1. Télécharger une sauvegarde **avec les fichiers**, puis lancer `node scripts/backup-to-files.mjs <sauvegarde.json>`. Le contenu actuel est réécrit dans `src/content` et `src/assets/media`.
+  2. Committer.
+  3. Revenir au code de `f3caf40` (`git revert` des commits de la migration).
+  4. Recréer les variables GitHub de l'ancienne version et le déploiement de branche `cms-draft`.
+- **Réinitialiser le contenu depuis le dépôt** : supprimer la clé `published` du magasin `cms` (`npx netlify blobs:delete cms published`). Elle est recréée à partir de `src/content` à la visite suivante. C'est irréversible : téléchargez une sauvegarde avant.
 
 ## Développement local
 
 ```bash
 npm install
-npm run dev          # site public sur http://localhost:4321
+cp .env.example .env     # puis y coller les valeurs de `npm run admin:setup`
+npx netlify serve --offline   # build de production + fonction SSR + Netlify Blobs émulé : http://localhost:8888
+npm run dev              # ou : serveur de développement Astro (http://localhost:4321)
 ```
 
-L'administration a besoin de la fonction et de Netlify Blobs : utiliser la [CLI Netlify](https://docs.netlify.com/cli/get-started/) liée au projet (`netlify link`, puis `netlify dev`) avec un fichier `.env` local (non versionné, ignoré par Git) basé sur `.env.example`, rempli avec `npm run admin:setup`. La CLI fournit Netlify Blobs en local. En local, le cookie de session (`Secure`) n'est accepté que sur `http://localhost`, pas sur une adresse IP du réseau. Conseillé : un jeton GitHub de test sur un dépôt de test.
+- **Données locales** : `netlify serve` stocke les Blobs dans `.netlify/blobs-serve/` (ignoré par Git). Supprimer ce dossier repart du contenu de `src/content`.
+- **Cookie de session** : il est `Secure`, donc accepté sur `http://localhost` mais pas sur une adresse IP du réseau.
+- **Variable `NODE_OPTIONS`** : si votre environnement définit des options que Node refuse dans les « workers », la CLI échoue en 500 (`--use-openssl-ca is not allowed`). Lancez-la avec `NODE_OPTIONS=` vide.
 
 Contrôles :
 
@@ -136,24 +173,27 @@ Contrôles :
 npm run check        # types (astro check)
 npm run lint         # Biome
 npm test             # tests unitaires et API (Vitest)
-npm run test:e2e     # navigateur (Playwright) : construit puis sert le site
+npm run test:e2e     # navigateur (Playwright) sur `netlify serve --offline` (Blobs vidés à chaque lancement)
 ```
 
 ## Vérifications en conditions réelles
 
-À faire une fois les étapes 1 à 7 terminées (non vérifiable sans les comptes) :
+À faire une fois les étapes 1 à 7 terminées (non vérifiable sans le compte Netlify) :
 
 - [ ] `/admin/` affiche le formulaire « Administration » (mot de passe seul), sans « L'administration n'est pas configurée ».
 - [ ] Connexion avec le bon mot de passe ; « Connexion refusée » avec un mauvais.
 - [ ] Dans les outils de développement du navigateur (Application → Cookies), le cookie `__Host-cms_session` est marqué *HttpOnly*, *Secure*, *SameSite Strict*.
 - [ ] 6 mauvais mots de passe de suite : le 6ᵉ essai affiche « Trop de tentatives », même avec le bon mot de passe. Attendre 15 minutes, ou se connecter depuis une autre connexion (4G).
-- [ ] Netlify → **Blobs** : le magasin `admin-auth` contient des entrées `session/…` et `limit/…`.
+- [ ] Netlify → **Blobs** : les magasins `cms` (`published`, `backups/…-initialisation`), `cms-media` et `admin-auth` existent.
+- [ ] Le tableau de bord montre les 6 projets, 3 expériences et l'image de Datametre, comme avant la migration.
 - [ ] `curl -i https://clementplancon.fr/api/admin/content` sans session renvoie **401**.
-- [ ] Modifier un projet, enregistrer : un commit « CMS : … » apparaît sur `cms-draft` dans GitHub.
-- [ ] Recharger la page : la modification est toujours là.
-- [ ] Le déploiement de branche `cms-draft` se construit et montre la modification ; le tableau de bord affiche son état.
-- [ ] Publier : `main` reçoit la fusion, la production se reconstruit et affiche la modification.
-- [ ] Envoyer une image (JPEG de téléphone) : elle est réduite et convertie en WebP, puis apparaît sur le site après publication.
+- [ ] `curl -I https://clementplancon.fr/` : `cache-control: public, max-age=0, must-revalidate` et un en-tête `cache-status` de Netlify (« hit » à la deuxième requête).
+- [ ] Modifier un projet, enregistrer : le site public ne change pas ; recharger l'administration : la modification est toujours là.
+- [ ] **Voir l'aperçu** montre la modification ; la même adresse dans une fenêtre privée renvoie vers `/admin/`.
+- [ ] Publier : le message « Publié : le site public est à jour. » s'affiche (pas l'avertissement de cache), et `https://clementplancon.fr/` montre la modification **sans aucun déploiement** dans l'onglet *Deploys*.
+- [ ] Envoyer une image (JPEG de téléphone) : elle est réduite et convertie en WebP ; son adresse publique `/media/…` renvoie 404 avant publication, 200 après.
+- [ ] Déclencher un redéploiement (*Trigger deploy*) : le contenu modifié reste en ligne (aucune réinitialisation).
+- [ ] Paramètres → **Télécharger une sauvegarde** : le fichier s'ouvre et contient les projets.
 - [ ] Se déconnecter : `/admin/` redemande le mot de passe, et l'entrée `session/…` correspondante disparaît des Blobs.
 - [ ] Changer `ADMIN_SESSION_SECRET` puis redéployer : la session ouverte est fermée.
 - [ ] Les en-têtes de sécurité sont présents (`curl -I https://clementplancon.fr/`).

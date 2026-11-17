@@ -1,14 +1,14 @@
 ---
-import { Image } from 'astro:assets';
 import { type ProjectEntry, paragraphs } from '../lib/content';
 import { formatPeriod } from '../lib/format';
-import { getMedia } from '../lib/media';
+import type { MediaResolver } from '../lib/media';
 import { STOCKS } from '../lib/stocks';
 
 interface Props {
   projects: ProjectEntry[];
+  media: MediaResolver;
 }
-const { projects } = Astro.props;
+const { projects, media } = Astro.props;
 
 const period = (p: ProjectEntry) => formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
 const blocks = (p: ProjectEntry) =>
@@ -35,7 +35,7 @@ const count = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 
       {
         projects.map((p, i) => {
           const stock = STOCKS[p.cover.color];
-          const cover = p.cover.image ? getMedia(p.cover.image.src) : undefined;
+          const cover = p.cover.image ? media(p.cover.image.src) : undefined;
           const paint = `--paper:${stock.paper};--paper-ink:${stock.ink}`;
           return (
             <>
@@ -46,7 +46,7 @@ const count = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 
                 </p>
                 {cover && p.cover.image && (
                   <div class="panel__shot">
-                    <Image src={cover} alt={p.cover.image.alt} widths={[480, 960]} sizes="(max-width: 48rem) 100vw, 33vw" loading="lazy" />
+                    <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
                   </div>
                 )}
                 <h3 class="panel__title display">
@@ -141,16 +141,21 @@ const count = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 
                       <div class="flap__images">
                         {cover && p.cover.image && (
                           <figure>
-                            <Image src={cover} alt={p.cover.image.alt} widths={[640, 1280]} sizes="(max-width: 48rem) 100vw, 50vw" loading="lazy" />
+                            <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
                             <figcaption>{p.cover.image.caption ?? 'Capture réelle du projet.'}</figcaption>
                           </figure>
                         )}
-                        {p.gallery.map((g) => (
-                          <figure>
-                            <Image src={getMedia(g.src)!} alt={g.alt} widths={[640, 1280]} sizes="(max-width: 48rem) 100vw, 50vw" loading="lazy" />
-                            {g.caption && <figcaption>{g.caption}</figcaption>}
-                          </figure>
-                        ))}
+                        {p.gallery.map((g) => {
+                          const img = media(g.src);
+                          return (
+                            img && (
+                              <figure>
+                                <img src={img.src} alt={g.alt} width={img.width} height={img.height} loading="lazy" decoding="async" />
+                                {g.caption && <figcaption>{g.caption}</figcaption>}
+                              </figure>
+                            )
+                          );
+                        })}
                       </div>
                     )}
                     <p class="flap__actions">

@@ -87,9 +87,15 @@ export const api = {
   upload: (body: { fileName: string; contentBase64: string; alt: string; width?: number; height?: number; replace?: string }) =>
     request<{ ref: string; commit: string; files: Record<string, string | null> }>('POST', '/media', body),
   deleteMedia: (ref: string) => request<{ commit: string; files: Record<string, string | null> }>('POST', '/media/delete', { ref }),
-  publish: () => request<{ published: boolean; sha: string }>('POST', '/publish', {}),
+  publish: () => request<{ published: boolean; sha: string; purged: boolean }>('POST', '/publish', {}),
+  purge: () => request<{ purged: boolean }>('POST', '/purge', {}),
+  restore: (backup: unknown, expectedRev: string) =>
+    request<{ restored: boolean; rev: string; projects: number; media: number }>('POST', '/restore', { backup, expectedRev }),
   discard: () => request<{ discarded: boolean }>('POST', '/discard', {}),
 };
+
+/** Download URL of a backup (the browser sends the session cookie). */
+export const backupUrl = (withFiles: boolean) => `/api/admin/backup${withFiles ? '?fichiers=1' : ''}`;
 
 export const mediaUrl = (ref: string, v?: string) =>
   `/api/admin/media/file?ref=${encodeURIComponent(ref)}${v ? `&v=${v.slice(0, 8)}` : ''}`;

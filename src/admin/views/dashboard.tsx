@@ -24,13 +24,7 @@ export function relTime(iso?: string) {
 }
 
 export function DeployBadge({ d, label }: { d?: DeployState | null; label: string }) {
-  const map: Record<string, [string, string]> = {
-    success: ['ok', 'en ligne'],
-    pending: ['wait', 'déploiement en cours…'],
-    failure: ['ko', 'échec du déploiement'],
-    error: ['ko', 'échec du déploiement'],
-  };
-  const [cls, text] = d ? (map[d.state] ?? ['muted', d.state]) : ['muted', 'état inconnu'];
+  const [cls, text] = d?.state === 'success' ? ['ok', `en ligne, publié ${relTime(d.updatedAt)}`] : ['muted', 'état inconnu'];
   return (
     <span class={`deploy deploy--${cls}`}>
       <span class="deploy__dot" aria-hidden="true" />
@@ -49,13 +43,13 @@ export function PublishBar() {
   const { status, refreshStatus, reload, toast } = useStore();
   const [busy, setBusy] = useState(false);
   const pending = status?.draft?.ahead ?? 0;
-  const preview = status?.previewUrl ?? status?.draft?.deploy?.url ?? null;
+  const preview = status?.previewUrl ?? null;
 
   const publish = async () => {
     const files = status?.draft?.files ?? [];
     const ok = await confirmDialog({
       title: `Publier ${files.length} modification${files.length > 1 ? 's' : ''} ?`,
-      body: `Le site public sera reconstruit avec le contenu du brouillon (environ une minute). ${files
+      body: `Le site public affichera immédiatement le contenu du brouillon. ${files
         .slice(0, 8)
         .map((f) => `${TYPE_LABEL[f.type ?? ''] ?? f.path.split('/').pop()}${f.id ? ` « ${f.id} »` : ''}`)
         .join(', ')}${files.length > 8 ? '…' : ''}`,
@@ -64,8 +58,13 @@ export function PublishBar() {
     if (!ok) return;
     setBusy(true);
     try {
-      await api.publish();
-      toast('Publication lancée. Le site sera à jour après le déploiement Netlify.');
+      const r = await api.publish();
+      toast(
+        r.purged
+          ? 'Publié : le site public est à jour.'
+          : 'Publié, mais le cache du site n’a pas pu être vidé : le site peut encore afficher l’ancienne version. Réessayez « Vider le cache » dans les paramètres.',
+        r.purged ? undefined : 'error',
+      );
       await refreshStatus();
       await reload();
     } catch (e) {
@@ -83,9 +82,9 @@ export function PublishBar() {
         ) : pending ? (
           <>
             <strong>
-              {status.draft!.files.length} fichier{status.draft!.files.length > 1 ? 's' : ''} modifié{status.draft!.files.length > 1 ? 's' : ''}
+              {status.draft!.files.length} modification{status.draft!.files.length > 1 ? 's' : ''}
             </strong>{' '}
-            non publié{status.draft!.files.length > 1 ? 's' : ''}
+            non publiée{status.draft!.files.length > 1 ? 's' : ''}
           </>
         ) : (
           'Le site est à jour'
@@ -93,7 +92,7 @@ export function PublishBar() {
       </div>
       <div class="publish-bar__actions">
         {pending > 0 && preview && (
-          <a class="btn btn--small btn--ghost" href={preview} target="_blank" rel="noopener">
+          <a class="btn btn--small btn--ghost" href={preview} target="_blank" rel="noopener" title="Le site avec les modifications non publiées, visible par vous seul">
             Voir l'aperçu <Icon name="ext" size={14} />
           </a>
         )}
@@ -156,7 +155,6 @@ export function Dashboard() {
           <h2 id="d-pub">Publication</h2>
           <div class="deploys">
             <DeployBadge d={status?.production.deploy} label="Site public" />
-            {status?.draft && status.draft.ahead > 0 && <DeployBadge d={status.draft.deploy} label="Aperçu" />}
           </div>
           {status?.draft && status.draft.ahead > 0 ? (
             <>
@@ -170,7 +168,7 @@ export function Dashboard() {
                         {TYPE_LABEL[f.type]} {f.id ? `« ${f.id} »` : ''}
                       </a>
                     ) : (
-                      <span>{f.type ? TYPE_LABEL[f.type] : f.path.replace(`${CONTENT_ROOT}/`, '').replace('src/assets/', '')}</span>
+                      <span>{f.type ? TYPE_LABEL[f.type] : f.path.replace(`${CONTENT_ROOT}/`, '')}</span>
                     )}
                   </li>
                 ))}

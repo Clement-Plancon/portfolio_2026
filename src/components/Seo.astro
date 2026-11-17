@@ -1,12 +1,9 @@
 ---
-import type { ImageMetadata } from 'astro';
-import { getImage } from 'astro:assets';
-import { SHOW_DRAFTS } from '../lib/content';
 
 interface Props {
   title: string;
   description: string;
-  image?: ImageMetadata;
+  image?: string;
   imageAlt?: string;
   noindex?: boolean;
   type?: 'website' | 'profile';
@@ -17,14 +14,10 @@ const { title, description, image, imageAlt, noindex = false, type = 'website', 
 const site = Astro.site!;
 const canonical = new URL(Astro.url.pathname, site).href;
 
-let ogImage = new URL('/og-default.png', site).href;
-if (image) {
-  const og = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 82 });
-  ogImage = new URL(og.src, site).href;
-}
+const ogImage = new URL(image ?? '/og-default.png', site).href;
 
-// Branch deploys (CMS preview) and drafts must never be indexed.
-const robots = noindex || SHOW_DRAFTS ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+// The admin preview of drafts is never indexed (it also sends X-Robots-Tag and lives under /admin/).
+const robots = noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
 const ld = (o: unknown) => JSON.stringify(o).replace(/</g, '\\u003c');
 ---
 

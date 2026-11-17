@@ -5,9 +5,6 @@
 [build.environment]
   NODE_VERSION = "22"
 
-[functions]
-  node_bundler = "esbuild"
-
 # Public site
 [[headers]]
   for = "/*"
@@ -26,6 +23,12 @@
   [headers.values]
     Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
     Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow"
+
+# Admin API: never indexed (responses also carry Cache-Control: no-store).
+[[headers]]
+  for = "/api/*"
+  [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 
 [[headers]]

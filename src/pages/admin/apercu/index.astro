@@ -1,0 +1,28 @@
+---
+// Preview of the DRAFT, for the authenticated administrator only. Never cached, never indexed.
+import OnePage from '../../../components/OnePage.astro';
+import { mediaResolver } from '../../../lib/media';
+import { toSiteData } from '../../../lib/snapshot';
+import { setPrivate } from '../../../server/public-cache';
+import { adminAuth, contentStore } from '../../../server/runtime';
+
+export const prerender = false;
+
+setPrivate(Astro.response.headers);
+const auth = adminAuth();
+let allowed = false;
+try {
+  if (auth) {
+    await auth.verify(Astro.request);
+    allowed = true;
+  }
+} catch {
+  allowed = false;
+}
+if (!allowed) return Astro.redirect('/admin/', 303);
+
+const { snap } = await contentStore().working();
+const data = toSiteData(snap, { includeHidden: true });
+---
+
+<OnePage data={data} media={mediaResolver(data, 'preview')} preview />

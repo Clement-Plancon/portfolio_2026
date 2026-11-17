@@ -372,3 +372,9 @@ a.leaf__face:focus-visible {
     background: linear-gradient(rgb(255 255 255 / 0.2), rgb(255 255 255 / 0));
   }
 }
+
+/* Initial folding of the project details (src/scripts/fold.ts): instant, so anchors land in the right place. */
+[data-map].is-settling,
+[data-map].is-settling * {
+  transition: none !important;
+}

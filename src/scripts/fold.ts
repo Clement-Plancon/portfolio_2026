@@ -153,7 +153,12 @@ if (map) {
 
   layout();
   addEventListener('resize', layout);
+  // The details arrive open (readable without JS) and are folded here at once, without the folding
+  // animation: otherwise the page keeps shrinking for a moment and a scroll to #projet-x lands too far.
+  map.classList.add('is-settling');
   for (let i = 0; i < flaps.length; i++) setOpen(i, false);
+  void map.offsetHeight;
+  requestAnimationFrame(() => map.classList.remove('is-settling'));
 
   toggles.forEach((t, i) => {
     t.addEventListener('click', () => (t.getAttribute('aria-expanded') === 'true' ? close(i) : open(i)));

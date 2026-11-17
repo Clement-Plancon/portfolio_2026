@@ -1,14 +1,12 @@
-// End-to-end tests of the admin API against an in-memory GitHub, seeded with the real content files.
+// Tests of the admin API on an in-memory Netlify Blobs stand-in, initialised from the real content files.
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Cms } from '../../src/server/cms';
-import type { GitHub } from '../../src/server/github';
 import { createHandler } from '../../src/server/handler';
 import { cookiePair, TEST_PASSWORD, testAuth } from '../helpers/admin-auth';
-import { FakeGitHub } from '../helpers/fake-github';
+import { testCms } from '../helpers/cms';
 
 const ORIGIN = 'https://clementplancon.fr';
 
-let gh: FakeGitHub;
+let gh: ReturnType<typeof testCms>;
 let cookie: string;
 let handle: (req: Request) => Promise<Response>;
 
@@ -31,9 +29,9 @@ const call = async (method: string, path: string, body?: unknown, headers?: Reco
 
 // Access control and sessions are covered in auth.test.ts; here every request carries a valid session.
 beforeEach(async () => {
-  gh = FakeGitHub.fromDir(process.cwd(), ['src/content', 'src/assets/media']);
+  gh = testCms();
   const { auth } = await testAuth();
-  handle = createHandler({ cms: new Cms(gh as unknown as GitHub, { branch: 'main', draftBranch: 'cms-draft' }), auth, log: () => {} });
+  handle = createHandler({ cms: gh.cms, auth, log: () => {} });
   cookie = '';
   const res = await handle(req('POST', '/auth/login', { password: TEST_PASSWORD }));
   expect(res.status).toBe(200);
@@ -58,8 +56,8 @@ describe('content editing', () => {
     });
     expect(saved.status).toBe(200);
     // main untouched, draft has the change
-    expect(gh.read('main', 'src/content/projects/bercy-vert.json')).not.toContain('Nouveau résumé.');
-    expect(gh.read('cms-draft', 'src/content/projects/bercy-vert.json')).toContain('Nouveau résumé.');
+    expect(await gh.read('published', 'src/content/projects/bercy-vert.json')).not.toContain('Nouveau résumé.');
+    expect(await gh.read('draft', 'src/content/projects/bercy-vert.json')).toContain('Nouveau résumé.');
 
     const after = await call('GET', '/content');
     expect(after.body.ref.isDraft).toBe(true);
@@ -121,8 +119,8 @@ describe('content editing', () => {
       ],
     });
     expect(rename.status).toBe(200);
-    expect(gh.read('cms-draft', 'src/content/projects/safeping.json')).toBeUndefined();
-    expect(gh.read('cms-draft', 'src/content/projects/safe-ping.json')).toBeDefined();
+    expect(await gh.read('draft', 'src/content/projects/safeping.json')).toBeUndefined();
+    expect(await gh.read('draft', 'src/content/projects/safe-ping.json')).toBeDefined();
     const exists = await call('POST', '/save', {
       message: 'x',
       changes: [{ op: 'put', type: 'project', id: 'datametre', data: p.data, baseSha: null }],
@@ -151,8 +149,8 @@ describe('publication', () => {
 
     const pub = await call('POST', '/publish', {});
     expect(pub.status).toBe(200);
-    expect(gh.read('main', 'src/content/profile.json')).toContain('Paris, France');
-    expect((await call('GET', '/status')).body.draft.ahead).toBe(0);
+    expect(await gh.read('published', 'src/content/profile.json')).toContain('Paris, France');
+    expect((await call('GET', '/status')).body.draft).toBeNull();
   });
 
   it('refuses to publish when there is no draft', async () => {
@@ -177,8 +175,8 @@ describe('media', () => {
     const r = await call('POST', '/media', { fileName: "Capture d'écran (2).PNG", contentBase64: png.toString('base64'), alt: 'Une capture' });
     expect(r.status).toBe(201);
     expect(r.body.ref).toBe('media/capture-d-ecran-2.png');
-    expect(gh.files('cms-draft').has('src/assets/media/capture-d-ecran-2.png')).toBe(true);
-    expect(gh.read('cms-draft', 'src/content/media.json')).toContain('Une capture');
+    expect(await gh.hasMedia('draft', 'media/capture-d-ecran-2.png')).toBe(true);
+    expect(await gh.read('draft', 'src/content/media.json')).toContain('Une capture');
   });
 
   it('rejects files whose bytes are not an accepted format (e.g. SVG, HTML)', async () => {
@@ -203,8 +201,8 @@ describe('media', () => {
   it('deletes an unused media and its manifest entry', async () => {
     await call('POST', '/media', { fileName: 'b.png', contentBase64: png.toString('base64') });
     expect((await call('POST', '/media/delete', { ref: 'media/b.png' })).status).toBe(200);
-    expect(gh.files('cms-draft').has('src/assets/media/b.png')).toBe(false);
-    expect(gh.read('cms-draft', 'src/content/media.json')).not.toContain('media/b.png');
+    expect(await gh.hasMedia('draft', 'media/b.png')).toBe(false);
+    expect(await gh.read('draft', 'src/content/media.json')).not.toContain('media/b.png');
   });
 
   it('serves media files to the admin and rejects invalid refs', async () => {
@@ -212,5 +210,47 @@ describe('media', () => {
     expect(ok.status).toBe(200);
     expect(ok.headers.get('content-type')).toBe('image/webp');
     expect((await call('GET', '/media/file?ref=../../.env')).status).toBe(400);
+  });
+});
+
+describe('11. cache invalidation on publish', () => {
+  it('publishing purges the public cache and says so', async () => {
+    const purges: number[] = [];
+    handle = createHandler({ cms: gh.cms, auth: (await testAuth()).auth, purge: async () => (purges.push(1), true), log: () => {} });
+    const res = await handle(req('POST', '/auth/login', { password: TEST_PASSWORD }));
+    cookie = cookiePair(res.headers.get('set-cookie'));
+    const c = await call('GET', '/content');
+    const p = c.body.singletons.profile;
+    await call('POST', '/save', { message: 'x', changes: [{ op: 'put', type: 'profile', data: { ...p.data, location: 'Lyon' }, baseSha: p.sha }] });
+    const pub = await call('POST', '/publish', {});
+    expect(pub.body).toMatchObject({ published: true, purged: true });
+    expect(purges).toHaveLength(1);
+    // Nothing to publish: no purge either.
+    expect((await call('POST', '/publish', {})).status).toBe(400);
+    expect(purges).toHaveLength(1);
+  });
+
+  it('a failed purge does not undo the publication, it is reported (and can be retried)', async () => {
+    handle = createHandler({ cms: gh.cms, auth: (await testAuth()).auth, purge: async () => false, log: () => {} });
+    const res = await handle(req('POST', '/auth/login', { password: TEST_PASSWORD }));
+    cookie = cookiePair(res.headers.get('set-cookie'));
+    const c = await call('GET', '/content');
+    const p = c.body.singletons.profile;
+    await call('POST', '/save', { message: 'x', changes: [{ op: 'put', type: 'profile', data: { ...p.data, location: 'Lyon' }, baseSha: p.sha }] });
+    expect((await call('POST', '/publish', {})).body).toMatchObject({ published: true, purged: false });
+    expect(await gh.read('published', 'src/content/profile.json')).toContain('Lyon');
+    expect((await call('POST', '/purge', {})).body).toEqual({ purged: false });
+  });
+
+  it('backup and restore routes need a session and the CSRF header', async () => {
+    const saved = cookie;
+    cookie = '';
+    expect((await call('GET', '/backup')).status).toBe(401);
+    cookie = saved;
+    const backup = await handle(req('GET', '/backup'));
+    expect(backup.headers.get('content-disposition')).toMatch(/attachment; filename="clementplancon-sauvegarde-/);
+    expect(backup.headers.get('cache-control')).toBe('no-store');
+    const r = await call('POST', '/restore', { backup: await backup.json() }, { 'x-cms-request': '' });
+    expect(r.status).toBe(403);
   });
 });

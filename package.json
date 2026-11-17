@@ -16,9 +16,10 @@
     "admin:setup": "node scripts/admin-setup.mjs"
   },
   "dependencies": {
+    "@astrojs/netlify": "^8.2.14",
     "@astrojs/preact": "^6.1.0",
-    "@astrojs/sitemap": "^3.7.4",
     "@netlify/blobs": "^11.1.9",
+    "@netlify/cache": "^4.2.1",
     "astro": "^7.4.1",
     "hash-wasm": "^4.13.0",
     "preact": "^11.2.0",
@@ -30,6 +31,7 @@
     "@biomejs/biome": "^2.6.6",
     "@netlify/functions": "^6.1.1",
     "@playwright/test": "^1.65.0",
+    "netlify-cli": "^23.15.1",
     "typescript": "^6.0.3",
     "vitest": "^5.1.0"
   }

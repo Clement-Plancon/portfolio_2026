@@ -1411,3 +1411,12 @@ fieldset {
 .login-overlay .login {
   background: rgb(30 58 50 / 0.92);
 }
+
+/* File picker styled as a button (backup restore): the hidden input keeps keyboard focus visible here. */
+.file-btn {
+  cursor: pointer;
+}
+.file-btn:focus-within {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
