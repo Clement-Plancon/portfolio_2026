@@ -206,21 +206,17 @@ Seules les données publiées passent par une réponse cacheable. Le brouillon n
 
 ## Une seule page
 
-- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) dans l'ordre et selon la visibilité décidés par l'administration : `Hero` (introduction, `h1`), puis `Projects` (`#projets`), `Journey` (`#parcours`), `Skills` (`#competences`), `About` (`#a-propos`), `Contact` (`#contact`, toujours en dernier). Les ancres sont stables. **Ce que la page montre est décidé par `resolveSite` (`src/lib/site.ts`)** : valeurs de secours, sections vides retirées, numéros d'actes, projets mis en scène et « Autres réalisations », chapitres du parcours, fils de la scène. Voir [systeme-adaptatif.md](systeme-adaptatif.md).
-- **Projets** : chaque projet est une scène `<article id="projet-…">` (son titre est un vrai lien `#projet-…`) contenant son article `<dialog id="detail-…">`, **présent dans le HTML** (indexable ; sans JavaScript, l'article est imprimé sous sa ligne). Le script l'ouvre en dialogue modal (`showModal`), tient l'adresse à jour (`/#projet-…`, *Retour* le ferme) et rend le focus à la ligne à la fermeture.
-- **Anciennes adresses** : `/projets/…`, `/parcours/`, `/a-propos/`, `/contact/`, `/articles/…` redirigent en 301 vers leur ancre (`netlify.toml`, testé dans `tests/unit/site.test.ts`).
-- **Routes** : `/` (SSR), `/media/…` et `/files/…` (médias publiés), `/404.html`, `/admin/` et `/admin/apercu/`, `/api/admin/*`, `sitemap-*.xml`, `robots.txt`. Aucune autre page publique.
-- **Données structurées** : `Person`, `ProfilePage`, et une `ItemList` de `CreativeWork` (un par projet, URL `/#projet-…`).
+- `src/components/OnePage.astro` assemble la page (pour `/` et pour l'aperçu) dans l'ordre et selon la visibilité décidés par l'administration : `Hero` (introduction, `h1`), puis `Projects` (`#projets`), `About` (`#a-propos`, qui contient `#parcours` et `#competences`), `Contact` (`#contact`, toujours en dernier). Les ancres sont stables. **Ce que la page montre est décidé par `resolveSite` (`src/lib/site.ts`)** : valeurs de secours, parties vides retirées, parcours et compétences repliés dans « À propos », projets en grand et « Autres réalisations », postes listés d'emblée. Voir [systeme-adaptatif.md](systeme-adaptatif.md).
+- **Projets** : chaque projet est un `<article id="projet-…">` (en grand) ou un `<li id="projet-…">` (bande) ; son titre est un vrai lien `#projet-…` et il contient son article `<dialog id="detail-…">`, **présent dans le HTML** (indexable ; sans JavaScript, l'article est imprimé sous le projet). Le script l'ouvre en dialogue modal (`showModal`), tient l'adresse à jour (`/#projet-…`, *Retour* le ferme) et rend le focus au titre à la fermeture.
 
-## Design system
+## Direction artistique
 
-Direction « Fils » : voir [art-direction.md](art-direction.md) et [interaction-system.md](interaction-system.md). En code :
+Direction « Affiches » : voir [art-direction.md](art-direction.md) et [interaction-system.md](interaction-system.md). En code :
 
-- **Tokens** : `src/styles/global.css` (fond, texte, filets, braise ; voix `.display`, `.lede`, `.label` ; boutons, pastilles). Un seul thème, sombre.
-- **Polices** : Bricolage Grotesque (graisse 300–700, largeur 75–100 %, 67 Ko) et Geist (25 Ko), auto-hébergées.
-- **Fils** : `src/lib/threads.ts`, la géométrie partagée par le serveur et la scène (nœud, motifs, chaîne, rassemblement, chemin SVG compact). `cover.motif` (facultatif) choisit le motif d'un projet ; sans lui, les projets publiés gardent un motif par défaut.
-- **Teintes** : `src/lib/tints.ts` (`cover.color`), avec une teinture de fil et des teintes de texte au contraste AA testé.
-- **Rendu** : `ThreadSvg.astro` (SVG serveur) ; `src/scripts/scene/engine.ts` (WebGL2 : tubes extrudés dans le shader, reflet de soie, images clés attachées aux sections `[data-scene]` et à leur `[data-stage]`, dégradation).
-- **Script** : `src/scripts/site.ts` (repère de position, rail, articles des projets avec adresse et historique, apparitions, chargement différé de la scène, copie de l'adresse). Sans lui, tout est lisible.
+- **Tokens** : `src/styles/global.css` (papier, encre, cobalt, vermillon ; parties `.tone-*` ; voix `.display`, `.lede`, `.label` ; boutons-pilules, pastilles).
+- **Police** : Archivo variable (graisse 100–900, largeur 62–125 %, 78 Ko), auto-hébergée, préchargée.
+- **Affiches** : `src/lib/poster.ts` (compositions, tailles des titres calculées depuis leur texte, formes et inclinaisons stables par projet) et `src/components/Poster.astro`. `cover.poster` (facultatif) choisit la composition ; `cover.motif` (direction précédente) est accepté et ignoré.
+- **Couleurs** : `src/lib/tints.ts` (`cover.color` : fond, encre, seconde couleur, contrastes testés).
+- **Script** : `src/scripts/site.ts` (partie courante et couleurs de l'en-tête, pile d'affiches, titres qui s'étirent, bande, articles des projets avec adresse et historique, apparitions, vidéos, copie de l'adresse). Sans lui, tout est lisible. Aucun canvas ni WebGL.
 - **Image de partage** : `scripts/generate-og.mjs`, ou l'image choisie dans Référencement.
 - **Images** : une seule taille par image (celle envoyée, au plus 2400 px), avec largeur et hauteur ; l'ancienne génération de variantes au build (`astro:assets`) n'existe plus, puisque les médias ne sont plus dans le dépôt.

@@ -2,8 +2,9 @@
 // pages, the contrast of the project tints, and the grouping of technologies on the plates.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { MOTIFS, motif, motifOf, tangle } from '../../src/lib/threads';
-import { BACKGROUNDS, TINTS } from '../../src/lib/tints';
+import { displaySize, gridCells, lineSize, posterLayout, seed, tilt, titleLines } from '../../src/lib/poster';
+import { AMBIANCE } from '../../src/lib/site';
+import { INK, PAPER, TINTS } from '../../src/lib/tints';
 
 const redirects = [...readFileSync('netlify.toml', 'utf8').matchAll(/from = "([^"]+)"\s+to = "([^"]+)"\s+status = (\d+)/g)].map(([, from, to, status]) => ({ from, to, status: Number(status) }));
 const target = (path: string) => {
@@ -32,7 +33,7 @@ describe('former pages point to their section of the single page', () => {
   });
 });
 
-describe('project tints', () => {
+describe('colours', () => {
   const lum = (hex: string) => {
     const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
@@ -41,33 +42,50 @@ describe('project tints', () => {
     const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
     return (x + 0.05) / (y + 0.05);
   };
-  it.each(Object.entries(TINTS))('%s reads as text on both themes (WCAG AA)', (_, t) => {
-    expect(ratio(t.dark, BACKGROUNDS.dark)).toBeGreaterThanOrEqual(4.5);
-    expect(ratio(t.light, BACKGROUNDS.light)).toBeGreaterThanOrEqual(4.5);
+  it.each(Object.entries(TINTS))('the text of a %s poster reads on it (WCAG AA)', (_, t) => {
+    expect(ratio(t.ink, t.bg)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio(t.alt, t.bg)).toBeGreaterThanOrEqual(3);
+  });
+  it.each(Object.entries(AMBIANCE))('the introduction in %s reads (WCAG AA)', (_, a) => {
+    expect(ratio(a.ink, a.bg)).toBeGreaterThanOrEqual(4.5);
+  });
+  it('ink on paper, ink on vermilion, paper on ink', () => {
+    expect(ratio(INK, PAPER)).toBeGreaterThanOrEqual(7);
+    expect(ratio(INK, '#ff4b2b')).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#b9b7b0', INK)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#4a4945', PAPER)).toBeGreaterThanOrEqual(4.5);
+    expect(ratio('#c4301a', PAPER)).toBeGreaterThanOrEqual(4.5);
   });
 });
 
-describe('threads', () => {
-  it('each motif is a regular thread of the requested number of points', () => {
-    for (const m of MOTIFS) {
-      const pts = motif(m, 200, 1.5);
-      expect(pts).toHaveLength(200);
-      expect(pts.flat().every(Number.isFinite)).toBe(true);
-      // evenly spaced: no step is more than twice the mean step
-      const steps = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1], p[2] - pts[i][2]));
-      const mean = steps.reduce((a, b) => a + b, 0) / steps.length;
-      expect(Math.max(...steps)).toBeLessThan(mean * 2);
-    }
+describe('posters', () => {
+  it('a project with an image or a video is a picture poster, whatever the composition chosen', () => {
+    expect(posterLayout('numeral', 0, true)).toBe('media');
   });
-  it('the published projects keep their motifs; a new project gets the default; a chosen motif wins', () => {
-    expect(motifOf('datametre')).toBe('barres');
-    expect(motifOf('un-nouveau-projet')).toBe('noeud');
-    expect(motifOf('datametre', 'onde')).toBe('onde');
-    expect(motifOf('datametre', 'inconnu')).toBe('barres');
+  it('the composition chosen wins; an empty or unknown one varies with the position', () => {
+    expect(posterLayout('grille', 0, false)).toBe('grille');
+    expect([0, 1, 2].map((i) => posterLayout(undefined, i, false))).toEqual(['numeral', 'titre', 'grille']);
+    expect(posterLayout('inconnu', 3, false)).toBe('numeral');
   });
-  it('the tangle has open ends, left and right', () => {
-    const t = tangle(0, 6, 200);
-    expect(t[0][0]).toBeLessThan(-2);
-    expect(t[199][0]).toBeGreaterThan(2);
+  it('a project keeps its shapes and tilt between renders', () => {
+    expect(gridCells('datametre')).toEqual(gridCells('datametre'));
+    expect(gridCells('datametre')).toHaveLength(12);
+    expect(tilt('datametre')).toBe(tilt('datametre'));
+    expect(Math.abs(tilt('x', 6))).toBeLessThanOrEqual(6);
+    expect(seed('a')).not.toBe(seed('b'));
+  });
+  it('a long word gets smaller, never wider than the poster', () => {
+    expect(lineSize('SAFEPING')).toBeLessThan(lineSize('BERCY'));
+    const longest = 'ANTICONSTITUTIONNELLEMENT';
+    expect(lineSize(longest) * longest.length * 0.9).toBeLessThanOrEqual(84.5);
+  });
+  it('a display title: the longest word fits the width, a long title keeps to about three lines', () => {
+    expect(displaySize('Projets', 15, 80)).toBeCloseTo(80 / (7 * 0.86), 1);
+    const long = displaySize('Écrivez-moi, je réponds à chaque message reçu, même tard.', 12, 86);
+    expect(long).toBeLessThan(6);
+  });
+  it('a title is set in at most five lines, short words joined', () => {
+    expect(titleLines('Saisines de la Cour des comptes')).toEqual(['SAISINES', 'DE LA COUR', 'DES COMPTES']);
+    expect(titleLines('un deux trois quatre cinq six sept huit').length).toBeLessThanOrEqual(5);
   });
 });

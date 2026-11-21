@@ -2,7 +2,7 @@
 
 Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
-- **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante. Direction artistique « Fils » : six fils, un par projet, noués dans l'introduction (on les peigne au pointeur ou au doigt), dénoués par le défilement, chacun dessinant le motif de son projet, puis rassemblés sous l'adresse de contact. Le contenu est en HTML ; les fils sont dessinés en SVG par le serveur, puis par une scène WebGL2 sans bibliothèque (7,6 Ko compressé), chargée après la page, qui se retire si l'appareil ne suit pas.
+- **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante. Direction artistique « Affiches » : chaque projet est une affiche composée à partir de ses données (numéro, titre, nature, technologies, couleur, et sa capture réelle quand il en a une). L'introduction pose une pile de ces affiches sur le nom en capitales géantes : on les déplace, on les mélange, on les ouvre. Quatre parties en aplats francs (cobalt, papier, encre, vermillon), une seule fonte à largeur variable (Archivo), aucun canvas : HTML et CSS, et un script de 8 Ko (3 Ko compressé) pour le mouvement.
 - **Administration** (`/admin/`) : la source unique du contenu. Une section **Site** (accueil, sections et navigation, projets et parcours, à propos, contact, apparence), des fiches projet et expérience réduites à l'essentiel (le reste en « Paramètres avancés »), un **aperçu multi-écrans** du brouillon. Le design s'adapte seul à 0, 1 ou 30 projets, à 1 ou 20 postes, aux textes longs et aux médias de toutes proportions ([docs/systeme-adaptatif.md](docs/systeme-adaptatif.md)). Aussi : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu privé, **publication immédiate** (sans build ni commit), sauvegarde et restauration.
 - **Contenus** : stockés dans **Netlify Blobs** (aucune base de données, aucun jeton GitHub). `src/content/` contient le contenu d'origine, copié dans Blobs à la première visite et plus lu ensuite.
 - **Hébergement** : Netlify (fonction SSR, CDN, Netlify Blobs). GitHub ne sert qu'au code source et aux déploiements techniques.
@@ -28,10 +28,11 @@ npm run dev
 
 ## Documentation
 
-- [docs/art-direction.md](docs/art-direction.md) — échecs précédents, recherche (observations vérifiées), le concept « Fils », matériau et lumière, la tranche verticale et sa critique (`docs/prototypes/v5/`)
+- [docs/art-direction.md](docs/art-direction.md) — pourquoi quitter « Fils », recherche, le concept « Affiches », compositions, couleurs, typographie, évaluation avant / après
+- [docs/comparaison/](docs/comparaison/README.md) — captures avant / après (ordinateur, tablettes, téléphone), interactions, scénarios (12 projets, 8 postes, cas limites, vide)
 - [docs/systeme-adaptatif.md](docs/systeme-adaptatif.md) — un site 100 % administrable dont la composition tient quel que soit le contenu : règles, scénarios de test, critères de réussite
-- [docs/interaction-system.md](docs/interaction-system.md) — architecture HTML → SVG → WebGL, mouvements, navigation, responsive, dégradation
-- [docs/captures/](docs/captures/) — captures desktop, tablette et mobile, avec et sans WebGL, et les versions précédentes (`avant-*.jpg`)
+- [docs/interaction-system.md](docs/interaction-system.md) — pile d'affiches, titres qui s'étirent, articles, bande, mouvement réduit et réglage « Sobre »
+- [docs/captures/](docs/captures/) — captures des directions précédentes (« Fils » et avant), gardées pour l'historique
 - [docs/ux-review.md](docs/ux-review.md) — revue visuelle, corrections, ce qui est testé et ce qui ne l'est pas
 - [docs/performance-review.md](docs/performance-review.md) — mesures Lighthouse et choix de performance
 - [docs/research/](docs/research/) — planches des références observées ; [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) : recherches des directions précédentes
@@ -59,4 +60,4 @@ Détails : [docs/netlify-deployment.md](docs/netlify-deployment.md). Aucun secre
 
 ## Licences
 
-Polices Bricolage Grotesque, Geist, Newsreader, Instrument Sans et Mona Sans : SIL Open Font License 1.1 (`public/fonts/`).
+Polices Archivo, Bricolage Grotesque, Geist, Newsreader, Instrument Sans et Mona Sans : SIL Open Font License 1.1 (`public/fonts/`).

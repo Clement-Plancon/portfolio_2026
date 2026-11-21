@@ -1,0 +1,270 @@
+---
+// A project's poster, composed from its data in its colour: its real image or video when there is one,
+// else one of the compositions of src/lib/poster.ts (the number, the title in capitals, a grid of
+// shapes). Sized by its container (container queries): the same poster works in the pile of the
+// introduction, in large next to the project, and small in the strip of the other projects.
+// Decorative: the title and the summary are always written next to it, in the page.
+import Media from './Media.astro';
+import type { MediaResolver } from '../lib/media';
+import { gridCells, lineSize, posterLayout, titleFill } from '../lib/poster';
+import type { ProjectEntry } from '../lib/snapshot';
+import { tintStyle } from '../lib/tints';
+
+interface Props {
+  project: ProjectEntry;
+  /** Position among the visible projects (its number on the poster). */
+  index: number;
+  media: MediaResolver;
+  class?: string;
+  /** Load the image at once (above the fold). */
+  eager?: boolean;
+  /** No autoplaying video (the small posters). */
+  still?: boolean;
+  /** Replaces the number (the identity poster of the introduction). */
+  mark?: string;
+}
+const { project: p, index, media, class: cls, eager = false, still = false, mark } = Astro.props;
+const n = mark ?? String(index + 1).padStart(2, '0');
+const image = p.cover.image;
+const video = still ? undefined : p.cover.video;
+const hasMedia = !!(image || video);
+const layout = posterLayout(p.cover.poster, index, hasMedia);
+const year = p.period?.start?.slice(0, 4) ?? (p.status === 'en-cours' ? 'En cours' : '');
+const kind = (p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')).split('·')[0].trim();
+const lines = titleFill(p.title);
+const cells = gridCells(p.id);
+const tech = p.technologies.slice(0, 3);
+---
+
+<div class:list={['poster', `poster--${layout}`, cls]} style={tintStyle(p.cover.color)} aria-hidden="true" data-layout={layout}>
+  <div class="poster__in">
+    <div class="poster__top">
+      <span>{n}</span>
+      <span class="poster__kind">{kind}</span>
+      {year && <span>{year}</span>}
+    </div>
+
+    {
+      layout === 'media' && (
+        <div class="poster__media">
+          {video ? (
+            <Media src={video.src} alt={video.alt} poster={image?.src} media={media} decorative />
+          ) : (
+            image && <Media src={image.src} alt={image.alt} media={media} eager={eager} decorative />
+          )}
+        </div>
+      )
+    }
+    {layout === 'numeral' && <div class="poster__num">{n}</div>}
+    {
+      layout === 'titre' && (
+        <div class="poster__lines">
+          {lines.map((l) => (
+            <span class:list={{ echo: l.echo }} style={`--s:${l.size}`}>
+              {l.text}
+            </span>
+          ))}
+        </div>
+      )
+    }
+    {
+      layout === 'grille' && (
+        <div class="poster__grid">
+          {cells.map((c, i) => (
+            <span class={`cell cell--${c}`} style={`--r:${(i * 90) % 360}deg`} />
+          ))}
+        </div>
+      )
+    }
+
+    {
+      layout !== 'titre' && (
+        <p class="poster__title" style={`--s:${Math.min(11, lineSize(p.title.split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), ''), 11, 88))}`}>
+          {p.title}
+        </p>
+      )
+    }
+    <div class="poster__foot">
+      {tech.map((t) => <span>{t}</span>)}
+    </div>
+  </div>
+</div>
+
+<style>
+  .poster {
+    --p-bg: var(--paper);
+    --p-ink: var(--ink);
+    --p-alt: var(--vermilion);
+    container-type: inline-size;
+    position: relative;
+    aspect-ratio: 5 / 7;
+    background: var(--p-bg);
+    color: var(--p-ink);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .poster__in {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 5cqi;
+    gap: 3cqi;
+  }
+  .poster__top,
+  .poster__foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 3cqi;
+    font-size: max(0.5rem, 3.6cqi);
+    font-weight: 700;
+    font-stretch: 75%;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+  .poster__top > :not(.poster__kind),
+  .poster__foot > * {
+    flex: none;
+  }
+  .poster__kind {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    text-align: center;
+    flex: 1;
+  }
+  .poster__foot {
+    justify-content: flex-start;
+    border-top: 0.6cqi solid currentColor;
+    padding-top: 2.5cqi;
+    overflow: hidden;
+  }
+  .poster__foot > * + *::before {
+    content: '/';
+    margin-right: 3cqi;
+    opacity: 0.6;
+  }
+  .poster__title {
+    font-size: calc(var(--s) * 1cqi);
+    font-weight: 800;
+    font-stretch: 112%;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+
+  /* The image or video: a large window, the colour around it like a passe-partout. */
+  .poster__media {
+    flex: 1;
+    min-height: 0;
+    margin-inline: -5cqi;
+    position: relative;
+  }
+  .poster__media :global(.media) {
+    position: absolute;
+    inset: 0;
+  }
+  .poster__media :global(img),
+  .poster__media :global(video) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--p-ink) 12%, var(--p-bg));
+  }
+
+  /* The number, as large as the poster allows. */
+  .poster__num {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    font-size: 78cqi;
+    font-weight: 900;
+    font-stretch: 62%;
+    line-height: 0.8;
+    letter-spacing: -0.05em;
+    margin-left: -2cqi;
+    color: var(--p-alt);
+    -webkit-text-stroke: 0;
+  }
+
+  /* The title, one line per word (short words joined), each line set to the full width. */
+  .poster__lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 1cqi;
+    min-height: 0;
+    overflow: hidden;
+    padding-top: 1.5cqi;
+  }
+  .poster__lines span {
+    display: block;
+    font-size: calc(var(--s) * 1cqi);
+    font-weight: 900;
+    font-stretch: 125%;
+    line-height: 0.84;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+  /* the second line in the second colour, the repeated lines in outline */
+  .poster__lines span:nth-child(2) {
+    color: var(--p-alt);
+  }
+  .poster__lines .echo {
+    color: transparent;
+    -webkit-text-stroke: max(1px, 0.5cqi) var(--p-ink);
+  }
+
+  /* A grid of geometric shapes, derived from the project's id. */
+  .poster__grid {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 1.5cqi;
+    margin-inline: -1cqi;
+  }
+  .cell {
+    position: relative;
+    transform: rotate(var(--r));
+  }
+  .cell--disc {
+    border-radius: 50%;
+    background: var(--p-ink);
+  }
+  .cell--ring {
+    border-radius: 50%;
+    border: 4cqi solid var(--p-alt);
+  }
+  .cell--half-t {
+    border-radius: 999px 999px 0 0;
+    background: var(--p-alt);
+    height: 50%;
+    align-self: end;
+  }
+  .cell--half-l {
+    border-radius: 0 999px 999px 0;
+    background: var(--p-ink);
+  }
+  .cell--quarter {
+    border-radius: 100% 0 0 0;
+    background: var(--p-alt);
+  }
+  .cell--square {
+    background: var(--p-ink);
+    transform: rotate(var(--r)) scale(0.72);
+  }
+  .cell--bar {
+    background: var(--p-alt);
+    transform: rotate(var(--r)) scaleY(0.28);
+  }
+</style>

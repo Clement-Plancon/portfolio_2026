@@ -1,53 +1,56 @@
 // Progressive enhancement of the one-page site. Without this script the page is complete: every project
-// article is printed under its scene, every link is a plain anchor, the threads are drawn as SVG.
+// article is printed under its project, every link is a plain anchor, the posters stay where they are.
 const root = document.documentElement;
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 root.classList.add('js');
-if (!reduceMotion.matches) root.classList.add('motion');
-const motion = () => !reduceMotion.matches;
+// "still" (Site → Apparence): the same page without moving posters
+const still = root.hasAttribute('data-still');
+if (!reduceMotion.matches && !still) root.classList.add('motion');
+const motion = () => !reduceMotion.matches && !still;
+const finePointer = matchMedia('(pointer: fine)');
 
-/* ---------- Where am I: current section in the navigation, act and project in the marker ---------- */
+/* ---------- Where am I: the current part in the navigation, the header in its colours ---------- */
+const header = document.querySelector<HTMLElement>('[data-top]');
 const navLinks = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-nav]')].map((a) => [a.dataset.nav!, a]));
-const where = document.querySelector<HTMLElement>('[data-where]');
-// The acts, as the page declares them (their number and name come from the content).
-const acts = [...document.querySelectorAll<HTMLElement>('[data-act]')].map((el) => ({ id: el.id, el, act: el.dataset.act! }));
-const projectsEls = [...document.querySelectorAll<HTMLElement>('[data-project]')];
-const railLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-rail] a')];
-const gallery = document.getElementById('projets');
+const parts = [...document.querySelectorAll<HTMLElement>('[data-hero], [data-part]')];
+const kinetics = [...document.querySelectorAll<HTMLElement>('[data-project]')].filter((el) => el.querySelector('[data-kinetic]'));
+const hero = document.querySelector<HTMLElement>('[data-hero]');
 
 let ticking = false;
+let headTone = '';
 const update = () => {
   ticking = false;
-  const mid = innerHeight * 0.45;
+  const vh = innerHeight;
   root.classList.toggle('is-scrolled', scrollY > 8);
-  // the section under the middle of the screen
-  let current = 'top';
-  let act = '01 — Découverte';
-  for (const a of acts) {
-    if (a.el.getBoundingClientRect().top <= mid) {
-      current = a.id;
-      act = a.act;
-    }
+  // the part under the middle of the screen (navigation) and the one under the header (colours)
+  let current = '';
+  let under: HTMLElement | undefined;
+  const headY = (header?.offsetHeight ?? 64) / 2;
+  for (const p of parts) {
+    const r = p.getBoundingClientRect();
+    if (r.top <= vh * 0.45) current = p.id;
+    if (r.top <= headY && r.bottom > headY) under = p;
   }
-  // skills right after the path are reached through it in the navigation
-  const navId = navLinks.has(current) ? current : current === 'competences' ? 'parcours' : current;
-  for (const [id, a] of navLinks) a.setAttribute('aria-current', String(id === navId));
-  // the project under the middle of the screen
-  let project = -1;
-  projectsEls.forEach((el, i) => {
+  for (const [id, a] of navLinks) a.setAttribute('aria-current', String(id === current));
+  if (header && under && under.dataset.tone !== headTone) {
+    headTone = under.dataset.tone ?? '';
+    const cs = getComputedStyle(under);
+    header.style.setProperty('--head-bg', cs.backgroundColor);
+    header.style.setProperty('--head-fg', cs.color);
+    header.style.setProperty('--head-solid', cs.backgroundColor);
+  }
+  if (!motion()) return;
+  // the projects in large: how far each has come in (0 → 1), for its title that stretches and its poster
+  for (const el of kinetics) {
     const r = el.getBoundingClientRect();
-    if (r.top <= mid && r.bottom > mid) project = i;
-  });
-  railLinks.forEach((a, i) => {
-    a.setAttribute('aria-current', String(i === project));
-  });
-  if (gallery) {
-    const r = gallery.getBoundingClientRect();
-    root.classList.toggle('in-gallery', project >= 0 && r.top < innerHeight * 0.2 && r.bottom > innerHeight * 0.6);
+    if (r.bottom < -vh || r.top > vh * 2) continue;
+    const k = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.75)));
+    el.style.setProperty('--k', k.toFixed(3));
   }
-  if (where) {
-    const name = project >= 0 ? projectsEls[project].querySelector('[data-open]')?.textContent?.trim() : '';
-    where.textContent = name ? `${act} · ${name}` : act;
+  // the pile drifts apart as the introduction scrolls away
+  if (hero) {
+    const r = hero.getBoundingClientRect();
+    hero.style.setProperty('--out', Math.min(1, Math.max(0, -r.top / r.height)).toFixed(3));
   }
 };
 const request = () => {
@@ -60,7 +63,7 @@ addEventListener('scroll', request, { passive: true });
 addEventListener('resize', request);
 update();
 
-/* ---------- Elements that rise into place once ---------- */
+/* ---------- Things that come into place once ---------- */
 const reveals = document.querySelectorAll<HTMLElement>('[data-reveal]');
 if (root.classList.contains('motion') && 'IntersectionObserver' in window) {
   const io = new IntersectionObserver(
@@ -78,32 +81,133 @@ if (root.classList.contains('motion') && 'IntersectionObserver' in window) {
   for (const el of reveals) el.classList.add('is-in');
 }
 
-/* ---------- Rail and quick index: go to a project's scene ---------- */
-document.addEventListener('click', (e) => {
-  const a = (e.target as Element).closest<HTMLAnchorElement>('a[data-jump]');
-  if (!a) return;
-  // The index above the gallery opens the article at once; the rail scrolls to the scene.
-  if (!a.closest('[data-rail]')) return;
-  e.preventDefault();
-  const el = document.getElementById(`projet-${a.dataset.jump}`);
-  el?.scrollIntoView({ behavior: motion() ? 'smooth' : 'auto', block: 'start' });
-});
+/* ---------- The pile of posters: drag (mouse, pen), shuffle (button), open (click, tap) ---------- */
+const pile = document.querySelector<HTMLElement>('[data-pile]');
+if (pile) {
+  const cards = [...pile.querySelectorAll<HTMLElement>('[data-pile-card]')];
+  let zTop = cards.length + 1;
+  const front = (card: HTMLElement) => card.style.setProperty('--z', String(++zTop));
 
-/* ---------- Projects: each scene opens its article over the page ---------- */
+  // Shuffle: the top poster goes to the bottom of the pile, the others come up.
+  const shuffle = pile.querySelector<HTMLButtonElement>('[data-shuffle]');
+  if (shuffle) {
+    shuffle.hidden = false;
+    shuffle.addEventListener('click', () => {
+      const order = [...cards].sort((a, b) => Number(b.style.getPropertyValue('--z') || 0) - Number(a.style.getPropertyValue('--z') || 0));
+      const topCard = order[0];
+      for (const c of cards) {
+        c.style.removeProperty('--dx');
+        c.style.removeProperty('--dy');
+      }
+      const lift = () => {
+        for (const [i, c] of order.slice(1).entries()) c.style.setProperty('--z', String(cards.length - i + 1));
+        topCard.style.setProperty('--z', '1');
+        zTop = cards.length + 1;
+      };
+      if (!motion()) {
+        lift();
+        return;
+      }
+      // the top poster slides out, goes under, and comes back
+      topCard.animate([{ transform: 'none' }, { transform: 'translate(118%, -6%) rotate(14deg)', offset: 0.45 }, { transform: 'none' }], {
+        duration: 720,
+        easing: 'cubic-bezier(0.5, 0, 0.2, 1)',
+      });
+      setTimeout(lift, 320);
+    });
+  }
+
+  // Drag: only with a mouse or a pen (on touch screens a finger scrolls the page).
+  let drag: { card: HTMLElement; id: number; x: number; y: number; dx: number; dy: number; moved: boolean } | null = null;
+  let suppressClick = false;
+  for (const card of cards) {
+    card.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch' || e.button !== 0 || !motion()) return;
+      const dx = Number.parseFloat(card.style.getPropertyValue('--dx')) || 0;
+      const dy = Number.parseFloat(card.style.getPropertyValue('--dy')) || 0;
+      drag = { card, id: e.pointerId, x: e.clientX, y: e.clientY, dx, dy, moved: false };
+    });
+    card.addEventListener('pointermove', (e) => {
+      if (!drag || drag.card !== card || e.pointerId !== drag.id) return;
+      const mx = e.clientX - drag.x;
+      const my = e.clientY - drag.y;
+      if (!drag.moved && Math.hypot(mx, my) < 6) return;
+      if (!drag.moved) {
+        drag.moved = true;
+        card.setPointerCapture(e.pointerId);
+        card.classList.add('is-dragging');
+        front(card);
+      }
+      card.style.setProperty('--dx', `${drag.dx + mx}px`);
+      card.style.setProperty('--dy', `${drag.dy + my}px`);
+    });
+    const end = (e: PointerEvent) => {
+      if (!drag || drag.card !== card || e.pointerId !== drag.id) return;
+      if (drag.moved) suppressClick = true;
+      card.classList.remove('is-dragging');
+      drag = null;
+    };
+    card.addEventListener('pointerup', end);
+    card.addEventListener('pointercancel', end);
+    card.addEventListener(
+      'click',
+      (e) => {
+        if (suppressClick) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          suppressClick = false;
+        }
+      },
+      true,
+    );
+    card.addEventListener('dragstart', (e) => e.preventDefault());
+  }
+
+  // The pile leans towards the pointer (fine pointers only).
+  if (finePointer.matches && motion() && hero) {
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      pile.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
+      pile.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
+    });
+  }
+}
+
+/* ---------- The strip of the other projects: arrows for mouse users ---------- */
+const strip = document.querySelector<HTMLElement>('[data-strip-list]');
+const stripNav = document.querySelector<HTMLElement>('[data-strip-nav]');
+if (strip && stripNav) {
+  const [prev, next] = [...stripNav.querySelectorAll<HTMLButtonElement>('[data-strip]')];
+  const sync = () => {
+    const overflow = strip.scrollWidth > strip.clientWidth + 4;
+    stripNav.hidden = !overflow;
+    prev.disabled = strip.scrollLeft < 4;
+    next.disabled = strip.scrollLeft + strip.clientWidth > strip.scrollWidth - 4;
+  };
+  for (const b of [prev, next]) {
+    b.addEventListener('click', () => strip.scrollBy({ left: Number(b.dataset.strip) * strip.clientWidth * 0.8, behavior: motion() ? 'smooth' : 'auto' }));
+  }
+  strip.addEventListener('scroll', sync, { passive: true });
+  addEventListener('resize', sync);
+  sync();
+}
+
+/* ---------- Projects: each one opens its article over the page ---------- */
+const projectsEls = [...document.querySelectorAll<HTMLElement>('[data-project]')];
 const dialogs = projectsEls.map((el) => el.querySelector<HTMLDialogElement>('[data-detail]')!);
 const originOf = (i: number) => projectsEls[i].querySelector<HTMLElement>('[data-origin]') ?? projectsEls[i];
-const linkOf = (i: number) => projectsEls[i].querySelector<HTMLAnchorElement>('[data-open]')!;
+const linkOf = (i: number) => projectsEls[i].querySelector<HTMLAnchorElement>('[data-open]:not([tabindex="-1"])') ?? projectsEls[i].querySelector<HTMLAnchorElement>('[data-open]')!;
 const indexOfHash = (hash: string) => projectsEls.findIndex((el) => `#${el.id}` === hash);
 let current = -1;
 let closing = false;
 
 const insetOf = (el: Element) => {
   const r = el.getBoundingClientRect();
-  if (r.bottom < 0 || r.top > innerHeight) return null;
-  return `inset(${Math.max(0, r.top)}px ${Math.max(0, innerWidth - r.right)}px ${Math.max(0, innerHeight - r.bottom)}px ${Math.max(0, r.left)}px round 12px)`;
+  if (r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) return null;
+  return `inset(${Math.max(0, r.top)}px ${Math.max(0, innerWidth - r.right)}px ${Math.max(0, innerHeight - r.bottom)}px ${Math.max(0, r.left)}px)`;
 };
-const FULL = 'inset(0px 0px 0px 0px round 0px)';
-const EASE = 'cubic-bezier(0.65, 0, 0.25, 1)';
+const FULL = 'inset(0px 0px 0px 0px)';
+const EASE = 'cubic-bezier(0.7, 0, 0.2, 1)';
 
 function show(i: number, { from = true } = {}) {
   const dlg = dialogs[i];
@@ -112,10 +216,11 @@ function show(i: number, { from = true } = {}) {
   if (!dlg.open) dlg.showModal();
   root.classList.add('has-dialog');
   dlg.scrollTop = 0;
+  // the article grows out of the poster
   const clip = from ? insetOf(originOf(i)) : null;
   if (motion()) {
-    if (clip) dlg.animate([{ clipPath: clip }, { clipPath: FULL }], { duration: 800, easing: EASE });
-    else dlg.animate([{ opacity: 0, transform: 'translateY(2rem)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(0.22, 0.8, 0.12, 1)' });
+    if (clip) dlg.animate([{ clipPath: clip }, { clipPath: FULL }], { duration: 700, easing: EASE });
+    else dlg.animate([{ opacity: 0, transform: 'translateY(3rem)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(0.2, 0.85, 0.1, 1)' });
   }
   dlg.querySelector<HTMLElement>('[data-close]')?.focus({ preventScroll: true });
 }
@@ -127,12 +232,12 @@ async function hide() {
   closing = true;
   const origin = originOf(i);
   const r = origin.getBoundingClientRect();
-  if (r.top < 0 || r.bottom > innerHeight) projectsEls[i].scrollIntoView({ block: 'start', behavior: 'instant' });
+  if (r.top < 0 || r.bottom > innerHeight) projectsEls[i].scrollIntoView({ block: 'center', behavior: 'instant' });
   const clip = insetOf(origin);
   if (motion()) {
     const a = clip
-      ? dlg.animate([{ clipPath: FULL }, { clipPath: clip }], { duration: 600, easing: EASE, fill: 'forwards' })
-      : dlg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, fill: 'forwards' });
+      ? dlg.animate([{ clipPath: FULL }, { clipPath: clip }], { duration: 520, easing: EASE, fill: 'forwards' })
+      : dlg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' });
     await a.finished.catch(() => {});
     dlg.close();
     a.cancel();
@@ -157,6 +262,8 @@ function requestClose() {
 if (projectsEls.length) {
   projectsEls.forEach((el, i) => {
     for (const link of el.querySelectorAll<HTMLAnchorElement>('[data-open]')) {
+      // the links inside the article itself are not openers
+      if (link.closest('[data-detail]')) continue;
       link.addEventListener('click', (e) => {
         e.preventDefault();
         history.pushState({ project: true }, '', `#${el.id}`);
@@ -182,7 +289,7 @@ if (projectsEls.length) {
         history.replaceState(history.state, '', go.hash);
         show(j, { from: false });
         // keep the page behind on the current project, so closing lands on it
-        projectsEls[j].scrollIntoView({ block: 'start', behavior: 'instant' });
+        projectsEls[j].scrollIntoView({ block: 'center', behavior: 'instant' });
       }
     });
   });
@@ -193,58 +300,30 @@ if (projectsEls.length) {
     else hide();
   });
 
-  // Links to #projet-x elsewhere (the quick index, other sites) open the article.
+  // Links to #projet-x elsewhere (the pile of the introduction, other sites) open the article.
   document.addEventListener('click', (e) => {
+    if (e.defaultPrevented) return;
     const a = (e.target as Element).closest<HTMLAnchorElement>('a[href*="#projet-"]');
-    if (!a || a.hasAttribute('data-open') || a.hasAttribute('data-go') || a.closest('[data-rail]') || a.origin !== location.origin) return;
+    if (!a || a.hasAttribute('data-open') || a.hasAttribute('data-go') || a.origin !== location.origin) return;
     const i = indexOfHash(a.hash);
     if (i < 0) return;
     e.preventDefault();
     history.pushState({ project: true }, '', a.hash);
-    projectsEls[i].scrollIntoView({ block: 'start', behavior: 'instant' });
-    show(i, { from: false });
+    const clip = insetOf(a);
+    projectsEls[i].scrollIntoView({ block: 'center', behavior: 'instant' });
+    // from the poster that was clicked, when it is still on screen
+    if (clip && motion()) {
+      show(i, { from: false });
+      for (const an of dialogs[i].getAnimations()) an.cancel();
+      dialogs[i].animate([{ clipPath: clip }, { clipPath: FULL }], { duration: 700, easing: EASE });
+    } else show(i, { from: false });
   });
 
   const initial = indexOfHash(location.hash);
   if (initial >= 0) {
-    projectsEls[initial].scrollIntoView({ block: 'start', behavior: 'instant' });
+    projectsEls[initial].scrollIntoView({ block: 'center', behavior: 'instant' });
     show(initial, { from: false });
   }
-}
-
-/* ---------- The WebGL scene: after the page, only where it can run well ---------- */
-const canvas = document.querySelector<HTMLCanvasElement>('[data-scene-canvas]');
-const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-const capable = () =>
-  !!canvas &&
-  motion() &&
-  !nav.connection?.saveData &&
-  (nav.deviceMemory ?? 8) >= 3 &&
-  (navigator.hardwareConcurrency ?? 8) >= 4 &&
-  !new URLSearchParams(location.search).has('nogl');
-if (capable()) {
-  const start = () =>
-    import('./scene/engine')
-      .then(({ startScene }) => {
-        const scene = startScene(canvas!, {
-          // ?glforce keeps the scene at full quality whatever the frame rate (screenshots on software rendering)
-          adaptive: !new URLSearchParams(location.search).has('glforce'),
-          onFirstFrame: () => root.classList.add('gl-on'),
-          onGiveUp: () => root.classList.remove('gl-on'),
-        });
-        if (!scene) return;
-        reduceMotion.addEventListener('change', () => {
-          if (reduceMotion.matches) {
-            scene.stop();
-            root.classList.remove('gl-on');
-          }
-        });
-      })
-      .catch(() => root.classList.remove('gl-on'));
-  const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => void }).requestIdleCallback;
-  const later = () => (idle ? idle(start, { timeout: 1500 }) : setTimeout(start, 300));
-  if (document.readyState === 'complete') later();
-  else addEventListener('load', later, { once: true });
 }
 
 /* ---------- Videos: muted loops, a pause button, nothing plays by itself when motion is reduced ---------- */
@@ -261,7 +340,7 @@ for (const video of document.querySelectorAll<HTMLVideoElement>('video[data-auto
     button.hidden = false;
     button.addEventListener('click', () => (video.paused ? video.play().catch(() => {}) : video.pause()));
   }
-  if (motion()) {
+  if (!reduceMotion.matches) {
     // play only while on screen
     new IntersectionObserver(([e]) => (e.isIntersecting ? video.play().catch(() => {}) : video.pause())).observe(video);
   }

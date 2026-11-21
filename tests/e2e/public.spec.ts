@@ -2,12 +2,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
+// The four parts; the path and the skills are told inside « à propos ».
 const SECTIONS = [
-  { id: 'a-propos', title: 'À propos' },
-  { id: 'projets', title: 'Projets' },
-  { id: 'parcours', title: 'Parcours' },
-  { id: 'competences', title: 'Compétences' },
-  { id: 'contact', title: 'Tirons le fil ensemble.' },
+  { sel: 'section#projets h2', title: /^\s*Projets/ },
+  { sel: 'section#a-propos h2', title: 'À propos' },
+  { sel: '#a-propos #parcours h3', title: 'Parcours' },
+  { sel: '#a-propos #competences h3', title: 'Domaines' },
+  { sel: 'section#contact h2', title: 'Travaillons ensemble.' },
 ];
 const PROJECTS = ['bercy-vert', 'referentiel-indicateurs', 'saisines-cour-des-comptes', 'veille-strategique', 'safeping', 'datametre'];
 const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
@@ -47,7 +48,7 @@ for (const [width, height] of RESOLUTIONS) {
     const nav = page.getByRole('navigation', { name: 'Sommaire' });
     await expect(nav.getByRole('link', { name: /Projets/ })).toBeInViewport();
     await nav.getByRole('link', { name: /Projets/ }).click();
-    await expect(page.getByRole('heading', { name: 'Projets', level: 2 })).toBeInViewport();
+    await expect(page.getByRole('heading', { name: /^Projets/, level: 2 })).toBeInViewport();
     // A project opens over the page, and its article fits the screen.
     await page.getByRole('link', { name: 'Datametre', exact: true }).click();
     const detail = page.locator('#detail-datametre');
@@ -66,9 +67,11 @@ test('short screens keep the name and role readable (1440×700, 375×560)', asyn
     const page = await ctx.newPage();
     await page.goto('/');
     const h1 = page.getByRole('heading', { level: 1 });
-    await expect(h1).toContainText('Clément Plançon');
-    await expect(h1).toContainText('Ingénieur logiciel & Tech Lead');
+    await expect(h1).toHaveText(/^\s*Clément\s+Plançon\s*$/);
     await expect(h1).toBeInViewport();
+    await expect(page.locator('.hero__role')).toHaveText('Ingénieur logiciel & Tech Lead');
+    // the name never runs out of the screen
+    expect(await page.locator('.hero__word').evaluateAll((els) => els.every((e) => e.getBoundingClientRect().right <= innerWidth))).toBe(true);
     await ctx.close();
   }
 });
@@ -88,7 +91,7 @@ test('accessibility (axe, WCAG 2.1 AA), light and dark, with a project open', as
 test('accessibility of the 404 page', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/une-page-qui-n-existe-pas/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText("Cette page n'existe pas");
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Page introuvable');
   expect(await violations(page)).toEqual([]);
 });
 
@@ -101,7 +104,7 @@ test('SEO essentials of the single page', async ({ page }) => {
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /index, follow/);
   await expect(page.locator('h1')).toHaveCount(1);
   for (const s of SECTIONS) {
-    await expect(page.locator(`section#${s.id} h2`)).toHaveText(s.title);
+    await expect(page.locator(s.sel)).toHaveText(s.title);
   }
 });
 
@@ -123,7 +126,8 @@ test('every project and its details are in the HTML sent by the server, and noth
     expect(html).toContain(`id="projet-${id}"`);
     expect(html).toContain(`id="detail-${id}"`);
   }
-  expect(html).toContain('Encadrement technique d&#39;une équipe de quatre développeurs');
+  expect(html).toContain('Chef adjoint de la section informatique');
+  expect(html).toContain('Cadrage du projet et expression des besoins fonctionnels');
   expect(html).not.toContain('Priorisation');
 });
 
@@ -142,15 +146,15 @@ test('a project opens with the keyboard, its address follows, previous/next and 
   await expect(detail.getByRole('button', { name: 'Fermer' })).toBeFocused();
   expect(await detail.evaluate((d) => (d as HTMLDialogElement).open && d.matches(':modal'))).toBe(true);
   // One project at a time; "next" opens the following one and updates the address.
-  await detail.getByRole('link', { name: /Projet suivant : Saisines/ }).click();
-  const saisines = page.locator('#detail-saisines-cour-des-comptes');
+  await detail.getByRole('link', { name: /Projet suivant : SafePing/ }).click();
+  const saisines = page.locator('#detail-safeping');
   await expect(saisines).toBeVisible();
   await expect(detail).toBeHidden();
-  await expect(page).toHaveURL(/#projet-saisines-cour-des-comptes$/);
-  // Escape closes it and gives the focus back to its line in the list.
+  await expect(page).toHaveURL(/#projet-safeping$/);
+  // Escape closes it and gives the focus back to its title on the page.
   await page.keyboard.press('Escape');
   await expect(saisines).toBeHidden();
-  await expect(page.getByRole('link', { name: 'Saisines de la Cour des comptes', exact: true })).toBeFocused();
+  await expect(page.getByRole('link', { name: 'SafePing', exact: true })).toBeFocused();
 });
 
 test('Back closes an open project', async ({ page }) => {
@@ -173,35 +177,58 @@ test('a link to #projet-… opens that project on arrival', async ({ page }) => 
   await expect(page.locator('#projet-datametre')).toBeInViewport();
 });
 
-test('desktop: the rail tells which project is on screen, and goes to another one', async ({ page }) => {
+test('introduction: the posters of the pile open their project, can be shuffled and moved', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  await page.evaluate(() => document.getElementById('projet-veille-strategique')!.scrollIntoView({ behavior: 'instant' }));
-  const rail = page.getByRole('navigation', { name: 'Projets' });
-  await expect(rail).toBeVisible();
-  await expect(rail.getByRole('link', { name: /Veille Stratégique/ })).toHaveAttribute('aria-current', 'true');
-  await rail.getByRole('link', { name: /SafePing/ }).click();
-  await expect(page.locator('#projet-safeping h3')).toBeInViewport();
-  await expect(page.locator('[data-where]')).toContainText('SafePing');
+  const pile = page.locator('[data-pile]');
+  const cards = pile.locator('[data-pile-card]');
+  await expect(cards).toHaveCount(4);
+  await page.waitForTimeout(1600);
+  const topOf = () => cards.evaluateAll((els) => els.reduce((a, b) => (Number(getComputedStyle(b).zIndex) > Number(getComputedStyle(a).zIndex) ? b : a)).getAttribute('href'));
+  // drag the top poster with the mouse: it moves, and does not open its project
+  const card = cards.last();
+  const box = (await card.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 - 200, box.y + box.height / 2 + 40, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(100);
+  const moved = (await card.boundingBox())!;
+  expect(box.x - moved.x).toBeGreaterThan(150);
+  await expect(page.locator('dialog[open]')).toHaveCount(0);
+  // shuffle: the top poster goes under the others
+  const before = await topOf();
+  await pile.getByRole('button', { name: 'Mélanger les affiches' }).click();
+  await page.waitForTimeout(800);
+  expect(await topOf()).not.toBe(before);
+  // a click opens it
+  await pile.getByRole('link', { name: 'Ouvrir le projet SafePing' }).click({ force: true });
+  await expect(page.locator('#detail-safeping')).toBeVisible();
+  await expect(page).toHaveURL(/#projet-safeping$/);
 });
 
-test('without WebGL the threads are drawn by the server, and the page is whole', async ({ page }) => {
-  await page.goto('/?nogl');
+test('the other projects are a strip of small posters that opens the same article', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  const strip = page.locator('[data-strip-list]');
+  await expect(strip.locator('[data-project]')).toHaveCount(2);
+  await strip.getByRole('link', { name: 'Veille Stratégique', exact: true }).click();
+  await expect(page.locator('#detail-veille-strategique')).toBeVisible();
+});
+
+test('no WebGL, no canvas: the page is plain HTML and CSS', async ({ page }) => {
+  await page.goto('/');
   await page.waitForTimeout(500);
-  await expect(page.locator('html')).not.toHaveClass(/gl-on/);
-  await expect(page.locator('.hero [data-stage] svg path')).toHaveCount(6);
-  await expect(page.locator('#projet-datametre [data-stage] svg')).toBeVisible();
-  // the WebGL module is never loaded
-  const scripts = await page.evaluate(() => performance.getEntriesByType('resource').map((r) => r.name).filter((n) => n.includes('engine')));
+  await expect(page.locator('canvas')).toHaveCount(0);
+  const scripts = await page.evaluate(() => performance.getEntriesByType('resource').map((r) => r.name).filter((n) => /engine|three|webgl/i.test(n)));
   expect(scripts).toEqual([]);
 });
 
-test('reduced motion: no WebGL scene, nothing waits for an animation', async ({ page }) => {
+test('reduced motion: posters still, nothing waits for an animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await page.waitForTimeout(800);
   await expect(page.locator('html')).not.toHaveClass(/motion/);
-  await expect(page.locator('html')).not.toHaveClass(/gl-on/);
   const hidden = await page.locator('[data-reveal]').evaluateAll((els) => els.filter((el) => getComputedStyle(el).opacity !== '1').length);
   expect(hidden).toBe(0);
   await page.getByRole('link', { name: 'Bercy Vert', exact: true }).click();
@@ -224,14 +251,14 @@ test('phones: the navigation sits at the bottom of the screen, within reach of t
   await page.goto('/');
   const nav = page.getByRole('navigation', { name: 'Sommaire' });
   const box = (await nav.boundingBox())!;
-  expect(box.y + box.height).toBeGreaterThan(844 - 2);
+  expect(box.y + box.height).toBeGreaterThan(844 - 24);
   expect(box.y).toBeGreaterThan(844 * 0.8);
   for (const link of await nav.getByRole('link').all()) {
     const b = (await link.boundingBox())!;
     expect(b.height).toBeGreaterThanOrEqual(44);
   }
   await nav.getByRole('link', { name: /Contact/ }).click();
-  await expect(page.getByRole('heading', { name: 'Tirons le fil ensemble.', level: 2 })).toBeInViewport();
+  await expect(page.getByRole('heading', { name: 'Travaillons ensemble.', level: 2 })).toBeInViewport();
   await ctx.close();
 });
 

@@ -10,12 +10,13 @@ const VIEWPORTS = [
   [1024, 768],
   [1440, 900],
 ];
-const EXPECT: Record<string, { projects: number; nav: string[] }> = {
-  a: { projects: 1, nav: ['Projets', 'Parcours', 'À propos', 'Contact'] },
-  b: { projects: 4, nav: ['Projets', 'Parcours', 'À propos', 'Contact'] },
-  c: { projects: 12, nav: ['Projets', 'Parcours', 'À propos', 'Contact'] },
-  d: { projects: 4, nav: ['Démarche', 'Réalisations', 'Parcours', 'Contact'] },
-  e: { projects: 0, nav: ['À propos', 'Contact'] },
+// large: projects shown in large; the others are in the strip
+const EXPECT: Record<string, { projects: number; large: number; nav: string[] }> = {
+  a: { projects: 1, large: 1, nav: ['Projets', 'À propos', 'Contact'] },
+  b: { projects: 4, large: 4, nav: ['Projets', 'À propos', 'Contact'] },
+  c: { projects: 12, large: 4, nav: ['Projets', 'À propos', 'Contact'] },
+  d: { projects: 4, large: 3, nav: ['Démarche', 'Réalisations', 'Contact'] },
+  e: { projects: 0, large: 0, nav: ['À propos', 'Contact'] },
 };
 
 for (const [name, want] of Object.entries(EXPECT)) {
@@ -25,7 +26,7 @@ for (const [name, want] of Object.entries(EXPECT)) {
       const page = await ctx.newPage();
       const errors: string[] = [];
       page.on('pageerror', (e) => errors.push(e.message));
-      await page.goto(`/__scenarios/${name}?nogl`);
+      await page.goto(`/__scenarios/${name}`);
       await page.evaluate(async () => {
         for (let y = 0; y < document.body.scrollHeight; y += innerHeight / 2) {
           scrollTo(0, y);
@@ -39,17 +40,22 @@ for (const [name, want] of Object.entries(EXPECT)) {
       const nav = page.getByRole('navigation', { name: 'Sommaire' });
       expect((await nav.getByRole('link').allTextContents()).map((t) => t.trim().replace(/^\d+\s*/, ''))).toEqual(want.nav);
 
-      // the position marker never covers the menu (on a project with a very long title too)
-      if (width >= 1200 && want.projects > 0) {
-        await page.locator('[data-project]').first().scrollIntoViewIfNeeded();
-        await page.waitForTimeout(150);
-        const [m, n] = await Promise.all([page.locator('[data-where]').boundingBox(), page.locator('.top__nav').boundingBox()]);
-        if (m && n) expect(m.x + m.width).toBeLessThanOrEqual(n.x + 1);
-      }
+      // the projects in large, then the strip; the name and the titles never leave the screen
+      await expect(page.locator('.case')).toHaveCount(want.large);
+      await expect(page.locator('.mini')).toHaveCount(want.projects - want.large);
+      const outside = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>('.hero__word, .projects__title, .about__title, .contact__title, .contact__mail, .case__title')]
+          .filter((el) => {
+            const r = el.getBoundingClientRect();
+            return r.left < -1 || r.right > innerWidth + 1;
+          })
+          .map((el) => el.textContent?.trim().slice(0, 40)),
+      );
+      expect(outside).toEqual([]);
 
       // titles and texts stay inside their blocks (no line wider than its box)
       const overflowing = await page.evaluate(() =>
-        [...document.querySelectorAll<HTMLElement>('h1, h2, h3, h4, .slide__sum, .card__sum, .xp__sum, .chips li, .btn')]
+        [...document.querySelectorAll<HTMLElement>('h1, h2, h3, h4, .case__sum, .mini__title, .path__role, .domain__name, .chips li, .btn')]
           .filter((el) => el.offsetParent && el.scrollWidth > el.clientWidth + 2 && getComputedStyle(el).overflow !== 'hidden')
           .map((el) => `${el.tagName}.${el.className}: ${el.textContent?.trim().slice(0, 40)}`),
       );

@@ -1,39 +1,22 @@
-# Revue visuelle et UX — « Fils »
+# Revue visuelle et UX — « Affiches »
 
-Revue menée le 21 novembre 2026 sur le build de production, avec Playwright et Chromium.
+Ce qui a été réellement inspecté, sur captures prises par Playwright et regardées une à une (dossier [`comparaison/apres/`](comparaison/apres/)) :
 
-**Méthode** :
-- les scènes sont capturées WebGL actif (`?glforce`, rendu logiciel) et sans WebGL (`?nogl`) ;
-- toutes les résolutions demandées sont couvertes, en portrait et en paysage pour les tablettes ;
-- le mouvement est examiné par des **suites d'images** : le peigne à plusieurs positions du pointeur, et la transition entre l'introduction et la galerie à 300, 600 et 900 px de défilement.
+- **Écrans** : 1440 × 900, 1180 × 820 (tablette paysage), 820 × 1180 (tablette portrait), 390 × 844 (téléphone), sur la page réelle ; 1440 × 900 et 390 × 844 sur les scénarios A, B, C, D et E.
+- **Interactions** (captures à des instants choisis) : arrivée des affiches, pile qui suit le pointeur, affiche déplacée à la souris, mélange en cours et terminé, pile qui s'écarte au défilement, titre étroit à l'entrée puis étiré, survol d'une affiche, ouverture de l'article depuis l'affiche, article, bande des autres réalisations, « En savoir plus », adresse copiée, focus clavier, toucher d'une affiche sur téléphone, mouvement réduit.
+- **Mesure de l'effet d'étirement** : largeur du titre de « Référentiel Indicateurs » à trois positions de défilement : 329 px (80 %), 386 px (98 %), 456 px (116 %).
 
-Les défauts relevés et leurs corrections sont détaillés dans [art-direction.md §5](art-direction.md#5-la-tranche-verticale-et-sa-critique). Captures finales : [`captures/`](captures/). Itérations : [`prototypes/v5/`](prototypes/v5/).
+## Défauts trouvés et corrigés
+
+Voir le tableau de [`systeme-adaptatif.md`](systeme-adaptatif.md#4-scénarios-de-contenu) : titres coupés sur téléphone, titres longs trop hauts, affiches « titre » vides, nom trop large, bouton « Mélanger » qui chevauchait le titre, accent coupé, contraste des compteurs, nom lu « ClémentPlançon » sans espace par les lecteurs d'écran (les mots du `h1` sont maintenant séparés).
 
 ## Vérifié automatiquement
 
-`npm test` (Vitest, 88 tests) et `npm run test:e2e` (Playwright, 39 tests sur le build de production) :
+- **Navigateur** (`tests/e2e/`) : 10 résolutions de 320 à 1920 px sans débordement ; navigation ; ouverture, précédent / suivant, Échap, Retour ; lien direct `#projet-…` ; pile (glisser sans ouvrir, mélanger, ouvrir) ; bande ; aucun canvas ; mouvement réduit ; sans JavaScript ; menu en bas sur téléphone, cibles ≥ 44 px ; copie de l'adresse ; axe WCAG 2.1 AA (page, article ouvert, 404) ; SEO et données structurées ; les 5 scénarios à 4 tailles ; les 12 critères de l'administration.
+- **Unitaires** : contraste de chaque couleur d'affiche (encre ≥ 4,5:1, seconde couleur ≥ 3:1), des trois couleurs d'accueil et des couleurs de texte ; compositions et tailles des affiches ; règles de `resolveSite`.
 
-- **Résolutions** : aux 10 résolutions (320 × 568 → 1920 × 1080), pas de débordement horizontal. La navigation est visible, on atteint Projets, on ouvre un projet, l'article ne déborde pas et se ferme.
-- **Lisibilité** : nom et métier dans le premier écran sur des écrans bas (1440 × 700, 375 × 560).
-- **Accessibilité** : axe (WCAG 2.1 AA), aucune violation, avec un article ouvert ; page 404 comprise.
-- **Clavier** : ouvrir, précédent / suivant, Échap, retour du focus ; dialogue modal.
-- **Adresses** :
-  - `#projet-…` à l'arrivée ouvre le projet ;
-  - le bouton **Retour** ferme l'article.
-- **Rail** : il indique le projet à l'écran et y mène ; le repère de position suit.
-- **Sans WebGL** :
-  - les fils sont dessinés par le serveur (6 fils dans l'introduction) ;
-  - le module de la scène n'est jamais chargé.
-- **Mouvement réduit** : pas de scène, aucun contenu en attente d'animation.
-- **Sans JavaScript** : tous les détails sont lisibles.
-- **Téléphone** : la navigation est en bas de l'écran, avec des cibles de 44 px au moins.
-- **Contact et référencement** : copie de l'adresse ; SEO, données structurées, sitemap, robots.
-- **CMS** : toute la chaîne (connexion, brouillon, aperçu, publication, médias, sauvegarde, restauration, déconnexion).
-- **Unitaires** : contraste AA des teintes ; régularité de chaque motif, motifs par défaut et motif choisi, bouts ouverts du nœud.
+## Non vérifié
 
-## Non testé
-
-- **Rendu sur un vrai GPU** : fluidité, coût réel, aspect du reflet sur un écran haute densité.
-- **Appareils physiques** : iPhone, Android de milieu de gamme, iPad (le toucher a été simulé).
-- **Autres navigateurs** : Safari et Firefox. Le WebGL2 et le `<dialog>` y sont pris en charge, mais rien n'a été vérifié.
-- **Tests avec de vrais visiteurs** : aucun.
+- **Appareils réels** : aucun téléphone ni tablette physique ; le toucher est émulé par Playwright.
+- **Safari et Firefox** : `container queries`, `font-stretch` variable, `<dialog>` et `clip-path` animé y sont pris en charge, mais rien n'a été ouvert dans ces navigateurs.
+- **Lecteurs d'écran réels** (VoiceOver, NVDA) : seule l'analyse axe et la structure (titres, noms des liens) ont été vérifiées.

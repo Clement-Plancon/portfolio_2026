@@ -22,35 +22,32 @@ interface Props {
   profile: Pick<Profile, 'name' | 'location'>;
   /** The sections of the page, for the navigation (none on the 404 page). */
   sections?: ResolvedSection[];
-  /** Colours of the threads of the scene. */
-  threads?: string[];
+  /** Colour of the introduction. */
   ambiance?: keyof typeof AMBIANCE;
-  /** "svg": never start the WebGL scene. */
-  scene?: 'auto' | 'svg';
+  /** false: posters that stay still (no drag, tilt or stretching titles). */
+  motion?: boolean;
 }
 
-const { nav = true, profile, sections = [], threads = [], ambiance = 'braise', scene = 'auto', ...seo } = Astro.props;
-const accent = AMBIANCE[ambiance].accent;
+const { nav = true, profile, sections = [], ambiance = 'braise', motion = true, ...seo } = Astro.props;
+const hero = AMBIANCE[ambiance];
 ---
 
 <!doctype html>
-<html lang="fr" id="top" data-ambiance={ambiance} style={`--accent:${accent}`}>
+<html lang="fr" id="top" data-ambiance={ambiance} data-still={motion ? undefined : ''} style={`--hero:${hero.bg};--hero-ink:${hero.ink}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <Seo {...seo} />
-    <link rel="preload" href="/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#0f0e0d" />
+    <meta name="theme-color" content={hero.bg} />
     <meta name="author" content={profile.name} />
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
-    {nav && scene !== 'svg' && <canvas class="scene" aria-hidden="true" data-scene-canvas data-threads={JSON.stringify(threads)}></canvas>}
     <SiteHeader name={profile.name} sections={nav ? sections : []} />
     <main id="contenu" tabindex="-1">
       <slot />
@@ -68,5 +65,6 @@ const accent = AMBIANCE[ambiance].accent;
   }
   body {
     padding-bottom: var(--bar-h);
+    background: var(--ink);
   }
 </style>

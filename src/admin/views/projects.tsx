@@ -1,5 +1,6 @@
 import { COVER_COLORS } from '../../lib/schemas';
-import { MOTIF_LABELS, MOTIFS } from '../../lib/threads';
+import { POSTER_LABELS, POSTER_LAYOUTS } from '../../lib/poster';
+import type { MOTIFS } from '../../lib/schemas';
 import { TINTS } from '../../lib/tints';
 import type { Entry } from '../api';
 import { useStore } from '../store';
@@ -28,8 +29,8 @@ export function ProjectList() {
       type="project"
       title="Projets"
       lead={`L'ordre ci-dessous est celui du site. ${
-        settings.selection === 'mis-en-avant' ? `Les projets mis en avant (★) ont leur propre écran, ${settings.max} au plus` : `Les ${settings.max} premiers projets visibles ont leur propre écran`
-      } ; les autres projets visibles sont dans « Autres réalisations ». Ce réglage se change dans Site → Projets et parcours.`}
+        settings.selection === 'mis-en-avant' ? `Les projets mis en avant (★) sont présentés en grand, ${settings.max} au plus` : `Les ${settings.max} premiers projets visibles sont présentés en grand`
+      } ; les autres projets visibles sont dans la bande « Autres réalisations ». Ce réglage se change dans Site → Projets et parcours.`}
       base="projets"
       newLabel="Nouveau projet"
       reorderable
@@ -40,11 +41,11 @@ export function ProjectList() {
         return {
           title: d.title,
           meta: [d.category === 'pro' ? 'Professionnel' : 'Personnel', d.kind, d.period?.start].filter(Boolean).join(' · '),
-          status: hidden ? { label: 'Masqué', tone: 'hidden' } : scenes.has(e.id) ? { label: 'Mis en scène', tone: 'scene' } : { label: 'Autres réalisations', tone: 'other' },
+          status: hidden ? { label: 'Masqué', tone: 'hidden' } : scenes.has(e.id) ? { label: 'En grand', tone: 'scene' } : { label: 'Autres réalisations', tone: 'other' },
           thumb: d.cover?.image ? (
             <Thumb src={d.cover.image.src} size="sm" />
           ) : (
-            <span class="swatch" style={{ background: TINTS[(d.cover?.color ?? 'sapin') as keyof typeof TINTS].dark }} aria-hidden="true" />
+            <span class="swatch" style={{ background: TINTS[(d.cover?.color ?? 'sapin') as keyof typeof TINTS].bg }} aria-hidden="true" />
           ),
         };
       }}
@@ -72,6 +73,7 @@ type ProjectForm = {
     color: (typeof COVER_COLORS)[number];
     image?: { src: string; alt: string; caption?: string };
     video?: { src: string; alt: string };
+    poster?: (typeof POSTER_LAYOUTS)[number];
     motif?: (typeof MOTIFS)[number];
     variant?: 'auto' | 'texte-gauche' | 'texte-droite';
   };
@@ -150,7 +152,7 @@ export function ProjectEditor({ id }: { id: string }) {
         <ImageField
           kind="media"
           label="Image ou vidéo principale (facultatif)"
-          hint="Une capture réelle de l'application, ou une courte vidéo (4 Mo au plus, sans le son). Portrait, paysage ou carré : le site la cadre sans la déformer. Sans média, le projet est représenté par son fil et son motif."
+          hint="Une capture réelle de l'application, ou une courte vidéo (4 Mo au plus, sans le son). Portrait, paysage ou carré : le site la cadre sans la déformer. Sans média, le projet est représenté par une affiche composée de son numéro, de son titre et de sa couleur."
           value={main}
           errors={e}
           prefix={f.cover.video ? 'cover.video' : 'cover.image'}
@@ -162,7 +164,7 @@ export function ProjectEditor({ id }: { id: string }) {
         </div>
         <div class="toggles">
           <Toggle label="Visible sur le site" hint="Masqué : visible seulement dans l'aperçu." checked={f.visible} onChange={(v) => set('visible', v)} />
-          <Toggle label="Mis en avant" hint="Avec le réglage « Projets mis en avant » (Site → Projets et parcours), seuls ces projets ont leur propre écran ; les autres sont dans « Autres réalisations »." checked={f.featured} onChange={(v) => set('featured', v)} />
+          <Toggle label="Mis en avant" hint="Avec le réglage « Projets mis en avant » (Site → Projets et parcours), seuls ces projets sont présentés en grand (4 au plus par défaut) ; les autres sont dans la bande « Autres réalisations »." checked={f.featured} onChange={(v) => set('featured', v)} />
         </div>
       </section>
 
@@ -196,33 +198,33 @@ export function ProjectEditor({ id }: { id: string }) {
 
         <section class="panel" aria-labelledby="p-couverture">
           <h2 id="p-couverture">Présentation</h2>
-          <p class="hint">Sur le site, chaque projet est un fil teint de sa couleur, qui dessine un motif : un signe abstrait de son domaine (jamais une image de l'application).</p>
+          <p class="hint">Sur le site, chaque projet est une affiche dans sa couleur : son image ou sa vidéo quand il en a une, sinon une composition faite de son numéro, de son titre, de sa nature et de ses technologies.</p>
           <div class="grid-2">
             <Select
-              label="Motif du fil"
-              hint="« Automatique » garde le motif par défaut du projet."
-              value={f.cover.motif ?? ''}
-              options={[{ value: '', label: 'Automatique' }, ...MOTIFS.map((m) => ({ value: m, label: MOTIF_LABELS[m] }))]}
-              onChange={(v) => set('cover', { ...f.cover, motif: (v || undefined) as ProjectForm['cover']['motif'] })}
+              label="Composition de l'affiche"
+              hint="Utilisée quand le projet n'a ni image ni vidéo. « Automatique » varie d'un projet à l'autre."
+              value={f.cover.poster ?? ''}
+              options={[{ value: '', label: 'Automatique' }, ...POSTER_LAYOUTS.map((m) => ({ value: m, label: POSTER_LABELS[m] }))]}
+              onChange={(v) => set('cover', { ...f.cover, poster: (v || undefined) as ProjectForm['cover']['poster'] })}
             />
             <Select
               label="Disposition"
-              hint="Où se place le texte dans l'écran du projet."
+              hint="De quel côté se place l'affiche quand le projet est présenté en grand."
               value={f.cover.variant ?? 'auto'}
               options={[
                 { value: 'auto', label: 'Automatique (alterne)' },
-                { value: 'texte-gauche', label: 'Texte à gauche' },
-                { value: 'texte-droite', label: 'Texte à droite' },
+                { value: 'texte-gauche', label: 'Affiche à droite' },
+                { value: 'texte-droite', label: 'Affiche à gauche' },
               ]}
               onChange={(v) => set('cover', { ...f.cover, variant: v === 'auto' ? undefined : (v as 'texte-gauche' | 'texte-droite') })}
             />
           </div>
           <fieldset class="swatches">
-            <legend>Teinte du fil</legend>
+            <legend>Couleur de l'affiche</legend>
             {COVER_COLORS.map((c) => (
               <label class="swatch-option">
                 <input type="radio" name="cover-color" value={c} checked={f.cover.color === c} onChange={() => set('cover', { ...f.cover, color: c })} />
-                <span class="swatch" style={{ background: TINTS[c].dark }} aria-hidden="true" />
+                <span class="swatch" style={{ background: TINTS[c].bg }} aria-hidden="true" />
                 {TINTS[c].label}
               </label>
             ))}

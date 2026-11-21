@@ -51,7 +51,7 @@ test('the whole site is edited from the admin, previewed, published, and holds o
     await expect(page.getByText('Sections de la page')).toBeVisible();
     const skills = page.locator('.section-item', { hasText: 'Compétences' });
     await skills.getByText('Afficher cette section').click();
-    await page.locator('.section-item', { hasText: 'Parcours' }).getByLabel('Nom dans le menu').fill('Expérience');
+    await page.locator('.section-item', { hasText: 'À propos' }).getByLabel('Nom dans le menu').fill('Qui je suis');
     await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
     await saved(page);
 
@@ -68,7 +68,7 @@ test('the whole site is edited from the admin, previewed, published, and holds o
     await page.goto('/admin/#/projets');
     await expect(page.getByRole('heading', { name: 'Projets', level: 1 })).toBeVisible();
     const row = page.locator('.row', { hasText: 'Projet des critères' });
-    await expect(row.locator('.badge')).toHaveText(/Mis en scène|Autres réalisations/);
+    await expect(row.locator('.badge')).toHaveText(/En grand|Autres réalisations/);
     await row.getByRole('button', { name: 'Monter' }).click();
     await page.getByRole('button', { name: "Enregistrer l'ordre" }).click();
     await expect(page.locator('.order-bar')).toContainText('Glissez les lignes', { timeout: 15_000 });
@@ -94,7 +94,7 @@ test('the whole site is edited from the admin, previewed, published, and holds o
     await page.goto('/admin/#/apercu');
     await expect(page.getByRole('heading', { name: 'Aperçu', level: 1 })).toBeVisible();
     const frame = page.frameLocator('iframe');
-    await expect(frame.getByRole('heading', { level: 1 })).toContainText('Architecte logiciel — test des critères');
+    await expect(frame.locator('.hero__role')).toHaveText('Architecte logiciel — test des critères');
     await page.getByRole('button', { name: /^Téléphone/ }).click();
     await expect(page.locator('iframe')).toHaveAttribute('width', '390');
     await expect(frame.locator('#projet-projet-des-criteres')).toHaveCount(1);
@@ -114,11 +114,11 @@ test('the whole site is edited from the admin, previewed, published, and holds o
       const ctx = await browser.newContext({ viewport: { width, height }, isMobile: width < 768, hasTouch: width < 1024 });
       const pub = await ctx.newPage();
       await pub.goto('/');
-      await expect(pub.getByRole('heading', { level: 1 })).toContainText('Architecte logiciel — test des critères');
-      await expect(pub.locator('.hero__media img')).toBeVisible();
+      await expect(pub.locator('.hero__role')).toHaveText('Architecte logiciel — test des critères');
+      await expect(pub.locator('.pile__card--media img')).toBeVisible();
       await expect(pub.locator('#projet-projet-des-criteres')).toHaveCount(1);
       await expect(pub.locator('#competences')).toHaveCount(0);
-      await expect(pub.getByRole('navigation', { name: 'Sommaire' }).getByRole('link', { name: /Expérience/ })).toBeVisible();
+      await expect(pub.getByRole('navigation', { name: 'Sommaire' }).getByRole('link', { name: /Qui je suis/ })).toBeVisible();
       await expect(pub.locator('#parcours')).toContainText('Poste ajouté pour les critères');
       await expect(pub.locator('#parcours')).toContainText('Chef de la section informatique — test des critères');
       expect(await pub.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);

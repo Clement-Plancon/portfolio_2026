@@ -9,29 +9,38 @@ const { name, location } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="foot wrap">
-  <p>© {year} {name} — {location}</p>
-  <p>
-    <a class="foot__top link" href="/#top">Revenir en haut <Arrow dir="up" /></a>
-  </p>
+<footer class="foot">
+  <div class="foot__in wrap">
+    <p>© {year} {name} — {location}</p>
+    <p>
+      <a class="foot__top" href="/#top">Revenir en haut <Arrow dir="up" /></a>
+    </p>
+  </div>
 </footer>
 
 <style>
   .foot {
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .foot__in {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 0.75rem 2rem;
-    margin-top: clamp(5rem, 10vw, 9rem);
-    padding-block: 1.5rem max(2rem, env(safe-area-inset-bottom));
-    border-top: 1px solid var(--rule);
-    font-size: 0.875rem;
-    color: var(--fg-2);
+    align-items: center;
+    gap: 0.5rem 2rem;
+    padding-block: 1rem max(1rem, env(safe-area-inset-bottom));
   }
   .foot__top {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     min-height: 2.75rem;
+    text-decoration: none;
+  }
+  .foot__top:hover {
+    text-decoration: underline;
   }
 </style>

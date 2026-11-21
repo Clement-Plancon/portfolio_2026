@@ -1,293 +1,332 @@
 ---
-// Act 1 — the introduction: who you are, beside the tangle of the threads (one per project shown).
-// Every text, both buttons and the optional image or video come from the admin (Site → Accueil), with
-// the profile as fallback. The tangle is drawn as SVG by the server, then by WebGL when it can.
-import Arrow from './Arrow.astro';
+// The introduction: the name in giant wide capitals on a flat field of colour, and over it a pile of
+// posters, one per project shown in large. The posters can be moved by hand (mouse or pen), shuffled
+// (button, any device), and open their project (click or tap). Without projects, one poster made of the
+// role stands in the pile. Every word comes from the content (Site → Accueil, then the profile).
 import Media from './Media.astro';
-import ThreadSvg from './ThreadSvg.astro';
+import Poster from './Poster.astro';
+import Arrow from './Arrow.astro';
 import type { MediaResolver } from '../lib/media';
+import { displaySize, seed, tilt } from '../lib/poster';
 import type { Resolved } from '../lib/site';
+import type { ProjectEntry } from '../lib/snapshot';
 
 interface Props {
   site: Resolved;
   media: MediaResolver;
+  /** All visible projects (for the numbers on the posters). */
+  projects: ProjectEntry[];
 }
-const { site, media } = Astro.props;
-const { hero, threads } = site;
-const [first, ...rest] = hero.title.trim().split(/\s+/);
-const long = hero.title.length > 20;
-const internal = (href: string) => href.startsWith('#');
+const { site, media, projects } = Astro.props;
+const { hero } = site;
+const words = hero.title.split(/\s+/).filter(Boolean);
+// one size, so that the longest word fills the width
+const nameSize = displaySize(hero.title, 21, 90, 1, 4);
+const pile = site.featured.slice(0, 5);
+const initials = words.map((w) => w[0]).join('').slice(0, 3).toUpperCase();
+const identity = {
+  id: 'identite',
+  title: hero.role,
+  kind: hero.kicker,
+  category: 'pro',
+  cover: { color: 'vermillon' },
+  technologies: [],
+} as unknown as ProjectEntry;
+const cards = pile.length ? pile : [identity];
+const n = cards.length + (hero.media ? 1 : 0);
+// positions in the pile: fanned around its centre, each with its own tilt
+const place = (id: string, i: number) => {
+  const k = n > 1 ? i / (n - 1) - 0.5 : 0;
+  const x = Math.round((k * 70 + (seed(id) - 0.5) * 12) * 10) / 10;
+  const y = Math.round((Math.abs(k) * 14 + (seed(`${id}y`) - 0.5) * 14) * 10) / 10;
+  return `--x:${x};--y:${y};--rot:${tilt(id, 9)}deg;--z:${i + 1};--i:${i}`;
+};
 ---
 
-<section class:list={['hero', { 'hero--media': hero.media }]} aria-labelledby="hero-title" data-scene="hero" data-glow={site.ambiance.glow}>
+<section class="hero part tone-hero" aria-labelledby="hero-title" data-tone="hero" data-hero>
   <div class="hero__in wrap">
-    <div class="hero__stage" data-stage>
-      <ThreadSvg kind="hero" colors={threads} />
-      {hero.media && <Media src={hero.media.src} alt={hero.media.alt} media={media} class="hero__media" eager />}
+    {hero.kicker && <p class="hero__kicker label">{hero.kicker}</p>}
+    <h1 class="hero__name display" id="hero-title" style={`--size:${nameSize.toFixed(2)}`}>
+      {
+        words.map((w, i) => (
+          <>
+            <span class="hero__word" style={`--w:${i}`}>
+              {w}
+            </span>
+            {i < words.length - 1 && ' '}
+          </>
+        ))
+      }
+    </h1>
+
+    <div class="hero__pile" data-pile style={`--n:${n}`}>
+      {
+        hero.media && (
+          <figure class="pile__card pile__card--media" style={place('media', 0)} data-pile-card>
+            <Media src={hero.media.src} alt={hero.media.alt} media={media} eager />
+          </figure>
+        )
+      }
+      {
+        pile.length
+          ? pile.map((p, i) => (
+              <a class="pile__card" href={`#projet-${p.id}`} style={place(p.id, i + (hero.media ? 1 : 0))} data-pile-card draggable="false">
+                <Poster project={p} index={projects.indexOf(p)} media={media} eager={i === pile.length - 1} still />
+                <span class="visually-hidden">Ouvrir le projet {p.title}</span>
+              </a>
+            ))
+          : cards.map((c, i) => (
+              <div class="pile__card" style={place(c.id, i + (hero.media ? 1 : 0))} data-pile-card>
+                <Poster project={c} index={0} media={media} mark={initials} still />
+              </div>
+            ))
+      }
+      {
+        n > 1 && (
+          <button class="pile__shuffle" type="button" data-shuffle hidden>
+            Mélanger les affiches
+          </button>
+        )
+      }
     </div>
 
     <div class="hero__text">
-      {
-        hero.kicker && (
-          <p class="hero__kicker label">
-            {hero.kicker.split(' — ').map((part) => (
-              <span>{part}</span>
-            ))}
-          </p>
-        )
-      }
-      <h1 id="hero-title" class:list={['hero__name', { 'hero__name--long': long }]}>
-        <span class="hero__first display">{first}</span>
-        {rest.length > 0 && <span class="hero__last display">{rest.join(' ')}</span>}
-        <span class="hero__role">{hero.role}</span>
-      </h1>
+      <p class="hero__role">{hero.role}</p>
       {hero.lead && <p class="hero__lead">{hero.lead}</p>}
       {
         (hero.primary || hero.secondary) && (
-          <div class="hero__cta">
+          <p class="hero__actions">
             {hero.primary && (
-              <a class="btn btn--fill" href={hero.primary.href} rel={internal(hero.primary.href) ? undefined : 'noopener'}>
-                {hero.primary.label} <Arrow dir={internal(hero.primary.href) ? 'down' : 'out'} />
+              <a class="btn btn--fill" href={hero.primary.href}>
+                {hero.primary.label} <Arrow dir={hero.primary.href.startsWith('#') ? 'down' : 'out'} />
               </a>
             )}
             {hero.secondary && (
-              <a class="btn" href={hero.secondary.href} rel={internal(hero.secondary.href) ? undefined : 'noopener'}>
+              <a class="btn" href={hero.secondary.href}>
                 {hero.secondary.label}
               </a>
             )}
-          </div>
+          </p>
         )
       }
+      {hero.hint && <p class="hero__hint label">{hero.hint}</p>}
     </div>
-
-    <p class="hero__foot label" aria-hidden="true">
-      <span><span class="act__n">01</span> Découverte</span>
-      <span class="hero__hint">
-        {
-          hero.hint ?? (
-            <>
-              <span class="hero__hint-gesture">
-                <span class="hero__hint-fine">Passez sur les fils pour les démêler</span>
-                <span class="hero__hint-touch">Touchez les fils pour les démêler</span> —{' '}
-              </span>
-              faites défiler
-            </>
-          )
-        }
-      </span>
-    </p>
   </div>
 </section>
 
 <style>
+  .hero {
+    overflow: clip;
+  }
   .hero__in {
     position: relative;
+    min-height: max(100svh, 40rem);
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gap);
-    align-items: center;
-    min-height: max(38rem, 100svh);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+      'kicker kicker'
+      'name name'
+      'text pile';
     padding-top: calc(var(--header-h) + 1rem);
-    padding-bottom: 4.5rem;
-  }
-  .hero__stage {
-    position: relative;
-    grid-column: 5 / -1;
-    grid-row: 1;
-    aspect-ratio: 2 / 1.24;
-    width: 100%;
-  }
-  /* Without WebGL, the loose ends of the tangle fade before the text, as they do in the scene. */
-  .hero__stage :global(.stage-svg) {
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%);
-    mask-image: linear-gradient(90deg, transparent, #000 30%);
-  }
-  .hero__text {
-    position: relative;
-    grid-column: 1 / span 6;
-    grid-row: 1;
-    z-index: 1;
+    padding-bottom: clamp(1.5rem, 4vw, 3rem);
+    column-gap: var(--gap);
   }
   .hero__kicker {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.5rem;
+    grid-area: kicker;
+    color: var(--fg-2);
   }
-  .hero__kicker span + span::before {
-    content: '';
-    display: inline-block;
-    width: 1.5rem;
-    height: 1px;
-    margin-right: 1rem;
-    vertical-align: middle;
-    background: var(--rule-strong);
-  }
+  /* The name: as wide as the screen, one word per line. */
   .hero__name {
-    margin-top: 1.5rem;
-  }
-  .hero__first,
-  .hero__last {
-    display: block;
-    font-size: clamp(3.6rem, 1rem + 9vw, 11.5rem);
-    font-weight: 650;
-    font-stretch: 76%;
+    grid-area: name;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    font-size: calc(var(--size) * 1vw);
+    font-weight: 800;
+    line-height: 0.82;
     letter-spacing: -0.035em;
-    line-height: 0.84;
-  }
-  .hero__last {
-    padding-left: 0.42em;
-  }
-  /* long names: smaller, and allowed to break between words only */
-  .hero__name--long .hero__first,
-  .hero__name--long .hero__last {
-    font-size: clamp(3rem, 0.8rem + 6.4vw, 8rem);
-  }
-  .hero__name .display {
-    overflow-wrap: break-word;
-  }
-  /* an image or a video in the introduction: framed in the stage, the threads around it */
-  .hero__stage :global(.hero__media) {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(62%, 30rem);
-    transform: translate(-50%, -50%);
+    margin-inline: -0.04em;
+    position: relative;
     z-index: 1;
   }
-  .hero__stage :global(.hero__media.media--portrait) {
-    width: min(38%, 20rem);
+  .hero__word {
+    display: block;
+    white-space: nowrap;
   }
-  .hero__stage :global(.hero__media img),
-  .hero__stage :global(.hero__media video) {
-    border-radius: 10px;
-    box-shadow:
-      0 0 0 1px rgb(255 255 255 / 0.08),
-      0 40px 80px -30px rgb(0 0 0 / 0.85);
+  .hero__word:nth-child(2n) {
+    align-self: flex-end;
+  }
+  :global(.motion) .hero__word {
+    animation: word-in 1.1s var(--ease) both;
+    animation-delay: calc(var(--w) * 90ms + 80ms);
+  }
+  @keyframes word-in {
+    from {
+      transform: translateY(0.4em);
+      font-stretch: 62%;
+      opacity: 0;
+    }
+  }
+
+  .hero__text {
+    grid-area: text;
+    align-self: end;
+    position: relative;
+    z-index: 3;
+    max-width: 34rem;
   }
   .hero__role {
-    display: block;
-    margin-top: 1.4rem;
-    font-family: var(--display);
-    font-size: clamp(1.25rem, 0.9rem + 1vw, 1.9rem);
-    font-weight: 400;
-    font-stretch: 92%;
-    letter-spacing: -0.01em;
-    line-height: 1.15;
-    color: var(--fg);
+    font-size: clamp(1.25rem, 0.9rem + 1.3vw, 2.25rem);
+    font-weight: 800;
+    font-stretch: 100%;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
   }
   .hero__lead {
-    max-width: 30em;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.25rem);
     color: var(--fg-2);
-    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+    max-width: 30rem;
   }
-  .hero__cta {
+  .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 2rem;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
   }
-  .hero__foot {
+  .hero__hint {
+    margin-top: 1rem;
+    color: var(--fg-2);
+  }
+
+  /* The pile: over the name, on the right. */
+  .hero__pile {
+    grid-area: 2 / 2 / 4 / 3;
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    justify-self: center;
+    width: clamp(11rem, 21vw, 22rem);
+    aspect-ratio: 5 / 7;
+    margin-top: 4vh;
+  }
+  .pile__card {
     position: absolute;
-    left: max(var(--g), env(safe-area-inset-left));
-    right: var(--g);
-    bottom: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    inset: 0;
+    z-index: var(--z);
+    display: block;
+    margin: 0;
+    color: inherit;
+    text-decoration: none;
+    translate: calc(var(--x) * 1% + var(--dx, 0px)) calc(var(--y) * 1% + var(--dy, 0px));
+    rotate: var(--rot);
+    box-shadow: 0 1.2rem 2.5rem -1.2rem rgb(0 0 0 / 0.45);
+    touch-action: pan-y;
+    transition:
+      translate var(--dur-3) var(--ease),
+      rotate var(--dur-3) var(--ease),
+      scale var(--dur-2) var(--spring);
+    cursor: pointer;
+  }
+  /* the pile leans towards the pointer, and drifts apart as the introduction scrolls away */
+  :global(.motion) .hero__pile {
+    transform: translate(calc(var(--mx, 0) * 2.5rem), calc(var(--my, 0) * 1.5rem));
+    transition: transform 1.2s var(--ease);
+  }
+  :global(.motion) .pile__card {
+    transform: translate(calc(var(--out, 0) * (var(--i) - 1.5) * 40%), calc(var(--out, 0) * -25%)) rotate(calc(var(--out, 0) * var(--rot) * 2));
+  }
+  .pile__card.is-dragging {
+    transition: scale var(--dur-2) var(--spring);
+    scale: 1.04;
+    cursor: grabbing;
+  }
+  .pile__card:hover {
+    scale: 1.03;
+  }
+  .pile__card:focus-visible {
+    outline: 4px solid var(--fg);
+    outline-offset: 6px;
+  }
+  .pile__card--media {
+    background: var(--paper);
+    padding: 4%;
+  }
+  .pile__card--media :global(img),
+  .pile__card--media :global(video) {
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    object-fit: cover;
+  }
+  .pile__card--media :global(.media) {
+    height: 100%;
+  }
+  :global(.motion) .pile__card {
+    animation: card-in 1.2s var(--ease) both;
+    animation-delay: calc(var(--i) * 110ms + 350ms);
+  }
+  @keyframes card-in {
+    from {
+      translate: 0 60vh;
+      rotate: calc(var(--rot) * -3);
+    }
+  }
+  .pile__shuffle {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    z-index: 20;
+    translate: -50% 1.75rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--radius);
+    background: var(--fg);
+    color: var(--bg);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pile__shuffle:hover {
+    background: var(--accent);
+    color: var(--hero);
   }
 
-  .hero__hint-touch {
-    display: none;
-  }
-  /* the gesture exists only with the scene */
-  :global(html:not(.gl-on)) .hero__hint-gesture {
-    display: none;
-  }
-  @media (hover: none) {
-    .hero__hint-fine {
-      display: none;
-    }
-    .hero__hint-touch {
-      display: inline;
-    }
-  }
-  /* Arrival: the name rises, the rest follows. Only transforms and opacity, after the first paint. */
-  :global(.motion) .hero__first,
-  :global(.motion) .hero__last {
-    animation: hero-rise 1.2s var(--ease) both;
-  }
-  :global(.motion) .hero__last {
-    animation-delay: 0.08s;
-  }
-  :global(.motion) .hero__kicker,
-  :global(.motion) .hero__role,
-  :global(.motion) .hero__lead,
-  :global(.motion) .hero__cta,
-  :global(.motion) .hero__foot {
-    animation: hero-fade 1s var(--ease) both 0.45s;
-  }
-  @keyframes hero-rise {
-    from {
-      transform: translateY(0.35em);
-    }
-  }
-  @keyframes hero-fade {
-    from {
-      opacity: 0;
-      transform: translateY(0.75rem);
-    }
-  }
-
-  @media (max-width: 63.99rem) {
+  /* Tablets (portrait) and phones: the name at the top, the pile under it, the text last. */
+  @media (max-width: 61.99rem), (max-aspect-ratio: 4/5) {
     .hero__in {
-      align-content: center;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr auto;
+      grid-template-areas: 'kicker' 'name' 'pile' 'text';
       row-gap: 1rem;
     }
-    .hero__stage {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      margin-inline: calc(var(--g) * -1);
-      width: auto;
-      aspect-ratio: 2 / 1.15;
+    .hero__name {
+      margin-top: 0.75rem;
+      align-self: start;
+    }
+    .hero__pile {
+      grid-area: pile;
+      width: clamp(9rem, 38vw, 19rem);
+      margin: 0 0 4.75rem;
+      align-self: center;
     }
     .hero__text {
-      grid-column: 1 / -1;
-      grid-row: 2;
-    }
-    .hero__stage :global(.stage-svg) {
-      -webkit-mask-image: none;
-      mask-image: none;
+      max-width: 40rem;
     }
   }
   @media (max-width: 47.99rem) {
     .hero__in {
-      min-height: max(34rem, calc(100svh - var(--bar-h)));
-      padding-bottom: 2rem;
-      align-content: start;
-      padding-top: calc(var(--header-h) + 0.5rem);
+      min-height: calc(100svh - var(--bar-h));
+      min-height: max(calc(100svh - var(--bar-h)), 36rem);
+      padding-bottom: 1.25rem;
     }
-    .hero__stage {
-      aspect-ratio: 2 / 1.35;
+    .hero__pile {
+      width: clamp(8rem, 42vw, 13rem);
+      margin-bottom: 4.75rem;
     }
-    .hero__name {
-      margin-top: 1rem;
-    }
-    .hero__first,
-    .hero__last {
-      font-size: clamp(3.4rem, 0.5rem + 15vw, 5.6rem);
-    }
-    .hero__cta {
-      margin-top: 1.5rem;
-    }
-    .hero__cta .btn {
+    .hero__actions .btn {
       flex: 1;
-      justify-content: center;
-      min-height: 2.9rem;
-      padding-inline: 1rem;
-    }
-    .hero__foot {
-      display: none;
     }
   }
 </style>

@@ -39,7 +39,7 @@ Tout ce qui s'affiche sur la page se modifie ici, sans toucher au code :
 | Choisir combien de projets ont leur propre écran | **Site → Projets et parcours** |
 | Modifier la biographie, la photo, le CV, les principes | **Site → À propos** |
 | Modifier l'e-mail, GitHub, LinkedIn, d'autres liens, le texte du contact | **Site → Contact** |
-| Changer l'ambiance lumineuse, désactiver la 3D | **Site → Apparence** |
+| Changer la couleur de l'accueil, rendre la page immobile (« Sobre ») | **Site → Apparence** |
 | Ajouter, modifier, masquer, réordonner un projet | **Projets** |
 | Ajouter un poste, changer mon poste actuel | **Expériences** |
 | Modifier les compétences | **Compétences** |
@@ -52,12 +52,12 @@ Un champ laissé vide garde une valeur par défaut, indiquée sous le champ (« 
 **Liste**
 - L'ordre de la liste est celui du site. Glissez une ligne (souris) ou utilisez les flèches ↑ ↓, puis **Enregistrer l'ordre**.
 - Chaque ligne indique **où le projet apparaît** :
-  - « Mis en scène » : il a son propre écran, avec son fil, son motif et son média ;
-  - « Autres réalisations » : il est présenté plus brièvement, sous forme de carte, après les projets mis en scène ;
+  - « En grand » : il est présenté en grand, avec son affiche, son titre en très grand et sa description ;
+  - « Autres réalisations » : sa petite affiche est dans la bande horizontale qui suit les projets en grand ;
   - « Masqué » : il n'apparaît pas sur le site, seulement dans l'aperçu.
 - Le réglage qui décide de cette répartition est dans **Site → Projets et parcours** :
-  - soit les N premiers projets visibles (6 par défaut) ;
-  - soit seulement les projets **mis en avant** (★), N au plus.
+  - soit seulement les projets **mis en avant** (★), N au plus (réglage par défaut, 4 au plus ; sans projet mis en avant, les premiers projets visibles) ;
+  - soit les N premiers projets visibles.
 - Une page avec 1 projet, 4 ou 30 reste équilibrée : au-delà du maximum, les projets passent dans « Autres réalisations » au lieu d'allonger la page.
 - ★ : mettre en avant. 👁 : afficher / masquer. ⧉ : dupliquer. 🗑 : supprimer (confirmation demandée).
 
@@ -66,14 +66,14 @@ Un champ laissé vide garde une valeur par défaut, indiquée sous le champ (« 
 - **Image ou vidéo principale** (facultatif) :
   - une capture réelle, ou une courte vidéo MP4 / WebM (4 Mo au plus, sans le son) ;
   - portrait, paysage ou carré : le site la cadre sans la déformer ;
-  - sans média, le projet est représenté par son fil et son motif.
+  - sans média, l'affiche du projet est composée de son numéro, de son titre et de sa couleur.
 - **Lien** (facultatif), **Visible**, **Mis en avant**.
 
 Tout le reste est dans **Paramètres avancés**, replié par défaut (il s'ouvre seul si l'un de ses champs a une erreur) :
 - **Informations** : adresse du projet (`/#projet-…`), nature, catégorie, organisation, dates, état.
 - **Présentation** :
-  - le motif du fil, c'est-à-dire le signe abstrait du domaine : feuille, courbe, arborescence, spirale, onde, barres, nœud ;
-  - la disposition (texte à gauche ou à droite) et la teinte du fil ;
+  - la composition de l'affiche sans image : numéro, titre ou grille de formes (automatique par défaut) ;
+  - la disposition (affiche à gauche ou à droite) et la couleur de l'affiche ;
   - l'image d'aperçu de la vidéo.
 - **Article** : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, autres liens.
 - **Images de l'article**.

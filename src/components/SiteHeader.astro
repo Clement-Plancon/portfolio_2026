@@ -1,7 +1,7 @@
 ---
-// Navigation, always within reach: at the top on larger screens, at the bottom on phones (under the
-// thumb). Its entries are the visible sections, in the order and with the names set in the admin
-// (skills are reached from the path). A marker tells where you are (the act, and the project).
+// Navigation, always within reach: at the top on larger screens, in a pill at the bottom on phones
+// (under the thumb). Its entries are the parts of the page, in the order and with the names set in the
+// admin. It takes the colours of the part it is over (src/scripts/site.ts).
 import type { ResolvedSection } from '../lib/site';
 
 interface Props {
@@ -9,25 +9,20 @@ interface Props {
   sections: ResolvedSection[];
 }
 const { name, sections } = Astro.props;
-const entries = sections.filter((s, i) => !(s.id === 'competences' && sections[i - 1]?.id === 'parcours'));
 ---
 
 <header class="top" data-top>
   <div class="top__bar wrap">
-    <a class="top__name" href="/#top">
-      <span class="top__mark" aria-hidden="true"></span>
-      <span class="top__text">{name}</span>
-    </a>
-    {entries.length > 0 && <p class="top__where label" aria-hidden="true" data-where>01 — Découverte</p>}
+    <a class="top__name" href="/#top">{name}</a>
     {
-      entries.length > 0 && (
-        <nav class="top__nav" id="sommaire" aria-label="Sommaire" style={`--n:${entries.length}`}>
+      sections.length > 0 && (
+        <nav class="top__nav" id="sommaire" aria-label="Sommaire" style={`--n:${sections.length}`}>
           <ol role="list">
-            {entries.map((s) => (
+            {sections.map((s) => (
               <li>
                 <a href={`/#${s.id}`} data-nav={s.id}>
                   <span class="top__num" aria-hidden="true">
-                    {s.act}
+                    {s.n}
                   </span>
                   <span class="top__label">{s.label}</span>
                 </a>
@@ -42,26 +37,20 @@ const entries = sections.filter((s, i) => !(s.id === 'competences' && sections[i
 
 <style>
   .top {
+    --head-bg: transparent;
+    --head-fg: var(--hero-ink);
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
-    transition: transform var(--dur-2) var(--ease);
+    color: var(--head-fg);
+    transition:
+      background var(--dur-2) var(--ease),
+      color var(--dur-2) var(--ease);
   }
-  .top::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(rgb(15 14 13 / 0.75), rgb(15 14 13 / 0));
-    pointer-events: none;
-  }
-  :global(.is-scrolled) .top::before {
-    background: color-mix(in srgb, var(--bg) 72%, transparent);
-    backdrop-filter: blur(14px) saturate(1.2);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    box-shadow: 0 1px 0 var(--rule);
+  :global(.is-scrolled) .top {
+    background: var(--head-bg);
   }
   .top__bar {
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -69,83 +58,45 @@ const entries = sections.filter((s, i) => !(s.id === 'competences' && sections[i
     min-height: var(--header-h);
   }
   .top__name {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.7rem;
-    font-family: var(--display);
-    font-weight: 600;
-    font-stretch: 85%;
-    font-size: 1.05rem;
+    font-weight: 800;
+    font-stretch: 110%;
+    font-size: 1rem;
+    text-transform: uppercase;
     letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
-  }
-  /* The mark: three threads crossing. */
-  .top__mark {
-    position: relative;
-    width: 1.35rem;
-    height: 1.35rem;
-    flex: none;
-    background:
-      linear-gradient(28deg, transparent 46%, #f08a6c 46% 54%, transparent 54%),
-      linear-gradient(-28deg, transparent 46%, #8cc4a3 46% 54%, transparent 54%),
-      linear-gradient(90deg, transparent 46%, #e0b25a 46% 54%, transparent 54%);
-    transition: transform 0.8s var(--ease);
-  }
-  .top__name:hover .top__mark {
-    transform: rotate(90deg);
-  }
-  /* the marker takes the room left between the name and the menu, never more: it cannot overlap them */
-  .top__where {
-    flex: 1;
-    min-width: 0;
-    text-align: center;
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
+    min-width: 0;
   }
   .top__nav ol {
     display: flex;
-    gap: clamp(0.25rem, 0.2rem + 0.6vw, 0.75rem);
+    gap: 0.25rem;
   }
   .top__nav a {
     display: inline-flex;
     align-items: baseline;
-    gap: 0.45rem;
+    gap: 0.35rem;
     min-height: 2.75rem;
-    padding: 0.6rem 0.75rem;
-    border-radius: 99px;
-    font-size: 0.9rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: var(--radius);
+    font-weight: 700;
+    font-size: 0.9375rem;
     text-decoration: none;
-    color: var(--fg-2);
     transition:
-      color var(--dur-1),
-      background var(--dur-1);
+      background var(--dur-1),
+      color var(--dur-1);
   }
   .top__num {
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    color: var(--fg-3);
+    font-size: 0.625rem;
+    font-weight: 700;
   }
-  .top__nav a:hover,
-  .top__nav a[aria-current='true'] {
-    color: var(--fg);
+  .top__nav a:hover {
+    background: color-mix(in srgb, currentColor 14%, transparent);
   }
   .top__nav a[aria-current='true'] {
-    background: rgb(241 235 226 / 0.08);
-  }
-  .top__nav a[aria-current='true'] .top__num {
-    color: var(--accent);
-  }
-  /* the contact entry is the call to action */
-  .top__nav a[data-nav='contact'] {
-    color: var(--on-accent);
-    background: var(--accent);
-    font-weight: 500;
-  }
-  .top__nav a[data-nav='contact'] .top__num {
-    color: inherit;
-    opacity: 0.6;
+    background: var(--head-fg);
+    color: var(--head-solid, var(--hero));
   }
   .top__label {
     white-space: nowrap;
@@ -154,57 +105,45 @@ const entries = sections.filter((s, i) => !(s.id === 'competences' && sections[i
     max-width: 14ch;
   }
 
-  @media (max-width: 74.99rem) {
-    .top__where {
-      display: none;
-    }
-  }
-  /* Phones: the sections in a bar at the bottom of the screen. */
+  /* Phones: the parts in a pill at the bottom of the screen. */
   @media (max-width: 47.99rem) {
-    .top__where {
-      display: block;
-      text-align: right;
-      font-size: 0.66rem;
-    }
     .top__nav {
       position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      left: 0.75rem;
+      right: 0.75rem;
+      bottom: max(0.75rem, env(safe-area-inset-bottom));
       z-index: 50;
-      padding: 0.5rem 0.5rem max(0.5rem, env(safe-area-inset-bottom));
-      background: color-mix(in srgb, var(--bg) 82%, transparent);
-      backdrop-filter: blur(16px) saturate(1.2);
-      -webkit-backdrop-filter: blur(16px) saturate(1.2);
-      border-top: 1px solid var(--rule);
+      padding: 0.3rem;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 0 0.75rem 2rem -0.5rem rgb(0 0 0 / 0.45);
     }
     .top__nav ol {
       justify-content: space-between;
-      gap: 0.25rem;
+      gap: 0.2rem;
     }
     .top__nav li {
       flex: 1;
       min-width: 0;
     }
-    .top__name .top__text {
-      max-width: 9.5rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .top__nav a {
+      justify-content: center;
+      width: 100%;
+      min-width: 0;
+      min-height: 3rem;
+      padding: 0.5rem 0.4rem;
+      font-size: 0.875rem;
+    }
+    .top__nav a[aria-current='true'] {
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .top__num {
+      display: none;
     }
     .top__label {
       max-width: 100%;
-    }
-    .top__nav a {
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.1rem;
-      width: 100%;
-      min-width: 0;
-      min-height: 3.1rem;
-      padding: 0.35rem 0.25rem;
-      border-radius: 14px;
-      font-size: 0.8rem;
     }
   }
 </style>

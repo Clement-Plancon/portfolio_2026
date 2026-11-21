@@ -79,10 +79,10 @@ export const SCENARIOS: Record<string, { label: string; build: (base: SiteData) 
     }),
   },
   c: {
-    label: 'C — enrichi : 12 projets (5 mis en avant), 8 expériences, textes longs, vidéos',
+    label: 'C — enrichi : 12 projets (5 mis en avant, 4 en grand), 8 expériences, textes longs, vidéos',
     build: (b) => ({
       ...b,
-      site: siteSchema.parse({ projects: { selection: 'mis-en-avant', max: 6 }, journey: { chapters: 3 } }),
+      site: siteSchema.parse({ projects: { selection: 'mis-en-avant', max: 4 }, journey: { chapters: 3 } }),
       projects: Array.from({ length: 12 }, (_, i) => {
         const media = [
           { image: img('media/paysage.webp') },

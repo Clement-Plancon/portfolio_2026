@@ -6,45 +6,39 @@ const profile = { name: 'Clément Plançon', location: 'Paris' };
 ---
 
 <Base title="Page introuvable — Clément Plançon" description="Cette page n'existe pas : tout le site tient sur une seule page." noindex nav={false} profile={profile}>
-  <section class="nf wrap">
-    <p class="label">Erreur 404</p>
-    <h1 class="display">Cette page <em>n'existe pas.</em></h1>
-    <p class="nf__lead">Tout le site tient sur une seule page. Par où reprendre&#8239;?</p>
-    <ul role="list" class="nf__ways">
-      <li><a class="link" href="/#projets">Les projets</a></li>
-      <li><a class="link" href="/#a-propos">À propos</a></li>
-      <li><a class="link" href="/#parcours">Le parcours</a></li>
-      <li><a class="link" href="/#contact">Le contact</a></li>
-    </ul>
+  <section class="nf part tone-hero" data-tone="hero" data-part>
+    <div class="wrap">
+      <p class="label">Erreur 404</p>
+      <h1 class="display">Page introuvable</h1>
+      <p class="nf__lead">Tout le site tient sur une seule page. Par où reprendre&#8239;?</p>
+      <ul role="list" class="nf__ways">
+        <li><a class="btn" href="/#projets">Les projets</a></li>
+        <li><a class="btn" href="/#a-propos">À propos</a></li>
+        <li><a class="btn btn--fill" href="/#contact">Le contact</a></li>
+      </ul>
+    </div>
   </section>
 </Base>
 
 <style>
   .nf {
-    min-height: 80svh;
+    min-height: 100svh;
     padding-top: calc(var(--header-h) + 4rem);
     padding-bottom: 4rem;
   }
   .nf h1 {
     margin-top: 1.5rem;
-    font-size: clamp(3.4rem, 1rem + 9vw, 10rem);
-    max-width: 10ch;
+    font-size: clamp(3.4rem, 1rem + 11vw, 13rem);
+    max-width: 9ch;
   }
   .nf__lead {
     margin-top: 2rem;
-    font-family: var(--serif);
     font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
-    color: var(--fg-2);
   }
   .nf__ways {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 2rem;
+    gap: 0.6rem;
     margin-top: 2rem;
-  }
-  .nf__ways a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.75rem;
   }
 </style>

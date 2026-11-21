@@ -1,23 +1,22 @@
-// Each project has a tint (cover.color in the content): a quiet accent used for its number and the
-// lines of its plate (the drawing of its stack). One value per theme, both at WCAG AA contrast
-// for text (≥ 4.5:1) on the page background of that theme. The names are kept from earlier designs
-// so that published content stays valid.
+// Each project has a colour (cover.color in the content): the field of its poster, with the ink that
+// reads on it (WCAG AA for text, ≥ 4.5:1, tested) and a second colour for its large figures and
+// shapes (≥ 3:1, the rule for large text, tested).
+// The names are kept from earlier designs so that published content stays valid.
 import type { COVER_COLORS } from './schemas';
 
 export type Tint = (typeof COVER_COLORS)[number];
 
-/** Page backgrounds the tints are checked against (src/styles/global.css). */
-export const BACKGROUNDS = { dark: '#12110e', light: '#f2eee5' } as const;
+export const PAPER = '#f5f4f0';
+export const INK = '#111111';
 
-/** `thread`: the dye of the project's thread in the scene (deeper than the text tints, it takes the light). */
-export const TINTS: Record<Tint, { label: string; dark: string; light: string; thread: string }> = {
-  vermillon: { label: 'Vermillon', dark: '#f08a6c', light: '#a8391d', thread: '#e0532f' },
-  sapin: { label: 'Vert sapin', dark: '#8cc4a3', light: '#2c6248', thread: '#3f9a6c' },
-  ardoise: { label: 'Ardoise', dark: '#a9b9cf', light: '#44546b', thread: '#6383b3' },
-  ocre: { label: 'Ocre', dark: '#e0b25a', light: '#7f5510', thread: '#dea235' },
-  prune: { label: 'Prune', dark: '#d79bbb', light: '#7c3559', thread: '#b0507f' },
-  sable: { label: 'Sable', dark: '#d8c29a', light: '#71603f', thread: '#d4bd8f' },
+export const TINTS: Record<Tint, { label: string; bg: string; ink: string; alt: string }> = {
+  vermillon: { label: 'Vermillon', bg: '#ff4b2b', ink: INK, alt: PAPER },
+  sapin: { label: 'Vert', bg: '#0b7450', ink: PAPER, alt: '#f4b32c' },
+  ardoise: { label: 'Bleu ciel', bg: '#9db2ff', ink: INK, alt: '#1f3bd6' },
+  ocre: { label: 'Ocre', bg: '#f4b32c', ink: INK, alt: '#1f3bd6' },
+  prune: { label: 'Prune', bg: '#8e1f55', ink: PAPER, alt: '#f4b32c' },
+  sable: { label: 'Sable', bg: '#eadbc1', ink: INK, alt: '#1f3bd6' },
 };
 
-/** Inline custom properties for an element that carries a project's tint. */
-export const tintStyle = (t: Tint) => `--tint-d:${TINTS[t].dark};--tint-l:${TINTS[t].light}`;
+/** Inline custom properties for an element in a project's colours. */
+export const tintStyle = (t: Tint) => `--p-bg:${TINTS[t].bg};--p-ink:${TINTS[t].ink};--p-alt:${TINTS[t].alt}`;
