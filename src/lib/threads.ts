@@ -251,7 +251,21 @@ export function gather(s: number, count: number, n: number, time = 0): Vec3[] {
   });
 }
 
-/** SVG path data of a 3D polyline seen from the front (z gives a little vertical lift), in a viewBox of -1.1..1.1. */
+/**
+ * SVG path data of a 3D polyline seen from the front (z gives a little vertical lift): absolute start,
+ * then relative steps with three decimals and no leading zeros (the server sends many of them).
+ */
 export function svgPath(pts: Vec3[], scale = 1): string {
-  return pts.map((p, i) => `${i ? 'L' : 'M'}${(p[0] * scale).toFixed(3)} ${(-(p[1] + p[2] * 0.12) * scale).toFixed(3)}`).join('');
+  const f = (v: number) => {
+    const r = Math.round(v * 1000) / 1000;
+    return (r === 0 ? '0' : String(r)).replace(/^(-?)0\./, '$1.');
+  };
+  const xy = pts.map((p) => [Math.round(p[0] * scale * 1000), Math.round(-(p[1] + p[2] * 0.12) * scale * 1000)]);
+  let d = `M${f(xy[0][0] / 1000)} ${f(xy[0][1] / 1000)}l`;
+  for (let i = 1; i < xy.length; i++) {
+    const dx = f((xy[i][0] - xy[i - 1][0]) / 1000);
+    const dy = f((xy[i][1] - xy[i - 1][1]) / 1000);
+    d += `${i > 1 ? ' ' : ''}${dx}${dy.startsWith('-') ? '' : ' '}${dy}`;
+  }
+  return d;
 }

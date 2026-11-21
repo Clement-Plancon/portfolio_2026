@@ -2,7 +2,7 @@
 
 Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
-- **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante : introduction, Projets, À propos, Parcours, Compétences, Contact. Direction artistique « Sommaire » : une page éditoriale (Newsreader et Geist, papier sombre et chaud, thème clair dessiné), les projets en sommaire composé en grand ; chaque projet s'ouvre en article par-dessus la page, avec sa *planche* (ses technologies dessinées en couches) et ses captures réelles. 2,6 Ko de JavaScript compressé, lisible sans.
+- **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante. Direction artistique « Fils » : six fils, un par projet, noués dans l'introduction (on les peigne au pointeur ou au doigt), dénoués par le défilement, chacun dessinant le motif de son projet, puis rassemblés sous l'adresse de contact. Le contenu est en HTML ; les fils sont dessinés en SVG par le serveur, puis par une scène WebGL2 sans bibliothèque (7,6 Ko compressé), chargée après la page, qui se retire si l'appareil ne suit pas.
 - **Administration** (`/admin/`) : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu privé, **publication immédiate** (sans build ni commit), sauvegarde et restauration.
 - **Contenus** : stockés dans **Netlify Blobs** (aucune base de données, aucun jeton GitHub). `src/content/` contient le contenu d'origine, copié dans Blobs à la première visite et plus lu ensuite.
 - **Hébergement** : Netlify (fonction SSR, CDN, Netlify Blobs). GitHub ne sert qu'au code source et aux déploiements techniques.
@@ -28,9 +28,9 @@ npm run dev
 
 ## Documentation
 
-- [docs/art-direction.md](docs/art-direction.md) — audit, recherche visuelle, les trois prototypes (`docs/prototypes/v4/`), leur critique, le choix « Sommaire » et son système
-- [docs/interaction-system.md](docs/interaction-system.md) — mouvements, états (sans JS, mouvement réduit), clavier, mobile et tablette
-- [docs/captures/](docs/captures/) — captures desktop, tablette et mobile, sombre et clair, et la version précédente (`avant-expliquer-*.jpg`)
+- [docs/art-direction.md](docs/art-direction.md) — échecs précédents, recherche (observations vérifiées), le concept « Fils », matériau et lumière, la tranche verticale et sa critique (`docs/prototypes/v5/`)
+- [docs/interaction-system.md](docs/interaction-system.md) — architecture HTML → SVG → WebGL, mouvements, navigation, responsive, dégradation
+- [docs/captures/](docs/captures/) — captures desktop, tablette et mobile, avec et sans WebGL, et les versions précédentes (`avant-*.jpg`)
 - [docs/ux-review.md](docs/ux-review.md) — revue visuelle, corrections, ce qui est testé et ce qui ne l'est pas
 - [docs/performance-review.md](docs/performance-review.md) — mesures Lighthouse et choix de performance
 - [docs/research/](docs/research/) — planches des références observées ; [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) : recherches des directions précédentes
@@ -58,4 +58,4 @@ Détails : [docs/netlify-deployment.md](docs/netlify-deployment.md). Aucun secre
 
 ## Licences
 
-Polices Newsreader, Geist, Instrument Sans et Mona Sans : SIL Open Font License 1.1 (`public/fonts/`).
+Polices Bricolage Grotesque, Geist, Newsreader, Instrument Sans et Mona Sans : SIL Open Font License 1.1 (`public/fonts/`).

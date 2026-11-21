@@ -130,7 +130,7 @@ const glow = (hex: string) => {
             </div>
 
             <div class="slide__stage" data-stage>
-              <ThreadSvg kind="project" colors={colors} strand={i} motif={m} />
+              <ThreadSvg kind="project" colors={colors} strand={i} motif={m} id={`motif-${p.id}`} />
               {cover && p.cover.image && (
                 <figure class="slide__shot">
                   <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
@@ -173,7 +173,9 @@ const glow = (hex: string) => {
                   <p class="feat__stand">{p.summary}</p>
                 </div>
                 <figure class="feat__motif" aria-hidden="true">
-                  <ThreadSvg kind="project" colors={colors} strand={i} motif={m} class="feat__svg" />
+                  <svg class="feat__svg" viewBox="-1 -1 2 2" fill="none" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                    <use href={`#motif-${p.id}`} />
+                  </svg>
                 </figure>
               </header>
 
@@ -443,16 +445,16 @@ const glow = (hex: string) => {
   /* A real capture: a large framed screen in front of the thread. */
   .slide__shot {
     position: absolute;
-    left: 8%;
-    right: -4%;
-    top: 22%;
+    left: -6%;
+    right: 30%;
+    top: 4%;
     transform: perspective(1400px) rotateY(-8deg) rotateX(3deg);
     transform-origin: 30% 50%;
     transition: transform 1.2s var(--ease);
   }
   .slide--right .slide__shot {
-    left: -4%;
-    right: 8%;
+    left: -6%;
+    right: 30%;
     transform: perspective(1400px) rotateY(8deg) rotateX(3deg);
   }
   .slide__shot img {
@@ -512,8 +514,7 @@ const glow = (hex: string) => {
     white-space: nowrap;
   }
   .rail:hover .rail__name,
-  .rail a:focus-visible .rail__name,
-  .rail a[aria-current='true'] .rail__name {
+  .rail a:focus-visible .rail__name {
     opacity: 1;
     transform: none;
   }
@@ -646,8 +647,12 @@ const glow = (hex: string) => {
     grid-column: 8 / -1;
     aspect-ratio: 1;
   }
-  .feat__motif :global(.stage-svg) {
-    opacity: 1 !important;
+  .feat__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
   }
   .feat__shot {
     grid-column: 1 / -1;
@@ -790,14 +795,13 @@ const glow = (hex: string) => {
       transform: translateY(2rem);
     }
   }
-  :global(.motion) .feat[open] .feat__motif path {
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-    animation: feat-draw 2.2s var(--ease) forwards 0.35s;
+  :global(.motion) .feat[open] .feat__svg {
+    animation: feat-motif 1.6s var(--ease) both 0.25s;
   }
-  @keyframes feat-draw {
-    to {
-      stroke-dashoffset: 0;
+  @keyframes feat-motif {
+    from {
+      opacity: 0;
+      transform: scale(0.9) rotate(-4deg);
     }
   }
 
@@ -883,8 +887,8 @@ const glow = (hex: string) => {
     .slide__shot,
     .slide--right .slide__shot {
       left: 0;
-      right: 0;
-      top: 18%;
+      right: 22%;
+      top: 0;
       transform: none;
     }
     .slide__title {

@@ -27,7 +27,7 @@
   --bg-3: #221f1b;
   --fg: #f1ebe2;
   --fg-2: #a89f92;
-  --fg-3: #7d756b;
+  --fg-3: #8f877b;
   --rule: rgb(241 235 226 / 0.12);
   --rule-strong: rgb(241 235 226 / 0.28);
   --accent: #ff8a5c; /* ember: calls to action, the one warm signal outside the project tints */
@@ -193,6 +193,20 @@ a {
   to {
     stroke-dashoffset: 0;
   }
+}
+/* Without the scene, the light is painted by CSS: warm behind the introduction, the project's tint
+   behind each project. */
+html:not(.gl-on) .hero {
+  background: radial-gradient(55% 60% at 72% 48%, rgb(90 52 28 / 0.55), transparent 70%);
+}
+html:not(.gl-on) .slide {
+  background: radial-gradient(50% 55% at var(--glow-x, 70%) 50%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 72%);
+}
+html:not(.gl-on) .slide--right {
+  --glow-x: 30%;
+}
+html:not(.gl-on) .contact {
+  background: radial-gradient(45% 50% at 80% 60%, rgb(110 52 22 / 0.4), transparent 70%);
 }
 main,
 .foot {

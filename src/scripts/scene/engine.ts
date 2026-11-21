@@ -190,6 +190,15 @@ function perspective(aspect: number): Float32Array {
 export function startScene(canvas: HTMLCanvasElement, options: { onFirstFrame?: () => void; onGiveUp?: () => void; adaptive?: boolean } = {}) {
   const gl = canvas.getContext('webgl2', { antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: false });
   if (!gl) return null;
+  // Without a GPU (WebGL computed by the processor) the scene would steal the page's time: the SVG stays.
+  if (options.adaptive !== false) {
+    const info = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer)) {
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      return null;
+    }
+  }
 
   const coarse = matchMedia('(pointer: coarse)').matches;
   const small = innerWidth < 768;
@@ -617,6 +626,15 @@ export function startScene(canvas: HTMLCanvasElement, options: { onFirstFrame?: 
     if (times.length > 60) times.shift();
     stats.frameMs = frameMs;
     warmup++;
+    if (warmup === 14 && options.adaptive !== false) {
+      const early = [...times].sort((x, y) => x - y)[7];
+      if (early > 45) {
+        stats.tier = 'off';
+        stop();
+        options.onGiveUp?.();
+        return;
+      }
+    }
     if (warmup > 90 && times.length === 60 && warmup % 30 === 0) {
       if (options.adaptive === false) {
         stats.fps = Math.round(1000 / [...times].sort((x, y) => x - y)[30]);

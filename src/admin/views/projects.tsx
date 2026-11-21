@@ -11,7 +11,7 @@ export function ProjectList() {
     <CollectionList
       type="project"
       title="Projets"
-      lead="L'ordre ci-dessous est celui du sommaire des projets sur le site. L'étoile met un projet en avant : son titre est composé plus grand."
+      lead="L'ordre ci-dessous est celui des projets sur le site (et de leurs fils). L'étoile marque un projet comme mis en avant ; la présentation actuelle donne la même place à chaque projet."
       base="projets"
       newLabel="Nouveau projet"
       reorderable
@@ -119,7 +119,7 @@ export function ProjectEditor({ id }: { id: string }) {
         />
         <div class="toggles">
           <Toggle label="Visible sur le site" hint="Masqué : visible seulement dans l'aperçu." checked={f.visible} onChange={(v) => set('visible', v)} />
-          <Toggle label="Mis en avant" hint="Le titre du projet est composé plus grand dans le sommaire." checked={f.featured} onChange={(v) => set('featured', v)} />
+          <Toggle label="Mis en avant" hint="Conservé dans le contenu ; sans effet sur la présentation actuelle." checked={f.featured} onChange={(v) => set('featured', v)} />
         </div>
       </section>
 
