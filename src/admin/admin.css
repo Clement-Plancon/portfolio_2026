@@ -1420,3 +1420,112 @@ fieldset {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
+
+/* ---------- Site: tabs and sections ---------- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line, #ddd);
+}
+.tabs a {
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px 8px 0 0;
+  text-decoration: none;
+  color: inherit;
+  border-bottom: 2px solid transparent;
+}
+.tabs a[aria-current='page'] {
+  border-bottom-color: currentColor;
+  font-weight: 600;
+}
+.section-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.section-item {
+  padding: 1rem;
+  border: 1px solid var(--line, #ddd);
+  border-radius: 10px;
+}
+.section-item__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.advanced {
+  margin-top: 1rem;
+  border: 1px solid var(--line, #ddd);
+  border-radius: 12px;
+  padding: 0 1rem;
+}
+.advanced > summary {
+  cursor: pointer;
+  padding: 1rem 0;
+  font-weight: 600;
+}
+.advanced[open] > summary {
+  border-bottom: 1px solid var(--line, #ddd);
+  margin-bottom: 1rem;
+}
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #eee;
+  color: #222;
+  white-space: nowrap;
+}
+.badge--scene {
+  background: #dff3e6;
+  color: #11532c;
+}
+.badge--other {
+  background: #e9eef8;
+  color: #1f3a66;
+}
+.badge--hidden {
+  background: #f6e3e0;
+  color: #6b1f12;
+}
+
+/* ---------- Multi-screen preview ---------- */
+.device-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0;
+}
+.device-picker [aria-pressed='true'] {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+.device-picker__size {
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+.device-stage {
+  display: grid;
+  justify-items: center;
+}
+.device-frame {
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.15), 0 20px 50px -20px rgb(0 0 0 / 0.4);
+  background: #0f0e0d;
+}
+.device-frame iframe {
+  border: 0;
+  display: block;
+}
+.device-picker {
+  border: 0;
+  padding: 0;
+}

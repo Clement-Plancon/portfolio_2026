@@ -37,7 +37,7 @@ export function Field(props: { label: string; hint?: string; error?: string; chi
 
 type Common = { label: string; hint?: string; error?: string; required?: boolean };
 
-export function TextInput(p: Common & { value?: string; onInput: (v: string) => void; type?: string; maxLength?: number; placeholder?: string; prefix?: string }) {
+export function TextInput(p: Common & { value?: string; onInput: (v: string) => void; type?: string; maxLength?: number; placeholder?: string; prefix?: string; recommended?: number }) {
   return (
     <Field label={p.label} hint={p.hint} error={p.error} required={p.required}>
       {(id, d) => (
@@ -54,19 +54,28 @@ export function TextInput(p: Common & { value?: string; onInput: (v: string) => 
             required={p.required}
             onInput={(e) => p.onInput(e.currentTarget.value)}
           />
-          {p.maxLength && <Counter value={p.value} max={p.maxLength} />}
+          {p.maxLength && <Counter value={p.value} max={p.maxLength} recommended={p.recommended} />}
         </div>
       )}
     </Field>
   );
 }
 
-function Counter({ value, max }: { value?: string; max: number }) {
+/** Characters typed; with a recommended length, a gentle note past it (the limit itself is only the hard maximum). */
+function Counter({ value, max, recommended }: { value?: string; max: number; recommended?: number }) {
   const n = value?.length ?? 0;
+  if (recommended) {
+    const over = n > recommended;
+    return (
+      <span class={`counter${over ? ' counter--warn' : ''}`}>
+        {over ? `${n} caractères — conseillé : ${recommended} au plus pour une mise en page équilibrée` : `${n} / ${recommended} conseillés`}
+      </span>
+    );
+  }
   return <span class={`counter${n > max * 0.9 ? ' counter--warn' : ''}`}>{`${n} / ${max}`}</span>;
 }
 
-export function TextArea(p: Common & { value?: string; onInput: (v: string) => void; rows?: number; maxLength?: number; mono?: boolean }) {
+export function TextArea(p: Common & { value?: string; onInput: (v: string) => void; rows?: number; maxLength?: number; mono?: boolean; recommended?: number }) {
   return (
     <Field label={p.label} hint={p.hint} error={p.error} required={p.required}>
       {(id, d) => (
@@ -81,7 +90,7 @@ export function TextArea(p: Common & { value?: string; onInput: (v: string) => v
             aria-invalid={p.error ? 'true' : undefined}
             onInput={(e) => p.onInput(e.currentTarget.value)}
           />
-          {p.maxLength && <Counter value={p.value} max={p.maxLength} />}
+          {p.maxLength && <Counter value={p.value} max={p.maxLength} recommended={p.recommended} />}
         </div>
       )}
     </Field>
@@ -340,6 +349,9 @@ export function Toasts() {
 export function Thumb({ src, alt = '', size = 'md' }: { src: string; alt?: string; size?: 'sm' | 'md' | 'lg' }) {
   const { data } = useStore();
   const sha = data?.mediaFiles.find((m) => m.ref === src)?.sha;
+  if (/\.(mp4|webm)$/.test(src)) {
+    return <video class={`thumb thumb--${size}`} src={mediaUrl(src, sha)} muted playsInline preload="metadata" aria-label={alt || 'Vidéo'} />;
+  }
   return <img class={`thumb thumb--${size}`} src={mediaUrl(src, sha)} alt={alt} loading="lazy" />;
 }
 
@@ -351,8 +363,13 @@ export function ImageField(p: {
   withCaption?: boolean;
   errors?: Errors;
   prefix?: string;
+  /** "image" (default), "video", or "media" (either). */
+  kind?: 'image' | 'video' | 'media';
+  hint?: string;
 }) {
   const [picking, setPicking] = useState(false);
+  const kind = p.kind ?? 'image';
+  const noun = kind === 'video' ? 'une vidéo' : kind === 'media' ? 'une image ou une vidéo' : 'une image';
   const { data } = useStore();
   const altFromLibrary = (src: string) =>
     ((data?.singletons.media?.data.items as { file: string; alt: string }[] | undefined) ?? []).find((m) => m.file === src)?.alt ?? '';
@@ -360,6 +377,7 @@ export function ImageField(p: {
   return (
     <fieldset class="image-field">
       <legend>{p.label}</legend>
+      {p.hint && <p class="hint">{p.hint}</p>}
       {p.value ? (
         <div class="image-field__row">
           <Thumb src={p.value.src} size="lg" alt="" />
@@ -367,7 +385,7 @@ export function ImageField(p: {
             <code>{p.value.src.replace('media/', '')}</code>
             <TextInput
               label="Texte alternatif"
-              hint="Décrivez l'image pour les personnes qui ne la voient pas."
+              hint={/\.(mp4|webm)$/.test(p.value.src) ? 'Décrivez ce que montre la vidéo, pour les personnes qui ne la voient pas.' : "Décrivez l'image pour les personnes qui ne la voient pas."}
               value={p.value.alt}
               maxLength={300}
               error={altError}
@@ -388,11 +406,12 @@ export function ImageField(p: {
         </div>
       ) : (
         <button type="button" class="image-field__empty" onClick={() => setPicking(true)}>
-          Choisir une image dans la médiathèque
+          Choisir {noun} dans la médiathèque
         </button>
       )}
       {picking && (
         <MediaPicker
+          kind={kind}
           onClose={() => setPicking(false)}
           onPick={(src) => {
             p.onChange({ src, alt: p.value?.alt || altFromLibrary(src), caption: p.value?.caption });

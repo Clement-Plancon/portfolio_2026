@@ -50,7 +50,7 @@ test('4, 7, 10, 12. edit a project in the admin, preview the draft, publish, and
   await login(page);
   await page.getByRole('navigation', { name: 'Administration' }).getByRole('link', { name: 'Projets' }).click();
   await page.getByRole('link', { name: /SafePing/ }).click();
-  await page.getByLabel('Résumé').fill(NEW_SUMMARY);
+  await page.getByLabel('Description courte').fill(NEW_SUMMARY);
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(page.getByText('Enregistré. Les modifications sont dans le brouillon.')).toBeVisible();
 

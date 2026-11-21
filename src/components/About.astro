@@ -1,40 +1,71 @@
 ---
-// Act 4 — the approach: who Clément is and how he works, in his own words from the content (intro,
-// biography, the sentence he keeps, his four principles). Nothing added.
+// Act 4 — the approach: who you are and how you work, in your own words from the content (introduction,
+// biography, the sentence set apart, the principles), with the current position and the CV. Every part
+// is optional: an empty one leaves no gap.
 import { paragraphs } from '../lib/content';
+import type { ExperienceEntry } from '../lib/content';
 import type { MediaResolver } from '../lib/media';
-import type { Profile } from '../lib/schemas';
+import type { Profile, Site } from '../lib/schemas';
+import type { ResolvedSection } from '../lib/site';
+import Arrow from './Arrow.astro';
+import Media from './Media.astro';
 import ThreadSvg from './ThreadSvg.astro';
 
 interface Props {
+  section: ResolvedSection;
   profile: Profile;
+  experiences: ExperienceEntry[];
+  site: Site;
+  cvUrl?: string;
+  threads: string[];
   media: MediaResolver;
-  colors: string[];
+  glow: string;
 }
-const { profile, media, colors } = Astro.props;
+const { section, profile, experiences, site, cvUrl, threads: colors, media, glow } = Astro.props;
 const bio = paragraphs(profile.bio);
 // The last paragraph of the biography is set apart.
 const motto = bio.length > 1 ? bio.at(-1) : undefined;
 const body = motto ? bio.slice(0, -1) : bio;
-const photo = profile.photo ? media(profile.photo.src) : undefined;
+const current = experiences.find((e) => !e.end);
+const principles = site.about.showPrinciples ? profile.principles : [];
 ---
 
-<section class="about" id="a-propos" aria-labelledby="about-title" data-scene="warp" data-glow="#3a2614">
+<section class="about" id="a-propos" aria-labelledby="about-title" data-scene="warp" data-glow={glow} data-act={`${section.act} — ${section.actName}`}>
   <div class="wrap">
-    <p class="act label"><span><span class="act__n">04</span> Approche</span></p>
-    <h2 id="about-title" class="about__title display">À propos</h2>
+    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
+    <h2 id="about-title" class="about__title display">{section.title}</h2>
 
-    <div class="about__grid">
-      <p class="about__intro lede" data-reveal>{profile.intro}</p>
+    <div class:list={['about__grid', { 'about__grid--photo': profile.photo }]}>
+      {profile.intro && <p class="about__intro lede" data-reveal>{profile.intro}</p>}
       {
-        photo && profile.photo && (
-          <figure class="about__photo" data-reveal>
-            <img src={photo.src} alt={profile.photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
-          </figure>
+        profile.photo && (
+          <div class="about__photo" data-reveal>
+            <Media src={profile.photo.src} alt={profile.photo.alt} media={media} />
+          </div>
         )
       }
       <div class="about__bio" data-reveal>
+        {section.intro && <p class="about__lead">{section.intro}</p>}
         {body.map((p) => <p>{p}</p>)}
+        {
+          (current || cvUrl) && (
+            <div class="about__facts">
+              {current && (
+                <p>
+                  <span class="label">Aujourd'hui</span>
+                  <span>
+                    {current.role} — {current.organisation}
+                  </span>
+                </p>
+              )}
+              {cvUrl && (
+                <a class="btn" href={cvUrl}>
+                  Télécharger le CV <Arrow dir="down" />
+                </a>
+              )}
+            </div>
+          )
+        }
       </div>
     </div>
 
@@ -52,11 +83,11 @@ const photo = profile.photo ? media(profile.photo.src) : undefined;
     }
 
     {
-      profile.principles.length > 0 && (
+      principles.length > 0 && (
         <div class="about__principles">
-          <h3 class="label">Ma façon de travailler</h3>
-          <ol role="list" class="princ">
-            {profile.principles.map((p, i) => (
+          <h3 class="label">{site.about.principlesTitle ?? 'Ma façon de travailler'}</h3>
+          <ol role="list" class="princ" style={`--n:${principles.length}`}>
+            {principles.map((p, i) => (
               <li data-reveal style={`--d:${i};--c:${colors[i % colors.length]}`}>
                 <span class="princ__n display" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
@@ -98,10 +129,26 @@ const photo = profile.photo ? media(profile.photo.src) : undefined;
     grid-column: 10 / span 3;
     grid-row: 1 / span 2;
   }
-  .about__photo img {
-    width: 100%;
-    border-radius: 10px;
-    filter: grayscale(0.4) contrast(1.05);
+  .about__grid--photo .about__intro {
+    grid-column: 1 / span 8;
+  }
+  .about__lead {
+    color: var(--fg);
+  }
+  .about__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.5rem;
+    break-inside: avoid;
+    color: var(--fg);
+  }
+  .about__facts p {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin: 0;
   }
   .about__bio {
     grid-column: 4 / span 6;
@@ -150,7 +197,8 @@ const photo = profile.photo ? media(profile.photo.src) : undefined;
   }
   .princ {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* one to eight principles: as many columns as fit, never fewer than 15rem wide */
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
     gap: var(--gap);
     margin-top: 1.25rem;
   }
@@ -206,16 +254,12 @@ const photo = profile.photo ? media(profile.photo.src) : undefined;
       grid-row: auto;
     }
     .princ {
-      grid-template-columns: 1fr 1fr;
       row-gap: 2.5rem;
     }
   }
   @media (max-width: 47.99rem) {
     .about__photo {
       grid-column: 1 / span 9;
-    }
-    .princ {
-      grid-template-columns: 1fr;
     }
   }
 </style>

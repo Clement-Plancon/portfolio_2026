@@ -25,6 +25,16 @@
     Cache-Control = "no-store"
     X-Robots-Tag = "noindex, nofollow"
 
+# Draft preview: shown by the admin itself in a frame (multi-screen preview), so it may be framed by
+# the site's own pages, and by nothing else.
+[[headers]]
+  for = "/admin/apercu/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
+    X-Frame-Options = "SAMEORIGIN"
+    Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow"
+
 # Admin API: never indexed (responses also carry Cache-Control: no-store).
 [[headers]]
   for = "/api/*"

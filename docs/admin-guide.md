@@ -26,43 +26,101 @@ Le contenu est stocké chez Netlify (Netlify Blobs), pas dans GitHub : aucune mo
 
 Nombre de projets, expériences et médias ; date de la dernière publication ; liste des modifications non publiées ; derniers contenus modifiés.
 
+## Ce que l'on peut changer, et où
+
+Tout ce qui s'affiche sur la page se modifie ici, sans toucher au code :
+
+| Je veux… | Où |
+|---|---|
+| Changer mon nom, mon titre, ma présentation | **Site → Accueil** |
+| Changer les boutons de l'accueil (texte, destination) | **Site → Accueil → Boutons** |
+| Mettre une image ou une vidéo à l'accueil | **Site → Accueil → Image ou vidéo d'accueil** |
+| Masquer une section, la renommer dans le menu, changer l'ordre | **Site → Sections et navigation** |
+| Choisir combien de projets ont leur propre écran | **Site → Projets et parcours** |
+| Modifier la biographie, la photo, le CV, les principes | **Site → À propos** |
+| Modifier l'e-mail, GitHub, LinkedIn, d'autres liens, le texte du contact | **Site → Contact** |
+| Changer l'ambiance lumineuse, désactiver la 3D | **Site → Apparence** |
+| Ajouter, modifier, masquer, réordonner un projet | **Projets** |
+| Ajouter un poste, changer mon poste actuel | **Expériences** |
+| Modifier les compétences | **Compétences** |
+| Voir le résultat sur téléphone, tablette et ordinateur avant de publier | **Aperçu** |
+
+Un champ laissé vide garde une valeur par défaut, indiquée sous le champ (« Vide : … »). Sous les textes, un compteur indique la longueur **conseillée** pour une mise en page équilibrée : on peut la dépasser, rien ne casse, mais la composition est pensée pour elle.
+
 ## Projets
 
 **Liste**
 - L'ordre de la liste est celui du site. Glissez une ligne (souris) ou utilisez les flèches ↑ ↓, puis **Enregistrer l'ordre**.
-- ★ : **mettre en avant** (conservé dans le contenu ; la présentation actuelle donne la même place à chaque projet).
-- 👁 : afficher / masquer sur le site. Un projet masqué reste visible dans l'aperçu.
-- ⧉ : dupliquer (la copie est créée masquée).
-- 🗑 : supprimer (confirmation demandée).
+- Chaque ligne indique **où le projet apparaît** :
+  - « Mis en scène » : il a son propre écran, avec son fil, son motif et son média ;
+  - « Autres réalisations » : il est présenté plus brièvement, sous forme de carte, après les projets mis en scène ;
+  - « Masqué » : il n'apparaît pas sur le site, seulement dans l'aperçu.
+- Le réglage qui décide de cette répartition est dans **Site → Projets et parcours** :
+  - soit les N premiers projets visibles (6 par défaut) ;
+  - soit seulement les projets **mis en avant** (★), N au plus.
+- Une page avec 1 projet, 4 ou 30 reste équilibrée : au-delà du maximum, les projets passent dans « Autres réalisations » au lieu d'allonger la page.
+- ★ : mettre en avant. 👁 : afficher / masquer. ⧉ : dupliquer. 🗑 : supprimer (confirmation demandée).
 
-**Fiche projet**
-- *L'essentiel* : titre, adresse du projet (générée depuis le titre ; le projet s'ouvre à l'adresse `clementplancon.fr/#projet-…`), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
-- *Présentation* : sur le site, chaque projet est un fil teint de sa *teinte* (vermillon, vert sapin, ardoise, ocre, prune, sable), qui dessine un *motif* : un signe abstrait de son domaine (feuille, courbe et seuil, arborescence, spirale, onde, barres, nœud). « Automatique » garde le motif par défaut. Si vous avez une **capture réelle**, ajoutez-la : elle est montrée en grand devant le motif et en tête de l'article. Sans capture, rien n'est inventé.
-- *Article* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
-- *Images de l'article* : galerie avec texte alternatif et légende.
+**Fiche projet** : six informations suffisent.
+- **Titre** et **description courte** (deux phrases).
+- **Image ou vidéo principale** (facultatif) :
+  - une capture réelle, ou une courte vidéo MP4 / WebM (4 Mo au plus, sans le son) ;
+  - portrait, paysage ou carré : le site la cadre sans la déformer ;
+  - sans média, le projet est représenté par son fil et son motif.
+- **Lien** (facultatif), **Visible**, **Mis en avant**.
 
-Changer l'adresse d'un projet casse les liens existants vers l'ancienne adresse. Les anciennes pages `/projets/…` de la version précédente du site redirigent vers le projet ouvert dans la page unique.
+Tout le reste est dans **Paramètres avancés**, replié par défaut (il s'ouvre seul si l'un de ses champs a une erreur) :
+- **Informations** : adresse du projet (`/#projet-…`), nature, catégorie, organisation, dates, état.
+- **Présentation** :
+  - le motif du fil, c'est-à-dire le signe abstrait du domaine : feuille, courbe, arborescence, spirale, onde, barres, nœud ;
+  - la disposition (texte à gauche ou à droite) et la teinte du fil ;
+  - l'image d'aperçu de la vidéo.
+- **Article** : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, autres liens.
+- **Images de l'article**.
+
+Un nouveau projet est **visible** dès sa création. Comme toute modification, il n'est en ligne qu'après **Publier**.
 
 ## Expériences
 
-Intitulé, organisation (et organisation de rattachement, ex. ministère), dates, lieu, résumé, responsabilités, compétences. **Sans date de fin, le poste est affiché « aujourd'hui »** et repris en haut de la page (« Aujourd'hui — … »).
+**Fiche** :
+- l'essentiel : intitulé, organisation, début, **Poste actuel** (sans date de fin), description courte, visible, mis en avant ;
+- dans les **Paramètres avancés** : organisation de rattachement, lieu, site, responsabilités, compétences.
 
-## Profil et compétences
+**Dans le parcours** :
+- les postes actuels puis ceux mis en avant (★) sont racontés en entier, 3 par défaut (réglable dans Site → Projets et parcours) ;
+- les autres sont dans une liste « Tout le parcours » qui s'ouvre.
 
-- **Profil** : nom, titre professionnel, phrase d'accroche (conservée dans le contenu et l'image de partage), accroche, introduction et biographie de la section À propos (le dernier paragraphe de la biographie est mis en exergue), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail (affichés en quatre colonnes numérotées dans À propos ; le dernier paragraphe de la biographie est mis en exergue au milieu des fils).
-- **Compétences** : groupes (nom, courte description, éléments), réordonnables.
+Avec 1 poste ou 20, la section garde la même longueur. Le premier poste actuel est repris en haut de la page et dans À propos.
+
+## Aperçu
+
+**Aperçu**, dans le menu, montre le brouillon tel qu'il sera publié : les mêmes composants et les mêmes animations que le site, contenus masqués compris. Des boutons changent la taille d'écran : téléphone, petit téléphone, tablette portrait et paysage, ordinateur, grand écran.
+
+**Limites de la simulation** :
+- La largeur et la hauteur sont exactes, donc les mises en page et les tailles de texte sont celles de l'appareil.
+- En revanche, le cadre est piloté par la souris : le toucher, la densité de pixels, la barre d'adresse des téléphones et les performances de l'appareil ne sont pas reproduits.
+- Pour une vérification finale, ouvrez l'aperçu (« Ouvrir dans un onglet ») sur un vrai téléphone connecté à l'administration.
+
+## Compétences
+
+Des groupes (nom, phrase, éléments). Les panneaux se répartissent seuls, quel que soit leur nombre ; sans aucun groupe, la section disparaît.
+
+## Profil
+
+**Profil** (adresse `#/profil`) réunit encore tous les champs du profil sur une seule page. Les mêmes champs sont répartis dans **Site** (Accueil, À propos, Contact), plus simple à utiliser.
 
 ## Médias
 
 - **Ajouter un fichier** : glissez une image ou cliquez « choisissez un fichier ».
-  - Formats : WebP, PNG, JPEG, AVIF, PDF ; 4 Mo maximum. Le format est vérifié d'après le contenu du fichier, pas son nom. Les SVG et les pages HTML sont refusés.
-  - Les images sont réduites à 2400 px et converties en WebP **dans votre navigateur** avant l'envoi.
+  - Formats : WebP, PNG, JPEG, AVIF, vidéos MP4 et WebM, PDF ; 4 Mo maximum. Le format est vérifié d'après le contenu du fichier, pas son nom. Les SVG et les pages HTML sont refusés.
+  - Les images sont réduites à 2400 px et converties en WebP **dans votre navigateur** avant l'envoi. Leurs dimensions (et celles des vidéos) sont enregistrées : le site s'en sert pour cadrer chaque média selon son orientation, sans le déformer.
+  - Vidéos : courtes et légères (quelques secondes, 720p suffit). Elles sont lues en boucle, sans le son, avec un bouton pause, et ne se lancent pas seules pour les visiteurs qui limitent les animations.
 - **Confidentialité** : un fichier ajouté ou remplacé reste **privé** (visible dans l'administration et l'aperçu seulement) jusqu'à la publication.
 - **Cliquez un média** pour :
   - renseigner son **texte alternatif par défaut**, proposé quand vous le choisissez dans un contenu ;
   - le **remplacer** : même nom, donc tous les contenus qui l'utilisent sont mis à jour à la publication. Le même format est exigé ;
   - le **supprimer** : refusé tant qu'un contenu l'utilise, et la liste des contenus concernés s'affiche. Le fichier reste en ligne jusqu'à la publication suivante.
-- **Depuis un formulaire** : « Choisir une image dans la médiathèque » permet aussi d'envoyer directement une nouvelle image.
+- **Depuis un formulaire** : « Choisir une image (ou une vidéo) dans la médiathèque » permet aussi d'envoyer directement un nouveau fichier.
 
 ## Référencement
 

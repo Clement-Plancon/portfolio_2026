@@ -3,7 +3,7 @@ import { ApiError, api } from '../api';
 import { useStore } from '../store';
 import { confirmDialog, Icon, Spinner, TextInput, Thumb } from '../ui';
 
-const ACCEPT = 'image/webp,image/png,image/jpeg,image/avif,application/pdf';
+const ACCEPT = 'image/webp,image/png,image/jpeg,image/avif,video/mp4,video/webm,application/pdf';
 const MAX_BYTES = 4 * 1024 * 1024;
 const MAX_SIDE = 2400;
 
@@ -12,8 +12,26 @@ type MediaItem = { file: string; alt: string; width?: number; height?: number; s
 /** Resizes large images and converts them to WebP in the browser before upload. */
 async function prepare(file: File): Promise<{ blob: Blob; name: string; width?: number; height?: number }> {
   if (file.type === 'application/pdf') return { blob: file, name: file.name };
+  // Videos are sent as they are; their dimensions are read so the site can frame them (portrait or landscape).
+  if (file.type === 'video/mp4' || file.type === 'video/webm') {
+    const url = URL.createObjectURL(file);
+    try {
+      const v = document.createElement('video');
+      v.preload = 'metadata';
+      v.src = url;
+      await new Promise((ok, ko) => {
+        v.onloadedmetadata = ok;
+        v.onerror = ko;
+      });
+      return { blob: file, name: file.name, width: v.videoWidth || undefined, height: v.videoHeight || undefined };
+    } catch {
+      return { blob: file, name: file.name };
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
   if (!['image/png', 'image/jpeg', 'image/webp', 'image/avif'].includes(file.type)) {
-    throw new Error('Format non accepté. Formats acceptés : WebP, PNG, JPEG, AVIF et PDF.');
+    throw new Error('Format non accepté. Formats acceptés : WebP, PNG, JPEG, AVIF, MP4, WebM et PDF.');
   }
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
@@ -276,8 +294,9 @@ function MediaDetails({ item, onClose }: { item: MediaItem; onClose: () => void 
 }
 
 /** Modal used by image fields to pick (or upload) an image. */
-export function MediaPicker({ onPick, onClose }: { onPick: (ref: string) => void; onClose: () => void }) {
-  const items = useItems().filter((i) => !i.file.endsWith('.pdf'));
+export function MediaPicker({ onPick, onClose, kind = 'image' }: { onPick: (ref: string) => void; onClose: () => void; kind?: 'image' | 'video' | 'media' }) {
+  const isVideo = (f: string) => /\.(mp4|webm)$/.test(f);
+  const items = useItems().filter((i) => !i.file.endsWith('.pdf') && (kind === 'media' || (kind === 'video') === isVideo(i.file)));
   const { upload, busy } = useUpload();
   const ref = useRef<HTMLDialogElement>(null);
   return (
@@ -291,7 +310,7 @@ export function MediaPicker({ onPick, onClose }: { onPick: (ref: string) => void
       aria-labelledby="picker-title"
     >
       <div class="dialog__head">
-        <h2 id="picker-title">Choisir une image</h2>
+        <h2 id="picker-title">{kind === 'video' ? 'Choisir une vidéo' : kind === 'media' ? 'Choisir une image ou une vidéo' : 'Choisir une image'}</h2>
         <button type="button" class="icon-btn" aria-label="Fermer" onClick={() => ref.current?.close()}>
           <Icon name="x" />
         </button>
@@ -301,7 +320,7 @@ export function MediaPicker({ onPick, onClose }: { onPick: (ref: string) => void
         busy={busy}
         onFiles={async (files) => {
           const r = files[0] && (await upload(files[0]));
-          if (r) onPick(r);
+          if (r && (kind === 'media' || (kind === 'video') === isVideo(r))) onPick(r);
         }}
       />
       <ul class="media-grid media-grid--picker">

@@ -3,7 +3,7 @@
 Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
 - **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante. Direction artistique « Fils » : six fils, un par projet, noués dans l'introduction (on les peigne au pointeur ou au doigt), dénoués par le défilement, chacun dessinant le motif de son projet, puis rassemblés sous l'adresse de contact. Le contenu est en HTML ; les fils sont dessinés en SVG par le serveur, puis par une scène WebGL2 sans bibliothèque (7,6 Ko compressé), chargée après la page, qui se retire si l'appareil ne suit pas.
-- **Administration** (`/admin/`) : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu privé, **publication immédiate** (sans build ni commit), sauvegarde et restauration.
+- **Administration** (`/admin/`) : la source unique du contenu. Une section **Site** (accueil, sections et navigation, projets et parcours, à propos, contact, apparence), des fiches projet et expérience réduites à l'essentiel (le reste en « Paramètres avancés »), un **aperçu multi-écrans** du brouillon. Le design s'adapte seul à 0, 1 ou 30 projets, à 1 ou 20 postes, aux textes longs et aux médias de toutes proportions ([docs/systeme-adaptatif.md](docs/systeme-adaptatif.md)). Aussi : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu privé, **publication immédiate** (sans build ni commit), sauvegarde et restauration.
 - **Contenus** : stockés dans **Netlify Blobs** (aucune base de données, aucun jeton GitHub). `src/content/` contient le contenu d'origine, copié dans Blobs à la première visite et plus lu ensuite.
 - **Hébergement** : Netlify (fonction SSR, CDN, Netlify Blobs). GitHub ne sert qu'au code source et aux déploiements techniques.
 - **Authentification** : un seul administrateur, mot de passe vérifié côté serveur (hachage Argon2id), session signée dans un cookie `HttpOnly`, révocable. Aucun service d'identité externe.
@@ -24,11 +24,12 @@ npm run dev
 | `npm run lint` | lint (Biome) |
 | `npm test` | tests unitaires et API (Vitest) |
 | `npm run admin:setup` | génère sur votre ordinateur le hachage du mot de passe et le secret de session à copier dans Netlify (Windows, macOS, Linux) |
-| `npm run test:e2e` | tests navigateur (Playwright) : 10 résolutions, accessibilité axe (clair et sombre), SEO, clavier, historique, sans JS, mouvement réduit, parcours admin. Si le Chromium de Playwright manque : `CHROMIUM_PATH=/chemin/vers/chromium npm run test:e2e` |
+| `npm run test:e2e` | tests navigateur (Playwright) : 10 résolutions, accessibilité axe, SEO, clavier, historique, sans JS, mouvement réduit, parcours admin, **scénarios de contenu** (A minimal → E vide, 4 écrans) et **critères de réussite** (tout modifier depuis l'admin, publier, vérifier). Si le Chromium de Playwright manque : `CHROMIUM_PATH=/chemin/vers/chromium npm run test:e2e` |
 
 ## Documentation
 
 - [docs/art-direction.md](docs/art-direction.md) — échecs précédents, recherche (observations vérifiées), le concept « Fils », matériau et lumière, la tranche verticale et sa critique (`docs/prototypes/v5/`)
+- [docs/systeme-adaptatif.md](docs/systeme-adaptatif.md) — un site 100 % administrable dont la composition tient quel que soit le contenu : règles, scénarios de test, critères de réussite
 - [docs/interaction-system.md](docs/interaction-system.md) — architecture HTML → SVG → WebGL, mouvements, navigation, responsive, dégradation
 - [docs/captures/](docs/captures/) — captures desktop, tablette et mobile, avec et sans WebGL, et les versions précédentes (`avant-*.jpg`)
 - [docs/ux-review.md](docs/ux-review.md) — revue visuelle, corrections, ce qui est testé et ce qui ne l'est pas

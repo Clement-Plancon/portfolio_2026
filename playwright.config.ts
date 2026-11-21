@@ -21,12 +21,20 @@ export default defineConfig({
     reuseExistingServer: false,
     timeout: 300_000,
     // NODE_OPTIONS is reset: some environments set flags that Node refuses in the CLI's function workers.
-    env: { ADMIN_PASSWORD_HASH: E2E_HASH, ADMIN_SESSION_SECRET: E2E_SECRET, NODE_OPTIONS: '--max-old-space-size=4096' },
+    env: { ADMIN_PASSWORD_HASH: E2E_HASH, ADMIN_SESSION_SECRET: E2E_SECRET, CONTENT_SCENARIOS: '1', NODE_OPTIONS: '--max-old-space-size=4096' },
   },
   // CHROMIUM_PATH: use an already installed Chromium when the one matching this Playwright version is absent.
   projects: [
     {
       name: 'chromium',
+      testIgnore: /criteria\.spec/,
+      use: { ...devices['Desktop Chrome'], launchOptions: process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {} },
+    },
+    // The success criteria change the published content: they run after every other test, then restore it.
+    {
+      name: 'criteria',
+      testMatch: /criteria\.spec/,
+      dependencies: ['chromium'],
       use: { ...devices['Desktop Chrome'], launchOptions: process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {} },
     },
   ],

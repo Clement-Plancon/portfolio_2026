@@ -1,36 +1,33 @@
 ---
 // Navigation, always within reach: at the top on larger screens, at the bottom on phones (under the
-// thumb). A marker tells where you are (the act, and the project in the gallery).
+// thumb). Its entries are the visible sections, in the order and with the names set in the admin
+// (skills are reached from the path). A marker tells where you are (the act, and the project).
+import type { ResolvedSection } from '../lib/site';
+
 interface Props {
   name: string;
-  nav: boolean;
+  sections: ResolvedSection[];
 }
-const { name, nav } = Astro.props;
-
-const SECTIONS = [
-  { id: 'projets', label: 'Projets' },
-  { id: 'parcours', label: 'Parcours' },
-  { id: 'a-propos', label: 'À propos' },
-  { id: 'contact', label: 'Contact' },
-];
+const { name, sections } = Astro.props;
+const entries = sections.filter((s, i) => !(s.id === 'competences' && sections[i - 1]?.id === 'parcours'));
 ---
 
 <header class="top" data-top>
   <div class="top__bar wrap">
     <a class="top__name" href="/#top">
       <span class="top__mark" aria-hidden="true"></span>
-      {name}
+      <span class="top__text">{name}</span>
     </a>
-    {nav && <p class="top__where label" aria-hidden="true" data-where>01 — Découverte</p>}
+    {entries.length > 0 && <p class="top__where label" aria-hidden="true" data-where>01 — Découverte</p>}
     {
-      nav && (
-        <nav class="top__nav" id="sommaire" aria-label="Sommaire">
+      entries.length > 0 && (
+        <nav class="top__nav" id="sommaire" aria-label="Sommaire" style={`--n:${entries.length}`}>
           <ol role="list">
-            {SECTIONS.map((s, i) => (
+            {entries.map((s) => (
               <li>
                 <a href={`/#${s.id}`} data-nav={s.id}>
                   <span class="top__num" aria-hidden="true">
-                    {String(i + 2).padStart(2, '0')}
+                    {s.act}
                   </span>
                   <span class="top__label">{s.label}</span>
                 </a>
@@ -98,11 +95,14 @@ const SECTIONS = [
   .top__name:hover .top__mark {
     transform: rotate(90deg);
   }
+  /* the marker takes the room left between the name and the menu, never more: it cannot overlap them */
   .top__where {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    overflow: hidden;
     white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .top__nav ol {
     display: flex;
@@ -137,14 +137,21 @@ const SECTIONS = [
   .top__nav a[aria-current='true'] .top__num {
     color: var(--accent);
   }
-  .top__nav li:last-child a {
+  /* the contact entry is the call to action */
+  .top__nav a[data-nav='contact'] {
     color: var(--on-accent);
     background: var(--accent);
     font-weight: 500;
   }
-  .top__nav li:last-child .top__num {
+  .top__nav a[data-nav='contact'] .top__num {
     color: inherit;
     opacity: 0.6;
+  }
+  .top__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 14ch;
   }
 
   @media (max-width: 74.99rem) {
@@ -156,8 +163,7 @@ const SECTIONS = [
   @media (max-width: 47.99rem) {
     .top__where {
       display: block;
-      position: static;
-      transform: none;
+      text-align: right;
       font-size: 0.66rem;
     }
     .top__nav {
@@ -178,6 +184,15 @@ const SECTIONS = [
     }
     .top__nav li {
       flex: 1;
+      min-width: 0;
+    }
+    .top__name .top__text {
+      max-width: 9.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .top__label {
+      max-width: 100%;
     }
     .top__nav a {
       flex-direction: column;
@@ -185,6 +200,7 @@ const SECTIONS = [
       justify-content: center;
       gap: 0.1rem;
       width: 100%;
+      min-width: 0;
       min-height: 3.1rem;
       padding: 0.35rem 0.25rem;
       border-radius: 14px;

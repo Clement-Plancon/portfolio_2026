@@ -24,9 +24,18 @@ export const urlSchema = z
   }, 'Lien invalide (http, https ou mailto)');
 
 export const MEDIA_IMAGE_RE = /^media\/[a-z0-9]+(?:-[a-z0-9]+)*\.(webp|png|jpe?g|avif)$/;
+export const MEDIA_VIDEO_RE = /^media\/[a-z0-9]+(?:-[a-z0-9]+)*\.(mp4|webm)$/;
 export const MEDIA_FILE_RE = /^files\/[a-z0-9]+(?:-[a-z0-9]+)*\.pdf$/;
 
 export const imageRefSchema = z.string().regex(MEDIA_IMAGE_RE, 'Image de la médiathèque attendue');
+export const videoRefSchema = z.string().regex(MEDIA_VIDEO_RE, 'Vidéo de la médiathèque attendue');
+
+/** A link target in the site's settings: a section of the page (#projets) or an address. */
+export const hrefSchema = z
+  .string()
+  .trim()
+  .max(500)
+  .refine((v) => /^#[a-z0-9-]+$/.test(v) || urlSchema.safeParse(v).success, 'Section (#projets) ou lien http, https, mailto');
 
 /** "2023" or "2023-04". */
 export const yearMonthSchema = z
@@ -84,6 +93,10 @@ export const projectSchema = z.object({
       image: imageSchema.optional(),
       /** The motif the project's thread draws (src/lib/threads.ts). Optional: published content without it keeps a default. */
       motif: z.enum(MOTIFS).optional(),
+      /** A short video instead of (or with) the image: muted, looped. The image, if any, is its poster. */
+      video: z.object({ src: videoRefSchema, alt: text(300) }).optional(),
+      /** Where the text sits in the project's scene; "auto" alternates. */
+      variant: z.enum(['auto', 'texte-gauche', 'texte-droite']).optional(),
     })
     .default({ color: 'sapin' }),
   gallery: z.array(imageSchema).max(24).default([]),
@@ -106,6 +119,8 @@ export const experienceSchema = z
     summary: optText(1500),
     responsibilities: list(20, 300),
     skills: list(30, 60),
+    /** Shown as a chapter of the path (with the current positions), the others in the full list. */
+    featured: z.boolean().default(false),
     visible: z.boolean().default(true),
     order: z.number().int().min(0).max(9999).default(0),
     updatedAt: z.iso.datetime().optional(),
@@ -139,6 +154,76 @@ export const skillsSchema = z.object({
   updatedAt: z.iso.datetime().optional(),
 });
 
+/* ---------- The site: everything on the page that is not a project, a position or a skill ----------
+   Every field is optional: content published before this block existed renders exactly as before
+   (defaults in src/lib/site.ts). */
+export const SECTION_IDS = ['projets', 'parcours', 'competences', 'a-propos', 'contact'] as const;
+export type SectionId = (typeof SECTION_IDS)[number];
+export const AMBIANCES = ['braise', 'nuit', 'foret'] as const;
+
+const buttonSchema = z.object({ label: text(40).min(1, 'Libellé requis'), href: hrefSchema });
+
+export const siteSchema = z.object({
+  hero: z
+    .object({
+      /** Small line above the name; default: the city and the current organisation. */
+      kicker: optText(140),
+      /** Name and role shown; default: those of the profile. */
+      title: optText(80),
+      role: optText(120),
+      /** Presentation sentence; default: the profile's headline. */
+      lead: optText(320),
+      primary: buttonSchema.optional(),
+      secondary: buttonSchema.optional(),
+      /** An image or a short video shown in the introduction, with the threads. */
+      media: z.object({ src: z.union([imageRefSchema, videoRefSchema]), alt: text(300) }).optional(),
+      hint: optText(120),
+    })
+    .default({}),
+  /** The sections of the page, in order (the introduction always comes first). */
+  sections: z
+    .array(
+      z.object({
+        id: z.enum(SECTION_IDS),
+        visible: z.boolean().default(true),
+        /** Name in the navigation. */
+        label: optText(30),
+        /** Title of the section on the page. */
+        title: optText(90),
+        /** A sentence under the title. */
+        intro: optText(400),
+      }),
+    )
+    .max(SECTION_IDS.length)
+    .optional(),
+  projects: z
+    .object({
+      /** "tous": every visible project gets a scene; "mis-en-avant": only the projects marked so. */
+      selection: z.enum(['tous', 'mis-en-avant']).default('tous'),
+      /** Most scenes on the page; the other visible projects are listed under « Autres réalisations ». */
+      max: z.number().int().min(1).max(24).default(6),
+      othersTitle: optText(80),
+    })
+    .default({ selection: 'tous', max: 6 }),
+  journey: z
+    .object({
+      /** Positions told in full (current and highlighted first); the others in a list that opens. */
+      chapters: z.number().int().min(1).max(8).default(3),
+    })
+    .default({ chapters: 3 }),
+  about: z.object({ showPrinciples: z.boolean().default(true), principlesTitle: optText(80) }).default({ showPrinciples: true }),
+  contact: z.object({ lead: optText(300), copyLabel: optText(40) }).default({}),
+  appearance: z
+    .object({
+      ambiance: z.enum(AMBIANCES).default('braise'),
+      /** "auto": the WebGL scene where it runs well; "svg": always the drawn threads. */
+      scene: z.enum(['auto', 'svg']).default('auto'),
+    })
+    .default({ ambiance: 'braise', scene: 'auto' }),
+  updatedAt: z.iso.datetime().optional(),
+});
+export type Site = z.infer<typeof siteSchema>;
+
 /** The public site is a single page. */
 export const SEO_PAGES = ['home'] as const;
 
@@ -159,7 +244,7 @@ export const mediaManifestSchema = z.object({
   items: z
     .array(
       z.object({
-        file: z.union([imageRefSchema, z.string().regex(MEDIA_FILE_RE)]),
+        file: z.union([imageRefSchema, videoRefSchema, z.string().regex(MEDIA_FILE_RE)]),
         alt: text(300).default(''),
         width: z.number().int().positive().optional(),
         height: z.number().int().positive().optional(),

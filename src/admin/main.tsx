@@ -9,7 +9,9 @@ import { ExperienceEditor, ExperienceList } from './views/experiences';
 import { Login } from './views/login';
 import { MediaView } from './views/media';
 import { ProjectEditor, ProjectList } from './views/projects';
+import { PreviewView } from './views/preview';
 import { SettingsView } from './views/settings';
+import { SiteView } from './views/site';
 import { ProfileView, SeoView, SkillsView } from './views/singleton';
 
 type Phase =
@@ -18,13 +20,15 @@ type Phase =
   | { kind: 'denied'; message: string }
   | { kind: 'ready'; email: string };
 
+// Organised by what you edit on the page, not by how it is stored.
 const NAV = [
   { href: '', label: 'Tableau de bord' },
+  { href: 'site', label: 'Site' },
   { href: 'projets', label: 'Projets' },
   { href: 'experiences', label: 'Expériences' },
-  { href: 'profil', label: 'Profil' },
   { href: 'competences', label: 'Compétences' },
   { href: 'medias', label: 'Médias' },
+  { href: 'apercu', label: 'Aperçu' },
   { href: 'seo', label: 'Référencement' },
   { href: 'parametres', label: 'Paramètres' },
 ];
@@ -127,8 +131,15 @@ function Shell({ onLogout }: { onLogout: () => void }) {
       case 'experiences':
         view = id ? <ExperienceEditor key={id} id={id} /> : <ExperienceList />;
         break;
+      case 'site':
+        view = <SiteView key="site" tab={id} />;
+        break;
       case 'profil':
+        // the profile is edited in Site (Accueil, À propos, Contact); this page keeps every field in one place
         view = <ProfileView />;
+        break;
+      case 'apercu':
+        view = <PreviewView />;
         break;
       case 'competences':
         view = <SkillsView />;

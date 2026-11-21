@@ -80,8 +80,10 @@ test('full flow: login, edit, save, reload, publish, logout', async ({ page }) =
   // 2. Edit a project
   await page.getByRole('navigation', { name: 'Administration' }).getByRole('link', { name: 'Projets' }).click();
   await page.getByRole('link', { name: /Bercy Vert/ }).click();
-  const summary = page.getByLabel('Résumé');
+  const summary = page.getByLabel('Description courte');
   await summary.fill('Résumé modifié depuis le back-office.');
+  // the details of the article are in the advanced settings
+  await page.getByText('Paramètres avancés', { exact: true }).click();
   await page.getByRole('button', { name: 'Ajouter un résultat' }).click();
   await page.getByLabel('Résultats vérifiés 1').fill('Résultat de test');
 
@@ -93,7 +95,7 @@ test('full flow: login, edit, save, reload, publish, logout', async ({ page }) =
 
   // 4-5. Reload: the change persisted and is pending publication
   await page.reload();
-  await expect(page.getByLabel('Résumé')).toHaveValue('Résumé modifié depuis le back-office.');
+  await expect(page.getByLabel('Description courte')).toHaveValue('Résumé modifié depuis le back-office.');
   await expect(page.locator('.publish-bar')).toContainText('non publié');
 
   // Validation is enforced before saving
@@ -126,10 +128,11 @@ test('create, reorder, hide and delete', async ({ page }) => {
   await page.goto('/admin/#/projets/nouveau');
   await page.getByRole('textbox', { name: 'Titre', exact: true }).fill('Projet de test');
   await expect(page.getByLabel('Adresse du projet')).toHaveValue('projet-de-test');
-  await page.getByLabel('Résumé').fill('Un projet créé pendant les tests.');
+  await page.getByLabel('Description courte').fill('Un projet créé pendant les tests.');
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(page).toHaveURL(/#\/projets\/projet-de-test$/);
-  expect(await gh.read('draft', 'src/content/projects/projet-de-test.json')).toContain('"visible": false');
+  // a new project is visible by default (the list says where it appears); publishing still decides
+  expect(await gh.read('draft', 'src/content/projects/projet-de-test.json')).toContain('"visible": true');
 
   // Through the menu (a hash-only goto can race with the editor's own redirect after saving).
   await page.getByRole('navigation', { name: 'Administration' }).getByRole('link', { name: 'Projets' }).click();
@@ -149,13 +152,13 @@ test('expired session: re-login without losing the open form', async ({ page, co
   const gh = await setup(page);
   await login(page);
   await page.goto('/admin/#/experiences/outils-publics');
-  await page.getByLabel('Résumé').fill('Texte saisi avant expiration.');
+  await page.getByLabel('Description courte').fill('Texte saisi avant expiration.');
   await context.clearCookies(); // the session cookie expires
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(page.getByText('Votre session a expiré')).toBeVisible();
   await page.getByLabel('Mot de passe').fill(PASSWORD);
   await page.getByRole('button', { name: 'Se connecter' }).click();
-  await expect(page.getByLabel('Résumé')).toHaveValue('Texte saisi avant expiration.');
+  await expect(page.getByLabel('Description courte')).toHaveValue('Texte saisi avant expiration.');
   await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(page.getByText('Enregistré.', { exact: false })).toBeVisible();
   expect(await gh.read('draft', 'src/content/experiences/outils-publics.json')).toContain('Texte saisi avant expiration.');
@@ -186,7 +189,7 @@ test('screenshots', async ({ page }) => {
   await page.goto('/admin/#/projets');
   await page.screenshot({ path: `${process.env.SNAP_DIR}/admin-projects.png` });
   await page.goto('/admin/#/projets/datametre');
-  await page.getByLabel('Résumé').fill('Modifié');
+  await page.getByLabel('Description courte').fill('Modifié');
   await page.screenshot({ path: `${process.env.SNAP_DIR}/admin-editor.png` });
   await page.getByRole('button', { name: 'Annuler les changements' }).click();
   await page.setViewportSize({ width: 390, height: 844 });

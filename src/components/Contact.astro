@@ -1,28 +1,32 @@
 ---
-// Act 5 — contact. The six threads come in from the left, gather, and go on as one under the address.
-import type { Profile } from '../lib/schemas';
+// The last act — contact. The threads come in from the right, gather, and go on as one under the
+// address. Title, sentence and button from the admin (Site → Contact); address and links from the profile.
+import type { Profile, Site } from '../lib/schemas';
+import type { ResolvedSection } from '../lib/site';
 import Arrow from './Arrow.astro';
 import ThreadSvg from './ThreadSvg.astro';
 
 interface Props {
+  section: ResolvedSection;
   profile: Profile;
+  site: Site;
   cvUrl?: string;
-  colors: string[];
+  threads: string[];
+  glow: string;
 }
-const { profile, colors } = Astro.props;
-// A CV from the media library is resolved by the page (published file, or private file in the preview).
-const cv = profile.cv ? (profile.cv.startsWith('files/') ? Astro.props.cvUrl : profile.cv) : undefined;
+const { section, profile, site, cvUrl: cv, threads: colors, glow } = Astro.props;
+const lead = site.contact.lead ?? `Un projet, une équipe à renforcer, une question technique : écrivez-moi, je réponds par e-mail. ${profile.location}.`;
 const [user, domain] = profile.email.split('@');
 const github = profile.socials.find((s) => /github/i.test(s.label));
 const linkedin = profile.socials.find((s) => /linkedin/i.test(s.label));
 const others = profile.socials.filter((s) => s !== github && s !== linkedin);
 ---
 
-<section class="contact" id="contact" aria-labelledby="contact-title" data-scene="gather" data-glow="#5a2e17">
+<section class="contact" id="contact" aria-labelledby="contact-title" data-scene="gather" data-glow={glow} data-act={`${section.act} — ${section.actName}`}>
   <div class="contact__in wrap">
-    <p class="act label"><span><span class="act__n">05</span> Contact</span></p>
-    <h2 id="contact-title" class="contact__title display">Tirons le fil ensemble.</h2>
-    <p class="contact__lead">Un projet, une équipe à renforcer, une question technique : écrivez-moi, je réponds par e-mail. {profile.location}.</p>
+    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
+    <h2 id="contact-title" class:list={['contact__title display', { 'contact__title--long': section.title.length > 30 }]}>{section.title}</h2>
+    {lead && <p class="contact__lead">{lead}</p>}
 
     <div class="contact__mailbox">
       <a class="contact__mail display" href={`mailto:${profile.email}`}>
@@ -35,7 +39,7 @@ const others = profile.socials.filter((s) => s !== github && s !== linkedin);
 
     <div class="contact__row">
       <div class="contact__copy">
-        <button class="btn btn--fill" type="button" data-copy={profile.email} hidden>Copier l'adresse</button>
+        <button class="btn btn--fill" type="button" data-copy={profile.email} hidden>{site.contact.copyLabel ?? "Copier l'adresse"}</button>
         <span class="contact__status label" role="status" data-copy-status></span>
       </div>
       <ul role="list" class="contact__links">
@@ -100,6 +104,13 @@ const others = profile.socials.filter((s) => s !== github && s !== linkedin);
     font-stretch: 76%;
     font-weight: 650;
     line-height: 0.86;
+  }
+  .contact__title {
+    overflow-wrap: break-word;
+    hyphens: manual;
+  }
+  .contact__title--long {
+    font-size: clamp(2.4rem, 1rem + 4.2vw, 6rem);
   }
   .contact__lead {
     max-width: 34em;

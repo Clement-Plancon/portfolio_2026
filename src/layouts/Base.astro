@@ -4,6 +4,8 @@ import Footer from '../components/Footer.astro';
 import Seo from '../components/Seo.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import type { Profile } from '../lib/schemas';
+import type { ResolvedSection } from '../lib/site';
+import { AMBIANCE } from '../lib/site';
 
 interface Props {
   title: string;
@@ -18,13 +20,21 @@ interface Props {
   nav?: boolean;
   /** Only name and location are used here (header, footer, author). */
   profile: Pick<Profile, 'name' | 'location'>;
+  /** The sections of the page, for the navigation (none on the 404 page). */
+  sections?: ResolvedSection[];
+  /** Colours of the threads of the scene. */
+  threads?: string[];
+  ambiance?: keyof typeof AMBIANCE;
+  /** "svg": never start the WebGL scene. */
+  scene?: 'auto' | 'svg';
 }
 
-const { nav = true, profile, ...seo } = Astro.props;
+const { nav = true, profile, sections = [], threads = [], ambiance = 'braise', scene = 'auto', ...seo } = Astro.props;
+const accent = AMBIANCE[ambiance].accent;
 ---
 
 <!doctype html>
-<html lang="fr" id="top">
+<html lang="fr" id="top" data-ambiance={ambiance} style={`--accent:${accent}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -40,8 +50,8 @@ const { nav = true, profile, ...seo } = Astro.props;
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
-    {nav && <canvas class="scene" aria-hidden="true" data-scene-canvas></canvas>}
-    <SiteHeader name={profile.name} nav={nav} />
+    {nav && scene !== 'svg' && <canvas class="scene" aria-hidden="true" data-scene-canvas data-threads={JSON.stringify(threads)}></canvas>}
+    <SiteHeader name={profile.name} sections={nav ? sections : []} />
     <main id="contenu" tabindex="-1">
       <slot />
     </main>
