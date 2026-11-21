@@ -1,103 +1,169 @@
 ---
-// Act 4 — the approach: who you are and how you work, in your own words from the content (introduction,
-// biography, the sentence set apart, the principles), with the current position and the CV. Every part
-// is optional: an empty one leaves no gap.
-import { paragraphs } from '../lib/content';
-import type { ExperienceEntry } from '../lib/content';
-import type { MediaResolver } from '../lib/media';
-import type { Profile, Site } from '../lib/schemas';
-import type { ResolvedSection } from '../lib/site';
+// « À propos », on ink: who you are in a few lines (the introduction from the profile), the current
+// position, two or three domains of expertise (the first skill groups), the path in a compact list and
+// the CV. The biography and the principles are there too, folded. The path and the skills are told here;
+// when « à propos » is hidden, the same component tells the path alone (with the skills), under its
+// own title. Every part is optional: an empty one leaves no gap.
 import Arrow from './Arrow.astro';
 import Media from './Media.astro';
-import ThreadSvg from './ThreadSvg.astro';
+import { paragraphs } from '../lib/content';
+import type { ExperienceEntry } from '../lib/content';
+import { formatPeriod } from '../lib/format';
+import type { MediaResolver } from '../lib/media';
+import type { Profile, Skills } from '../lib/schemas';
+import type { Resolved, ResolvedSection } from '../lib/site';
+import { displaySize } from '../lib/poster';
 
 interface Props {
   section: ResolvedSection;
   profile: Profile;
-  experiences: ExperienceEntry[];
-  site: Site;
+  skills: Skills;
+  site: Resolved;
   cvUrl?: string;
-  threads: string[];
   media: MediaResolver;
-  glow: string;
 }
-const { section, profile, experiences, site, cvUrl, threads: colors, media, glow } = Astro.props;
-const bio = paragraphs(profile.bio);
-// The last paragraph of the biography is set apart.
-const motto = bio.length > 1 ? bio.at(-1) : undefined;
-const body = motto ? bio.slice(0, -1) : bio;
-const current = experiences.find((e) => !e.end);
-const principles = site.about.showPrinciples ? profile.principles : [];
+const { section, profile, skills, site, cvUrl, media } = Astro.props;
+const isAbout = section.id === 'a-propos';
+const showPath = section.id === 'parcours' || section.holds.includes('parcours');
+const showSkills = section.id === 'competences' || section.holds.includes('competences');
+const bio = isAbout ? paragraphs(profile.bio) : [];
+const principles = isAbout && site.site.about.showPrinciples ? profile.principles : [];
+const domains = showSkills ? skills.groups.slice(0, 3) : [];
+const moreSkills = showSkills ? skills.groups.slice(3) : [];
+const pathSettings = site.settings('parcours');
+const skillSettings = site.settings('competences');
+const years = (e: ExperienceEntry) => formatPeriod(e.start.slice(0, 4), e.end?.slice(0, 4), !e.end);
+const pad = (n: number) => String(n).padStart(2, '0');
+const current = isAbout ? site.current : undefined;
 ---
 
-<section class="about" id="a-propos" aria-labelledby="about-title" data-scene="warp" data-glow={glow} data-act={`${section.act} — ${section.actName}`}>
+<section class="about part tone-ink" id={section.id} aria-labelledby={`${section.id}-title`} data-tone="ink" data-part>
   <div class="wrap">
-    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
-    <h2 id="about-title" class="about__title display">{section.title}</h2>
-
-    <div class:list={['about__grid', { 'about__grid--photo': profile.photo }]}>
-      {profile.intro && <p class="about__intro lede" data-reveal>{profile.intro}</p>}
+    <header class:list={['about__head', { 'about__head--photo': isAbout && profile.photo }]}>
+      <h2 id={`${section.id}-title`} class="about__title display" style={`--size:${displaySize(section.title, 13, isAbout && profile.photo ? 64 : 84)}`}>{section.title}</h2>
+      {section.intro && <p class="about__sub">{section.intro}</p>}
       {
-        profile.photo && (
+        isAbout && profile.photo && (
           <div class="about__photo" data-reveal>
             <Media src={profile.photo.src} alt={profile.photo.alt} media={media} />
           </div>
         )
       }
-      <div class="about__bio" data-reveal>
-        {section.intro && <p class="about__lead">{section.intro}</p>}
-        {body.map((p) => <p>{p}</p>)}
-        {
-          (current || cvUrl) && (
-            <div class="about__facts">
-              {current && (
-                <p>
-                  <span class="label">Aujourd'hui</span>
-                  <span>
-                    {current.role} — {current.organisation}
-                  </span>
-                </p>
-              )}
-              {cvUrl && (
-                <a class="btn" href={cvUrl}>
-                  Télécharger le CV <Arrow dir="down" />
-                </a>
-              )}
-            </div>
-          )
-        }
-      </div>
-    </div>
+    </header>
+
+    {isAbout && profile.intro && <p class="about__intro" data-reveal>{profile.intro}</p>}
 
     {
-      motto && (
-        <figure class="about__motto" data-reveal>
-          <div class="about__motto-stage" data-stage>
-            <ThreadSvg kind="warp" colors={colors} />
-          </div>
-          <blockquote>
-            <p class="display">{motto}</p>
-          </blockquote>
-        </figure>
+      (current || cvUrl) && isAbout && (
+        <div class="about__now" data-reveal>
+          {current && (
+            <p class="about__current">
+              <span class="label">Aujourd'hui</span>
+              <span class="about__role">{current.role}</span>
+              <span class="about__org">
+                {current.organisation}
+                {current.parentOrganisation && ` — ${current.parentOrganisation}`}
+              </span>
+            </p>
+          )}
+          {cvUrl && (
+            <a class="btn btn--fill about__cv" href={cvUrl}>
+              Télécharger le CV <Arrow dir="down" />
+            </a>
+          )}
+        </div>
       )
     }
 
     {
-      principles.length > 0 && (
-        <div class="about__principles">
-          <h3 class="label">{site.about.principlesTitle ?? 'Ma façon de travailler'}</h3>
-          <ol role="list" class="princ" style={`--n:${principles.length}`}>
-            {principles.map((p, i) => (
-              <li data-reveal style={`--d:${i};--c:${colors[i % colors.length]}`}>
-                <span class="princ__n display" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
+      domains.length > 0 && (
+        <div class="about__block" id={section.id === 'competences' ? undefined : 'competences'}>
+          <h3 class="about__h label">{skillSettings.title}</h3>
+          {section.id !== 'competences' && skillSettings.intro && <p class="about__blocklead">{skillSettings.intro}</p>}
+          <ol role="list" class="domains" style={`--n:${domains.length}`}>
+            {domains.map((g, i) => (
+              <li class="domain" data-reveal style={`--d:${i}`}>
+                <span class="domain__n" aria-hidden="true">
+                  {pad(i + 1)}
                 </span>
-                <h4 class="princ__t display">{p.title}</h4>
-                <p class="muted">{p.text}</p>
+                <h4 class="domain__name">{g.name}</h4>
+                {g.description && <p class="domain__text">{g.description}</p>}
+                {g.items.length > 0 && <p class="domain__items">{g.items.slice(0, 8).join(' · ')}</p>}
               </li>
             ))}
           </ol>
+          {moreSkills.length > 0 && (
+            <details class="fold">
+              <summary class="fold__sum">Toutes les compétences ({skills.groups.length} domaines)</summary>
+              <dl class="fold__skills">
+                {moreSkills.map((g) => (
+                  <div>
+                    <dt>{g.name}</dt>
+                    <dd class="muted">{g.items.join(' · ')}</dd>
+                  </div>
+                ))}
+              </dl>
+            </details>
+          )}
         </div>
+      )
+    }
+
+    {
+      showPath && (site.chapters.length > 0 || site.rest.length > 0) && (
+        <div class="about__block" id={section.id === 'parcours' ? undefined : 'parcours'}>
+          <h3 class="about__h label">{section.id === 'parcours' ? 'Postes' : pathSettings.title}</h3>
+          {section.id !== 'parcours' && pathSettings.intro && <p class="about__blocklead">{pathSettings.intro}</p>}
+          <ol role="list" class="path">
+            {site.chapters.map((e) => (
+              <li class:list={['path__row', { 'path__row--now': !e.end }]}>
+                <span class="path__years">{years(e)}</span>
+                <span class="path__role">{e.role}</span>
+                <span class="path__org">{e.organisation}</span>
+              </li>
+            ))}
+          </ol>
+          {site.rest.length > 0 && (
+            <details class="fold">
+              <summary class="fold__sum">
+                Tout le parcours (+{site.rest.length} poste{site.rest.length > 1 ? 's' : ''})
+              </summary>
+              <ol role="list" class="path path--rest">
+                {site.rest.map((e) => (
+                  <li class="path__row">
+                    <span class="path__years">{years(e)}</span>
+                    <span class="path__role">{e.role}</span>
+                    <span class="path__org">{e.organisation}</span>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )}
+        </div>
+      )
+    }
+
+    {
+      (bio.length > 0 || principles.length > 0) && (
+        <details class="fold fold--bio">
+          <summary class="fold__sum">En savoir plus</summary>
+          <div class="fold__bio">
+            {bio.map((p) => <p>{p}</p>)}
+            {principles.length > 0 && (
+              <>
+                <h3 class="about__h label">{site.site.about.principlesTitle ?? 'Ma façon de travailler'}</h3>
+                <ol role="list" class="princ">
+                  {principles.map((p) => (
+                    <li>
+                      <h4>{p.title}</h4>
+                      <p class="muted">{p.text}</p>
+                    </li>
+                  ))}
+                </ol>
+              </>
+            )}
+          </div>
+        </details>
       )
     }
   </div>
@@ -105,161 +171,269 @@ const principles = site.about.showPrinciples ? profile.principles : [];
 
 <style>
   .about {
-    padding-top: clamp(7rem, 16vh, 12rem);
+    padding-block: clamp(4rem, 9vw, 9rem);
+  }
+  .about__head {
+    display: grid;
+    gap: 1rem;
+    align-items: end;
+  }
+  .about__head--photo {
+    grid-template-columns: minmax(0, 1fr) clamp(7rem, 16vw, 14rem);
   }
   .about__title {
-    margin-top: 2rem;
-    font-size: clamp(4rem, 1rem + 11vw, 13rem);
-    font-stretch: 75%;
-    font-weight: 650;
+    font-size: min(11rem, calc(var(--size) * 1vw));
     line-height: 0.8;
+    letter-spacing: -0.045em;
+    overflow-wrap: anywhere;
   }
-  .about__grid {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gap);
-    row-gap: 2rem;
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-    align-items: start;
-  }
-  .about__intro {
-    grid-column: 1 / span 8;
+  .about__sub {
+    max-width: 36rem;
+    color: var(--fg-2);
+    grid-column: 1;
   }
   .about__photo {
-    grid-column: 10 / span 3;
     grid-row: 1 / span 2;
+    grid-column: 2;
+    rotate: -4deg;
+    background: var(--paper);
+    padding: 5%;
   }
-  .about__grid--photo .about__intro {
-    grid-column: 1 / span 8;
+  .about__photo :global(img) {
+    border-radius: 0;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
   }
-  .about__lead {
-    color: var(--fg);
+  /* The introduction: large, in the reader's voice. */
+  .about__intro {
+    margin-top: clamp(2rem, 5vw, 4.5rem);
+    max-width: 22em;
+    font-size: clamp(1.6rem, 1rem + 2.6vw, 3.75rem);
+    font-weight: 600;
+    font-stretch: 88%;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
   }
-  .about__facts {
+  .about__now {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem 1.5rem;
-    margin-top: 1.5rem;
-    break-inside: avoid;
-    color: var(--fg);
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding-block: 1.5rem;
+    border-block: 2px solid var(--fg);
   }
-  .about__facts p {
-    display: flex;
-    flex-direction: column;
+  .about__current {
+    display: grid;
     gap: 0.2rem;
-    margin: 0;
+    min-width: 0;
   }
-  .about__bio {
-    grid-column: 4 / span 6;
-    columns: 2 17rem;
-    column-gap: var(--gap);
+  .about__current .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+  }
+  .about__current .label::before {
+    content: '';
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  :global(.motion) .about__current .label::before {
+    animation: beat 2.4s ease-in-out infinite;
+  }
+  @keyframes beat {
+    50% {
+      transform: scale(0.5);
+    }
+  }
+  .about__role {
+    font-size: clamp(1.25rem, 1rem + 1vw, 2rem);
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .about__org {
     color: var(--fg-2);
   }
-  .about__bio p {
-    break-inside: avoid;
-    margin-bottom: 1em;
+
+  .about__block {
+    margin-top: clamp(3.5rem, 7vw, 6rem);
   }
-  /* The sentence he keeps, across the threads. */
-  .about__motto {
-    position: relative;
-    margin-top: clamp(4rem, 10vh, 7rem);
-    padding-block: clamp(3rem, 8vh, 5rem);
+  .about__h {
+    color: var(--fg-2);
+    margin-bottom: 1.25rem;
   }
-  .about__motto-stage {
-    position: absolute;
-    inset: 0 calc(var(--g) * -1);
-    pointer-events: none;
+  .about__blocklead {
+    max-width: 36rem;
+    margin: -0.5rem 0 1.5rem;
+    color: var(--fg-2);
   }
-  .about__motto blockquote {
-    position: relative;
-    text-align: center;
+
+  /* Domains: three columns, the number in vermilion. */
+  .domains {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: var(--gap) clamp(1rem, 3vw, 3rem);
   }
-  .about__motto p {
-    max-width: 18ch;
-    margin-inline: auto;
-    font-size: clamp(2rem, 1rem + 3.6vw, 4.6rem);
-    font-weight: 500;
-    font-stretch: 82%;
-    line-height: 1;
-    text-shadow: 0 2px 30px rgb(15 14 13 / 0.9);
+  .domain {
+    border-top: 2px solid var(--fg);
+    padding-top: 1rem;
+    min-width: 0;
   }
-  .about__motto p::before {
-    content: '« ';
+  .domain__n {
+    display: block;
+    font-size: clamp(3rem, 1.5rem + 4vw, 6rem);
+    font-weight: 900;
+    font-stretch: 62%;
+    line-height: 0.85;
     color: var(--accent);
   }
-  .about__motto p::after {
-    content: ' »';
+  .domain__name {
+    margin-top: 0.75rem;
+    font-size: clamp(1.375rem, 1rem + 1vw, 2rem);
+    font-weight: 800;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .domain__text {
+    margin-top: 0.75rem;
+    color: var(--fg-2);
+  }
+  .domain__items {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-stretch: 85%;
+  }
+
+  /* The path: one line per position. */
+  .path__row {
+    display: grid;
+    grid-template-columns: 9rem minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 0.25rem 1.5rem;
+    align-items: baseline;
+    padding-block: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+  .path__row:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+  .path__years {
+    font-size: 0.875rem;
+    font-weight: 700;
+    font-stretch: 80%;
+    letter-spacing: 0.04em;
+    color: var(--fg-2);
+  }
+  .path__row--now .path__years {
     color: var(--accent);
   }
-  .about__principles {
-    margin-top: clamp(4rem, 10vh, 7rem);
+  .path__role {
+    font-size: clamp(1.0625rem, 1rem + 0.4vw, 1.375rem);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .path__org {
+    color: var(--fg-2);
+  }
+
+  /* Folded parts. */
+  .fold {
+    margin-top: 1.5rem;
+  }
+  .fold--bio {
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .fold__sum {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0.6rem 1.3rem;
+    border: 2px solid currentColor;
+    border-radius: var(--radius);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    transition:
+      background var(--dur-1),
+      color var(--dur-1);
+  }
+  .fold__sum::-webkit-details-marker {
+    display: none;
+  }
+  .fold__sum::after {
+    content: '+';
+    font-size: 1.4em;
+    line-height: 0.7;
+    transition: rotate var(--dur-2) var(--spring);
+  }
+  .fold[open] > .fold__sum::after {
+    rotate: 45deg;
+  }
+  .fold__sum:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .fold__bio {
+    max-width: 44rem;
+    margin-top: 2rem;
+    display: grid;
+    gap: 1rem;
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  }
+  .fold__bio .about__h {
+    margin: 1.5rem 0 0;
   }
   .princ {
     display: grid;
-    /* one to eight principles: as many columns as fit, never fewer than 15rem wide */
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
-    gap: var(--gap);
-    margin-top: 1.25rem;
+    gap: 1.25rem;
   }
-  .princ li {
-    position: relative;
-    padding: 1.5rem 0 0;
+  .princ h4 {
+    font-weight: 800;
+    font-size: 1.125rem;
   }
-  .princ li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    height: 1px;
-    background: var(--rule-strong);
+  .fold__skills {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
   }
-  .princ li::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -0.5px;
-    height: 2px;
-    width: 2.5rem;
-    background: var(--c);
-    transition: width var(--dur-3) var(--ease);
+  .fold__skills dt {
+    font-weight: 800;
   }
-  .princ li:hover::after {
-    width: 100%;
+  .path--rest {
+    margin-top: 1rem;
   }
-  .princ__n {
-    font-size: 2.6rem;
-    font-weight: 600;
-    font-stretch: 75%;
-    color: color-mix(in srgb, var(--c) 62%, #fff); /* text: the dye, lightened to AA contrast */
-  }
-  .princ__t {
-    margin: 0.6rem 0 0.7rem;
-    font-size: clamp(1.4rem, 1.1rem + 0.8vw, 1.9rem);
-    font-weight: 600;
-    font-stretch: 82%;
-    line-height: 1;
-  }
-  .princ p {
-    font-size: 0.9375rem;
-  }
-  @media (max-width: 63.99rem) {
-    .about__intro,
-    .about__bio {
-      grid-column: 1 / -1;
+
+  @media (max-width: 61.99rem) {
+    .domains {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .about__photo {
-      grid-column: 1 / span 5;
-      grid-row: auto;
+    .domain {
+      display: grid;
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+      column-gap: 1rem;
     }
-    .princ {
-      row-gap: 2.5rem;
+    .domain__n {
+      grid-row: span 3;
+      font-size: 3.5rem;
+    }
+    .domain__name {
+      margin-top: 0;
     }
   }
   @media (max-width: 47.99rem) {
-    .about__photo {
-      grid-column: 1 / span 9;
+    .path__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .about__head--photo {
+      grid-template-columns: minmax(0, 1fr) 6.5rem;
     }
   }
 </style>

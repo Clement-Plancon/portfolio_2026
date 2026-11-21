@@ -58,19 +58,19 @@ const orientation = !ratio ? 'landscape' : ratio < 0.85 ? 'portrait' : ratio > 1
 }
 
 <style>
+  /* :where(): no specificity, so that a poster, an article or the pile can frame the media its own way */
   .media {
     position: relative;
     margin: 0;
   }
-  .media img,
-  .media video {
+  :where(.media) img,
+  :where(.media) video {
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: var(--ratio, 16 / 10);
     object-fit: cover;
-    border-radius: 6px;
-    background: var(--bg-2);
+    background: color-mix(in srgb, currentColor 8%, transparent);
   }
   .media__toggle {
     position: absolute;
@@ -79,22 +79,21 @@ const orientation = !ratio ? 'landscape' : ratio < 0.85 ? 'portrait' : ratio > 1
     width: 2.75rem;
     height: 2.75rem;
     border-radius: 50%;
-    background: rgb(15 14 13 / 0.7);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--rule-strong);
+    background: var(--ink);
+    color: var(--paper);
     display: grid;
     place-items: center;
   }
   .media__toggle span {
     width: 0.75rem;
     height: 0.85rem;
-    border-inline: 3px solid var(--fg);
+    border-inline: 3px solid currentColor;
   }
   .media__toggle[aria-pressed='true'] span {
     width: 0;
     height: 0;
     border: 0;
-    border-left: 0.75rem solid var(--fg);
+    border-left: 0.75rem solid currentColor;
     border-block: 0.45rem solid transparent;
     margin-left: 0.2rem;
   }

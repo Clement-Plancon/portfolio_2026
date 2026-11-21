@@ -1,196 +1,158 @@
 ---
-// The last act — contact. The threads come in from the right, gather, and go on as one under the
-// address. Title, sentence and button from the admin (Site → Contact); address and links from the profile.
+// The contact, on vermilion: a title, a sentence, the e-mail address in giant capitals (a link; a button
+// copies it), then GitHub, LinkedIn and the other links of the profile. Title, sentence and button from
+// the admin (Site → Contact); address and links from the profile.
+import Arrow from './Arrow.astro';
 import type { Profile, Site } from '../lib/schemas';
 import type { ResolvedSection } from '../lib/site';
-import Arrow from './Arrow.astro';
-import ThreadSvg from './ThreadSvg.astro';
+import { displaySize } from '../lib/poster';
 
 interface Props {
   section: ResolvedSection;
   profile: Profile;
   site: Site;
   cvUrl?: string;
-  threads: string[];
-  glow: string;
 }
-const { section, profile, site, cvUrl: cv, threads: colors, glow } = Astro.props;
-const lead = site.contact.lead ?? `Un projet, une équipe à renforcer, une question technique : écrivez-moi, je réponds par e-mail. ${profile.location}.`;
+const { section, profile, site, cvUrl: cv } = Astro.props;
+const lead = site.contact.lead ?? `Un projet, une équipe à renforcer, une question technique : écrivez-moi, je réponds par e-mail.`;
 const [user, domain] = profile.email.split('@');
+// one size for the address, so that its longer half fills the width (capitals at 100 % ≈ 0.68 em)
+const longest = Math.max(user.length, domain.length + 1);
+const mailSize = Math.min(13, 92 / (longest * 0.68));
 const github = profile.socials.find((s) => /github/i.test(s.label));
 const linkedin = profile.socials.find((s) => /linkedin/i.test(s.label));
-const others = profile.socials.filter((s) => s !== github && s !== linkedin);
+const links = [github, linkedin, ...profile.socials.filter((s) => s !== github && s !== linkedin)].filter((s): s is NonNullable<typeof s> => !!s);
 ---
 
-<section class="contact" id="contact" aria-labelledby="contact-title" data-scene="gather" data-glow={glow} data-act={`${section.act} — ${section.actName}`}>
+<section class="contact part tone-vermilion" id="contact" aria-labelledby="contact-title" data-tone="vermilion" data-part>
   <div class="contact__in wrap">
-    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
-    <h2 id="contact-title" class:list={['contact__title display', { 'contact__title--long': section.title.length > 30 }]}>{section.title}</h2>
-    {lead && <p class="contact__lead">{lead}</p>}
+    <h2 id="contact-title" class="contact__title display" style={`--size:${displaySize(section.title, 12, 86)}`}>{section.title}</h2>
+    {lead && <p class="contact__lead lede">{lead}</p>}
 
-    <div class="contact__mailbox">
-      <a class="contact__mail display" href={`mailto:${profile.email}`}>
-        <span>{user}</span><wbr /><span>@{domain}</span>
-      </a>
-      <div class="contact__stage" data-stage>
-        <ThreadSvg kind="gather" colors={colors} class="contact__svg" />
-      </div>
-    </div>
+    <a class="contact__mail" href={`mailto:${profile.email}`} style={`--size:${mailSize.toFixed(2)}`}>
+      <span>{user}</span><wbr /><span>@{domain}</span>
+    </a>
 
     <div class="contact__row">
-      <div class="contact__copy">
+      <p class="contact__copy">
         <button class="btn btn--fill" type="button" data-copy={profile.email} hidden>{site.contact.copyLabel ?? "Copier l'adresse"}</button>
         <span class="contact__status label" role="status" data-copy-status></span>
-      </div>
-      <ul role="list" class="contact__links">
-        {
-          github && (
-            <li>
-              <a class="btn" href={github.url} rel="me noopener">
-                {github.label} <Arrow dir="out" />
-              </a>
-            </li>
-          )
-        }
-        {
-          linkedin && (
-            <li>
-              <a class="btn" href={linkedin.url} rel="me noopener">
-                {linkedin.label} <Arrow dir="out" />
-              </a>
-            </li>
-          )
-        }
-        {
-          others.map((s) => (
-            <li>
-              <a class="btn" href={s.url} rel="me noopener">
-                {s.label} <Arrow dir="out" />
-              </a>
-            </li>
-          ))
-        }
-        {
-          cv && (
-            <li>
-              <a class="btn" href={cv}>
-                CV (PDF)
-              </a>
-            </li>
-          )
-        }
-      </ul>
+      </p>
+      {
+        (links.length > 0 || cv) && (
+          <ul role="list" class="contact__links">
+            {links.map((s) => (
+              <li>
+                <a class="contact__link" href={s.url} rel="me noopener">
+                  <span>{s.label}</span> <Arrow dir="out" />
+                </a>
+              </li>
+            ))}
+            {cv && (
+              <li>
+                <a class="contact__link" href={cv}>
+                  <span>CV</span> <Arrow dir="down" />
+                </a>
+              </li>
+            )}
+          </ul>
+        )
+      }
     </div>
   </div>
 </section>
 
 <style>
-  /* the fan of threads runs past the screen: clipped, never scrolled */
   .contact {
-    overflow-x: clip;
+    overflow: clip;
   }
   .contact__in {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: max(36rem, 100svh);
-    padding-top: clamp(6rem, 14vh, 10rem);
-    padding-bottom: 4rem;
+    padding-block: clamp(4rem, 9vw, 9rem) clamp(3rem, 6vw, 6rem);
   }
   .contact__title {
-    margin-top: 2rem;
-    max-width: 12ch;
-    font-size: clamp(3rem, 1rem + 6.4vw, 8.5rem);
-    font-stretch: 76%;
-    font-weight: 650;
-    line-height: 0.86;
-  }
-  .contact__title {
-    overflow-wrap: break-word;
-    hyphens: manual;
-  }
-  .contact__title--long {
-    font-size: clamp(2.4rem, 1rem + 4.2vw, 6rem);
+    font-size: min(10rem, calc(var(--size) * 1vw));
+    line-height: 0.82;
+    letter-spacing: -0.045em;
   }
   .contact__lead {
-    max-width: 34em;
     margin-top: 1.5rem;
-    color: var(--fg-2);
-    font-size: 1.0625rem;
+    max-width: 30rem;
   }
-  .contact__mailbox {
-    position: relative;
-    margin-top: clamp(2.5rem, 6vh, 4rem);
-    align-self: flex-start;
-    max-width: 100%;
-  }
+  /* The address: as wide as the page. */
   .contact__mail {
-    position: relative;
-    z-index: 1;
-    display: inline-block;
-    font-size: clamp(1.9rem, 0.6rem + 5.4vw, 6.4rem);
-    font-weight: 500;
-    font-stretch: 82%;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
+    display: block;
+    margin-top: clamp(2.5rem, 6vw, 5rem);
+    font-size: calc(var(--size) * 1vw);
+    font-weight: 800;
+    font-stretch: 100%;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
     text-decoration: none;
     overflow-wrap: anywhere;
-    transition: color var(--dur-2);
-  }
-  .contact__mail:hover {
-    color: var(--accent);
   }
   .contact__mail span {
-    white-space: nowrap;
+    display: inline-block;
+    transition: translate var(--dur-2) var(--spring);
   }
-  /* the single thread runs under the address; the six come from the left of it */
-  .contact__stage {
-    position: relative;
-    height: 2px;
-    margin-top: 0.6rem;
-    pointer-events: none;
+  .contact__mail span + span {
+    color: var(--paper);
   }
-  .contact__stage :global(.contact__svg) {
-    width: 242.86%;
-    height: auto;
-    aspect-ratio: 3.4 / 1.2;
-    inset: 50% auto auto 0;
-    transform: translateY(-50%);
+  .contact__mail:hover span:first-child {
+    translate: 0.15em 0;
+  }
+  .contact__mail:hover span + span {
+    translate: -0.1em 0;
+  }
+  .contact__mail:focus-visible {
+    outline-offset: 8px;
   }
   .contact__row {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     align-items: center;
-    gap: 1rem 2rem;
-    margin-top: clamp(2.5rem, 6vh, 4rem);
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+    padding-top: 1.5rem;
+    border-top: 3px solid var(--ink);
   }
   .contact__copy {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
   }
   .contact__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
+    gap: 0.5rem 2.25rem;
   }
-  .contact__links .arrow {
-    width: 0.75em;
+  .contact__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 3rem;
+    font-size: clamp(1.375rem, 1rem + 1.2vw, 2.25rem);
+    font-weight: 800;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .contact__link span {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 0.12em no-repeat;
+    transition: background-size var(--dur-2) var(--ease);
+  }
+  .contact__link:hover span {
+    background-size: 100% 0.12em;
   }
   @media (max-width: 47.99rem) {
-    .contact__in {
-      min-height: max(34rem, calc(100svh - var(--bar-h)));
+    .contact__row {
+      flex-direction: column;
+      align-items: stretch;
     }
-    .contact__links,
-    .contact__links li,
-    .contact__copy {
-      width: 100%;
-    }
-    .contact__links .btn,
     .contact__copy .btn {
       width: 100%;
-      justify-content: center;
     }
   }
 </style>

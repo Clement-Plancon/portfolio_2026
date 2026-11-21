@@ -1,52 +1,53 @@
 /* ---------------------------------------------------------------
-   « Fils » — design system
-   The site is a dark, lit space where six threads (one per project,
-   dyed in its tint) are tangled, unravelled, drawn into motifs and
-   gathered again. HTML carries every word; the threads are drawn by
-   WebGL when it can (src/scripts/scene/), as SVG otherwise.
-   See docs/art-direction.md.
+   « Affiches » — design system
+   The site is a wall of posters: every project is a poster composed
+   from its own data, in its colour, with its real image when there
+   is one. Flat fields of strong colour (cobalt, paper, ink,
+   vermilion), one typeface whose width moves (Archivo, 62–125 %),
+   no gradients, no blur, no glow. See docs/art-direction.md.
    --------------------------------------------------------------- */
 @font-face {
-  font-family: 'Bricolage';
-  src: url('/fonts/bricolage.woff2') format('woff2-variations');
-  font-weight: 300 700;
-  font-stretch: 75% 100%;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Geist';
-  src: url('/fonts/geist.woff2') format('woff2-variations');
+  font-family: 'Archivo';
+  src: url('/fonts/archivo.woff2') format('woff2-variations');
   font-weight: 100 900;
+  font-stretch: 62% 125%;
   font-display: swap;
 }
 
 :root {
-  color-scheme: dark;
-  --bg: #0f0e0d;
-  --bg-2: #171513;
-  --bg-3: #221f1b;
-  --fg: #f1ebe2;
-  --fg-2: #a89f92;
-  --fg-3: #8f877b;
-  --rule: rgb(241 235 226 / 0.12);
-  --rule-strong: rgb(241 235 226 / 0.28);
-  --accent: #ff8a5c; /* ember: calls to action, the one warm signal outside the project tints */
-  --on-accent: #1a0e08;
+  color-scheme: light;
+  --paper: #f5f4f0;
+  --paper-2: #e9e7e0;
+  --ink: #111111;
+  --ink-2: #4a4945; /* secondary text on paper: 8.6:1 */
+  --cobalt: #1f3bd6;
+  --vermilion: #ff4b2b;
+  --vermilion-deep: #c4301a; /* vermilion for small text on paper: 4.7:1 */
+  --hero: var(--cobalt);
+  --hero-ink: var(--paper);
 
-  --display: 'Bricolage', 'Arial Narrow', ui-sans-serif, system-ui, sans-serif;
-  --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* the colours of the part being read (each part sets them) */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --rule: color-mix(in srgb, currentColor 18%, transparent);
+  --accent: var(--vermilion);
 
-  --g: clamp(1rem, 0.4rem + 2.8vw, 3.5rem);
+  --font: 'Archivo', 'Arial Narrow', 'Helvetica Neue', Arial, ui-sans-serif, system-ui, sans-serif;
+
+  --g: clamp(1rem, 0.3rem + 3vw, 4rem);
   --gap: clamp(0.75rem, 0.4rem + 1vw, 1.5rem);
-  --max: 120rem;
+  --max: 110rem;
   --header-h: 4rem;
-  --bar-h: 0rem; /* height of the phone navigation bar */
+  --bar-h: 0rem; /* height of the phone navigation pill */
+  --radius: 999px;
 
-  --ease: cubic-bezier(0.22, 0.8, 0.12, 1);
-  --ease-io: cubic-bezier(0.65, 0, 0.25, 1);
-  --dur-1: 180ms;
-  --dur-2: 450ms;
-  --dur-3: 950ms;
+  --ease: cubic-bezier(0.2, 0.85, 0.1, 1);
+  --ease-io: cubic-bezier(0.7, 0, 0.2, 1);
+  --spring: cubic-bezier(0.3, 1.5, 0.5, 1);
+  --dur-1: 160ms;
+  --dur-2: 420ms;
+  --dur-3: 900ms;
 }
 
 *,
@@ -61,7 +62,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: var(--header-h);
-  background: var(--bg);
+  background: var(--paper);
 }
 @media (prefers-reduced-motion: no-preference) {
   html {
@@ -69,18 +70,22 @@ html {
   }
 }
 body {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--sans);
-  font-size: clamp(1rem, 0.97rem + 0.12vw, 1.0625rem);
-  line-height: 1.6;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: clamp(1rem, 0.96rem + 0.18vw, 1.125rem);
+  font-stretch: 100%;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
 }
-img {
+img,
+video {
   display: block;
   max-width: 100%;
+}
+img {
   height: auto;
 }
 input,
@@ -103,7 +108,7 @@ h3,
 h4 {
   font-weight: inherit;
   font-size: inherit;
-  line-height: 1.05;
+  line-height: 1;
   text-wrap: balance;
 }
 p,
@@ -118,17 +123,17 @@ ol[role='list'] {
 }
 a {
   color: inherit;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.22em;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
 }
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid currentColor;
   outline-offset: 4px;
   border-radius: 2px;
 }
 ::selection {
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .visually-hidden {
@@ -147,158 +152,126 @@ a {
   top: 0.75rem;
   left: 0.75rem;
   z-index: 100;
-  padding: 0.6rem 1rem;
-  background: var(--fg);
-  color: var(--bg);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
   transform: translateY(-200%);
 }
 .skip-link:focus {
   transform: none;
 }
 
-/* ---------- The scene behind the page ---------- */
-.scene {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 1.4s var(--ease);
-}
-.gl-on .scene {
-  opacity: 1;
-}
-/* The server-drawn threads (SVG) show until WebGL takes over, and stay when it cannot. */
-.stage-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  transition: opacity 1s var(--ease);
-}
-.gl-on .stage-svg {
-  opacity: 0;
-}
-.motion:not(.gl-on) .stage-svg path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw 2.6s var(--ease) forwards;
-  animation-delay: calc(var(--k, 0) * 90ms);
-}
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-/* Without the scene, the light is painted by CSS: warm behind the introduction, the project's tint
-   behind each project. */
-html:not(.gl-on) .hero {
-  background: radial-gradient(55% 60% at 72% 48%, rgb(90 52 28 / 0.55), transparent 70%);
-}
-html:not(.gl-on) .slide {
-  background: radial-gradient(50% 55% at var(--glow-x, 70%) 50%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 72%);
-}
-html:not(.gl-on) .slide--right {
-  --glow-x: 30%;
-}
-html:not(.gl-on) .contact {
-  background: radial-gradient(45% 50% at 80% 60%, rgb(110 52 22 / 0.4), transparent 70%);
-}
-main,
-.foot {
+/* ---------- Parts of the page: each one a flat field of colour ---------- */
+.part {
   position: relative;
-  z-index: 1;
+  background: var(--bg);
+  color: var(--fg);
+}
+.tone-paper {
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --accent: var(--vermilion-deep);
+}
+.tone-ink {
+  --bg: var(--ink);
+  --fg: var(--paper);
+  --fg-2: #b9b7b0; /* 9.4:1 on ink */
+  --accent: var(--vermilion);
+}
+.tone-hero {
+  --bg: var(--hero);
+  --fg: var(--hero-ink);
+  --fg-2: color-mix(in srgb, var(--hero-ink) 82%, var(--hero));
+  --accent: var(--paper);
+}
+.tone-vermilion {
+  --bg: var(--vermilion);
+  --fg: var(--ink);
+  --fg-2: #2a1410;
+  --accent: var(--ink);
+}
+
+.wrap {
+  width: min(100%, var(--max));
+  margin-inline: auto;
+  padding-inline: var(--g);
 }
 
 /* ---------- Type ---------- */
+/* Display: wide, heavy capitals. */
 .display {
-  font-family: var(--display);
-  font-weight: 600;
-  font-stretch: 78%;
-  letter-spacing: -0.025em;
-  line-height: 0.9;
-}
-.label {
-  font-family: var(--sans);
-  font-size: 0.72rem;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0.12em;
+  font-weight: 800;
+  font-stretch: 125%;
   text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
-  color: var(--fg-2);
+  letter-spacing: -0.02em;
+  line-height: 0.86;
+  hyphens: manual;
+  overflow-wrap: break-word;
+}
+/* Labels: small condensed capitals. */
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-stretch: 80%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
 }
 .lede {
-  font-family: var(--display);
-  font-weight: 400;
-  font-stretch: 88%;
-  font-size: clamp(1.6rem, 1rem + 2.2vw, 3.1rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.25rem, 1rem + 1vw, 2rem);
+  font-weight: 500;
+  font-stretch: 90%;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 .muted {
   color: var(--fg-2);
 }
 .link {
-  text-decoration: underline;
-  text-decoration-color: var(--rule-strong);
-  transition: text-decoration-color var(--dur-1);
+  text-decoration-line: underline;
 }
 .link:hover {
-  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.18em;
 }
 .arrow {
   display: inline-block;
   width: 0.85em;
   height: 0.85em;
-  vertical-align: -0.08em;
   flex: none;
-}
-/* A project's tint (src/lib/tints.ts). */
-.tinted {
-  --tint: var(--tint-d, var(--accent));
+  vertical-align: -0.05em;
 }
 
-/* Chips: technologies, tools. */
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 1rem;
-  }
-  .chips li {
-    padding: 0.22rem 0.7rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: 99px;
-    font-size: 0.8125rem;
-    background: rgb(15 14 13 / 0.4);
-  }
-
-/* Buttons: one filled (the main action of a block), one outlined. */
+/* ---------- Buttons: pills, solid or outlined ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  justify-content: center;
+  gap: 0.5em;
   min-height: 3rem;
-  padding: 0 1.35rem;
-  border-radius: 99px;
-  border: 1px solid var(--rule-strong);
-  font-size: 0.95rem;
-  font-weight: 500;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius);
+  border: 2px solid currentColor;
+  font-weight: 700;
+  font-stretch: 100%;
+  font-size: 1rem;
+  line-height: 1.1;
   text-decoration: none;
   white-space: nowrap;
   transition:
     background var(--dur-1),
     color var(--dur-1),
-    border-color var(--dur-1),
-    transform var(--dur-2) var(--ease);
+    transform var(--dur-2) var(--spring);
 }
 .btn:hover {
+  background: var(--fg);
+  color: var(--bg);
   border-color: var(--fg);
+}
+.btn:active {
+  transform: scale(0.96);
 }
 .btn--fill {
   background: var(--fg);
@@ -306,87 +279,66 @@ main,
   border-color: var(--fg);
 }
 .btn--fill:hover {
-  background: var(--tint, var(--accent));
-  border-color: var(--tint, var(--accent));
-  color: var(--on-accent);
+  background: transparent;
+  color: var(--fg);
 }
 .btn .arrow {
-  transition: transform var(--dur-2) var(--ease);
+  transition: transform var(--dur-2) var(--spring);
 }
 .btn:hover .arrow {
   transform: translateX(0.2em);
 }
 
-/* ---------- Layout ---------- */
-.wrap {
-  width: 100%;
-  max-width: var(--max);
-  margin-inline: auto;
-  padding-inline: max(var(--g), env(safe-area-inset-left));
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--gap);
-}
-main > section {
-  scroll-margin-top: var(--header-h);
-}
-/* An act opens with its number and name, and a line that leads into it. */
-.act {
+.chips {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
-.act::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--rule-strong), transparent);
-}
-.act__n {
-  color: var(--accent);
+.chips li {
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid currentColor;
+  border-radius: var(--radius);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-stretch: 90%;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
-/* ---------- Motion ---------- */
+/* ---------- Things that come into place once ---------- */
 .motion [data-reveal] {
   opacity: 0;
-  transform: translateY(2rem);
+  transform: translateY(2.5rem);
   transition:
-    opacity var(--dur-3) var(--ease),
-    transform var(--dur-3) var(--ease);
-  transition-delay: calc(var(--d, 0) * 80ms);
+    opacity 0.7s var(--ease),
+    transform 1s var(--ease);
+  transition-delay: calc(var(--d, 0) * 70ms);
 }
 .motion [data-reveal].is-in {
   opacity: 1;
   transform: none;
 }
 
-.has-dialog,
-.menu-open {
+.has-dialog {
   overflow: hidden;
 }
 
 @media (max-width: 47.99rem) {
   :root {
-    --bar-h: 4.25rem;
     --header-h: 3.5rem;
+    --bar-h: calc(4.25rem + env(safe-area-inset-bottom));
   }
 }
 
 @media print {
-  :root {
-    color-scheme: light;
-    --bg: #fff;
-    --fg: #000;
-    --fg-2: #333;
-  }
-  .scene,
   .top,
-  .bar,
-  .rail,
-  .skip-link {
+  .pile__shuffle,
+  .media__toggle {
     display: none !important;
+  }
+  .part {
+    background: none !important;
+    color: #000 !important;
   }
   .motion [data-reveal] {
     opacity: 1;

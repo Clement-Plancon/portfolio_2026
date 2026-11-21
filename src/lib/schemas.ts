@@ -1,7 +1,6 @@
 // Content schemas, shared by the Astro build (validation of content files)
 // and the admin API (validation before anything is committed).
 import { z } from 'zod';
-import { MOTIFS } from './threads';
 
 export const slugSchema = z
   .string()
@@ -66,8 +65,12 @@ export const seoSchema = z
   })
   .default({});
 
-/** Tint of the project (src/lib/tints.ts). Names kept from earlier designs so content stays valid. */
+/** Colour of the project's poster (src/lib/poster.ts). Names kept from earlier designs so content stays valid. */
 export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable'] as const;
+/** Compositions of a poster without image (src/lib/poster.ts). */
+export const POSTER_LAYOUTS = ['numeral', 'titre', 'grille'] as const;
+/** Motifs of an earlier design: still accepted so that published content stays valid, no longer shown. */
+export const MOTIFS = ['feuille', 'courbe', 'arbre', 'spirale', 'onde', 'barres', 'noeud'] as const;
 
 export const projectSchema = z.object({
   title: text(120).min(1, 'Titre requis'),
@@ -91,11 +94,13 @@ export const projectSchema = z.object({
     .object({
       color: z.enum(COVER_COLORS).default('sapin'),
       image: imageSchema.optional(),
-      /** The motif the project's thread draws (src/lib/threads.ts). Optional: published content without it keeps a default. */
+      /** Composition of the poster when the project has no image or video; empty: chosen automatically. */
+      poster: z.enum(POSTER_LAYOUTS).optional(),
+      /** Earlier design (kept for compatibility, unused). */
       motif: z.enum(MOTIFS).optional(),
       /** A short video instead of (or with) the image: muted, looped. The image, if any, is its poster. */
       video: z.object({ src: videoRefSchema, alt: text(300) }).optional(),
-      /** Where the text sits in the project's scene; "auto" alternates. */
+      /** Which side the poster takes on the page; "auto" alternates. */
       variant: z.enum(['auto', 'texte-gauche', 'texte-droite']).optional(),
     })
     .default({ color: 'sapin' }),
@@ -175,7 +180,7 @@ export const siteSchema = z.object({
       lead: optText(320),
       primary: buttonSchema.optional(),
       secondary: buttonSchema.optional(),
-      /** An image or a short video shown in the introduction, with the threads. */
+      /** An image or a short video shown in the introduction, as the first poster of the pile. */
       media: z.object({ src: z.union([imageRefSchema, videoRefSchema]), alt: text(300) }).optional(),
       hint: optText(120),
     })
@@ -198,13 +203,13 @@ export const siteSchema = z.object({
     .optional(),
   projects: z
     .object({
-      /** "tous": every visible project gets a scene; "mis-en-avant": only the projects marked so. */
-      selection: z.enum(['tous', 'mis-en-avant']).default('tous'),
-      /** Most scenes on the page; the other visible projects are listed under « Autres réalisations ». */
-      max: z.number().int().min(1).max(24).default(6),
+      /** "mis-en-avant": the projects marked so (all of them if none is); "tous": every visible project, in order. */
+      selection: z.enum(['tous', 'mis-en-avant']).default('mis-en-avant'),
+      /** Most projects shown in large; the other visible projects are in the strip « Autres réalisations ». */
+      max: z.number().int().min(1).max(24).default(4),
       othersTitle: optText(80),
     })
-    .default({ selection: 'tous', max: 6 }),
+    .default({ selection: 'mis-en-avant', max: 4 }),
   journey: z
     .object({
       /** Positions told in full (current and highlighted first); the others in a list that opens. */
@@ -216,7 +221,8 @@ export const siteSchema = z.object({
   appearance: z
     .object({
       ambiance: z.enum(AMBIANCES).default('braise'),
-      /** "auto": the WebGL scene where it runs well; "svg": always the drawn threads. */
+      /** Ambiance = colour of the introduction (cobalt, ink, green). "auto": posters that move (drag, tilt,
+          titles that stretch); "svg": the same page, still. Values kept from earlier designs. */
       scene: z.enum(['auto', 'svg']).default('auto'),
     })
     .default({ ambiance: 'braise', scene: 'auto' }),

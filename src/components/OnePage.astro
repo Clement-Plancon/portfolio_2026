@@ -5,9 +5,7 @@
 import About from './About.astro';
 import Contact from './Contact.astro';
 import Hero from './Hero.astro';
-import Journey from './Journey.astro';
 import Projects from './Projects.astro';
-import Skills from './Skills.astro';
 import Base from '../layouts/Base.astro';
 import type { MediaResolver } from '../lib/media';
 import { resolveSite } from '../lib/site';
@@ -38,9 +36,8 @@ const cvUrl = profile.cv?.startsWith('files/') ? media(profile.cv)?.src : profil
   noindex={preview || page.noindex}
   profile={profile}
   sections={site.sections}
-  threads={site.threads}
   ambiance={site.site.appearance.ambiance}
-  scene={site.site.appearance.scene}
+  motion={site.motion}
   type="profile"
   jsonLd={preview
     ? []
@@ -53,22 +50,17 @@ const cvUrl = profile.cv?.startsWith('files/') ? media(profile.cv)?.src : profil
       </p>
     )
   }
-  <Hero site={site} media={media} />
+  <Hero site={site} media={media} projects={[...site.featured, ...site.others]} />
   {
     site.sections.map((sec) => {
       switch (sec.id) {
         case 'projets':
-          return <Projects section={sec} featured={site.featured} others={site.others} othersTitle={site.othersTitle} threads={site.threads} media={media} />;
-        case 'parcours':
-          return <Journey section={sec} chapters={site.chapters} rest={site.rest} threads={site.threads} glow={site.ambiance.glow} />;
-        case 'competences':
-          return <Skills section={sec} skills={skills} threads={site.threads} glow={site.ambiance.glow} />;
-        case 'a-propos':
-          return <About section={sec} profile={profile} experiences={experiences} site={site.site} cvUrl={cvUrl} threads={site.threads} media={media} glow={site.ambiance.glow} />;
+          return <Projects section={sec} featured={site.featured} others={site.others} othersTitle={site.othersTitle} media={media} />;
         case 'contact':
-          return <Contact section={sec} profile={profile} site={site.site} cvUrl={cvUrl} threads={site.threads} glow={site.ambiance.contact} />;
+          return <Contact section={sec} profile={profile} site={site.site} cvUrl={cvUrl} />;
         default:
-          return null;
+          // « à propos », or the path / the skills when « à propos » is hidden
+          return <About section={sec} profile={profile} skills={skills} site={site} cvUrl={cvUrl} media={media} />;
       }
     })
   }
@@ -81,8 +73,8 @@ const cvUrl = profile.cv?.startsWith('files/') ? media(profile.cv)?.src : profil
     inset: auto 0 var(--bar-h) 0;
     z-index: 60;
     padding: 0.6rem 1rem;
-    background: var(--fg);
-    color: var(--bg);
+    background: var(--ink);
+    color: var(--paper);
     font-size: 0.875rem;
     text-align: center;
   }

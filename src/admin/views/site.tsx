@@ -180,14 +180,14 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
           </section>
           <section class="panel" aria-labelledby="s-btn">
             <h2 id="s-btn">Boutons</h2>
-            <ButtonField label="Bouton principal" hint="Par défaut : « Explorer les projets », vers les projets (absent s'il n'y a aucun projet)." fallback={{ label: 'Explorer les projets', href: '#projets' }} value={site.hero.primary} error={e['site.hero.primary.href']} onChange={(v) => setHero('primary', v)} />
+            <ButtonField label="Bouton principal" hint="Par défaut : « Voir les projets », vers les projets (absent s'il n'y a aucun projet)." fallback={{ label: 'Voir les projets', href: '#projets' }} value={site.hero.primary} error={e['site.hero.primary.href']} onChange={(v) => setHero('primary', v)} />
             <ButtonField label="Bouton secondaire" hint="Par défaut : « Me contacter », vers le contact." fallback={{ label: 'Me contacter', href: '#contact' }} value={site.hero.secondary} error={e['site.hero.secondary.href']} onChange={(v) => setHero('secondary', v)} />
           </section>
           <section class="panel" aria-labelledby="s-media">
             <h2 id="s-media">Image ou vidéo d'accueil</h2>
-            <p class="hint">Facultatif. Elle est posée au milieu des fils, à droite du nom (au-dessus sur téléphone). Une vidéo est lue en boucle, sans le son, avec un bouton pause ; elle ne se lance pas seule pour les visiteurs qui limitent les animations. Vidéo : 4 Mo au plus (MP4 ou WebM).</p>
+            <p class="hint">Facultatif. Elle s'ajoute à la pile d'affiches de l'accueil, posée sur le nom. Une vidéo est lue en boucle, sans le son, avec un bouton pause ; elle ne se lance pas seule pour les visiteurs qui limitent les animations. Vidéo : 4 Mo au plus (MP4 ou WebM).</p>
             <ImageField kind="media" label="Média" value={site.hero.media} errors={e} prefix="site.hero.media" onChange={(v) => setHero('media', v && { src: v.src, alt: v.alt })} />
-            <TextInput label="Invitation sous l'accueil" hint="Vide : « Passez sur les fils pour les démêler — faites défiler »." value={site.hero.hint} maxLength={120} recommended={60} onInput={(v) => setHero('hint', opt(v))} />
+            <TextInput label="Invitation sous l'accueil" hint="Facultatif : une courte ligne sous les boutons." value={site.hero.hint} maxLength={120} recommended={60} onInput={(v) => setHero('hint', opt(v))} />
           </section>
           <section class="panel" aria-labelledby="s-share">
             <h2 id="s-share">Image de partage</h2>
@@ -205,7 +205,7 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
       {tab === 'sections' && (
         <section class="panel" aria-labelledby="s-sec">
           <h2 id="s-sec">Sections de la page</h2>
-          <p class="hint">L'ordre ci-dessous est celui de la page et du menu (l'accueil est toujours en premier, le contact toujours en dernier). Une section masquée disparaît de la page et du menu ; une section sans contenu (aucun projet, par exemple) est masquée d'elle-même.</p>
+          <p class="hint">L'ordre ci-dessous est celui de la page et du menu (l'accueil est toujours en premier, le contact toujours en dernier). Le parcours et les compétences sont présentés à l'intérieur d'« À propos » (leur titre et leur phrase y sont repris) ; ils n'ont leur propre partie que si « À propos » est masqué. Une section masquée disparaît de la page et du menu ; une section sans contenu (aucun projet, par exemple) est masquée d'elle-même.</p>
           <ol class="section-list">
             {sections.map((s, i) => {
               const def = SECTION_DEFAULTS[s.id];
@@ -237,8 +237,8 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
           <section class="panel" aria-labelledby="s-proj">
             <h2 id="s-proj">Projets sur la page</h2>
             <Select
-              label="Projets mis en scène"
-              hint="Chaque projet mis en scène a son écran, avec son fil et son motif. Les autres projets visibles sont présentés plus brièvement, sous « Autres réalisations »."
+              label="Projets présentés en grand"
+              hint="Chaque projet présenté en grand a son affiche et son titre en très grand. Les autres projets visibles sont dans la bande d'affiches « Autres réalisations », qui n'allonge pas la page."
               value={site.projects.selection}
               options={[
                 { value: 'tous', label: 'Tous les projets visibles (dans l’ordre de la liste)' },
@@ -247,11 +247,11 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
               onChange={(v) => setSite({ ...site, projects: { ...site.projects, selection: v } })}
             />
             {site.projects.selection === 'mis-en-avant' && featuredCount === 0 && (
-              <p class="form-alert">Aucun projet n'est mis en avant : tous les projets visibles sont mis en scène en attendant.</p>
+              <p class="form-alert">Aucun projet n'est mis en avant : les premiers projets visibles sont présentés en grand en attendant.</p>
             )}
             <TextInput
-              label="Nombre maximum de projets mis en scène"
-              hint="Au-delà, les projets passent dans « Autres réalisations ». Conseillé : 4 à 6."
+              label="Nombre maximum de projets présentés en grand"
+              hint="Au-delà, les projets passent dans « Autres réalisations ». Conseillé : 3 ou 4."
               type="number"
               value={String(site.projects.max)}
               error={e['site.projects.max']}
@@ -265,7 +265,7 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
           <section class="panel" aria-labelledby="s-journey">
             <h2 id="s-journey">Parcours</h2>
             <TextInput
-              label="Postes racontés en entier"
+              label="Postes listés d'emblée"
               hint="Les postes actuels puis ceux mis en avant (★), dans cet ordre. Les autres sont dans une liste « Tout le parcours » qui s'ouvre. Conseillé : 3."
               type="number"
               value={String(site.journey.chapters)}
@@ -279,8 +279,8 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
         <>
           <section class="panel" aria-labelledby="s-about">
             <h2 id="s-about">Présentation</h2>
-            <TextArea label="Introduction" required hint="Deux phrases, en grand en tête de la section." value={profile.intro} maxLength={600} recommended={220} rows={3} error={e['profile.intro']} onInput={(v) => setP('intro', v)} />
-            <TextArea label="Biographie" required hint="Une ligne vide entre deux paragraphes. Le dernier paragraphe est mis en exergue, au milieu des fils." value={profile.bio} maxLength={6000} recommended={1400} rows={10} error={e['profile.bio']} onInput={(v) => setP('bio', v)} />
+            <TextArea label="Introduction" required hint="Deux phrases, en très grand en tête de la section." value={profile.intro} maxLength={600} recommended={220} rows={3} error={e['profile.intro']} onInput={(v) => setP('intro', v)} />
+            <TextArea label="Biographie" required hint="Une ligne vide entre deux paragraphes. Repliée sous « En savoir plus », avec les principes." value={profile.bio} maxLength={6000} recommended={1400} rows={10} error={e['profile.bio']} onInput={(v) => setP('bio', v)} />
             <ImageField label="Photo ou image (facultatif)" value={profile.photo} errors={e} prefix="profile.photo" onChange={(v) => setP('photo', v && { src: v.src, alt: v.alt })} />
             <p class="hint">Le poste actuel est repris automatiquement de vos <a href="#/experiences">expériences</a> (celle sans date de fin).</p>
           </section>
@@ -333,26 +333,26 @@ export function SiteView({ tab: rawTab }: { tab?: string }) {
         <section class="panel" aria-labelledby="s-look">
           <h2 id="s-look">Apparence</h2>
           <fieldset class="swatches">
-            <legend>Ambiance</legend>
+            <legend>Couleur de l'accueil</legend>
             {(Object.entries(AMBIANCE) as [keyof typeof AMBIANCE, (typeof AMBIANCE)[keyof typeof AMBIANCE]][]).map(([k, a]) => (
               <label class="swatch-option">
                 <input type="radio" name="ambiance" value={k} checked={site.appearance.ambiance === k} onChange={() => setSite({ ...site, appearance: { ...site.appearance, ambiance: k } })} />
-                <span class="swatch" style={{ background: `radial-gradient(circle at 40% 40%, ${a.glow}, #0f0e0d 75%)`, boxShadow: `inset 0 0 0 3px ${a.accent}` }} aria-hidden="true" />
+                <span class="swatch" style={{ background: a.bg, boxShadow: `inset 0 0 0 3px ${a.ink}` }} aria-hidden="true" />
                 {a.label}
               </label>
             ))}
           </fieldset>
           <Select
-            label="Scène des fils"
-            hint="« Automatique » : la scène animée en 3D sur les appareils qui la font tourner sans peine, les fils dessinés sinon. « Fils dessinés » : jamais de 3D."
+            label="Mouvement"
+            hint="« Complet » : les affiches se déplacent à la souris, s'inclinent au défilement et les titres s'étirent. « Sobre » : la même page, immobile. Les visiteurs qui limitent les animations ont toujours la version sobre."
             value={site.appearance.scene}
             options={[
-              { value: 'auto', label: 'Automatique' },
-              { value: 'svg', label: 'Fils dessinés (sans 3D)' },
+              { value: 'auto', label: 'Complet' },
+              { value: 'svg', label: 'Sobre' },
             ]}
             onChange={(v) => setSite({ ...site, appearance: { ...site.appearance, scene: v } })}
           />
-          <p class="hint">La teinte et le motif de chaque fil se choisissent dans chaque projet.</p>
+          <p class="hint">La couleur et la composition de chaque affiche se choisissent dans chaque projet.</p>
         </section>
       )}
     </EditorShell>

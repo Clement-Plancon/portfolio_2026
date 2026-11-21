@@ -1,192 +1,114 @@
 ---
-// Act 2 — the projects. The selected projects (Site → Projets in the admin: all of them, or those
-// marked « mis en avant », up to a maximum) each get a scene: their thread drawn into their motif, in
-// their tint, with their real image or video when there is one. The other visible projects are listed
-// under « Autres réalisations », as cards. Every project opens the same article (ProjectArticle).
-// Any number of projects works: one scene, six, twelve; the cards wrap; nothing counts on a number.
+// The projects. Those shown in large (Site → Projets: the projects marked « mis en avant », up to a
+// maximum) each get a screen: their poster, tilted, and their title in wide capitals that stretch as
+// they come in. The other visible projects are a strip of small posters under « Autres réalisations »,
+// so twelve projects make the page no longer than four. Every project opens the same article
+// (ProjectArticle) over the page. Nothing here counts on a number of projects.
 import Arrow from './Arrow.astro';
-import Media from './Media.astro';
+import Poster from './Poster.astro';
 import ProjectArticle from './ProjectArticle.astro';
-import ThreadSvg from './ThreadSvg.astro';
 import type { ProjectEntry } from '../lib/content';
 import { formatPeriod } from '../lib/format';
 import type { MediaResolver } from '../lib/media';
+import { displaySize, lineSize, tilt } from '../lib/poster';
 import type { ResolvedSection } from '../lib/site';
-import { MOTIF_LABELS, motifOf } from '../lib/threads';
-import { TINTS, tintStyle } from '../lib/tints';
+import { tintStyle } from '../lib/tints';
 
 interface Props {
   section: ResolvedSection;
   featured: ProjectEntry[];
   others: ProjectEntry[];
   othersTitle: string;
-  threads: string[];
   media: MediaResolver;
 }
-const { section, featured, others, othersTitle, threads, media } = Astro.props;
+const { section, featured, others, othersTitle, media } = Astro.props;
 const all = [...featured, ...others];
 const pad = (n: number) => String(n).padStart(2, '0');
 const period = (p: ProjectEntry) => formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
-// The light of a project's scene: its tint, deepened.
-const glow = (hex: string) => {
-  const n = Number.parseInt(hex.slice(1), 16);
-  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * 0.42));
-  return `#${c.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
-};
-const side = (p: ProjectEntry, i: number) => (p.cover.variant === 'texte-gauche' ? 'left' : p.cover.variant === 'texte-droite' ? 'right' : i % 2 ? 'right' : 'left');
-const mainMedia = (p: ProjectEntry) =>
-  p.cover.video ? { src: p.cover.video.src, alt: p.cover.video.alt, poster: p.cover.image?.src } : p.cover.image ? { src: p.cover.image.src, alt: p.cover.image.alt } : undefined;
-const lede = section.intro ?? (all.length > 1 ? 'Faites défiler pour parcourir les projets, ou ouvrez-en un directement.' : undefined);
-const article = (p: ProjectEntry, reuseMotif: boolean) => {
+const side = (p: ProjectEntry, i: number) => (p.cover.variant === 'texte-gauche' ? 'right' : p.cover.variant === 'texte-droite' ? 'left' : i % 2 ? 'right' : 'left');
+const longestWord = (t: string) => t.split(/\s+/).reduce((a, b) => ([...b].length > [...a].length ? b : a), '');
+const article = (p: ProjectEntry) => {
   const k = all.indexOf(p);
-  return { project: p, i: k, total: all.length, prev: all[(k - 1 + all.length) % all.length], next: all[(k + 1) % all.length], threads, media, reuseMotif };
+  return { project: p, i: k, total: all.length, prev: all[(k - 1 + all.length) % all.length], next: all[(k + 1) % all.length], media };
 };
+const kindOf = (p: ProjectEntry) => p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel');
 ---
 
-<section class="projects" id="projets" aria-labelledby="projects-title" data-act={`${section.act} — ${section.actName}`}>
+<section class="projects part tone-paper" id="projets" aria-labelledby="projects-title" data-tone="paper" data-part>
   <header class="projects__head wrap">
-    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
-    <div class="projects__intro">
-      <h2 id="projects-title" class:list={['projects__title display', { 'projects__title--long': section.title.length > 14 }]}>{section.title}</h2>
-      {lede && <p class="projects__lede">{lede}</p>}
-    </div>
-    {
-      all.length > 1 && (
-        <ol role="list" class="projects__index">
-          {all.map((p, i) => (
-            <li class="tinted" style={tintStyle(p.cover.color)}>
-              <a href={`#projet-${p.id}`} data-jump={p.id}>
-                <span class="label">{pad(i + 1)}</span>
-                {p.title}
-              </a>
-            </li>
-          ))}
-        </ol>
-      )
-    }
+    <h2 id="projects-title" class="projects__title display" style={`--size:${displaySize(section.title, 15, 80)}`}>
+      {section.title}<sup class="projects__count" aria-hidden="true">{pad(all.length)}</sup>
+    </h2>
+    {section.intro && <p class="projects__lede lede">{section.intro}</p>}
   </header>
 
   {
-    featured.length > 1 && (
-      <nav class="rail" aria-label="Projets" data-rail>
-        <ol role="list">
-          {featured.map((p, i) => (
-            <li class="tinted" style={tintStyle(p.cover.color)}>
-              <a href={`#projet-${p.id}`} data-jump={p.id}>
-                <span class="rail__dot" aria-hidden="true" />
-                <span class="rail__name">{p.title}</span>
-                <span class="visually-hidden">
-                  , projet {i + 1} sur {featured.length}
-                </span>
+    featured.map((p, i) => (
+      <article class:list={['case', `case--${side(p, i)}`]} id={`projet-${p.id}`} style={`${tintStyle(p.cover.color)};--tilt:${tilt(p.id, 4)}deg`} aria-labelledby={`case-${p.id}`} data-project>
+        <div class="case__in wrap">
+          <a class="case__poster" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} tabindex="-1" aria-hidden="true" data-open data-origin data-tilt>
+            <Poster project={p} index={all.indexOf(p)} media={media} />
+          </a>
+          <div class="case__text">
+            <p class="case__no label">
+              <span class="case__n">{pad(all.indexOf(p) + 1)}</span>
+              <span>{kindOf(p)}</span>
+            </p>
+            <h3 class="case__title display" id={`case-${p.id}`} style={`--s:${lineSize(longestWord(p.title), 17, 96)}`} data-kinetic>
+              <a href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
+                {p.title}
               </a>
-            </li>
-          ))}
-        </ol>
-      </nav>
-    )
-  }
-
-  {
-    featured.map((p, i) => {
-      const m = motifOf(p.id, p.cover.motif);
-      const tint = TINTS[p.cover.color].thread;
-      const mm = mainMedia(p);
-      return (
-        <article
-          class:list={['slide tinted', `slide--${side(p, i)}`, { 'slide--media': mm, 'slide--long': p.title.length > 22 && p.title.length <= 40, 'slide--xlong': p.title.length > 40 }]}
-          id={`projet-${p.id}`}
-          style={tintStyle(p.cover.color)}
-          aria-labelledby={`slide-${p.id}`}
-          data-project
-          data-scene="project"
-          data-strand={i}
-          data-color={tint}
-          data-motif={m}
-          data-glow={glow(tint)}
-        >
-          <div class="slide__in wrap">
-            <div class="slide__text" data-origin>
-              <p class="slide__no label">
-                <span class="slide__n">{pad(all.indexOf(p) + 1)}</span> / {pad(all.length)}
-                {p.kind && <span class="slide__cat">{p.category === 'pro' ? 'Professionnel' : 'Personnel'}</span>}
-              </p>
-              <h3 class="slide__title display" id={`slide-${p.id}`} lang="fr">
-                <a href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
-                  {p.title}
-                </a>
-              </h3>
-              {p.kind && <p class="slide__kind">{p.kind}</p>}
-              <p class="slide__sum">{p.summary}</p>
-              {(p.organisation || period(p)) && <p class="slide__meta label">{[p.category === 'pro' ? p.organisation : 'Projet personnel', period(p)].filter(Boolean).join(' — ')}</p>}
-              {p.technologies.length > 0 && (
-                <ul role="list" class="chips" aria-label="Technologies">
-                  {p.technologies.slice(0, 8).map((t) => (
-                    <li>{t}</li>
-                  ))}
-                  {p.technologies.length > 8 && <li>+{p.technologies.length - 8}</li>}
-                </ul>
-              )}
-              <div class="slide__cta">
-                <a class="btn btn--fill" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
-                  Ouvrir le projet<span class="visually-hidden"> {p.title}</span> <Arrow />
-                </a>
-                {p.links[0] && (
+            </h3>
+            <p class="case__sum">{p.summary}</p>
+            {(p.organisation || period(p)) && <p class="case__meta label">{[p.category === 'pro' ? p.organisation : 'Projet personnel', period(p)].filter(Boolean).join(' — ')}</p>}
+            <div class="case__cta">
+              <a class="btn btn--fill" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
+                Voir le projet<span class="visually-hidden"> {p.title}</span> <Arrow />
+              </a>
+              {
+                p.links[0] && (
                   <a class="btn" href={p.links[0].url} rel="noopener">
                     {p.links[0].label} <Arrow dir="out" />
                   </a>
-                )}
-              </div>
-            </div>
-
-            <div class="slide__stage" data-stage>
-              <ThreadSvg kind="project" colors={threads} strand={i} motif={m} color={tint} id={`motif-${p.id}`} />
-              {mm && (
-                <Media src={mm.src} alt={mm.alt} poster={mm.poster} media={media} class="slide__shot">
-                  <figcaption class="label">{p.cover.video ? 'Vidéo' : 'Capture réelle'}</figcaption>
-                </Media>
-              )}
-              <p class="slide__motif label" aria-hidden="true">
-                Motif — {MOTIF_LABELS[m].split(' — ')[1]}
-              </p>
+                )
+              }
             </div>
           </div>
-          <ProjectArticle {...article(p, true)} />
-        </article>
-      );
-    })
+        </div>
+        <ProjectArticle {...article(p)} />
+      </article>
+    ))
   }
 
   {
     others.length > 0 && (
-      <div class="others wrap">
-        <h3 class="others__title display">{othersTitle}</h3>
-        <ul role="list" class="others__grid">
-          {others.map((p, j) => {
-            const m = motifOf(p.id, p.cover.motif);
-            const tint = TINTS[p.cover.color].thread;
-            const mm = mainMedia(p);
-            return (
-              <li class="card tinted" id={`projet-${p.id}`} style={tintStyle(p.cover.color)} data-project>
-                <div class="card__visual" aria-hidden="true">
-                  {mm && !p.cover.video ? (
-                    <Media src={mm.src} alt="" media={media} class="card__media" decorative />
-                  ) : (
-                    <ThreadSvg kind="project" colors={threads} strand={featured.length + j} motif={m} color={tint} id={`motif-${p.id}`} />
-                  )}
-                </div>
-                <div class="card__body" data-origin>
-                  <p class="label card__meta">{[p.kind?.split('·')[0]?.trim(), period(p)].filter(Boolean).join(' — ') || (p.category === 'pro' ? 'Professionnel' : 'Personnel')}</p>
-                  <h4 class="card__title display" lang="fr">
-                    <a href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
-                      {p.title}
-                    </a>
-                  </h4>
-                  <p class="card__sum">{p.summary}</p>
-                </div>
-                <ProjectArticle {...article(p, !(mm && !p.cover.video))} />
-              </li>
-            );
-          })}
+      <div class="others">
+        <div class="others__head wrap">
+          <h3 class="others__title">
+            {othersTitle} <span class="others__n">{pad(others.length)}</span>
+          </h3>
+          {others.length > 2 && (
+            <p class="others__nav" data-strip-nav hidden>
+              <button type="button" class="others__btn" data-strip="-1" aria-label="Affiches précédentes">
+                <Arrow dir="left" />
+              </button>
+              <button type="button" class="others__btn" data-strip="1" aria-label="Affiches suivantes">
+                <Arrow />
+              </button>
+            </p>
+          )}
+        </div>
+        <ul role="list" class="others__strip" data-strip-list>
+          {others.map((p) => (
+            <li class="mini" id={`projet-${p.id}`} style={`--tilt:${tilt(p.id, 3)}deg`} data-project>
+              <a class="mini__link" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open data-origin>
+                <Poster project={p} index={all.indexOf(p)} media={media} still />
+                <span class="mini__title">{p.title}</span>
+              </a>
+              <p class="mini__meta label">{[kindOf(p).split('·')[0].trim(), period(p)].filter(Boolean).join(' — ')}</p>
+              <ProjectArticle {...article(p)} />
+            </li>
+          ))}
         </ul>
       </div>
     )
@@ -194,452 +116,228 @@ const article = (p: ProjectEntry, reuseMotif: boolean) => {
 </section>
 
 <style>
-  /* ---------- Opening of the act ---------- */
-  .projects__head {
-    padding-top: clamp(6rem, 14vh, 10rem);
-    padding-bottom: clamp(2rem, 6vh, 4rem);
+  .projects {
+    padding-block: clamp(4rem, 9vw, 9rem) clamp(4rem, 8vw, 8rem);
   }
-  .projects__intro {
+  .projects__head {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gap);
-    align-items: end;
-    margin-top: 2rem;
+    gap: 1.25rem;
+    margin-bottom: clamp(3.5rem, 7vw, 7rem);
   }
   .projects__title {
-    grid-column: 1 / span 6;
-    font-size: clamp(4rem, 1rem + 11vw, 13rem);
-    font-stretch: 75%;
-    font-weight: 650;
+    font-size: min(13rem, calc(var(--size) * 1vw));
     line-height: 0.8;
+    letter-spacing: -0.045em;
+    overflow-wrap: anywhere;
+  }
+  .projects__count {
+    font-size: 0.22em;
+    vertical-align: top;
+    margin-left: 0.15em;
+    letter-spacing: 0;
+    color: var(--accent);
   }
   .projects__lede {
-    grid-column: 8 / -1;
-    color: var(--fg-2);
-    max-width: 30em;
-    font-size: 1.0625rem;
-  }
-  .projects__index {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 2.5rem;
-  }
-  .projects__index a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    min-height: 2.75rem;
-    padding: 0 1rem 0 0.9rem;
-    border: 1px solid var(--rule);
-    border-radius: 99px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    background: rgb(15 14 13 / 0.55);
-    backdrop-filter: blur(8px);
-    transition:
-      border-color var(--dur-1),
-      color var(--dur-1);
-  }
-  .projects__index a:hover {
-    border-color: var(--tint);
-  }
-  .projects__index .label {
-    color: var(--tint);
+    max-width: 36rem;
   }
 
-  /* ---------- One scene per project ---------- */
-  .slide {
-    position: relative;
+  /* ---------- A project in large: the poster and the text side by side ---------- */
+  .case + .case {
+    margin-top: clamp(4rem, 10vw, 10rem);
   }
-  .slide__in {
+  .case__in {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gap);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     align-items: center;
-    min-height: 100svh;
-    padding-block: clamp(4rem, 10vh, 7rem);
+    gap: clamp(1.5rem, 5vw, 6rem);
   }
-  .slide__text {
-    grid-column: 1 / span 5;
-    grid-row: 1;
-    position: relative;
-    z-index: 1;
+  .case--right .case__poster {
+    order: 2;
   }
-  .slide__stage {
-    position: relative;
-    grid-column: 6 / -1;
-    grid-row: 1;
-    aspect-ratio: 1;
-    width: min(100%, 78svh);
+  .case__poster {
+    display: block;
+    width: min(100%, 32rem);
     justify-self: center;
+    rotate: var(--tilt);
+    box-shadow: 0 2.5rem 4rem -2rem rgb(17 17 17 / 0.45);
+    transition:
+      rotate var(--dur-3) var(--ease),
+      scale var(--dur-2) var(--spring);
   }
-  .slide--right .slide__text {
-    grid-column: 8 / -1;
+  .case__poster:hover {
+    rotate: 0deg;
+    scale: 1.02;
   }
-  .slide--right .slide__stage {
-    grid-column: 1 / span 7;
+  :global(.motion) .case__poster {
+    translate: 0 calc((0.5 - var(--k, 0.5)) * 18%);
+    rotate: calc(var(--tilt) + (0.5 - var(--k, 0.5)) * 10deg);
   }
-  .slide__no {
+  .case__text {
+    container-type: inline-size;
+    min-width: 0;
+  }
+  .case__no {
     display: flex;
-    align-items: center;
-    gap: 0.4rem;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    color: var(--fg-2);
   }
-  .slide__n {
-    color: var(--tint);
+  .case__n {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--fg);
+    background: var(--p-bg);
+    color: var(--p-ink);
+    padding: 0.15rem 0.6rem;
+    border-radius: var(--radius);
   }
-  .slide__cat {
-    margin-left: 0.75rem;
-    padding-left: 0.75rem;
-    border-left: 1px solid var(--rule-strong);
-  }
-  /* long titles: smaller, broken between words (French hyphenation), never cut */
-  .slide__title {
-    overflow-wrap: break-word;
-    hyphens: manual;
-    margin-top: 1.25rem;
-    font-size: clamp(3rem, 0.8rem + 5.6vw, 7.5rem);
-    font-stretch: 76%;
-    font-weight: 650;
+  .case__title {
+    margin-top: 1rem;
+    font-size: calc(var(--s) * 1cqi);
     line-height: 0.86;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.03em;
   }
-  .slide__title a {
+  :global(.motion) .case__title {
+    font-stretch: calc(80% + var(--k, 1) * 45%);
+  }
+  .case__title a {
     text-decoration: none;
-    background: linear-gradient(var(--tint), var(--tint)) 0 100% / 0 0.06em no-repeat;
-    transition: background-size var(--dur-3) var(--ease);
+    background: linear-gradient(var(--p-bg), var(--p-bg)) 0 92% / 0 0.18em no-repeat;
+    transition: background-size var(--dur-2) var(--ease);
   }
-  .slide__title a:hover {
-    background-size: 100% 0.06em;
+  .case__title a:hover {
+    background-size: 100% 0.18em;
   }
-  .slide__kind {
-    margin-top: 1.1rem;
-    color: var(--tint);
-    font-size: 0.95rem;
-    font-weight: 500;
+  .case__sum {
+    margin-top: 1.5rem;
+    max-width: 34rem;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.375rem);
+    line-height: 1.4;
   }
-  .slide__sum {
-    margin-top: 0.9rem;
-    max-width: 32em;
-    font-size: clamp(1.02rem, 0.95rem + 0.25vw, 1.2rem);
-    line-height: 1.5;
+  .case__meta {
+    margin-top: 1rem;
+    color: var(--fg-2);
   }
-  .slide__meta {
-    margin-top: 1.25rem;
-  }
-  .slide__cta {
+  .case__cta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
     margin-top: 1.75rem;
   }
-  .slide__motif {
-    position: absolute;
-    right: 0;
-    bottom: -0.5rem;
-    color: var(--fg-3);
-  }
-  .slide--long .slide__title {
-    font-size: clamp(2.4rem, 0.8rem + 3.6vw, 5rem);
-  }
-  .slide--xlong .slide__title {
-    font-size: clamp(2rem, 0.8rem + 2.6vw, 3.8rem);
-  }
-  .slide__sum {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 7;
-    overflow: hidden;
-  }
-  /* A real capture or video: a large framed screen in front of the thread, sized by its orientation. */
-  .slide__stage :global(.slide__shot.media--portrait) {
-    left: 18% !important;
-    right: 42% !important;
-    top: 2% !important;
-  }
-  .slide__stage :global(.slide__shot.media--square) {
-    right: 38% !important;
-  }
-  .slide__stage :global(.slide__shot) {
-    position: absolute;
-    left: -6%;
-    right: 30%;
-    top: 4%;
-    transform: perspective(1400px) rotateY(-8deg) rotateX(3deg);
-    transform-origin: 30% 50%;
-    transition: transform 1.2s var(--ease);
-  }
-  .slide--right .slide__stage :global(.slide__shot) {
-    left: -6%;
-    right: 30%;
-    transform: perspective(1400px) rotateY(8deg) rotateX(3deg);
-  }
-  .slide__stage :global(.slide__shot img),
-  .slide__stage :global(.slide__shot video) {
-    width: 100%;
-    border-radius: 6px;
-    box-shadow:
-      0 0 0 1px rgb(255 255 255 / 0.08),
-      0 40px 90px -30px rgb(0 0 0 / 0.85),
-      0 0 120px -40px var(--tint);
-  }
-  .slide__stage :global(.slide__shot figcaption) {
-    margin-top: 0.75rem;
-  }
-  .slide__stage:hover :global(.slide__shot) {
-    transform: perspective(1400px) rotateY(-3deg) rotateX(1deg) translateY(-0.5rem);
-  }
 
-  /* ---------- Rail: where am I among the projects (desktop) ---------- */
-  .rail {
-    position: fixed;
-    right: max(1rem, calc(var(--g) * 0.5));
-    top: 50%;
-    z-index: 20;
-    transform: translateY(-50%);
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity var(--dur-2),
-      visibility 0s var(--dur-2);
-  }
-  :global(.in-gallery) .rail {
-    opacity: 1;
-    visibility: visible;
-    transition: opacity var(--dur-2);
-  }
-  .rail ol {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-  .rail a {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    min-height: 2rem;
-    text-decoration: none;
-    font-size: 0.8rem;
-    color: var(--fg-2);
-  }
-  .rail__name {
-    opacity: 0;
-    transform: translateX(0.5rem);
-    transition:
-      opacity var(--dur-2) var(--ease),
-      transform var(--dur-2) var(--ease);
-    white-space: nowrap;
-  }
-  .rail:hover .rail__name,
-  .rail a:focus-visible .rail__name {
-    opacity: 1;
-    transform: none;
-  }
-  .rail a[aria-current='true'] {
-    color: var(--fg);
-  }
-  .rail__dot {
-    order: 2;
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    border: 1px solid var(--tint);
-    transition:
-      transform var(--dur-2) var(--ease),
-      background var(--dur-2);
-  }
-  .rail a[aria-current='true'] .rail__dot {
-    background: var(--tint);
-    transform: scale(1.5);
-  }
-
-  /* ---------- Tablet ---------- */
-  @media (max-width: 63.99rem) {
-    .projects__title {
-      grid-column: 1 / -1;
-    }
-    .projects__lede {
-      grid-column: 1 / span 9;
-      margin-top: 1.5rem;
-    }
-    .rail {
-      display: none;
-    }
-    .slide__in,
-    .slide--right .slide__in {
-      align-content: center;
-      row-gap: 1.5rem;
-      min-height: 0;
-      padding-block: clamp(4rem, 9vh, 6rem);
-    }
-    .slide__stage,
-    .slide--right .slide__stage {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      width: min(100%, 34rem);
-    }
-    .slide__text,
-    .slide--right .slide__text {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      max-width: 40rem;
-    }
-  }
-  /* Landscape tablets and short laptops: the scene keeps its two columns. */
-  @media (max-width: 63.99rem) and (orientation: landscape) and (min-width: 48rem) {
-    .slide__in,
-    .slide--right .slide__in {
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-    }
-    .slide__stage {
-      grid-column: 7 / -1;
-      grid-row: 1;
-    }
-    .slide__text {
-      grid-column: 1 / span 6;
-      grid-row: 1;
-    }
-  }
-
-  /* ---------- Phones ---------- */
-  @media (max-width: 47.99rem) {
-    .projects__head {
-      padding-top: 5rem;
-    }
-    .projects__lede {
-      grid-column: 1 / -1;
-    }
-    .projects__index {
-      margin-top: 1.75rem;
-    }
-    .slide__in,
-    .slide--right .slide__in {
-      padding-block: 3rem 3.5rem;
-      row-gap: 1rem;
-    }
-    .slide__stage,
-    .slide--right .slide__stage {
-      width: 100%;
-    }
-    .slide__stage :global(.slide__shot),
-    .slide--right .slide__stage :global(.slide__shot) {
-      left: 0;
-      right: 22%;
-      top: 0;
-      transform: none;
-    }
-    .slide__title {
-      font-size: clamp(2.8rem, 1rem + 9vw, 3.8rem);
-    }
-    .slide__cta .btn {
-      flex: 1;
-      justify-content: center;
-    }
-  }
-
-  .projects__title--long {
-    font-size: clamp(3rem, 1rem + 6vw, 8rem);
-    overflow-wrap: break-word;
-    hyphens: manual;
-  }
-
-  /* ---------- The other projects: cards that open the same article ---------- */
+  /* ---------- The other projects: a strip of small posters ---------- */
   .others {
-    padding-block: clamp(4rem, 10vh, 7rem) 2rem;
+    margin-top: clamp(5rem, 11vw, 11rem);
+  }
+  .others__head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    border-top: 3px solid var(--fg);
+    padding-top: 1rem;
   }
   .others__title {
-    font-size: clamp(2rem, 1rem + 2.6vw, 3.6rem);
-    font-weight: 600;
-    font-stretch: 80%;
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+    font-weight: 800;
+    font-stretch: 110%;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
   }
-  .others__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
-    gap: var(--gap);
-    margin-top: 2rem;
+  .others__n {
+    font-size: 0.5em;
+    vertical-align: top;
+    color: var(--accent);
   }
-  .card {
-    position: relative;
+  .others__nav {
     display: flex;
-    flex-direction: column;
-    border-radius: 14px;
-    overflow: hidden;
-    background: rgb(26 24 21 / 0.7);
-    border: 1px solid var(--rule);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition:
-      transform var(--dur-2) var(--ease),
-      border-color var(--dur-2);
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--tint) 55%, transparent);
-  }
-  .card__visual {
-    position: relative;
-    aspect-ratio: 16 / 10;
-    background: radial-gradient(70% 80% at 50% 50%, color-mix(in srgb, var(--tint) 14%, transparent), transparent 75%);
-  }
-  .card__visual :global(.stage-svg) {
-    inset: 14% 22%;
-    width: auto;
-    height: auto;
-    opacity: 1 !important;
-  }
-  .card__visual :global(.card__media) {
-    position: absolute;
-    inset: 0;
-  }
-  .card__visual :global(.card__media img) {
-    height: 100%;
-    aspect-ratio: auto;
-    border-radius: 0;
-    object-fit: cover;
-    object-position: top center;
-  }
-  .card__body {
-    display: flex;
-    flex-direction: column;
     gap: 0.5rem;
-    padding: 1.1rem 1.25rem 1.4rem;
-    flex: 1;
   }
-  .card__meta {
-    color: color-mix(in srgb, var(--tint) 62%, #fff);
+  .others__btn {
+    width: 3rem;
+    height: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    transition:
+      background var(--dur-1),
+      color var(--dur-1);
   }
-  .card__title {
-    font-size: clamp(1.5rem, 1.2rem + 0.8vw, 2rem);
-    font-weight: 600;
-    font-stretch: 82%;
-    line-height: 1;
-    overflow-wrap: break-word;
-    hyphens: manual;
+  .others__btn:hover {
+    background: var(--fg);
+    color: var(--bg);
   }
-  .card__title a {
+  .others__btn:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  .others__strip {
+    display: flex;
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--g);
+    padding: 2rem var(--g) 2.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--fg) transparent;
+  }
+  .mini {
+    flex: none;
+    width: clamp(11rem, 8rem + 9vw, 17rem);
+    scroll-snap-align: start;
+  }
+  .mini__link {
+    display: grid;
+    gap: 0.6rem;
     text-decoration: none;
   }
-  /* the whole card opens the article */
-  .card__title a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .mini__link :global(.poster) {
+    rotate: var(--tilt);
+    box-shadow: 0 1.5rem 2.5rem -1.5rem rgb(17 17 17 / 0.45);
+    transition:
+      rotate var(--dur-2) var(--ease),
+      translate var(--dur-2) var(--spring);
   }
-  .card__title a:focus-visible::after {
-    outline: 2px solid var(--accent);
-    outline-offset: -2px;
-    border-radius: 14px;
+  .mini__link:hover :global(.poster),
+  .mini__link:focus-visible :global(.poster) {
+    rotate: 0deg;
+    translate: 0 -0.5rem;
   }
-  .card__sum {
+  .mini__title {
+    margin-top: 0.6rem;
+    font-weight: 800;
+    font-size: 1.0625rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .mini__meta {
+    margin-top: 0.35rem;
     color: var(--fg-2);
-    font-size: 0.9375rem;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
   }
-  :global(html:not(.js)) .card {
-    overflow: visible;
+
+  @media (max-width: 61.99rem) {
+    .case__in {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .case--right .case__poster {
+      order: 0;
+    }
+    .case__poster {
+      width: min(78%, 26rem);
+    }
+    .case--right .case__poster {
+      justify-self: end;
+    }
+    .case--left .case__poster {
+      justify-self: start;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .case__poster {
+      width: 84%;
+    }
   }
 </style>
