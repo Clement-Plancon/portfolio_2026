@@ -33,7 +33,8 @@ interface ListProps {
   lead: string;
   base: string; // route segment, e.g. "projets"
   newLabel: string;
-  describe: (e: Entry) => { title: string; meta: string; thumb?: ComponentChildren };
+  /** status: where the entry appears on the site (replaces the visible / hidden badge). */
+  describe: (e: Entry) => { title: string; meta: string; thumb?: ComponentChildren; status?: { label: string; tone: 'scene' | 'other' | 'hidden' } };
   reorderable?: boolean;
   featured?: boolean;
   sort?: (a: Entry, b: Entry) => number;
@@ -169,9 +170,11 @@ export function CollectionList(p: ListProps) {
                   <span>{d.meta}</span>
                   {e.error && <span class="error">{e.error}</span>}
                 </a>
-                <span class={`badge${hidden ? ' badge--muted' : ' badge--ok'}`}>
-                  {hidden ? 'Masqué' : 'Visible'}
-                </span>
+                {d.status ? (
+                  <span class={`badge badge--${d.status.tone}`}>{d.status.label}</span>
+                ) : (
+                  <span class={`badge${hidden ? ' badge--muted' : ' badge--ok'}`}>{hidden ? 'Masqué' : 'Visible'}</span>
+                )}
                 <div class="row-actions">
                   {p.reorderable && (
                     <>

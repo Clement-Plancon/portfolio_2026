@@ -1,0 +1,20 @@
+---
+// TEST ONLY — renders the one-page with a content scenario (src/scenarios/data.ts). Injected as a route
+// by astro.config.mjs only when CONTENT_SCENARIOS=1 (browser tests); never indexed.
+import OnePage from '../components/OnePage.astro';
+import { FIXTURE_MEDIA, scenarioData } from './data';
+
+export const prerender = false;
+const name = Astro.params.name ?? '';
+const data = scenarioData(name);
+if (!data) return new Response('Scénario inconnu', { status: 404 });
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+Astro.response.headers.set('Cache-Control', 'no-store');
+const media = (ref?: string) => {
+  if (!ref) return undefined;
+  const m = FIXTURE_MEDIA[ref];
+  return m ? { src: `/__scenarios/media/${ref.split('/')[1]}`, width: m.width, height: m.height } : undefined;
+};
+---
+
+<OnePage data={data} media={media} preview note={`Scénario de test — contenu fictif. ${name.toUpperCase()}`} />

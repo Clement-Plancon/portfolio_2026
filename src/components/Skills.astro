@@ -1,24 +1,27 @@
 ---
-// Act 3 — expertise, second half: the skills, as six panels of frosted glass over the scene, each edged
-// with the colour of a thread.
+// Act 3 — expertise, second half: the skills, as panels of frosted glass over the scene, each edged with
+// the colour of a thread. Any number of groups: the panels wrap.
 import type { Skills } from '../lib/schemas';
+import type { ResolvedSection } from '../lib/site';
 import ThreadSvg from './ThreadSvg.astro';
 
 interface Props {
+  section: ResolvedSection;
   skills: Skills;
-  colors: string[];
+  threads: string[];
+  glow: string;
 }
-const { skills, colors } = Astro.props;
+const { section, skills, threads: colors, glow } = Astro.props;
 ---
 
-<section class="skills" id="competences" aria-labelledby="skills-title" data-scene="warp" data-glow="#26201a">
+<section class="skills" id="competences" aria-labelledby="skills-title" data-scene="warp" data-glow={glow} data-act={`${section.act} — ${section.actName}`}>
   <div class="wrap">
     <div class="skills__head">
       <div class="skills__loom" data-stage>
         <ThreadSvg kind="warp" colors={colors} />
       </div>
-      <h2 id="skills-title" class="skills__title display">Compétences</h2>
-      <p class="muted">Ce que je mets en œuvre, de l'interface à l'infrastructure, et autour du code.</p>
+      <h2 id="skills-title" class="skills__title display">{section.title}</h2>
+      {section.intro && <p class="muted">{section.intro}</p>}
     </div>
     <ul role="list" class="sk">
       {
@@ -74,7 +77,7 @@ const { skills, colors } = Astro.props;
   }
   .sk {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
     gap: var(--gap);
     margin-top: 2.5rem;
   }
@@ -127,14 +130,5 @@ const { skills, colors } = Astro.props;
     border-radius: 99px;
     font-size: 0.8125rem;
   }
-  @media (max-width: 63.99rem) {
-    .sk {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  @media (max-width: 47.99rem) {
-    .sk {
-      grid-template-columns: 1fr;
-    }
-  }
+
 </style>

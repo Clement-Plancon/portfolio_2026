@@ -7,6 +7,7 @@ import {
   profileSchema,
   projectSchema,
   seoSettingsSchema,
+  siteSchema,
   skillsSchema,
   slugSchema,
 } from './schemas';
@@ -22,6 +23,7 @@ export const CONTENT_TYPES = {
   profile: { kind: 'singleton', file: `${CONTENT_ROOT}/profile.json`, schema: profileSchema },
   skills: { kind: 'singleton', file: `${CONTENT_ROOT}/skills.json`, schema: skillsSchema },
   seo: { kind: 'singleton', file: `${CONTENT_ROOT}/seo.json`, schema: seoSettingsSchema },
+  site: { kind: 'singleton', file: `${CONTENT_ROOT}/site.json`, schema: siteSchema },
   media: { kind: 'singleton', file: `${CONTENT_ROOT}/media.json`, schema: mediaManifestSchema },
 } as const satisfies Record<string, CollectionType | SingletonType>;
 

@@ -56,6 +56,10 @@ describe('media helpers', () => {
     expect(sniff(Buffer.from('RIFF0000WEBPVP8 '))).toBe('webp');
     expect(sniff(Buffer.from('%PDF-1.7 0000000'))).toBe('pdf');
     expect(sniff(Buffer.from('<svg>000000000000'))).toBeNull();
+    expect(sniff(Buffer.from('\0\0\0\x18ftypmp42\0\0\0\0'))).toBe('mp4');
+    expect(sniff(Buffer.from('\0\0\0\x18ftypavif\0\0\0\0'))).toBe('avif');
+    expect(sniff(new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, ...Buffer.from('\x9fB\x86\x81\x01B\x82\x84webm')]))).toBe('webm');
+    expect(sniff(new Uint8Array([0x1a, 0x45, 0xdf, 0xa3, ...Buffer.from('\x9fB\x86\x81\x01B\x82\x88matroska')]))).toBeNull();
   });
   it('slugifies file names', () => {
     expect(slugifyFileName('Écran Principal (v2).png')).toBe('ecran-principal-v2');

@@ -9,14 +9,8 @@ const motion = () => !reduceMotion.matches;
 /* ---------- Where am I: current section in the navigation, act and project in the marker ---------- */
 const navLinks = new Map([...document.querySelectorAll<HTMLAnchorElement>('[data-nav]')].map((a) => [a.dataset.nav!, a]));
 const where = document.querySelector<HTMLElement>('[data-where]');
-const ACTS: [string, string][] = [
-  ['top', '01 — Découverte'],
-  ['projets', '02 — Exploration'],
-  ['parcours', '03 — Expertise'],
-  ['competences', '03 — Expertise'],
-  ['a-propos', '04 — Approche'],
-  ['contact', '05 — Contact'],
-];
+// The acts, as the page declares them (their number and name come from the content).
+const acts = [...document.querySelectorAll<HTMLElement>('[data-act]')].map((el) => ({ id: el.id, el, act: el.dataset.act! }));
 const projectsEls = [...document.querySelectorAll<HTMLElement>('[data-project]')];
 const railLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-rail] a')];
 const gallery = document.getElementById('projets');
@@ -28,24 +22,30 @@ const update = () => {
   root.classList.toggle('is-scrolled', scrollY > 8);
   // the section under the middle of the screen
   let current = 'top';
-  for (const [id] of ACTS) {
-    const el = id === 'top' ? null : document.getElementById(id);
-    if (el && el.getBoundingClientRect().top <= mid) current = id;
+  let act = '01 — Découverte';
+  for (const a of acts) {
+    if (a.el.getBoundingClientRect().top <= mid) {
+      current = a.id;
+      act = a.act;
+    }
   }
-  for (const [id, a] of navLinks) a.setAttribute('aria-current', String(id === current || (id === 'parcours' && current === 'competences')));
+  // skills right after the path are reached through it in the navigation
+  const navId = navLinks.has(current) ? current : current === 'competences' ? 'parcours' : current;
+  for (const [id, a] of navLinks) a.setAttribute('aria-current', String(id === navId));
   // the project under the middle of the screen
   let project = -1;
   projectsEls.forEach((el, i) => {
     const r = el.getBoundingClientRect();
     if (r.top <= mid && r.bottom > mid) project = i;
   });
-  railLinks.forEach((a, i) => a.setAttribute('aria-current', String(i === project)));
+  railLinks.forEach((a, i) => {
+    a.setAttribute('aria-current', String(i === project));
+  });
   if (gallery) {
     const r = gallery.getBoundingClientRect();
     root.classList.toggle('in-gallery', project >= 0 && r.top < innerHeight * 0.2 && r.bottom > innerHeight * 0.6);
   }
   if (where) {
-    const act = ACTS.find(([id]) => id === current)?.[1] ?? ACTS[0][1];
     const name = project >= 0 ? projectsEls[project].querySelector('[data-open]')?.textContent?.trim() : '';
     where.textContent = name ? `${act} · ${name}` : act;
   }
@@ -245,6 +245,27 @@ if (capable()) {
   const later = () => (idle ? idle(start, { timeout: 1500 }) : setTimeout(start, 300));
   if (document.readyState === 'complete') later();
   else addEventListener('load', later, { once: true });
+}
+
+/* ---------- Videos: muted loops, a pause button, nothing plays by itself when motion is reduced ---------- */
+for (const video of document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')) {
+  const button = video.parentElement?.querySelector<HTMLButtonElement>('[data-video-toggle]');
+  const sync = () => {
+    if (!button) return;
+    button.setAttribute('aria-pressed', String(video.paused));
+    button.setAttribute('aria-label', video.paused ? 'Lire la vidéo' : 'Mettre la vidéo en pause');
+  };
+  video.addEventListener('play', sync);
+  video.addEventListener('pause', sync);
+  if (button) {
+    button.hidden = false;
+    button.addEventListener('click', () => (video.paused ? video.play().catch(() => {}) : video.pause()));
+  }
+  if (motion()) {
+    // play only while on screen
+    new IntersectionObserver(([e]) => (e.isIntersecting ? video.play().catch(() => {}) : video.pause())).observe(video);
+  }
+  sync();
 }
 
 /* ---------- Copy the e-mail address ---------- */

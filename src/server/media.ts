@@ -1,9 +1,9 @@
 // Upload validation: the file type comes from the bytes, never from the name or the declared type.
-import { MEDIA_FILE_RE, MEDIA_IMAGE_RE } from '../lib/schemas';
+import { MEDIA_FILE_RE, MEDIA_IMAGE_RE, MEDIA_VIDEO_RE } from '../lib/schemas';
 import { HttpError } from './http';
 
 export const isMediaRef = (ref: unknown): ref is string =>
-  typeof ref === 'string' && (MEDIA_IMAGE_RE.test(ref) || MEDIA_FILE_RE.test(ref));
+  typeof ref === 'string' && (MEDIA_IMAGE_RE.test(ref) || MEDIA_VIDEO_RE.test(ref) || MEDIA_FILE_RE.test(ref));
 
 export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // keeps the request under Netlify's 6 MB function limit
 
@@ -13,6 +13,8 @@ const TYPES = {
   jpg: 'image/jpeg',
   avif: 'image/avif',
   pdf: 'application/pdf',
+  mp4: 'video/mp4',
+  webm: 'video/webm',
 } as const;
 export type MediaExt = keyof typeof TYPES;
 
@@ -23,6 +25,10 @@ export function sniff(bytes: Uint8Array): MediaExt | null {
   if (bytes[0] === 0x89 && ascii(1, 4) === 'PNG') return 'png';
   if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'jpg';
   if (ascii(4, 8) === 'ftyp' && ['avif', 'avis'].includes(ascii(8, 12))) return 'avif';
+  // ISO base media (MP4): a "ftyp" box with a video brand
+  if (ascii(4, 8) === 'ftyp' && ['isom', 'iso2', 'iso4', 'iso5', 'iso6', 'mp41', 'mp42', 'avc1', 'M4V ', 'dash'].includes(ascii(8, 12))) return 'mp4';
+  // Matroska / WebM: EBML header, and the "webm" doctype in the first bytes
+  if (bytes[0] === 0x1a && bytes[1] === 0x45 && bytes[2] === 0xdf && bytes[3] === 0xa3 && ascii(0, Math.min(64, bytes.length)).includes('webm')) return 'webm';
   if (ascii(0, 5) === '%PDF-') return 'pdf';
   return null;
 }
@@ -65,7 +71,7 @@ export function validateUpload(input: {
     throw new HttpError(413, 'too_large', 'Fichier trop lourd (4 Mo maximum).');
   }
   const ext = sniff(bytes);
-  if (!ext) throw new HttpError(415, 'unsupported', 'Format non accepté. Formats acceptés : WebP, PNG, JPEG, AVIF et PDF.');
+  if (!ext) throw new HttpError(415, 'unsupported', 'Format non accepté. Formats acceptés : WebP, PNG, JPEG, AVIF, MP4, WebM et PDF.');
 
   if (typeof input.replace === 'string' && input.replace) {
     const ref = input.replace;

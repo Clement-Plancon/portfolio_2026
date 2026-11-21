@@ -1,0 +1,101 @@
+---
+// One image or one video from the media library, framed without distortion whatever its proportions.
+// The frame knows the orientation (portrait, landscape, square) from the dimensions recorded when the
+// file was uploaded, so layouts can place it well; a video plays muted and looped, has a pause button,
+// and does not play by itself when motion is reduced.
+import type { MediaResolver } from '../lib/media';
+
+interface Props {
+  src: string;
+  alt: string;
+  media: MediaResolver;
+  /** Image shown before a video plays (and instead of it when motion is reduced). */
+  poster?: string;
+  class?: string;
+  /** For images above the fold. */
+  eager?: boolean;
+  /** Decorative: the same image is described elsewhere. */
+  decorative?: boolean;
+}
+const { src, alt, media, poster, class: cls, eager = false, decorative = false } = Astro.props;
+const file = media(src);
+const posterFile = poster ? media(poster) : undefined;
+const isVideo = /\.(mp4|webm)$/.test(src);
+const w = file?.width;
+const h = file?.height;
+const ratio = w && h ? w / h : undefined;
+const orientation = !ratio ? 'landscape' : ratio < 0.85 ? 'portrait' : ratio > 1.2 ? 'landscape' : 'square';
+---
+
+{
+  file && (
+    <figure class:list={['media', `media--${orientation}`, cls]} style={ratio ? `--ratio:${ratio.toFixed(4)}` : undefined} data-media>
+      {isVideo ? (
+        <>
+          <video
+            src={file.src}
+            poster={posterFile?.src}
+            width={w}
+            height={h}
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-label={decorative ? undefined : alt}
+            aria-hidden={decorative ? 'true' : undefined}
+            data-autoplay
+          />
+          <button class="media__toggle" type="button" data-video-toggle hidden aria-label="Mettre la vidéo en pause">
+            <span aria-hidden="true" />
+          </button>
+        </>
+      ) : (
+        <img src={file.src} alt={decorative ? '' : alt} width={w} height={h} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+      )}
+      <slot />
+    </figure>
+  )
+}
+
+<style>
+  .media {
+    position: relative;
+    margin: 0;
+  }
+  .media img,
+  .media video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--ratio, 16 / 10);
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--bg-2);
+  }
+  .media__toggle {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: rgb(15 14 13 / 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--rule-strong);
+    display: grid;
+    place-items: center;
+  }
+  .media__toggle span {
+    width: 0.75rem;
+    height: 0.85rem;
+    border-inline: 3px solid var(--fg);
+  }
+  .media__toggle[aria-pressed='true'] span {
+    width: 0;
+    height: 0;
+    border: 0;
+    border-left: 0.75rem solid var(--fg);
+    border-block: 0.45rem solid transparent;
+    margin-left: 0.2rem;
+  }
+</style>

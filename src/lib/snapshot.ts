@@ -10,7 +10,9 @@ import {
   type Profile,
   type Project,
   type SeoSettings,
+  type Site,
   type Skills,
+  siteSchema,
 } from './schemas';
 
 export const SNAPSHOT_FORMAT = 1;
@@ -40,6 +42,8 @@ export interface SiteData {
   profile: Profile;
   skills: Skills;
   seo: SeoSettings;
+  /** The site's settings; defaults when the content has none yet (content published before this block existed). */
+  site: Site;
   projects: ProjectEntry[];
   experiences: ExperienceEntry[];
   /** Media manifest entries (alt text, dimensions), by reference. */
@@ -83,6 +87,7 @@ export function toSiteData(s: Snapshot, { includeHidden = false } = {}): SiteDat
     profile: s.entries[contentPath('profile')] as Profile,
     skills: s.entries[contentPath('skills')] as Skills,
     seo: s.entries[contentPath('seo')] as SeoSettings,
+    site: siteSchema.parse(s.entries[contentPath('site')] ?? {}),
     projects: projects.filter(visible).sort(byOrder),
     experiences: experiences.filter(visible).sort(byOrder),
     manifest: new Map(manifest.items.map((i) => [i.file, i])),

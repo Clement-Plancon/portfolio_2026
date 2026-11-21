@@ -6,19 +6,21 @@ import { gather, motif, type Motif, svgPath, tangle, warp } from '../lib/threads
 
 interface Props {
   kind: 'hero' | 'project' | 'warp' | 'gather';
-  /** Thread colours, one per project, in page order. */
+  /** The threads of the scene (3 to 8, src/lib/site.ts), whatever the number of projects. */
   colors: string[];
-  /** project: the thread that draws the motif, and the motif. */
+  /** project: the thread that draws the motif (any index: it wraps), its motif and its colour. */
   strand?: number;
   motif?: Motif;
+  color?: string;
   class?: string;
   /** id of the motif's path, to be reused elsewhere (<use>). */
   id?: string;
 }
-const { kind, colors, strand = 0, motif: m = 'noeud', class: cls, id } = Astro.props;
+const { kind, colors, strand: rawStrand = 0, motif: m = 'noeud', color, class: cls, id } = Astro.props;
 // Points per thread: enough for a smooth curve at full size, no more (the HTML carries them).
 const n = kind === 'hero' ? 260 : kind === 'project' ? 150 : 70;
 const S = colors.length || 1;
+const strand = rawStrand % S;
 type Line = { d: string; color: string; width: number; opacity: number; id?: string };
 const lines: Line[] = [];
 let viewBox = '-1 -1 2 2';
@@ -30,7 +32,7 @@ if (kind === 'hero') {
   colors.forEach((c, s) => {
     if (s !== strand) lines.push({ d: svgPath(warp(s, S, 36, 0, 0.1).map(([x, y, z]) => [x * 1.4, y - 1.05, z]), 1), color: c, width: 0.006, opacity: 0.35 });
   });
-  lines.push({ d: svgPath(motif(m, n), 0.8), color: colors[strand] ?? '#f1ebe2', width: 0.03, opacity: 1, id });
+  lines.push({ d: svgPath(motif(m, n), 0.8), color: color ?? colors[strand] ?? '#f1ebe2', width: 0.03, opacity: 1, id });
 } else if (kind === 'warp') {
   viewBox = '-1.6 -0.6 3.2 1.2';
   colors.forEach((c, s) => lines.push({ d: svgPath(warp(s, S, n, 0, 0.22), 1), color: c, width: 0.008, opacity: 0.6 }));

@@ -17,7 +17,7 @@ export const MOTIF_LABELS: Record<Motif, string> = {
   spirale: 'Spirale — collecter, synthétiser',
   onde: 'Onde — signal, alerte',
   barres: 'Barres — données chiffrées',
-  noeud: 'Nœud — motif par défaut',
+  noeud: 'Nœud — relier',
 };
 
 /** Motifs of the projects published before the field existed. Any other project takes `noeud`, until set in the admin. */

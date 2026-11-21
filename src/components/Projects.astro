@@ -1,25 +1,31 @@
 ---
-// Act 2 — the projects. One scene per project: its thread, in its tint, drawn into its motif (an
-// abstract sign of its domain, labelled as such), its real captures when there are some, and what it
-// is. Each scene opens the project's article over the page (a modal dialog with every detail).
-// Without JavaScript the articles are printed under their scene; every address #projet-x works.
+// Act 2 — the projects. The selected projects (Site → Projets in the admin: all of them, or those
+// marked « mis en avant », up to a maximum) each get a scene: their thread drawn into their motif, in
+// their tint, with their real image or video when there is one. The other visible projects are listed
+// under « Autres réalisations », as cards. Every project opens the same article (ProjectArticle).
+// Any number of projects works: one scene, six, twelve; the cards wrap; nothing counts on a number.
 import Arrow from './Arrow.astro';
+import Media from './Media.astro';
+import ProjectArticle from './ProjectArticle.astro';
 import ThreadSvg from './ThreadSvg.astro';
 import type { ProjectEntry } from '../lib/content';
-import { paragraphs } from '../lib/content';
 import { formatPeriod } from '../lib/format';
 import type { MediaResolver } from '../lib/media';
+import type { ResolvedSection } from '../lib/site';
 import { MOTIF_LABELS, motifOf } from '../lib/threads';
 import { TINTS, tintStyle } from '../lib/tints';
 
 interface Props {
-  projects: ProjectEntry[];
+  section: ResolvedSection;
+  featured: ProjectEntry[];
+  others: ProjectEntry[];
+  othersTitle: string;
+  threads: string[];
   media: MediaResolver;
 }
-const { projects, media } = Astro.props;
+const { section, featured, others, othersTitle, threads, media } = Astro.props;
+const all = [...featured, ...others];
 const pad = (n: number) => String(n).padStart(2, '0');
-const total = pad(projects.length);
-const colors = projects.map((p) => TINTS[p.cover.color].thread);
 const period = (p: ProjectEntry) => formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
 // The light of a project's scene: its tint, deepened.
 const glow = (hex: string) => {
@@ -27,94 +33,97 @@ const glow = (hex: string) => {
   const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * 0.42));
   return `#${c.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 };
+const side = (p: ProjectEntry, i: number) => (p.cover.variant === 'texte-gauche' ? 'left' : p.cover.variant === 'texte-droite' ? 'right' : i % 2 ? 'right' : 'left');
+const mainMedia = (p: ProjectEntry) =>
+  p.cover.video ? { src: p.cover.video.src, alt: p.cover.video.alt, poster: p.cover.image?.src } : p.cover.image ? { src: p.cover.image.src, alt: p.cover.image.alt } : undefined;
+const lede = section.intro ?? (all.length > 1 ? 'Faites défiler pour parcourir les projets, ou ouvrez-en un directement.' : undefined);
+const article = (p: ProjectEntry, reuseMotif: boolean) => {
+  const k = all.indexOf(p);
+  return { project: p, i: k, total: all.length, prev: all[(k - 1 + all.length) % all.length], next: all[(k + 1) % all.length], threads, media, reuseMotif };
+};
 ---
 
-<section class="projects" id="projets" aria-labelledby="projects-title">
+<section class="projects" id="projets" aria-labelledby="projects-title" data-act={`${section.act} — ${section.actName}`}>
   <header class="projects__head wrap">
-    <p class="act label"><span><span class="act__n">02</span> Exploration</span></p>
+    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
     <div class="projects__intro">
-      <h2 id="projects-title" class="projects__title display">Projets</h2>
-      <p class="projects__lede">
-        Six réalisations, du ministère à l'application personnelle. Chacune tire son fil : faites défiler pour les parcourir, ou ouvrez-en une directement.
-      </p>
+      <h2 id="projects-title" class:list={['projects__title display', { 'projects__title--long': section.title.length > 14 }]}>{section.title}</h2>
+      {lede && <p class="projects__lede">{lede}</p>}
     </div>
-    <ol role="list" class="projects__index">
-      {
-        projects.map((p, i) => (
-          <li class="tinted" style={tintStyle(p.cover.color)}>
-            <a href={`#projet-${p.id}`} data-jump={p.id}>
-              <span class="label">{pad(i + 1)}</span>
-              {p.title}
-            </a>
-          </li>
-        ))
-      }
-    </ol>
+    {
+      all.length > 1 && (
+        <ol role="list" class="projects__index">
+          {all.map((p, i) => (
+            <li class="tinted" style={tintStyle(p.cover.color)}>
+              <a href={`#projet-${p.id}`} data-jump={p.id}>
+                <span class="label">{pad(i + 1)}</span>
+                {p.title}
+              </a>
+            </li>
+          ))}
+        </ol>
+      )
+    }
   </header>
 
-  <nav class="rail" aria-label="Projets" data-rail>
-    <ol role="list">
-      {
-        projects.map((p, i) => (
-          <li class="tinted" style={tintStyle(p.cover.color)}>
-            <a href={`#projet-${p.id}`} data-jump={p.id}>
-              <span class="rail__dot" aria-hidden="true" />
-              <span class="rail__name">{p.title}</span>
-              <span class="visually-hidden">, projet {i + 1} sur {projects.length}</span>
-            </a>
-          </li>
-        ))
-      }
-    </ol>
-  </nav>
+  {
+    featured.length > 1 && (
+      <nav class="rail" aria-label="Projets" data-rail>
+        <ol role="list">
+          {featured.map((p, i) => (
+            <li class="tinted" style={tintStyle(p.cover.color)}>
+              <a href={`#projet-${p.id}`} data-jump={p.id}>
+                <span class="rail__dot" aria-hidden="true" />
+                <span class="rail__name">{p.title}</span>
+                <span class="visually-hidden">
+                  , projet {i + 1} sur {featured.length}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
 
   {
-    projects.map((p, i) => {
-      const cover = p.cover.image ? media(p.cover.image.src) : undefined;
-      const gallery = p.gallery.map((g) => ({ ...g, file: media(g.src) })).filter((g) => g.file);
-      const prev = projects[(i - 1 + projects.length) % projects.length];
-      const next = projects[(i + 1) % projects.length];
-      const when = period(p);
+    featured.map((p, i) => {
       const m = motifOf(p.id, p.cover.motif);
       const tint = TINTS[p.cover.color].thread;
-      const sections = [
-        { title: 'Contexte', body: paragraphs(p.context) },
-        { title: 'Problème', body: paragraphs(p.problem) },
-        { title: 'Mon rôle', body: paragraphs(p.role) },
-        { title: 'Approche', body: paragraphs(p.approach) },
-      ].filter((s) => s.body.length);
+      const mm = mainMedia(p);
       return (
         <article
-          class:list={['slide tinted', i % 2 ? 'slide--right' : 'slide--left', { 'slide--media': cover }]}
+          class:list={['slide tinted', `slide--${side(p, i)}`, { 'slide--media': mm, 'slide--long': p.title.length > 22 && p.title.length <= 40, 'slide--xlong': p.title.length > 40 }]}
           id={`projet-${p.id}`}
           style={tintStyle(p.cover.color)}
           aria-labelledby={`slide-${p.id}`}
           data-project
           data-scene="project"
           data-strand={i}
+          data-color={tint}
           data-motif={m}
-          data-thread={tint}
           data-glow={glow(tint)}
         >
           <div class="slide__in wrap">
             <div class="slide__text" data-origin>
               <p class="slide__no label">
-                <span class="slide__n">{pad(i + 1)}</span> / {total}
-                <span class="slide__cat">{p.category === 'pro' ? 'Professionnel' : 'Personnel'}</span>
+                <span class="slide__n">{pad(all.indexOf(p) + 1)}</span> / {pad(all.length)}
+                {p.kind && <span class="slide__cat">{p.category === 'pro' ? 'Professionnel' : 'Personnel'}</span>}
               </p>
-              <h3 class="slide__title display" id={`slide-${p.id}`}>
+              <h3 class="slide__title display" id={`slide-${p.id}`} lang="fr">
                 <a href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
                   {p.title}
                 </a>
               </h3>
               {p.kind && <p class="slide__kind">{p.kind}</p>}
               <p class="slide__sum">{p.summary}</p>
-              <p class="slide__meta label">{[p.category === 'pro' ? p.organisation : 'Projet personnel', when].filter(Boolean).join(' — ')}</p>
+              {(p.organisation || period(p)) && <p class="slide__meta label">{[p.category === 'pro' ? p.organisation : 'Projet personnel', period(p)].filter(Boolean).join(' — ')}</p>}
               {p.technologies.length > 0 && (
                 <ul role="list" class="chips" aria-label="Technologies">
-                  {p.technologies.map((t) => (
+                  {p.technologies.slice(0, 8).map((t) => (
                     <li>{t}</li>
                   ))}
+                  {p.technologies.length > 8 && <li>+{p.technologies.length - 8}</li>}
                 </ul>
               )}
               <div class="slide__cta">
@@ -130,172 +139,57 @@ const glow = (hex: string) => {
             </div>
 
             <div class="slide__stage" data-stage>
-              <ThreadSvg kind="project" colors={colors} strand={i} motif={m} id={`motif-${p.id}`} />
-              {cover && p.cover.image && (
-                <figure class="slide__shot">
-                  <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
-                  <figcaption class="label">Capture réelle</figcaption>
-                </figure>
+              <ThreadSvg kind="project" colors={threads} strand={i} motif={m} color={tint} id={`motif-${p.id}`} />
+              {mm && (
+                <Media src={mm.src} alt={mm.alt} poster={mm.poster} media={media} class="slide__shot">
+                  <figcaption class="label">{p.cover.video ? 'Vidéo' : 'Capture réelle'}</figcaption>
+                </Media>
               )}
               <p class="slide__motif label" aria-hidden="true">
                 Motif — {MOTIF_LABELS[m].split(' — ')[1]}
               </p>
             </div>
           </div>
-
-          <dialog class="feat" id={`detail-${p.id}`} aria-labelledby={`detail-${p.id}-title`} data-detail>
-            <div class="feat__bar">
-              <p class="label">
-                <span class="slide__n">{pad(i + 1)}</span> / {total}
-              </p>
-              <div class="feat__nav">
-                <a class="feat__btn" href={`#projet-${prev.id}`} data-go aria-label={`Projet précédent : ${prev.title}`}>
-                  <Arrow dir="left" />
-                  <span class="feat__btn-t">Précédent</span>
-                </a>
-                <a class="feat__btn" href={`#projet-${next.id}`} data-go aria-label={`Projet suivant : ${next.title}`}>
-                  <span class="feat__btn-t">Suivant</span>
-                  <Arrow />
-                </a>
-                <button class="feat__btn feat__close" type="button" data-close>
-                  Fermer
-                </button>
-              </div>
-            </div>
-
-            <article class="feat__in wrap">
-              <header class="feat__head">
-                <div class="feat__headtext">
-                  <p class="label">{p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')}</p>
-                  <p class="feat__title display" id={`detail-${p.id}-title`}>
-                    {p.title}
-                  </p>
-                  <p class="feat__stand">{p.summary}</p>
-                </div>
-                <figure class="feat__motif" aria-hidden="true">
-                  <svg class="feat__svg" viewBox="-1 -1 2 2" fill="none" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                    <use href={`#motif-${p.id}`} />
-                  </svg>
-                </figure>
-              </header>
-
-              {cover && p.cover.image && (
-                <figure class="feat__shot">
-                  <div class="feat__frame">
-                    <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
-                  </div>
-                  <figcaption class="label">Capture réelle{p.cover.image.caption ? ` — ${p.cover.image.caption}` : ''}</figcaption>
-                </figure>
-              )}
-
-              <div class="feat__body">
-                <div class="feat__text">
-                  {sections.map((s) => (
-                    <section class="feat__sec">
-                      <h4 class="label">{s.title}</h4>
-                      {s.body.map((t) => (
-                        <p>{t}</p>
-                      ))}
-                    </section>
-                  ))}
-                  {p.contributions.length > 0 && (
-                    <section class="feat__sec">
-                      <h4 class="label">{p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</h4>
-                      <ol role="list" class="feat__list">
-                        {p.contributions.map((c) => (
-                          <li>{c}</li>
-                        ))}
-                      </ol>
-                    </section>
-                  )}
-                  {p.results.length > 0 && (
-                    <section class="feat__sec">
-                      <h4 class="label">Résultats</h4>
-                      <ul role="list" class="feat__list feat__list--plain">
-                        {p.results.map((r) => (
-                          <li>{r}</li>
-                        ))}
-                      </ul>
-                    </section>
-                  )}
-                </div>
-
-                <aside class="feat__facts" aria-label="Fiche du projet">
-                  <dl>
-                    {p.organisation && (
-                      <div>
-                        <dt class="label">Cadre</dt>
-                        <dd>{p.organisation}</dd>
-                      </div>
-                    )}
-                    {when && (
-                      <div>
-                        <dt class="label">Période</dt>
-                        <dd>{when}</dd>
-                      </div>
-                    )}
-                    {p.status && (
-                      <div>
-                        <dt class="label">État</dt>
-                        <dd>{p.status === 'en-cours' ? 'En cours de développement' : 'Terminé'}</dd>
-                      </div>
-                    )}
-                    {p.technologies.length > 0 && (
-                      <div>
-                        <dt class="label">Technologies</dt>
-                        <dd>
-                          <ul role="list" class="chips">
-                            {p.technologies.map((t) => (
-                              <li>{t}</li>
-                            ))}
-                          </ul>
-                        </dd>
-                      </div>
-                    )}
-                    {p.links.length > 0 && (
-                      <div>
-                        <dt class="label">Liens</dt>
-                        <dd>
-                          <ul role="list">
-                            {p.links.map((l) => (
-                              <li>
-                                <a class="link feat__ext" href={l.url} rel="noopener">
-                                  {l.label}
-                                  <Arrow dir="out" />
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
-                  <p class="feat__note label">Le motif est une illustration du domaine du projet, pas une capture.</p>
-                </aside>
-              </div>
-
-              {gallery.length > 0 && (
-                <div class="feat__gallery">
-                  {gallery.map((g) => (
-                    <figure>
-                      <img src={g.file!.src} alt={g.alt} width={g.file!.width} height={g.file!.height} loading="lazy" decoding="async" />
-                      {g.caption && <figcaption class="label">{g.caption}</figcaption>}
-                    </figure>
-                  ))}
-                </div>
-              )}
-
-              <a class="feat__next tinted" href={`#projet-${next.id}`} data-go style={tintStyle(next.cover.color)}>
-                <span class="label">Projet suivant</span>
-                <span class="feat__next-t display">
-                  {next.title} <Arrow />
-                </span>
-              </a>
-            </article>
-          </dialog>
+          <ProjectArticle {...article(p, true)} />
         </article>
       );
     })
+  }
+
+  {
+    others.length > 0 && (
+      <div class="others wrap">
+        <h3 class="others__title display">{othersTitle}</h3>
+        <ul role="list" class="others__grid">
+          {others.map((p, j) => {
+            const m = motifOf(p.id, p.cover.motif);
+            const tint = TINTS[p.cover.color].thread;
+            const mm = mainMedia(p);
+            return (
+              <li class="card tinted" id={`projet-${p.id}`} style={tintStyle(p.cover.color)} data-project>
+                <div class="card__visual" aria-hidden="true">
+                  {mm && !p.cover.video ? (
+                    <Media src={mm.src} alt="" media={media} class="card__media" decorative />
+                  ) : (
+                    <ThreadSvg kind="project" colors={threads} strand={featured.length + j} motif={m} color={tint} id={`motif-${p.id}`} />
+                  )}
+                </div>
+                <div class="card__body" data-origin>
+                  <p class="label card__meta">{[p.kind?.split('·')[0]?.trim(), period(p)].filter(Boolean).join(' — ') || (p.category === 'pro' ? 'Professionnel' : 'Personnel')}</p>
+                  <h4 class="card__title display" lang="fr">
+                    <a href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
+                      {p.title}
+                    </a>
+                  </h4>
+                  <p class="card__sum">{p.summary}</p>
+                </div>
+                <ProjectArticle {...article(p, !(mm && !p.cover.video))} />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    )
   }
 </section>
 
@@ -399,7 +293,10 @@ const glow = (hex: string) => {
     padding-left: 0.75rem;
     border-left: 1px solid var(--rule-strong);
   }
+  /* long titles: smaller, broken between words (French hyphenation), never cut */
   .slide__title {
+    overflow-wrap: break-word;
+    hyphens: manual;
     margin-top: 1.25rem;
     font-size: clamp(3rem, 0.8rem + 5.6vw, 7.5rem);
     font-stretch: 76%;
@@ -442,8 +339,28 @@ const glow = (hex: string) => {
     bottom: -0.5rem;
     color: var(--fg-3);
   }
-  /* A real capture: a large framed screen in front of the thread. */
-  .slide__shot {
+  .slide--long .slide__title {
+    font-size: clamp(2.4rem, 0.8rem + 3.6vw, 5rem);
+  }
+  .slide--xlong .slide__title {
+    font-size: clamp(2rem, 0.8rem + 2.6vw, 3.8rem);
+  }
+  .slide__sum {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+    overflow: hidden;
+  }
+  /* A real capture or video: a large framed screen in front of the thread, sized by its orientation. */
+  .slide__stage :global(.slide__shot.media--portrait) {
+    left: 18% !important;
+    right: 42% !important;
+    top: 2% !important;
+  }
+  .slide__stage :global(.slide__shot.media--square) {
+    right: 38% !important;
+  }
+  .slide__stage :global(.slide__shot) {
     position: absolute;
     left: -6%;
     right: 30%;
@@ -452,12 +369,13 @@ const glow = (hex: string) => {
     transform-origin: 30% 50%;
     transition: transform 1.2s var(--ease);
   }
-  .slide--right .slide__shot {
+  .slide--right .slide__stage :global(.slide__shot) {
     left: -6%;
     right: 30%;
     transform: perspective(1400px) rotateY(8deg) rotateX(3deg);
   }
-  .slide__shot img {
+  .slide__stage :global(.slide__shot img),
+  .slide__stage :global(.slide__shot video) {
     width: 100%;
     border-radius: 6px;
     box-shadow:
@@ -465,10 +383,10 @@ const glow = (hex: string) => {
       0 40px 90px -30px rgb(0 0 0 / 0.85),
       0 0 120px -40px var(--tint);
   }
-  .slide__shot figcaption {
+  .slide__stage :global(.slide__shot figcaption) {
     margin-top: 0.75rem;
   }
-  .slide__stage:hover .slide__shot {
+  .slide__stage:hover :global(.slide__shot) {
     transform: perspective(1400px) rotateY(-3deg) rotateX(1deg) translateY(-0.5rem);
   }
 
@@ -536,275 +454,6 @@ const glow = (hex: string) => {
     transform: scale(1.5);
   }
 
-  /* ---------- The article (dialog) ---------- */
-  .feat {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    max-height: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    background: var(--bg);
-    color: var(--fg);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
-  .feat::backdrop {
-    background: transparent;
-  }
-  :global(html:not(.js)) .feat {
-    position: static;
-    display: block;
-    height: auto;
-    overflow: visible;
-    background: none;
-    padding-bottom: 4rem;
-  }
-  :global(html:not(.js)) .feat__bar,
-  :global(html:not(.js)) .feat__next,
-  :global(html:not(.js)) .feat__head {
-    display: none;
-  }
-  .feat__bar {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    min-height: var(--header-h);
-    padding-inline: var(--g);
-    background: color-mix(in srgb, var(--bg) 84%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--rule);
-  }
-  .feat__nav {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .feat__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 2.75rem;
-    padding: 0 1.1rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: 99px;
-    font-size: 0.875rem;
-    text-decoration: none;
-    transition:
-      background var(--dur-1),
-      color var(--dur-1),
-      border-color var(--dur-1);
-  }
-  .feat__btn:hover {
-    background: var(--fg);
-    color: var(--bg);
-    border-color: var(--fg);
-  }
-  .feat__in {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: var(--gap);
-    padding-top: clamp(2rem, 6vh, 5rem);
-    padding-bottom: clamp(3rem, 8vh, 6rem);
-  }
-  .feat__head {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: subgrid;
-    align-items: center;
-    background:
-      radial-gradient(60% 80% at 75% 50%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 70%),
-      var(--bg-2);
-    border-radius: 8px;
-    padding: clamp(1.5rem, 4vw, 3.5rem);
-    overflow: hidden;
-  }
-  .feat__headtext {
-    grid-column: 1 / span 7;
-  }
-  .feat__title {
-    margin-top: 1rem;
-    font-size: clamp(3rem, 0.8rem + 6.5vw, 8.5rem);
-    font-stretch: 76%;
-    font-weight: 650;
-    line-height: 0.86;
-  }
-  .feat__stand {
-    max-width: 30em;
-    margin-top: 1.5rem;
-    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem);
-    line-height: 1.4;
-  }
-  .feat__motif {
-    position: relative;
-    grid-column: 8 / -1;
-    aspect-ratio: 1;
-  }
-  .feat__svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-  .feat__shot {
-    grid-column: 1 / -1;
-    margin-top: var(--gap);
-  }
-  .feat__frame {
-    display: grid;
-    place-items: center;
-    padding: clamp(0.75rem, 3vw, 3.5rem);
-    background: var(--bg-2);
-    border-radius: 8px;
-  }
-  .feat__frame img {
-    width: 100%;
-    max-width: 72rem;
-    border-radius: 4px;
-    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.7);
-  }
-  figcaption.label {
-    margin-top: 0.75rem;
-  }
-  .feat__body {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: subgrid;
-    margin-top: clamp(2.5rem, 6vh, 4.5rem);
-    row-gap: 2.5rem;
-  }
-  .feat__text {
-    grid-column: 1 / span 7;
-  }
-  .feat__sec + .feat__sec {
-    margin-top: 2.5rem;
-  }
-  .feat__sec h4 {
-    margin-bottom: 0.9rem;
-  }
-  .feat__sec p {
-    max-width: 36em;
-    font-size: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
-    line-height: 1.6;
-  }
-  .feat__sec p + p {
-    margin-top: 1em;
-  }
-  .feat__list {
-    counter-reset: c;
-    border-top: 1px solid var(--rule);
-  }
-  .feat__list li {
-    counter-increment: c;
-    display: grid;
-    grid-template-columns: 2.75rem 1fr;
-    padding-block: 0.9rem;
-    border-bottom: 1px solid var(--rule);
-  }
-  .feat__list li::before {
-    content: counter(c, decimal-leading-zero);
-    font-family: var(--display);
-    font-weight: 600;
-    color: var(--tint);
-  }
-  .feat__list--plain li::before {
-    content: '—';
-  }
-  .feat__facts {
-    grid-column: 9 / span 4;
-  }
-  .feat__facts dl > div {
-    padding-block: 0.85rem;
-    border-top: 1px solid var(--rule);
-  }
-  .feat__facts dd {
-    margin-top: 0.35rem;
-  }
-  .feat__facts .chips {
-    margin-top: 0.2rem;
-  }
-  .feat__ext {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .feat__note {
-    margin-top: 1.5rem;
-    letter-spacing: 0.04em;
-    text-transform: none;
-    color: var(--fg-3);
-  }
-  .feat__gallery {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    gap: var(--gap);
-    margin-top: 4rem;
-  }
-  .feat__gallery img {
-    width: 100%;
-    border-radius: 4px;
-  }
-  .feat__next {
-    grid-column: 1 / -1;
-    display: block;
-    margin-top: clamp(4rem, 10vh, 8rem);
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--rule-strong);
-    text-decoration: none;
-  }
-  .feat__next-t {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: 0.75rem;
-    font-size: clamp(2.4rem, 1rem + 5vw, 6.5rem);
-    font-weight: 650;
-    font-stretch: 76%;
-    transition: color var(--dur-2);
-  }
-  .feat__next:hover .feat__next-t {
-    color: var(--tint);
-  }
-  .feat__next .arrow {
-    width: 0.45em;
-    height: 0.45em;
-  }
-  :global(.motion) .feat[open] .feat__in > * {
-    animation: feat-in 1s var(--ease) both;
-    animation-delay: calc(180ms + var(--k, 0) * 80ms);
-  }
-  .feat__shot {
-    --k: 1;
-  }
-  .feat__body {
-    --k: 2;
-  }
-  @keyframes feat-in {
-    from {
-      opacity: 0;
-      transform: translateY(2rem);
-    }
-  }
-  :global(.motion) .feat[open] .feat__svg {
-    animation: feat-motif 1.6s var(--ease) both 0.25s;
-  }
-  @keyframes feat-motif {
-    from {
-      opacity: 0;
-      transform: scale(0.9) rotate(-4deg);
-    }
-  }
-
   /* ---------- Tablet ---------- */
   @media (max-width: 63.99rem) {
     .projects__title {
@@ -835,17 +484,6 @@ const glow = (hex: string) => {
       grid-column: 1 / -1;
       grid-row: 2;
       max-width: 40rem;
-    }
-    .feat__headtext,
-    .feat__text,
-    .feat__facts {
-      grid-column: 1 / -1;
-    }
-    .feat__motif {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      width: min(100%, 22rem);
-      justify-self: center;
     }
   }
   /* Landscape tablets and short laptops: the scene keeps its two columns. */
@@ -884,8 +522,8 @@ const glow = (hex: string) => {
     .slide--right .slide__stage {
       width: 100%;
     }
-    .slide__shot,
-    .slide--right .slide__shot {
+    .slide__stage :global(.slide__shot),
+    .slide--right .slide__stage :global(.slide__shot) {
       left: 0;
       right: 22%;
       top: 0;
@@ -898,32 +536,110 @@ const glow = (hex: string) => {
       flex: 1;
       justify-content: center;
     }
-    .feat__bar {
-      position: fixed;
-      top: auto;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      border-bottom: 0;
-      border-top: 1px solid var(--rule);
-      padding-bottom: env(safe-area-inset-bottom);
-      min-height: 4rem;
-    }
-    .feat__btn {
-      min-width: 2.75rem;
-      justify-content: center;
-      padding: 0 0.9rem;
-    }
-    .feat__btn-t {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip: rect(0 0 0 0);
-    }
-    .feat__in {
-      padding-top: 1rem;
-      padding-bottom: 7rem;
-    }
+  }
+
+  .projects__title--long {
+    font-size: clamp(3rem, 1rem + 6vw, 8rem);
+    overflow-wrap: break-word;
+    hyphens: manual;
+  }
+
+  /* ---------- The other projects: cards that open the same article ---------- */
+  .others {
+    padding-block: clamp(4rem, 10vh, 7rem) 2rem;
+  }
+  .others__title {
+    font-size: clamp(2rem, 1rem + 2.6vw, 3.6rem);
+    font-weight: 600;
+    font-stretch: 80%;
+  }
+  .others__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
+    gap: var(--gap);
+    margin-top: 2rem;
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgb(26 24 21 / 0.7);
+    border: 1px solid var(--rule);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+      transform var(--dur-2) var(--ease),
+      border-color var(--dur-2);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--tint) 55%, transparent);
+  }
+  .card__visual {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: radial-gradient(70% 80% at 50% 50%, color-mix(in srgb, var(--tint) 14%, transparent), transparent 75%);
+  }
+  .card__visual :global(.stage-svg) {
+    inset: 14% 22%;
+    width: auto;
+    height: auto;
+    opacity: 1 !important;
+  }
+  .card__visual :global(.card__media) {
+    position: absolute;
+    inset: 0;
+  }
+  .card__visual :global(.card__media img) {
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.1rem 1.25rem 1.4rem;
+    flex: 1;
+  }
+  .card__meta {
+    color: color-mix(in srgb, var(--tint) 62%, #fff);
+  }
+  .card__title {
+    font-size: clamp(1.5rem, 1.2rem + 0.8vw, 2rem);
+    font-weight: 600;
+    font-stretch: 82%;
+    line-height: 1;
+    overflow-wrap: break-word;
+    hyphens: manual;
+  }
+  .card__title a {
+    text-decoration: none;
+  }
+  /* the whole card opens the article */
+  .card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .card__title a:focus-visible::after {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: 14px;
+  }
+  .card__sum {
+    color: var(--fg-2);
+    font-size: 0.9375rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+  :global(html:not(.js)) .card {
+    overflow: visible;
   }
 </style>

@@ -10,22 +10,25 @@ import Projects from './Projects.astro';
 import Skills from './Skills.astro';
 import Base from '../layouts/Base.astro';
 import type { MediaResolver } from '../lib/media';
+import { resolveSite } from '../lib/site';
 import type { SiteData } from '../lib/snapshot';
 import { personLd, profilePageLd, projectsLd } from '../lib/structured-data';
-import { TINTS } from '../lib/tints';
 
 interface Props {
   data: SiteData;
   media: MediaResolver;
   /** Admin preview: not indexable, with a banner. */
   preview?: boolean;
+  /** Text of the banner (default: draft preview). */
+  note?: string;
 }
-const { data, media, preview = false } = Astro.props;
+const { data, media, preview = false, note } = Astro.props;
 const { profile, seo, projects, experiences, skills } = data;
 const page = seo.pages.home;
 const share = media(page.ogImage ?? seo.defaultOgImage);
-// One thread per project, dyed in its tint.
-const colors = projects.map((p) => TINTS[p.cover.color].thread);
+// Everything the page shows is decided from the content (src/lib/site.ts).
+const site = resolveSite(data);
+const cvUrl = profile.cv?.startsWith('files/') ? media(profile.cv)?.src : profile.cv;
 ---
 
 <Base
@@ -34,6 +37,10 @@ const colors = projects.map((p) => TINTS[p.cover.color].thread);
   image={share?.src}
   noindex={preview || page.noindex}
   profile={profile}
+  sections={site.sections}
+  threads={site.threads}
+  ambiance={site.site.appearance.ambiance}
+  scene={site.site.appearance.scene}
   type="profile"
   jsonLd={preview
     ? []
@@ -42,22 +49,36 @@ const colors = projects.map((p) => TINTS[p.cover.color].thread);
   {
     preview && (
       <p class="preview-banner" role="note">
-        Aperçu du brouillon, visible par vous seul. <a href="/admin/">Retour à l'administration</a>
+        {note ?? 'Aperçu du brouillon, visible par vous seul.'} <a href="/admin/">Retour à l'administration</a>
       </p>
     )
   }
-  <Hero profile={profile} experiences={experiences} colors={colors} />
-  <Projects projects={projects} media={media} />
-  <Journey experiences={experiences} colors={colors} />
-  <Skills skills={skills} colors={colors} />
-  <About profile={profile} media={media} colors={colors} />
-  <Contact profile={profile} colors={colors} cvUrl={profile.cv?.startsWith('files/') ? media(profile.cv)?.src : undefined} />
+  <Hero site={site} media={media} />
+  {
+    site.sections.map((sec) => {
+      switch (sec.id) {
+        case 'projets':
+          return <Projects section={sec} featured={site.featured} others={site.others} othersTitle={site.othersTitle} threads={site.threads} media={media} />;
+        case 'parcours':
+          return <Journey section={sec} chapters={site.chapters} rest={site.rest} threads={site.threads} glow={site.ambiance.glow} />;
+        case 'competences':
+          return <Skills section={sec} skills={skills} threads={site.threads} glow={site.ambiance.glow} />;
+        case 'a-propos':
+          return <About section={sec} profile={profile} experiences={experiences} site={site.site} cvUrl={cvUrl} threads={site.threads} media={media} glow={site.ambiance.glow} />;
+        case 'contact':
+          return <Contact section={sec} profile={profile} site={site.site} cvUrl={cvUrl} threads={site.threads} glow={site.ambiance.contact} />;
+        default:
+          return null;
+      }
+    })
+  }
 </Base>
 
 <style>
   .preview-banner {
     position: fixed;
-    inset: auto 0 0 0;
+    /* above the phones' navigation bar */
+    inset: auto 0 var(--bar-h) 0;
     z-index: 60;
     padding: 0.6rem 1rem;
     background: var(--fg);

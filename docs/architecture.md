@@ -78,14 +78,16 @@ scripts/
   backup-to-files.mjs   Réécrit une sauvegarde dans src/content (copie dans Git, retour arrière)
   generate-og.mjs       Image de partage
 tests/unit/           Vitest : magasin de contenu, API, authentification, script de sauvegarde, schémas…
-tests/e2e/            Playwright sur `netlify serve --offline` : page publique, chaîne complète admin → public
+tests/e2e/            Playwright sur `netlify serve --offline` : page publique, chaîne complète admin → public,
+                      scénarios de contenu (src/scenarios/, route injectée seulement avec CONTENT_SCENARIOS=1),
+                      critères de réussite (criteria.spec.ts, exécuté en dernier, contenu restauré)
 ```
 
 ## Données (Netlify Blobs)
 
 | Magasin / clé | Contenu |
 |---|---|
-| `cms` / `published` | Le contenu en ligne : `{ format, rev, updatedAt, entries, media }` |
+| `cms` / `published` | Le contenu en ligne : `{ format, rev, updatedAt, entries, media }`. `entries` comprend le bloc facultatif `src/content/site.json` (réglages du site), absent du contenu publié avant lui : la page utilise alors les valeurs par défaut. |
 | `cms` / `draft` | Le brouillon, même forme ; « en attente » = différent de `published` |
 | `cms` / `history/<rev>` | Les 20 dernières versions publiées |
 | `cms` / `backups/<date>-initialisation` | Copie faite à l'initialisation |
@@ -204,7 +206,7 @@ Seules les données publiées passent par une réponse cacheable. Le brouillon n
 
 ## Une seule page
 
-- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) : `Hero` (introduction, `h1`), `Projects` (`#projets`), `Journey` (`#parcours`), `Skills` (`#competences`), `About` (`#a-propos`), `Contact` (`#contact`). Les ancres sont stables.
+- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) dans l'ordre et selon la visibilité décidés par l'administration : `Hero` (introduction, `h1`), puis `Projects` (`#projets`), `Journey` (`#parcours`), `Skills` (`#competences`), `About` (`#a-propos`), `Contact` (`#contact`, toujours en dernier). Les ancres sont stables. **Ce que la page montre est décidé par `resolveSite` (`src/lib/site.ts`)** : valeurs de secours, sections vides retirées, numéros d'actes, projets mis en scène et « Autres réalisations », chapitres du parcours, fils de la scène. Voir [systeme-adaptatif.md](systeme-adaptatif.md).
 - **Projets** : chaque projet est une scène `<article id="projet-…">` (son titre est un vrai lien `#projet-…`) contenant son article `<dialog id="detail-…">`, **présent dans le HTML** (indexable ; sans JavaScript, l'article est imprimé sous sa ligne). Le script l'ouvre en dialogue modal (`showModal`), tient l'adresse à jour (`/#projet-…`, *Retour* le ferme) et rend le focus à la ligne à la fermeture.
 - **Anciennes adresses** : `/projets/…`, `/parcours/`, `/a-propos/`, `/contact/`, `/articles/…` redirigent en 301 vers leur ancre (`netlify.toml`, testé dans `tests/unit/site.test.ts`).
 - **Routes** : `/` (SSR), `/media/…` et `/files/…` (médias publiés), `/404.html`, `/admin/` et `/admin/apercu/`, `/api/admin/*`, `sitemap-*.xml`, `robots.txt`. Aucune autre page publique.

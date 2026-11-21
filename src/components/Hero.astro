@@ -1,47 +1,80 @@
 ---
-// Act 1 — the introduction: who Clément is, beside the tangle of six threads (one per project).
-// The text is the page; the tangle is drawn as SVG by the server, then by WebGL when it can.
+// Act 1 — the introduction: who you are, beside the tangle of the threads (one per project shown).
+// Every text, both buttons and the optional image or video come from the admin (Site → Accueil), with
+// the profile as fallback. The tangle is drawn as SVG by the server, then by WebGL when it can.
 import Arrow from './Arrow.astro';
+import Media from './Media.astro';
 import ThreadSvg from './ThreadSvg.astro';
-import type { ExperienceEntry } from '../lib/content';
-import type { Profile } from '../lib/schemas';
+import type { MediaResolver } from '../lib/media';
+import type { Resolved } from '../lib/site';
 
 interface Props {
-  profile: Profile;
-  experiences: ExperienceEntry[];
-  colors: string[];
+  site: Resolved;
+  media: MediaResolver;
 }
-const { profile, experiences, colors } = Astro.props;
-const current = experiences.find((e) => !e.end);
-const [first, ...rest] = profile.name.split(' ');
+const { site, media } = Astro.props;
+const { hero, threads } = site;
+const [first, ...rest] = hero.title.trim().split(/\s+/);
+const long = hero.title.length > 20;
+const internal = (href: string) => href.startsWith('#');
 ---
 
-<section class="hero" aria-labelledby="hero-title" data-scene="hero" data-glow="#4b2a17">
+<section class:list={['hero', { 'hero--media': hero.media }]} aria-labelledby="hero-title" data-scene="hero" data-glow={site.ambiance.glow}>
   <div class="hero__in wrap">
     <div class="hero__stage" data-stage>
-      <ThreadSvg kind="hero" colors={colors} />
+      <ThreadSvg kind="hero" colors={threads} />
+      {hero.media && <Media src={hero.media.src} alt={hero.media.alt} media={media} class="hero__media" eager />}
     </div>
 
     <div class="hero__text">
-      <p class="hero__kicker label">
-        <span>{profile.location}</span>
-        {current && <span>{current.organisation}</span>}
-      </p>
-      <h1 id="hero-title" class="hero__name">
+      {
+        hero.kicker && (
+          <p class="hero__kicker label">
+            {hero.kicker.split(' — ').map((part) => (
+              <span>{part}</span>
+            ))}
+          </p>
+        )
+      }
+      <h1 id="hero-title" class:list={['hero__name', { 'hero__name--long': long }]}>
         <span class="hero__first display">{first}</span>
-        <span class="hero__last display">{rest.join(' ')}</span>
-        <span class="hero__role">{profile.jobTitle}</span>
+        {rest.length > 0 && <span class="hero__last display">{rest.join(' ')}</span>}
+        <span class="hero__role">{hero.role}</span>
       </h1>
-      <p class="hero__lead">{profile.headline}</p>
-      <div class="hero__cta">
-        <a class="btn btn--fill" href="#projets">Explorer les projets <Arrow dir="down" /></a>
-        <a class="btn" href="#contact">Me contacter</a>
-      </div>
+      {hero.lead && <p class="hero__lead">{hero.lead}</p>}
+      {
+        (hero.primary || hero.secondary) && (
+          <div class="hero__cta">
+            {hero.primary && (
+              <a class="btn btn--fill" href={hero.primary.href} rel={internal(hero.primary.href) ? undefined : 'noopener'}>
+                {hero.primary.label} <Arrow dir={internal(hero.primary.href) ? 'down' : 'out'} />
+              </a>
+            )}
+            {hero.secondary && (
+              <a class="btn" href={hero.secondary.href} rel={internal(hero.secondary.href) ? undefined : 'noopener'}>
+                {hero.secondary.label}
+              </a>
+            )}
+          </div>
+        )
+      }
     </div>
 
     <p class="hero__foot label" aria-hidden="true">
       <span><span class="act__n">01</span> Découverte</span>
-      <span class="hero__hint"><span class="hero__hint-gesture"><span class="hero__hint-fine">Passez sur les fils pour les démêler</span><span class="hero__hint-touch">Touchez les fils pour les démêler</span> — </span>faites défiler</span>
+      <span class="hero__hint">
+        {
+          hero.hint ?? (
+            <>
+              <span class="hero__hint-gesture">
+                <span class="hero__hint-fine">Passez sur les fils pour les démêler</span>
+                <span class="hero__hint-touch">Touchez les fils pour les démêler</span> —{' '}
+              </span>
+              faites défiler
+            </>
+          )
+        }
+      </span>
     </p>
   </div>
 </section>
@@ -103,6 +136,33 @@ const [first, ...rest] = profile.name.split(' ');
   }
   .hero__last {
     padding-left: 0.42em;
+  }
+  /* long names: smaller, and allowed to break between words only */
+  .hero__name--long .hero__first,
+  .hero__name--long .hero__last {
+    font-size: clamp(3rem, 0.8rem + 6.4vw, 8rem);
+  }
+  .hero__name .display {
+    overflow-wrap: break-word;
+  }
+  /* an image or a video in the introduction: framed in the stage, the threads around it */
+  .hero__stage :global(.hero__media) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(62%, 30rem);
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  .hero__stage :global(.hero__media.media--portrait) {
+    width: min(38%, 20rem);
+  }
+  .hero__stage :global(.hero__media img),
+  .hero__stage :global(.hero__media video) {
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 40px 80px -30px rgb(0 0 0 / 0.85);
   }
   .hero__role {
     display: block;

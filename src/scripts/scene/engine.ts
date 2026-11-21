@@ -26,6 +26,7 @@ interface Keyframe {
   section: HTMLElement;
   stage: HTMLElement;
   strand: number; // project keyframes: the thread that draws the motif
+  color?: [number, number, number]; // project keyframes: the thread takes the project's dye
   motif: string;
   glow: [number, number, number];
 }
@@ -267,13 +268,23 @@ export function startScene(canvas: HTMLCanvasElement, options: { onFirstFrame?: 
   gl.bindVertexArray(null);
 
   // ---- data: the threads and the keyframes, read from the page
-  const strands: Strand[] = [...document.querySelectorAll<HTMLElement>('[data-thread]')].map((el) => ({ color: lin(hex(el.dataset.thread!)) }));
+  // The threads (3 to 8, src/lib/site.ts), whatever the number of projects: a project draws its motif
+  // with thread (index modulo S) dyed in its own colour.
+  let dyes: string[] = [];
+  try {
+    dyes = JSON.parse(canvas.dataset.threads ?? '[]');
+  } catch {
+    dyes = [];
+  }
+  if (!dyes.length) dyes = ['#d4bd8f', '#6383b3', '#dea235'];
+  const strands: Strand[] = dyes.map((c) => ({ color: lin(hex(c)) }));
   const S = Math.max(1, strands.length);
   const keyframes: Keyframe[] = [...document.querySelectorAll<HTMLElement>('[data-scene]')].map((el) => ({
     kind: el.dataset.scene as Keyframe['kind'],
     section: el,
     stage: el.querySelector<HTMLElement>('[data-stage]') ?? el,
-    strand: Number(el.dataset.strand ?? -1),
+    strand: el.dataset.strand ? Number(el.dataset.strand) % S : -1,
+    color: el.dataset.color ? lin(hex(el.dataset.color)) : undefined,
     motif: el.dataset.motif ?? 'noeud',
     glow: lin(hex(el.dataset.glow ?? '#5a3a22')),
   }));
@@ -608,7 +619,16 @@ export function startScene(canvas: HTMLCanvasElement, options: { onFirstFrame?: 
       if (dims[s] < 0.02) continue;
       gl.uniform1i(u.strand, s);
       gl.uniform1f(u.radius, radii[s]);
-      gl.uniform3f(u.color, ...strands[s % strands.length].color);
+      const base = strands[s % strands.length].color;
+      // the thread drawing a project's motif takes the project's dye, blended across the transition
+      let col = base;
+      for (const [kf, w] of [
+        [kfA, 1 - f],
+        [kfB, f],
+      ] as const) {
+        if (kf.kind === 'project' && kf.strand === s && kf.color && w > 0) col = col.map((c, k) => c + (kf.color![k] - c) * w) as [number, number, number];
+      }
+      gl.uniform3f(u.color, ...col);
       gl.uniform1f(u.dim, dims[s]);
       gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
       calls++;

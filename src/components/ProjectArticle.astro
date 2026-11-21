@@ -1,0 +1,530 @@
+---
+// A project's article: every detail of the project, over the page (a modal dialog opened by
+// src/scripts/site.ts; printed in place without JavaScript). Used for the projects with a scene and for
+// the other projects alike, so a project's article never depends on where it is listed.
+import Arrow from './Arrow.astro';
+import Media from './Media.astro';
+import ThreadSvg from './ThreadSvg.astro';
+import type { ProjectEntry } from '../lib/content';
+import { paragraphs } from '../lib/content';
+import { formatPeriod } from '../lib/format';
+import type { MediaResolver } from '../lib/media';
+import { motifOf } from '../lib/threads';
+import { TINTS, tintStyle } from '../lib/tints';
+
+interface Props {
+  project: ProjectEntry;
+  /** Position among all visible projects, and their number. */
+  i: number;
+  total: number;
+  prev: ProjectEntry;
+  next: ProjectEntry;
+  threads: string[];
+  media: MediaResolver;
+  /** The project's motif is already drawn on the page (its scene): reuse it. */
+  reuseMotif?: boolean;
+}
+const { project: p, i, total, prev, next, threads, media, reuseMotif = false } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+const when = formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
+const m = motifOf(p.id, p.cover.motif);
+const tint = TINTS[p.cover.color].thread;
+const mainMedia = p.cover.video
+  ? { src: p.cover.video.src, alt: p.cover.video.alt, poster: p.cover.image?.src, video: true }
+  : p.cover.image
+    ? { src: p.cover.image.src, alt: p.cover.image.alt, poster: undefined, video: false }
+    : undefined;
+const sections = [
+  { title: 'Contexte', body: paragraphs(p.context) },
+  { title: 'Problème', body: paragraphs(p.problem) },
+  { title: 'Mon rôle', body: paragraphs(p.role) },
+  { title: 'Approche', body: paragraphs(p.approach) },
+].filter((s) => s.body.length);
+---
+
+<dialog class="feat" id={`detail-${p.id}`} aria-labelledby={`detail-${p.id}-title`} data-detail>
+  <div class="feat__bar">
+    <p class="label">
+      <span class="feat__n">{pad(i + 1)}</span> / {pad(total)}
+    </p>
+    <div class="feat__nav">
+      <a class="feat__btn" href={`#projet-${prev.id}`} data-go aria-label={`Projet précédent : ${prev.title}`}>
+        <Arrow dir="left" />
+        <span class="feat__btn-t">Précédent</span>
+      </a>
+      <a class="feat__btn" href={`#projet-${next.id}`} data-go aria-label={`Projet suivant : ${next.title}`}>
+        <span class="feat__btn-t">Suivant</span>
+        <Arrow />
+      </a>
+      <button class="feat__btn feat__close" type="button" data-close>
+        Fermer
+      </button>
+    </div>
+  </div>
+
+  <article class="feat__in wrap">
+    <header class="feat__head">
+      <div class="feat__headtext">
+        <p class="label">{p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')}</p>
+        <p class="feat__title display" id={`detail-${p.id}-title`}>
+          {p.title}
+        </p>
+        <p class="feat__stand">{p.summary}</p>
+      </div>
+      <figure class="feat__motif" aria-hidden="true">
+        {
+          reuseMotif ? (
+            <svg class="feat__svg" viewBox="-1 -1 2 2" fill="none" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <use href={`#motif-${p.id}`} />
+            </svg>
+          ) : (
+            <ThreadSvg kind="project" colors={threads} strand={i} motif={m} color={tint} class="feat__svg" />
+          )
+        }
+      </figure>
+    </header>
+
+    {mainMedia && (
+      <div class="feat__shot">
+        <Media src={mainMedia.src} alt={mainMedia.alt} poster={mainMedia.poster} media={media} class="feat__frame" />
+        <p class="label feat__caption">{mainMedia.video ? 'Vidéo' : 'Capture réelle'}{p.cover.image?.caption ? ` — ${p.cover.image.caption}` : ''}</p>
+      </div>
+    )}
+
+    <div class="feat__body">
+      <div class="feat__text">
+        {sections.map((s) => (
+          <section class="feat__sec">
+            <h4 class="label">{s.title}</h4>
+            {s.body.map((t) => (
+              <p>{t}</p>
+            ))}
+          </section>
+        ))}
+        {p.contributions.length > 0 && (
+          <section class="feat__sec">
+            <h4 class="label">{p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</h4>
+            <ol role="list" class="feat__list">
+              {p.contributions.map((c) => (
+                <li>{c}</li>
+              ))}
+            </ol>
+          </section>
+        )}
+        {p.results.length > 0 && (
+          <section class="feat__sec">
+            <h4 class="label">Résultats</h4>
+            <ul role="list" class="feat__list feat__list--plain">
+              {p.results.map((r) => (
+                <li>{r}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+
+      <aside class="feat__facts" aria-label="Fiche du projet">
+        <dl>
+          {p.organisation && (
+            <div>
+              <dt class="label">Cadre</dt>
+              <dd>{p.organisation}</dd>
+            </div>
+          )}
+          {when && (
+            <div>
+              <dt class="label">Période</dt>
+              <dd>{when}</dd>
+            </div>
+          )}
+          {p.status && (
+            <div>
+              <dt class="label">État</dt>
+              <dd>{p.status === 'en-cours' ? 'En cours de développement' : 'Terminé'}</dd>
+            </div>
+          )}
+          {p.technologies.length > 0 && (
+            <div>
+              <dt class="label">Technologies</dt>
+              <dd>
+                <ul role="list" class="chips">
+                  {p.technologies.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+          {p.links.length > 0 && (
+            <div>
+              <dt class="label">Liens</dt>
+              <dd>
+                <ul role="list">
+                  {p.links.map((l) => (
+                    <li>
+                      <a class="link feat__ext" href={l.url} rel="noopener">
+                        {l.label}
+                        <Arrow dir="out" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )}
+        </dl>
+        <p class="feat__note label">Le motif est une illustration du domaine du projet, pas une capture.</p>
+      </aside>
+    </div>
+
+    {p.gallery.length > 0 && (
+      <div class="feat__gallery">
+        {p.gallery.map((g) => (
+          <Media src={g.src} alt={g.alt} media={media} class="feat__gimg">
+            {g.caption && <figcaption class="label">{g.caption}</figcaption>}
+          </Media>
+        ))}
+      </div>
+    )}
+
+    <a class="feat__next tinted" href={`#projet-${next.id}`} data-go style={tintStyle(next.cover.color)}>
+      <span class="label">Projet suivant</span>
+      <span class="feat__next-t display">
+        {next.title} <Arrow />
+      </span>
+    </a>
+  </article>
+</dialog>
+<style>
+  /* ---------- The article (dialog) ---------- */
+  .feat {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .feat::backdrop {
+    background: transparent;
+  }
+  :global(html:not(.js)) .feat {
+    position: static;
+    display: block;
+    height: auto;
+    overflow: visible;
+    background: none;
+    padding-bottom: 4rem;
+  }
+  :global(html:not(.js)) .feat__bar,
+  :global(html:not(.js)) .feat__next,
+  :global(html:not(.js)) .feat__head {
+    display: none;
+  }
+  .feat__bar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    min-height: var(--header-h);
+    padding-inline: var(--g);
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .feat__nav {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .feat__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 99px;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition:
+      background var(--dur-1),
+      color var(--dur-1),
+      border-color var(--dur-1);
+  }
+  .feat__btn:hover {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+  .feat__in {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    padding-top: clamp(2rem, 6vh, 5rem);
+    padding-bottom: clamp(3rem, 8vh, 6rem);
+  }
+  .feat__head {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    background:
+      radial-gradient(60% 80% at 75% 50%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 70%),
+      var(--bg-2);
+    border-radius: 8px;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    overflow: hidden;
+  }
+  .feat__headtext {
+    grid-column: 1 / span 7;
+  }
+  .feat__title {
+    margin-top: 1rem;
+    font-size: clamp(3rem, 0.8rem + 6.5vw, 8.5rem);
+    font-stretch: 76%;
+    font-weight: 650;
+    line-height: 0.86;
+  }
+  .feat__stand {
+    max-width: 30em;
+    margin-top: 1.5rem;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem);
+    line-height: 1.4;
+  }
+  .feat__motif {
+    position: relative;
+    grid-column: 8 / -1;
+    aspect-ratio: 1;
+  }
+  .feat__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .feat__shot {
+    grid-column: 1 / -1;
+    margin-top: var(--gap);
+  }
+  .feat__frame {
+    display: grid;
+    place-items: center;
+    padding: clamp(0.75rem, 3vw, 3.5rem);
+    background: var(--bg-2);
+    border-radius: 8px;
+  }
+  .feat__frame img {
+    width: 100%;
+    max-width: 72rem;
+    border-radius: 4px;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.7);
+  }
+  figcaption.label {
+    margin-top: 0.75rem;
+  }
+  .feat__body {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    margin-top: clamp(2.5rem, 6vh, 4.5rem);
+    row-gap: 2.5rem;
+  }
+  .feat__text {
+    grid-column: 1 / span 7;
+  }
+  .feat__sec + .feat__sec {
+    margin-top: 2.5rem;
+  }
+  .feat__sec h4 {
+    margin-bottom: 0.9rem;
+  }
+  .feat__sec p {
+    max-width: 36em;
+    font-size: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+    line-height: 1.6;
+  }
+  .feat__sec p + p {
+    margin-top: 1em;
+  }
+  .feat__list {
+    counter-reset: c;
+    border-top: 1px solid var(--rule);
+  }
+  .feat__list li {
+    counter-increment: c;
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .feat__list li::before {
+    content: counter(c, decimal-leading-zero);
+    font-family: var(--display);
+    font-weight: 600;
+    color: var(--tint);
+  }
+  .feat__list--plain li::before {
+    content: '—';
+  }
+  .feat__facts {
+    grid-column: 9 / span 4;
+  }
+  .feat__facts dl > div {
+    padding-block: 0.85rem;
+    border-top: 1px solid var(--rule);
+  }
+  .feat__facts dd {
+    margin-top: 0.35rem;
+  }
+  .feat__facts .chips {
+    margin-top: 0.2rem;
+  }
+  .feat__ext {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .feat__note {
+    margin-top: 1.5rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--fg-3);
+  }
+  .feat__gallery {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--gap);
+    margin-top: 4rem;
+  }
+  .feat__gallery img {
+    width: 100%;
+    border-radius: 4px;
+  }
+  .feat__next {
+    grid-column: 1 / -1;
+    display: block;
+    margin-top: clamp(4rem, 10vh, 8rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule-strong);
+    text-decoration: none;
+  }
+  .feat__next-t {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: clamp(2.4rem, 1rem + 5vw, 6.5rem);
+    font-weight: 650;
+    font-stretch: 76%;
+    transition: color var(--dur-2);
+  }
+  .feat__next:hover .feat__next-t {
+    color: var(--tint);
+  }
+  .feat__next .arrow {
+    width: 0.45em;
+    height: 0.45em;
+  }
+  :global(.motion) .feat[open] .feat__in > * {
+    animation: feat-in 1s var(--ease) both;
+    animation-delay: calc(180ms + var(--k, 0) * 80ms);
+  }
+  .feat__shot {
+    --k: 1;
+  }
+  .feat__body {
+    --k: 2;
+  }
+  @keyframes feat-in {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+  }
+  :global(.motion) .feat[open] .feat__svg {
+    animation: feat-motif 1.6s var(--ease) both 0.25s;
+  }
+  @keyframes feat-motif {
+    from {
+      opacity: 0;
+      transform: scale(0.9) rotate(-4deg);
+    }
+  }
+
+  .feat__n {
+    color: var(--tint);
+  }
+  .feat__caption {
+    margin-top: 0.75rem;
+  }
+  .feat__shot :global(.feat__frame) {
+    padding: clamp(0.75rem, 3vw, 3rem);
+    background: var(--bg-2);
+    border-radius: 8px;
+  }
+  .feat__shot :global(.feat__frame.media--portrait) {
+    padding-inline: clamp(0.75rem, 18vw, 22rem);
+  }
+  .feat__shot :global(.feat__frame img),
+  .feat__shot :global(.feat__frame video) {
+    max-height: 80svh;
+    object-fit: contain;
+    background: transparent;
+  }
+  @media (max-width: 63.99rem) {
+    .feat__headtext,
+    .feat__text,
+    .feat__facts {
+      grid-column: 1 / -1;
+    }
+    .feat__motif {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      width: min(100%, 22rem);
+      justify-self: center;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .feat__bar {
+      position: fixed;
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-bottom: 0;
+      border-top: 1px solid var(--rule);
+      padding-bottom: env(safe-area-inset-bottom);
+      min-height: 4rem;
+    }
+    .feat__btn {
+      min-width: 2.75rem;
+      justify-content: center;
+      padding: 0 0.9rem;
+    }
+    .feat__btn-t {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .feat__in {
+      padding-top: 1rem;
+      padding-bottom: 7rem;
+    }
+  }
+</style>

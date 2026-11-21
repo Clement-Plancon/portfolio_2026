@@ -1,49 +1,58 @@
 ---
-// Act 3 — expertise, first half: the positions, told as chapters (today, alongside, before) rather than
-// as a timeline. Behind them the threads lie straight, side by side: the loom.
+// Act 3 — expertise, first half: the positions. The current ones and those marked « mis en avant »
+// are told as chapters (today, alongside, before), up to the number chosen in the admin (Site →
+// Parcours); every other position is in a list that opens. One position or twenty: the page keeps the
+// same length and rhythm. Behind them the threads lie straight, side by side: the loom.
 import Arrow from './Arrow.astro';
 import ThreadSvg from './ThreadSvg.astro';
 import type { ExperienceEntry } from '../lib/content';
 import { formatPeriod } from '../lib/format';
+import type { ResolvedSection } from '../lib/site';
 
 interface Props {
-  experiences: ExperienceEntry[];
-  colors: string[];
+  section: ResolvedSection;
+  chapters: ExperienceEntry[];
+  rest: ExperienceEntry[];
+  threads: string[];
+  glow: string;
 }
-const { experiences, colors } = Astro.props;
+const { section, chapters, rest, threads, glow } = Astro.props;
 // Chapter of a position: the first one without an end is today, the others without an end run alongside.
 let seenCurrent = false;
-const chapters = experiences.map((e) => {
+const label = (e: ExperienceEntry) => {
   if (!e.end) {
-    const label = seenCurrent ? 'En parallèle' : "Aujourd'hui";
+    const l = seenCurrent ? 'En parallèle' : "Aujourd'hui";
     seenCurrent = true;
-    return label;
+    return l;
   }
   return 'Avant';
-});
+};
+const labels = chapters.map(label);
+const color = (i: number) => threads[i % threads.length];
 ---
 
-<section class="journey" id="parcours" aria-labelledby="journey-title" data-scene="warp" data-glow="#2a2116">
+<section class="journey" id="parcours" aria-labelledby="journey-title" data-scene="warp" data-glow={glow} data-act={`${section.act} — ${section.actName}`}>
   <div class="wrap">
-    <p class="act label"><span><span class="act__n">03</span> Expertise</span></p>
+    <p class="act label"><span><span class="act__n">{section.act}</span> {section.actName}</span></p>
     <div class="journey__head">
-      <h2 id="journey-title" class="journey__title display">Parcours</h2>
+      <h2 id="journey-title" class="journey__title display">{section.title}</h2>
       <div class="journey__loom" data-stage>
-        <ThreadSvg kind="warp" colors={colors} />
+        <ThreadSvg kind="warp" colors={threads} />
       </div>
     </div>
+    {section.intro && <p class="journey__intro">{section.intro}</p>}
 
     <ol role="list" class="xp">
       {
-        experiences.map((e, i) => (
-          <li class="xp__item" data-reveal style={`--d:${i % 3};--c:${colors[i % colors.length]}`}>
+        chapters.map((e, i) => (
+          <li class="xp__item" data-reveal style={`--d:${i % 3};--c:${color(i)}`}>
             <p class="xp__chapter">
-              <span class="xp__chap display">{chapters[i]}</span>
+              <span class="xp__chap display">{labels[i]}</span>
               <span class="label">{formatPeriod(e.start, e.end, !e.end)}</span>
               {e.location && <span class="label xp__loc">{e.location}</span>}
             </p>
             <div class="xp__who">
-              <h3 class="xp__role display">{e.role}</h3>
+              <h3 class="xp__role display" lang="fr">{e.role}</h3>
               <p class="xp__org">
                 {e.url ? (
                   <a class="link" href={e.url} rel="noopener">
@@ -76,6 +85,31 @@ const chapters = experiences.map((e) => {
         ))
       }
     </ol>
+
+    {
+      rest.length > 0 && (
+        <details class="more" data-reveal>
+          <summary class="more__sum">
+            <span class="more__label">Tout le parcours</span>
+            <span class="more__count label">{rest.length} autre{rest.length > 1 ? 's' : ''} poste{rest.length > 1 ? 's' : ''}</span>
+            <span class="more__icon" aria-hidden="true" />
+          </summary>
+          <ol role="list" class="more__list">
+            {rest.map((e, i) => (
+              <li class="more__row" style={`--c:${color(chapters.length + i)}`}>
+                <span class="more__when label">{formatPeriod(e.start, e.end, !e.end)}</span>
+                <span class="more__role">{e.role}</span>
+                <span class="more__org muted">
+                  {e.organisation}
+                  {e.parentOrganisation && ` — ${e.parentOrganisation}`}
+                </span>
+                {e.summary && <span class="more__text muted">{e.summary}</span>}
+              </li>
+            ))}
+          </ol>
+        </details>
+      )
+    }
   </div>
 </section>
 
@@ -204,6 +238,112 @@ const chapters = experiences.map((e) => {
     .xp__who,
     .xp__what {
       grid-column: 1 / -1;
+    }
+  }
+  .journey__intro {
+    max-width: 38em;
+    margin-top: 1.5rem;
+    color: var(--fg-2);
+    font-size: 1.0625rem;
+  }
+  .xp__role {
+    overflow-wrap: break-word;
+    hyphens: manual;
+  }
+  /* ---------- the other positions: a list that opens ---------- */
+  .more {
+    margin-top: 0.5rem;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .more__sum {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 4rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .more__sum::-webkit-details-marker {
+    display: none;
+  }
+  .more__label {
+    font-family: var(--display);
+    font-weight: 600;
+    font-stretch: 85%;
+    font-size: clamp(1.3rem, 1rem + 0.8vw, 1.8rem);
+  }
+  .more__count {
+    flex: 1;
+  }
+  .more__icon {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 50%;
+    transition: transform var(--dur-2) var(--ease);
+  }
+  .more__icon::before,
+  .more__icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.9rem;
+    height: 1px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+  .more__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  .more[open] .more__icon {
+    transform: rotate(45deg);
+  }
+  .more__list {
+    padding-bottom: 1.5rem;
+  }
+  .more__row {
+    display: grid;
+    grid-template-columns: minmax(8rem, 2fr) 4fr 4fr;
+    gap: 0.25rem var(--gap);
+    padding-block: 1rem;
+    border-top: 1px solid var(--rule);
+    position: relative;
+  }
+  .more__row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: 2rem;
+    height: 1px;
+    background: var(--c);
+  }
+  .more__role {
+    font-weight: 500;
+    overflow-wrap: break-word;
+  }
+  .more__text {
+    grid-column: 2 / -1;
+    font-size: 0.9375rem;
+  }
+  :global(.motion) .more[open] .more__list {
+    animation: more-in 0.6s var(--ease);
+  }
+  @keyframes more-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .more__row {
+      grid-template-columns: 1fr;
+    }
+    .more__text {
+      grid-column: 1;
     }
   }
 </style>
