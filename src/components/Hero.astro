@@ -74,6 +74,17 @@ const statement = emphasis(profile.statement ?? profile.headline);
   :global(.motion) .hero__mask > span {
     animation: hero-rise 1.3s var(--ease) both 0.1s;
   }
+  /* The emphasised word comes into focus: what the sentence says, once. */
+  :global(.motion) .hero__stmt :global(em) {
+    display: inline-block;
+    animation: hero-focus 1.6s var(--ease) both 0.7s;
+  }
+  @keyframes hero-focus {
+    from {
+      filter: blur(0.12em);
+      opacity: 0.35;
+    }
+  }
   @keyframes hero-rise {
     from {
       transform: translateY(105%);

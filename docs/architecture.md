@@ -197,27 +197,27 @@ Seules les données publiées passent par une réponse cacheable. Le brouillon n
 - **Validation** : schémas zod partagés, identifiants restreints à `[a-z0-9-]`, chemins calculés côté serveur (pas de traversée), URL limitées à `http(s)` et `mailto`.
 - **Aucun jeton tiers** : plus de jeton GitHub. Netlify Blobs est accessible à la fonction sans secret applicatif.
 - **Médias** : type déterminé par les octets (WebP, PNG, JPEG, AVIF, PDF) ; SVG et HTML refusés ; 4 Mo max ; nom de fichier réécrit ; servis avec `nosniff` et une CSP `sandbox` ; suppression refusée si le média est encore utilisé.
-- **XSS** : le site n'insère jamais de HTML non maîtrisé : tous les textes sont échappés par Astro ; la seule mise en valeur (`*mot*` de la phrase de couverture) est convertie après échappement.
+- **XSS** : le site n'insère jamais de HTML non maîtrisé : tous les textes sont échappés par Astro ; la seule mise en valeur (`*mot*` de la phrase d'accroche) est convertie après échappement.
 - **En-têtes** (`netlify.toml`) : CSP sans script inline (`script-src 'self'`), `frame-ancestors 'none'`, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy`. `/admin/` (aperçu compris) et `/api/` ne sont ni mis en cache ni indexés.
 - **Journaux** : seulement la route et le code d'erreur (et les blocages de connexion), jamais le corps des requêtes, le mot de passe, l'adresse IP, les cookies ni les jetons.
 - **Cache** : toutes les réponses de l'API sont `Cache-Control: no-store` (les médias de l'admin : `private`).
 
 ## Une seule page
 
-- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) : `Cover` (couverture, `h1`), `About` (`#a-propos`), `Projects` (`#projets`), `Journey` (`#parcours`), `Skills` (`#competences`), `Contact` (`#contact`). Les ancres sont stables.
-- **Projets** : chaque projet est un `<article id="projet-…">` suivi de son détail `<section id="detail-…">`, **présent dans le HTML** (lisible sans JavaScript, indexable). Le script replie les détails, ouvre celui choisi sous sa rangée (bouton `aria-expanded`, `inert` sur les détails fermés) et tient l'adresse à jour (`/#projet-…`).
+- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) : `Hero` (introduction, `h1`), `Projects` (`#projets`), `About` (`#a-propos`), `Journey` (`#parcours`), `Skills` (`#competences`), `Contact` (`#contact`). Les ancres sont stables.
+- **Projets** : chaque projet est un `<li id="projet-…">` (une ligne du sommaire, dont le titre est un vrai lien `#projet-…`) contenant son article `<dialog id="detail-…">`, **présent dans le HTML** (indexable ; sans JavaScript, l'article est imprimé sous sa ligne). Le script l'ouvre en dialogue modal (`showModal`), tient l'adresse à jour (`/#projet-…`, *Retour* le ferme) et rend le focus à la ligne à la fermeture.
 - **Anciennes adresses** : `/projets/…`, `/parcours/`, `/a-propos/`, `/contact/`, `/articles/…` redirigent en 301 vers leur ancre (`netlify.toml`, testé dans `tests/unit/site.test.ts`).
 - **Routes** : `/` (SSR), `/media/…` et `/files/…` (médias publiés), `/404.html`, `/admin/` et `/admin/apercu/`, `/api/admin/*`, `sitemap-*.xml`, `robots.txt`. Aucune autre page publique.
 - **Données structurées** : `Person`, `ProfilePage`, et une `ItemList` de `CreativeWork` (un par projet, URL `/#projet-…`).
 
 ## Design system
 
-Direction « Expliquer » (le dépliant) : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
+Direction « Sommaire » : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
 
-- **Tokens** : `src/styles/global.css` (papier, feuille, encre, pli, signal vermillon ; deux voix typographiques `.display` et `.label`). Thème sombre automatique (papier noir).
-- **Police** : Mona Sans variable (graisse 200–900, largeur 75–125), auto-hébergée et réduite (`public/fonts/`). L'administration garde Newsreader et Instrument Sans (`src/admin/base.css`).
-- **Plis** : `@property --a` (angle animable) ; l'ombre de chaque pli est calculée avec `sin(var(--a))`. `Leporello.astro` est un composant récursif (chaque feuille contient la suivante, `preserve-3d`) utilisé pour la bande de couverture et les principes.
-- **Papiers des projets** : `src/lib/stocks.ts` (six couleurs avec leur encre, contraste AA testé) ; `cover.color` dans le contenu.
-- **Script** : `src/scripts/fold.ts` (4,5 Ko, 1,9 Ko compressé) : menu mobile, section active, ouverture des plis à l'entrée dans l'écran, bande de couverture pilotée par le défilement, carte des projets, copie de l'adresse. Sans lui, tout est déplié et lisible.
-- **Image de partage** : `scripts/generate-og.mjs` (nom + bande des papiers réels), ou l'image choisie dans Référencement.
+- **Tokens** : `src/styles/global.css` (fonds `--bg`, `--bg-2`, `--bg-3`, textes `--fg`, `--fg-2`, filets `--rule`, accent `--accent` ; voix `.display`, `.lede`, `.label`). Thème sombre par défaut, thème clair dessiné, choisis par `prefers-color-scheme`.
+- **Polices** : Newsreader variable (graisse 300–500, taille optique 14–72) pour ce qui est dit ; Geist variable (réduite au latin, 25 Ko) pour ce qui organise. Auto-hébergées (`public/fonts/`). L'administration garde Newsreader et Instrument Sans.
+- **Teintes des projets** : `src/lib/tints.ts` (`cover.color` du contenu ; une valeur par thème, contraste AA testé dans `tests/unit/site.test.ts`).
+- **Planches** : `src/components/Plate.astro` dessine la pile d'un projet en couches (`src/lib/plate.ts` range ses technologies : interface, serveur, données, services & IA, infrastructure, démarche, autres). Dessin CSS 3D, unités de conteneur (`cqmin`) ; la capture réelle, s'il y en a une, est la feuille du dessus.
+- **Script** : `src/scripts/site.ts` (6,4 Ko, 2,6 Ko compressé) : sommaire mobile, section active, en-tête qui s'efface à la lecture, apparitions, articles des projets (dialogue, adresse, historique, précédent/suivant), aperçu au pointeur, copie de l'adresse. Sans lui, tout est lisible.
+- **Image de partage** : `scripts/generate-og.mjs` (la phrase d'accroche, le nom, l'index des projets), ou l'image choisie dans Référencement.
 - **Images** : une seule taille par image (celle envoyée, au plus 2400 px), avec largeur et hauteur ; l'ancienne génération de variantes au build (`astro:assets`) n'existe plus, puisque les médias ne sont plus dans le dépôt.

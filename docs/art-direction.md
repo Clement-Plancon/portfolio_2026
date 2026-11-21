@@ -1,100 +1,96 @@
-# Direction artistique : « Expliquer »
+# Direction artistique — « Sommaire »
 
-## Le point de départ
+Novembre 2026. Cette direction remplace « Expliquer » (le dépliant). Le contenu, le CMS, les schémas et la sécurité sont inchangés.
 
-Le site devient **une seule page**. Il garde le contenu réel, l'administration et l'infrastructure, mais change entièrement de langage visuel. La direction précédente (« Révélateur », cyanotypes) est abandonnée. Ses photogrammes illustraient des projets qui n'en avaient pas besoin, et elle reposait sur des pages séparées.
+## 1. Audit de la version « Expliquer »
 
-Contraintes du brief retenues comme critères :
+**À garder** (fonctionnel) : la page unique rendue côté serveur depuis Netlify Blobs ; les ancres `#projets`, `#a-propos`, `#parcours`, `#competences`, `#contact`, `#projet-…` (et les redirections 301 des anciennes pages) ; chaque détail de projet présent dans le HTML ; la lecture sans JavaScript ; le menu mobile accessible ; la copie de l'adresse ; les données structurées ; l'aperçu du brouillon qui rend le même composant.
 
-- **Signature et clarté** : une signature forte, mais le nom et le rôle lisibles immédiatement, sans introduction bloquante.
-- **Projets** : des projets réels mis en scène, détail consultable sans changer de page, retour facile à la liste.
-- **Proscrit** : aucune image, métrique ou capture inventée ; aucun cliché « IA » (dégradés lumineux, badges, faux terminaux, numérotation 01/02/03, trois cartes identiques, *fade-up* systématique).
-- **Mouvement et mobile** : un mouvement qui fait partie de l'identité, qui respecte `prefers-reduced-motion` et ne bloque pas le défilement ; un mobile pensé pour le doigt.
+**Abandonné** (design) : la métaphore du dépliant, les feuilles pliées, les rotations 3D systématiques, les cartes de projets en papier coloré, l'accordéon de couverture, le triptyque, la carte de visite qui se retourne, Mona Sans en très gras étroit, le vermillon.
 
-## Trois concepts prototypés
+**Diagnostic.** Le concept était fort, mais l'exécution était dictée par lui : chaque contenu devait se plier, donc tout se ressemblait. Surtout, les projets, le cœur du portfolio, n'étaient montrés que comme des aplats de couleur avec un titre. Ils ne montraient rien de ce qui avait été construit.
 
-Chaque prototype est une page HTML autonome qui utilise le vrai contenu. `data.js` est généré depuis `src/content`. Les prototypes sont dans `docs/prototypes/v3/` et ont tous été capturés dans Chromium en 1440 et 390 px.
+## 2. Recherche visuelle
 
-### A — « Expliquer » (retenu)
+24 sites ouverts dans Chromium, capturés en 1440 × 900 et 390 × 844, au premier écran et après défilement (planches dans [`docs/research/`](research/)).
 
-*Expliquer* vient du latin *explicare*, « déplier ». Le site est **une feuille pliée qu'on déplie** : la couverture porte une bande de projets en accordéon qui s'ouvre avec le défilement. Les projets forment une carte de volets de papier de couleur, et chaque volet déplie son détail sous sa rangée. Le parcours est un triptyque, le contact une carte de visite pliée en deux.
+- **Portfolios** : Rauno Freiberg, Paco Coursey, Emil Kowalski, Brittany Chiang, Cyd Stumpel, Dennis Snellenberg, Robin Noguier, Aristide Benoist, Josh Comeau.
+- **Studios** : Locomotive, Basic/Dept, Obys, Koto, Pentagram, Instrument, Lusion, Studio Freight, Buck.
+- **Édition, marques et galeries** : Kinfolk, It's Nice That, Are.na Editorial, Linear, Teenage Engineering, CSS Design Awards.
 
-![A](prototypes/v3/a-expliquer-1440.jpg)
-![A — projets](prototypes/v3/a-expliquer-1440-projets.jpg)
+| Observation | Ce que j'en retiens |
+|---|---|
+| Lusion et Obys ouvrent sur un écran noir, un chargement ou un objet WebGL : spectaculaire, mais rien à lire pendant plusieurs secondes. | Aucune introduction bloquante. Le premier écran se lit tout de suite. |
+| Locomotive (mobile), Kinfolk, Pentagram : une liste de titres composés très grand, séparés par des filets, est la navigation la plus belle et la plus évidente. Elle fonctionne sans survol. | Les projets forment un **sommaire** en grand serif. |
+| Studio Freight, Instrument, Buck : la grille d'images fonctionne parce qu'ils ont des centaines de visuels. | Je n'ai qu'une capture réelle sur six projets : une grille d'images est exclue. Il faut une représentation honnête. |
+| Paco, Emil, Rauno : élégants mais presque vides. Cela convient à des designers connus, mais reste générique pour un profil à faire découvrir. | Il faut de la retenue, mais aussi de la présence : une grande typographie, un vrai motif pour les projets. |
+| Kinfolk, Are.na : un serif éditorial, beaucoup d'air, des métadonnées en petites capitales. Le rythme vient des tailles, pas des effets. | Le système typographique : un serif pour ce qui est dit, une grotesque discrète pour ce qui organise. |
+| Dennis Snellenberg, Cyd Stumpel : de la personnalité, mais portée par des photos de la personne. | Pas de photo dans le contenu. La personnalité passera par la phrase d'accroche et la façon de montrer le travail. |
+| Les sites agréables sur mobile (Locomotive, Kinfolk, Are.na) gardent un menu simple et des listes. Les sites de démonstration y deviennent illisibles ou coupés. | Le mobile est conçu à part : sommaire au pouce, commandes de l'article en bas de l'écran. |
 
-### B — « Mise au point »
+Les vrais projets ont aussi été capturés : Datametre en ligne (desktop et mobile, `docs/prototypes/v4/media/`). C'est la seule capture réelle disponible.
 
-Les projets sont des lames sous un objectif circulaire : on glisse sur une lame pour faire le point (flou → net).
+## 3. Trois propositions, trois prototypes
 
-![B](prototypes/v3/b-mise-au-point-1440.jpg)
+Prototypes navigables dans [`docs/prototypes/v4/`](prototypes/v4/) (ouvrir les fichiers `.html` ; contenu réel dans `data.js`). Chaque proposition a été testée en 1440 × 900, 820 × 1180 et 390 × 844, et ses captures accompagnent le fichier.
 
-### C — « Variable »
+- **A — Planches** (`a-planches.html`) : grille suisse sur papier clair, Schibsted Grotesk et IBM Plex Mono. Un index des projets sous le nom, puis une « planche » par projet : texte collant à gauche, figure à droite. **Interaction propre** : la vue éclatée de la pile technique, qui s'écarte à l'entrée dans l'écran.
+- **B — Sommaire** (`b-sommaire.html`) : papier sombre et chaud, Newsreader et Geist. La phrase d'accroche en très grand, puis les projets en sommaire de magazine. **Interactions propres** : un aperçu suit le pointeur, et chaque projet s'ouvre en article plein écran (précédent / suivant / fermer).
+- **C — Scène** (`c-scene.html`) : Mona Sans large et noir, scrollytelling. Une scène collante à gauche change de projet pendant que le texte défile à droite. **Interactions propres** : le nom s'ajuste à la largeur puis se condense en en-tête ; la scène bascule d'un projet à l'autre.
 
-La typographie variable porte toute l'identité : le nom change de largeur et de graisse lettre par lettre avec le défilement et le pointeur. Les projets forment une liste typographique.
+## 4. Critique
 
-![C](prototypes/v3/c-variable-1440.jpg)
+Notes sur 10, données d'après les captures, pas d'après le concept.
 
-## Évaluation
-
-Notes de 1 à 5, après manipulation des trois prototypes et revue des captures desktop et mobile.
-
-| Critère | A Expliquer | B Mise au point | C Variable |
+| | A Planches | B Sommaire | C Scène |
 |---|---|---|---|
-| Idée propre au profil | 5 — le mot « expliquer » *est* le geste | 4 — rendre net, juste mais attendu | 2 — identité de type, pas de personne |
-| Originalité | 5 — aucune des références étudiées ne plie la page | 3 — le cercle et le flou sont des motifs vus | 2 — genre très présent sur Awwwards |
-| Projets protagonistes | 5 — volets de couleur, détail sur place | 3 — texte dans un cercle, peu lisible | 2 — une liste sans image |
-| Honnêteté des visuels | 5 — papier de couleur ; la seule vraie capture (Datametre) y trouve sa place | 4 | 4 |
-| Mobile | 5 — l'accordéon devient vertical, aussi fort qu'en desktop | 2 — le cercle rétrécit, le glisser entre en conflit avec le défilement | 4 |
-| Lisibilité | 4 — à surveiller : textes sur papiers de couleur | 3 | 3 — lettres déformées |
-| Faisabilité, performance | 4 — CSS 3D pur, aucun WebGL | 4 | 5 |
+| Beauté | 6,5 | **8** | 5,5 |
+| Sophistication | 6,5 | **8** | 5 |
+| Cohérence | **8** | 7,5 | 6 |
+| Originalité | 6 | 6,5 | 5,5 |
+| Interactions | 6 | **7,5** | 6 |
+| Ergonomie | **8,5** | 7 | 7 |
+| Responsive | **8** | 7 | 4,5 |
+| Crédibilité professionnelle | **8** | **8** | 6 |
 
-**A est retenu.** C'est le seul concept dont l'idée vient du métier même de Clément Plançon (« Je rends lisible ce qui est complexe ») et passe dans chaque interaction, sans décor ajouté. B a été jugé trop proche d'un gabarit, et son texte inscrit dans un cercle se lit mal. C relève d'un genre courant et laisse les projets sans image.
+- **C est rejetée.** À 390 px, le nom ajusté à la largeur déborde et la barre de navigation basse est coupée. La scène retombe sur « aplat + gros numéro », exactement le défaut reproché à « Expliquer ». Le style « grotesque large et noire » est aussi le plus daté du lot.
+- **A** est la plus juste en ergonomie, mais elle ressemble à beaucoup de portfolios suisses. Le premier écran est correct sans être mémorable. Son idée la plus forte est la **vue éclatée de la pile** : elle montre honnêtement, pour chaque projet, avec quoi il a été construit, et elle ne dépend d'aucune image.
+- **B** a le plus de présence dès le premier écran : la phrase, la typographie, la liste des projets. Ses défauts, vus sur les captures :
+  - les projets sans capture deviennent des cartes crème unies, c'est-à-dire le même problème d'aplat ;
+  - la phrase d'accroche est trop petite sur mobile ;
+  - le détail n'est accessible que par un clic.
 
-## Le système
+## 5. Décision
 
-### Matière
+**B, avec la planche de A comme figure de chaque projet.** B apporte l'identité et le parcours. La planche de A corrige le défaut de B en donnant à chaque projet une image vraie. Cette synthèse ne dilue pas B : la planche est dessinée dans les mêmes filets et la même typographie.
 
-| Rôle | Clair | Sombre |
-|---|---|---|
-| Papier (fond) | `#f3f1ec` | `#141412` |
-| Feuille (surfaces dépliées) | `#fbfaf7` | `#1f1e1b` |
-| Encre | `#15140f` | `#ebe8e0` |
-| Encre secondaire | `#4a4842` | `#aaa79d` |
-| Signal (un seul accent) | `#e8553a` | `#e8553a` |
+## 6. Le système
 
-Le thème sombre suit `prefers-color-scheme` : le papier devient noir, les papiers des projets restent les mêmes.
+**Typographie.**
+- *Newsreader* (serif à tailles optiques, graisse 300) porte ce qui est dit : la phrase d'accroche, les titres des projets, les chapeaux, les rôles.
+- *Geist* (grotesque neutre, réduite au latin, 25 Ko) porte ce qui organise : la navigation, les petites capitales de métadonnées, les listes.
+- Pas de troisième police. L'italique est la seule emphase : « *lisible* », le projet survolé, l'adresse e-mail.
 
-**Papiers des projets** (`src/lib/stocks.ts`) : vermillon, vert sapin, ardoise, ocre, prune, sable. Chaque papier a son encre, et un test unitaire vérifie un contraste d'au moins 4,5:1. Le papier tient lieu d'image du projet. Une vraie capture, s'il en existe une, s'imprime sur le volet. Aucune interface simulée n'est fabriquée.
+**Couleur.**
+- Thème sombre par défaut : papier chaud `#12110e`, encre crème `#ede7db`, accent sable `#d8c29a`.
+- Thème clair dessiné, pas inversé : `#f2eee5`, `#17150f`, accent bronze `#7a5622`.
+- Chaque projet garde une **teinte** (le champ `cover.color` du CMS). Elle n'est plus un aplat : elle colore le numéro du projet et les repères de sa planche. Les douze valeurs (six teintes × deux thèmes) passent le contraste AA (test unitaire).
 
-### Typographie
+**Grille.** 12 colonnes, gouttière fluide de 16 à 52 px, filets d'un pixel, beaucoup d'air. Les sections s'annoncent toutes de la même façon : un filet, un nom en petit et un compteur à droite. Le rythme vient des tailles : la phrase d'accroche jusqu'à 200 px, les titres de projets de 34 à 116 px, le texte courant à 16–17 px.
 
-Une seule famille, **Mona Sans** variable, en deux voix :
+**Les projets, cœur du site.**
+- **Le sommaire** : une ligne par projet (numéro teinté, titre en grand, nature, cadre, période). Les projets *mis en avant* (étoile du CMS) sont composés plus grand. Les projets plus modestes passent donc au second plan sans disparaître.
+- **L'aperçu** (desktop, pointeur fin) : au survol, les autres titres s'effacent et le titre survolé passe en italique. La planche du projet, ou sa capture, apparaît au-delà de la fin du titre, pour ne jamais masquer ce qu'on lit.
+- **L'article** : la ligne s'agrandit jusqu'à remplir l'écran. Il contient la nature du projet, le titre en très grand, le résumé en chapeau, puis la planche ou la capture réelle. Viennent ensuite le contexte, les contributions numérotées, la fiche (cadre, période, état, technologies, liens), la galerie, et « Projet suivant ».
+- **La planche** : un dessin éclaté des technologies du projet, une feuille par couche. Les couches sont l'interface, le serveur, les données, les services & IA, l'infrastructure et la démarche. La feuille du dessus est la capture réelle quand elle existe, sinon le nom du projet. Le dessin ne prétend pas montrer l'architecture : il range ce que le contenu déclare, et sa légende le dit. Aucune interface n'est inventée.
 
-- `.display` : largeur 75 %, graisse 840, interlignage 0,86. Sert au nom, aux titres de section et aux titres de volets : une voix condensée et dense, comme imprimée.
-- `.label` : largeur 125 %, capitales espacées à 0,75 rem. Sert aux métadonnées, catégories et périodes.
-- Le texte courant reste en largeur normale.
+**Ce qui a été refusé.**
+- Un curseur personnalisé.
+- Le défilement détourné ou « lissé ».
+- Le WebGL : rien à montrer qui le justifie, et un coût sur les téléphones moyens.
+- Un écran de chargement.
+- Des fausses captures ou des maquettes d'écrans inventées.
 
-La largeur variable remplace une seconde police et garde une seule requête de police (87 Ko).
+## 7. Médias
 
-### Plis
-
-Tout ce qui entre à l'écran se **déplie**, aucun élément n'apparaît en fondu vers le haut. Chaque pli a une direction propre à son élément : les volets de la première colonne basculent sur l'axe horizontal, les suivants pivotent comme des pages, les panneaux latéraux du triptyque s'ouvrent comme des portes, et la carte de contact se retourne. L'ombre d'un pli est calculée à partir de son angle (`sin()`), donc elle disparaît quand la feuille est à plat.
-
-### Composition
-
-- **Couverture** : le nom en très grand (adapté à la hauteur de l'écran), le rôle, la phrase « *Expliquer*, du latin *explicare* : déplier. », puis le poste actuel et le poste en parallèle. Dessous, la bande des projets étoilés.
-- **À propos** : introduction, biographie, devise en grand, principes en accordéon.
-- **Projets** : carte de 3 × 2 volets (2 colonnes en tablette, 1 en mobile), le détail se déplie sous la rangée.
-- **Parcours** : triptyque, avec le poste principal au centre.
-- **Compétences** : le « dos du dépliant », une grille de groupes sans jauge ni pourcentage.
-- **Contact** : le dépliant se referme sur une carte de visite.
-
-## Ce qui a été écarté exprès
-
-- Toute numérotation de section ou de projet.
-- Les jauges de compétences et les métriques inventées.
-- Les logos d'organisations.
-- Une frise chronologique.
-- Le bloc jaune de contact de l'ancienne version.
-- Le WebGL : le pli se fait en CSS 3D, donc il est indexable, accessible et léger.
-- Le défilement détourné (*scroll-jacking*) : le défilement reste natif, seule la bande de couverture suit sa position.
+La seule capture réelle publiée est celle de Datametre (`media/datametre-apercu.webp`, 640 × 400 en production). Une capture plus nette, prise sur le site en ligne (1440 × 900), est dans `docs/prototypes/v4/media/datametre-desktop.webp` : elle peut être envoyée depuis l'administration pour **remplacer** l'image du projet (Médiathèque, puis Publier). Les projets du ministère n'ont pas de capture publique : leur planche suffit, et rien n'est inventé à leur place.

@@ -290,8 +290,9 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     overflow-y: auto;
     overscroll-behavior: contain;
   }
+  /* No veil: the article grows out of its line over the page, which stays visible until covered. */
   .feat::backdrop {
-    background: var(--veil);
+    background: transparent;
   }
   /* Without JavaScript the article is printed under its line. */
   :global(html:not(.js)) .feat {

@@ -36,7 +36,6 @@
   --rule-strong: rgb(237 231 219 / 0.32);
   --accent: #d8c29a;
   --dim: rgb(237 231 219 / 0.3);
-  --veil: rgb(8 7 5 / 0.72);
 
   --serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -64,7 +63,6 @@
     --rule-strong: rgb(23 21 15 / 0.34);
     --accent: #7a5622;
     --dim: rgb(23 21 15 / 0.3);
-    --veil: rgb(30 26 20 / 0.45);
   }
 }
 
