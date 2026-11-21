@@ -1,4 +1,5 @@
 import { COVER_COLORS } from '../../lib/schemas';
+import { MOTIF_LABELS, MOTIFS } from '../../lib/threads';
 import { TINTS } from '../../lib/tints';
 import type { Entry } from '../api';
 import { FormActions, ImageField, LinkList, Select, StringList, TagInput, TextArea, TextInput, Thumb, Toggle } from '../ui';
@@ -47,7 +48,7 @@ type ProjectForm = {
   results: string[];
   technologies: string[];
   links: { label: string; url: string }[];
-  cover: { color: (typeof COVER_COLORS)[number]; image?: { src: string; alt: string; caption?: string } };
+  cover: { color: (typeof COVER_COLORS)[number]; image?: { src: string; alt: string; caption?: string }; motif?: (typeof MOTIFS)[number] };
   gallery: { src: string; alt: string; caption?: string }[];
   featured: boolean;
   visible: boolean;
@@ -124,9 +125,16 @@ export function ProjectEditor({ id }: { id: string }) {
 
       <section class="panel" aria-labelledby="p-couverture">
         <h2 id="p-couverture">Présentation</h2>
-        <p class="hint">Chaque projet s'ouvre en article. Sa planche dessine ses technologies en couches ; une capture réelle, si vous en ajoutez une, est montrée en grand et posée en haut de la planche. La teinte colore le numéro et les repères du projet.</p>
+        <p class="hint">Sur le site, chaque projet est un fil teint de sa couleur, qui dessine un motif : un signe abstrait de son domaine (jamais une image de l'application). Une capture réelle, si vous en ajoutez une, est montrée en grand devant le motif et dans l'article.</p>
+        <Select
+          label="Motif du fil"
+          hint="« Automatique » garde le motif par défaut du projet."
+          value={f.cover.motif ?? ''}
+          options={[{ value: '', label: 'Automatique' }, ...MOTIFS.map((m) => ({ value: m, label: MOTIF_LABELS[m] }))]}
+          onChange={(v) => set('cover', { ...f.cover, motif: (v || undefined) as ProjectForm['cover']['motif'] })}
+        />
         <fieldset class="swatches">
-          <legend>Teinte</legend>
+          <legend>Teinte du fil</legend>
           {COVER_COLORS.map((c) => (
             <label class="swatch-option">
               <input type="radio" name="cover-color" value={c} checked={f.cover.color === c} onChange={() => set('cover', { ...f.cover, color: c })} />

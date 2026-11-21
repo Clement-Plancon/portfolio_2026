@@ -1,15 +1,16 @@
 ---
-// Projects: a table of contents set in large serif, one line per project. A line opens the
-// project's article over the page (a modal dialog), with its plate (the drawing of its stack), the
-// real captures when there are some, and every detail from the content.
-// Without JavaScript the articles are simply printed under their line; every address #projet-x works.
+// Act 2 — the projects. One scene per project: its thread, in its tint, drawn into its motif (an
+// abstract sign of its domain, labelled as such), its real captures when there are some, and what it
+// is. Each scene opens the project's article over the page (a modal dialog with every detail).
+// Without JavaScript the articles are printed under their scene; every address #projet-x works.
 import Arrow from './Arrow.astro';
-import Plate from './Plate.astro';
+import ThreadSvg from './ThreadSvg.astro';
 import type { ProjectEntry } from '../lib/content';
 import { paragraphs } from '../lib/content';
 import { formatPeriod } from '../lib/format';
 import type { MediaResolver } from '../lib/media';
-import { tintStyle } from '../lib/tints';
+import { MOTIF_LABELS, motifOf } from '../lib/threads';
+import { TINTS, tintStyle } from '../lib/tints';
 
 interface Props {
   projects: ProjectEntry[];
@@ -18,260 +19,520 @@ interface Props {
 const { projects, media } = Astro.props;
 const pad = (n: number) => String(n).padStart(2, '0');
 const total = pad(projects.length);
+const colors = projects.map((p) => TINTS[p.cover.color].thread);
 const period = (p: ProjectEntry) => formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
-const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
+// The light of a project's scene: its tint, deepened.
+const glow = (hex: string) => {
+  const n = Number.parseInt(hex.slice(1), 16);
+  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * 0.42));
+  return `#${c.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+};
 ---
 
-<section class="projects section" id="projets" aria-labelledby="projects-title">
-  <div class="wrap">
-    <header class="sec-head">
-      <h2 id="projects-title">Projets</h2>
-      <p class="label">{projects.length} réalisations — {projects.filter((p) => p.category === 'pro').length} professionnelles</p>
-    </header>
-
-    <ol role="list" class="toc" data-toc>
+<section class="projects" id="projets" aria-labelledby="projects-title">
+  <header class="projects__head wrap">
+    <p class="act label"><span><span class="act__n">02</span> Exploration</span></p>
+    <div class="projects__intro">
+      <h2 id="projects-title" class="projects__title display">Projets</h2>
+      <p class="projects__lede">
+        Six réalisations, du ministère à l'application personnelle. Chacune tire son fil : faites défiler pour les parcourir, ou ouvrez-en une directement.
+      </p>
+    </div>
+    <ol role="list" class="projects__index">
       {
-        projects.map((p, i) => {
-          const cover = p.cover.image ? media(p.cover.image.src) : undefined;
-          const gallery = p.gallery.map((g) => ({ ...g, file: media(g.src) })).filter((g) => g.file);
-          const prev = projects[(i - 1 + projects.length) % projects.length];
-          const next = projects[(i + 1) % projects.length];
-          const when = period(p);
-          const sections = [
-            { title: 'Contexte', body: paragraphs(p.context) },
-            { title: 'Problème', body: paragraphs(p.problem) },
-            { title: 'Mon rôle', body: paragraphs(p.role) },
-            { title: 'Approche', body: paragraphs(p.approach) },
-          ].filter((s) => s.body.length);
-          return (
-            <li class:list={['pj tinted', { 'pj--lead': p.featured }]} id={`projet-${p.id}`} style={tintStyle(p.cover.color)} data-project data-reveal>
-              <div class="pj__row">
-                <span class="pj__n label" aria-hidden="true">{pad(i + 1)}</span>
-                <h3 class="pj__t display">
-                  <a class="pj__open" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
-                    {p.title}
-                  </a>
-                </h3>
-                <p class="pj__meta">
-                  {shortKind(p) && <span>{shortKind(p)}</span>}
-                  <span class="muted">{[p.category === 'pro' ? p.organisation : 'Projet personnel', when].filter(Boolean).join(' · ')}</span>
-                </p>
-              </div>
-
-              <dialog class="feat" id={`detail-${p.id}`} aria-labelledby={`detail-${p.id}-title`} data-detail>
-                <div class="feat__bar">
-                  <p class="label">
-                    {pad(i + 1)} / {total}
-                  </p>
-                  <div class="feat__nav">
-                    <a class="feat__btn" href={`#projet-${prev.id}`} data-go aria-label={`Projet précédent : ${prev.title}`}>
-                      <Arrow dir="left" />
-                      <span class="feat__btn-t">Précédent</span>
-                    </a>
-                    <a class="feat__btn" href={`#projet-${next.id}`} data-go aria-label={`Projet suivant : ${next.title}`}>
-                      <span class="feat__btn-t">Suivant</span>
-                      <Arrow />
-                    </a>
-                    <button class="feat__btn feat__close" type="button" data-close>
-                      Fermer
-                    </button>
-                  </div>
-                </div>
-
-                <article class="feat__in wrap">
-                  <header class="feat__head">
-                    <p class="label">{p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')}</p>
-                    <p class="feat__title display" id={`detail-${p.id}-title`}>
-                      {p.title}
-                    </p>
-                  </header>
-                  <p class:list={['feat__stand', { 'feat__stand--side': !cover }]}>{p.summary}</p>
-
-                  {cover && p.cover.image ? (
-                    <figure class="feat__shot">
-                      <div class="feat__frame">
-                        <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
-                      </div>
-                      <figcaption class="label">Capture réelle{p.cover.image.caption ? ` — ${p.cover.image.caption}` : ''}</figcaption>
-                    </figure>
-                  ) : (
-                    <figure class="feat__plate">
-                      <Plate project={p} />
-                      <figcaption class="label">Planche — les technologies du projet, par couches</figcaption>
-                    </figure>
-                  )}
-
-                  <div class="feat__body">
-                    <div class="feat__text">
-                      {sections.map((s) => (
-                        <section class="feat__sec">
-                          <h4 class="label">{s.title}</h4>
-                          {s.body.map((t) => (
-                            <p>{t}</p>
-                          ))}
-                        </section>
-                      ))}
-                      {p.contributions.length > 0 && (
-                        <section class="feat__sec">
-                          <h4 class="label">{p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</h4>
-                          <ol role="list" class="feat__list">
-                            {p.contributions.map((c) => (
-                              <li>{c}</li>
-                            ))}
-                          </ol>
-                        </section>
-                      )}
-                      {p.results.length > 0 && (
-                        <section class="feat__sec">
-                          <h4 class="label">Résultats</h4>
-                          <ul role="list" class="feat__list feat__list--plain">
-                            {p.results.map((r) => (
-                              <li>{r}</li>
-                            ))}
-                          </ul>
-                        </section>
-                      )}
-                    </div>
-
-                    <aside class="feat__facts" aria-label="Fiche du projet">
-                      <dl>
-                        {p.organisation && (
-                          <div>
-                            <dt class="label">Cadre</dt>
-                            <dd>{p.organisation}</dd>
-                          </div>
-                        )}
-                        {when && (
-                          <div>
-                            <dt class="label">Période</dt>
-                            <dd>{when}</dd>
-                          </div>
-                        )}
-                        {p.status && (
-                          <div>
-                            <dt class="label">État</dt>
-                            <dd>{p.status === 'en-cours' ? 'En cours de développement' : 'Terminé'}</dd>
-                          </div>
-                        )}
-                        {p.technologies.length > 0 && (
-                          <div>
-                            <dt class="label">Technologies</dt>
-                            <dd>{p.technologies.join(', ')}</dd>
-                          </div>
-                        )}
-                        {p.links.length > 0 && (
-                          <div>
-                            <dt class="label">Liens</dt>
-                            <dd>
-                              <ul role="list">
-                                {p.links.map((l) => (
-                                  <li>
-                                    <a class="link feat__ext" href={l.url} rel="noopener">
-                                      {l.label}
-                                      <Arrow dir="out" />
-                                    </a>
-                                  </li>
-                                ))}
-                              </ul>
-                            </dd>
-                          </div>
-                        )}
-                      </dl>
-                      {cover && <Plate project={p} image={cover} class="feat__mini" />}
-                    </aside>
-                  </div>
-
-                  {gallery.length > 0 && (
-                    <div class="feat__gallery">
-                      {gallery.map((g) => (
-                        <figure>
-                          <img src={g.file!.src} alt={g.alt} width={g.file!.width} height={g.file!.height} loading="lazy" decoding="async" />
-                          {g.caption && <figcaption class="label">{g.caption}</figcaption>}
-                        </figure>
-                      ))}
-                    </div>
-                  )}
-
-                  <a class="feat__next" href={`#projet-${next.id}`} data-go>
-                    <span class="label">Projet suivant</span>
-                    <span class="feat__next-t display">
-                      {next.title} <Arrow />
-                    </span>
-                  </a>
-                </article>
-              </dialog>
-            </li>
-          );
-        })
+        projects.map((p, i) => (
+          <li class="tinted" style={tintStyle(p.cover.color)}>
+            <a href={`#projet-${p.id}`} data-jump={p.id}>
+              <span class="label">{pad(i + 1)}</span>
+              {p.title}
+            </a>
+          </li>
+        ))
       }
     </ol>
-  </div>
+  </header>
+
+  <nav class="rail" aria-label="Projets" data-rail>
+    <ol role="list">
+      {
+        projects.map((p, i) => (
+          <li class="tinted" style={tintStyle(p.cover.color)}>
+            <a href={`#projet-${p.id}`} data-jump={p.id}>
+              <span class="rail__dot" aria-hidden="true" />
+              <span class="rail__name">{p.title}</span>
+              <span class="visually-hidden">, projet {i + 1} sur {projects.length}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  {
+    projects.map((p, i) => {
+      const cover = p.cover.image ? media(p.cover.image.src) : undefined;
+      const gallery = p.gallery.map((g) => ({ ...g, file: media(g.src) })).filter((g) => g.file);
+      const prev = projects[(i - 1 + projects.length) % projects.length];
+      const next = projects[(i + 1) % projects.length];
+      const when = period(p);
+      const m = motifOf(p.id, p.cover.motif);
+      const tint = TINTS[p.cover.color].thread;
+      const sections = [
+        { title: 'Contexte', body: paragraphs(p.context) },
+        { title: 'Problème', body: paragraphs(p.problem) },
+        { title: 'Mon rôle', body: paragraphs(p.role) },
+        { title: 'Approche', body: paragraphs(p.approach) },
+      ].filter((s) => s.body.length);
+      return (
+        <article
+          class:list={['slide tinted', i % 2 ? 'slide--right' : 'slide--left', { 'slide--media': cover }]}
+          id={`projet-${p.id}`}
+          style={tintStyle(p.cover.color)}
+          aria-labelledby={`slide-${p.id}`}
+          data-project
+          data-scene="project"
+          data-strand={i}
+          data-motif={m}
+          data-thread={tint}
+          data-glow={glow(tint)}
+        >
+          <div class="slide__in wrap">
+            <div class="slide__text" data-origin>
+              <p class="slide__no label">
+                <span class="slide__n">{pad(i + 1)}</span> / {total}
+                <span class="slide__cat">{p.category === 'pro' ? 'Professionnel' : 'Personnel'}</span>
+              </p>
+              <h3 class="slide__title display" id={`slide-${p.id}`}>
+                <a href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
+                  {p.title}
+                </a>
+              </h3>
+              {p.kind && <p class="slide__kind">{p.kind}</p>}
+              <p class="slide__sum">{p.summary}</p>
+              <p class="slide__meta label">{[p.category === 'pro' ? p.organisation : 'Projet personnel', when].filter(Boolean).join(' — ')}</p>
+              {p.technologies.length > 0 && (
+                <ul role="list" class="chips" aria-label="Technologies">
+                  {p.technologies.map((t) => (
+                    <li>{t}</li>
+                  ))}
+                </ul>
+              )}
+              <div class="slide__cta">
+                <a class="btn btn--fill" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} data-open>
+                  Ouvrir le projet<span class="visually-hidden"> {p.title}</span> <Arrow />
+                </a>
+                {p.links[0] && (
+                  <a class="btn" href={p.links[0].url} rel="noopener">
+                    {p.links[0].label} <Arrow dir="out" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div class="slide__stage" data-stage>
+              <ThreadSvg kind="project" colors={colors} strand={i} motif={m} />
+              {cover && p.cover.image && (
+                <figure class="slide__shot">
+                  <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
+                  <figcaption class="label">Capture réelle</figcaption>
+                </figure>
+              )}
+              <p class="slide__motif label" aria-hidden="true">
+                Motif — {MOTIF_LABELS[m].split(' — ')[1]}
+              </p>
+            </div>
+          </div>
+
+          <dialog class="feat" id={`detail-${p.id}`} aria-labelledby={`detail-${p.id}-title`} data-detail>
+            <div class="feat__bar">
+              <p class="label">
+                <span class="slide__n">{pad(i + 1)}</span> / {total}
+              </p>
+              <div class="feat__nav">
+                <a class="feat__btn" href={`#projet-${prev.id}`} data-go aria-label={`Projet précédent : ${prev.title}`}>
+                  <Arrow dir="left" />
+                  <span class="feat__btn-t">Précédent</span>
+                </a>
+                <a class="feat__btn" href={`#projet-${next.id}`} data-go aria-label={`Projet suivant : ${next.title}`}>
+                  <span class="feat__btn-t">Suivant</span>
+                  <Arrow />
+                </a>
+                <button class="feat__btn feat__close" type="button" data-close>
+                  Fermer
+                </button>
+              </div>
+            </div>
+
+            <article class="feat__in wrap">
+              <header class="feat__head">
+                <div class="feat__headtext">
+                  <p class="label">{p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')}</p>
+                  <p class="feat__title display" id={`detail-${p.id}-title`}>
+                    {p.title}
+                  </p>
+                  <p class="feat__stand">{p.summary}</p>
+                </div>
+                <figure class="feat__motif" aria-hidden="true">
+                  <ThreadSvg kind="project" colors={colors} strand={i} motif={m} class="feat__svg" />
+                </figure>
+              </header>
+
+              {cover && p.cover.image && (
+                <figure class="feat__shot">
+                  <div class="feat__frame">
+                    <img src={cover.src} alt={p.cover.image.alt} width={cover.width} height={cover.height} loading="lazy" decoding="async" />
+                  </div>
+                  <figcaption class="label">Capture réelle{p.cover.image.caption ? ` — ${p.cover.image.caption}` : ''}</figcaption>
+                </figure>
+              )}
+
+              <div class="feat__body">
+                <div class="feat__text">
+                  {sections.map((s) => (
+                    <section class="feat__sec">
+                      <h4 class="label">{s.title}</h4>
+                      {s.body.map((t) => (
+                        <p>{t}</p>
+                      ))}
+                    </section>
+                  ))}
+                  {p.contributions.length > 0 && (
+                    <section class="feat__sec">
+                      <h4 class="label">{p.category === 'pro' ? 'Contributions' : 'Fonctionnalités'}</h4>
+                      <ol role="list" class="feat__list">
+                        {p.contributions.map((c) => (
+                          <li>{c}</li>
+                        ))}
+                      </ol>
+                    </section>
+                  )}
+                  {p.results.length > 0 && (
+                    <section class="feat__sec">
+                      <h4 class="label">Résultats</h4>
+                      <ul role="list" class="feat__list feat__list--plain">
+                        {p.results.map((r) => (
+                          <li>{r}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+                </div>
+
+                <aside class="feat__facts" aria-label="Fiche du projet">
+                  <dl>
+                    {p.organisation && (
+                      <div>
+                        <dt class="label">Cadre</dt>
+                        <dd>{p.organisation}</dd>
+                      </div>
+                    )}
+                    {when && (
+                      <div>
+                        <dt class="label">Période</dt>
+                        <dd>{when}</dd>
+                      </div>
+                    )}
+                    {p.status && (
+                      <div>
+                        <dt class="label">État</dt>
+                        <dd>{p.status === 'en-cours' ? 'En cours de développement' : 'Terminé'}</dd>
+                      </div>
+                    )}
+                    {p.technologies.length > 0 && (
+                      <div>
+                        <dt class="label">Technologies</dt>
+                        <dd>
+                          <ul role="list" class="chips">
+                            {p.technologies.map((t) => (
+                              <li>{t}</li>
+                            ))}
+                          </ul>
+                        </dd>
+                      </div>
+                    )}
+                    {p.links.length > 0 && (
+                      <div>
+                        <dt class="label">Liens</dt>
+                        <dd>
+                          <ul role="list">
+                            {p.links.map((l) => (
+                              <li>
+                                <a class="link feat__ext" href={l.url} rel="noopener">
+                                  {l.label}
+                                  <Arrow dir="out" />
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                  <p class="feat__note label">Le motif est une illustration du domaine du projet, pas une capture.</p>
+                </aside>
+              </div>
+
+              {gallery.length > 0 && (
+                <div class="feat__gallery">
+                  {gallery.map((g) => (
+                    <figure>
+                      <img src={g.file!.src} alt={g.alt} width={g.file!.width} height={g.file!.height} loading="lazy" decoding="async" />
+                      {g.caption && <figcaption class="label">{g.caption}</figcaption>}
+                    </figure>
+                  ))}
+                </div>
+              )}
+
+              <a class="feat__next tinted" href={`#projet-${next.id}`} data-go style={tintStyle(next.cover.color)}>
+                <span class="label">Projet suivant</span>
+                <span class="feat__next-t display">
+                  {next.title} <Arrow />
+                </span>
+              </a>
+            </article>
+          </dialog>
+        </article>
+      );
+    })
+  }
 </section>
 
 <style>
-  /* The index follows the introduction closely: its first lines show on the first screen. */
-  .projects.section {
-    padding-top: clamp(1.5rem, 4vh, 3rem);
+  /* ---------- Opening of the act ---------- */
+  .projects__head {
+    padding-top: clamp(6rem, 14vh, 10rem);
+    padding-bottom: clamp(2rem, 6vh, 4rem);
   }
-
-  /* ---------- The table of contents ---------- */
-  .toc {
-    counter-reset: pj;
-  }
-  .pj {
-    border-bottom: 1px solid var(--rule);
-  }
-  .pj__row {
-    position: relative;
+  .projects__intro {
     display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr) minmax(12rem, 22rem);
-    align-items: center;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gap);
-    padding-block: clamp(0.9rem, 0.5rem + 1.2vw, 1.75rem);
+    align-items: end;
+    margin-top: 2rem;
   }
-  .pj__n {
+  .projects__title {
+    grid-column: 1 / span 6;
+    font-size: clamp(4rem, 1rem + 11vw, 13rem);
+    font-stretch: 75%;
+    font-weight: 650;
+    line-height: 0.8;
+  }
+  .projects__lede {
+    grid-column: 8 / -1;
+    color: var(--fg-2);
+    max-width: 30em;
+    font-size: 1.0625rem;
+  }
+  .projects__index {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+  }
+  .projects__index a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0 1rem 0 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: 99px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    background: rgb(15 14 13 / 0.55);
+    backdrop-filter: blur(8px);
+    transition:
+      border-color var(--dur-1),
+      color var(--dur-1);
+  }
+  .projects__index a:hover {
+    border-color: var(--tint);
+  }
+  .projects__index .label {
     color: var(--tint);
   }
-  .pj__t {
-    font-size: clamp(2.1rem, 0.9rem + 3.6vw, 4.6rem);
-    transition:
-      color var(--dur-2) var(--ease),
-      transform var(--dur-3) var(--ease);
+
+  /* ---------- One scene per project ---------- */
+  .slide {
+    position: relative;
   }
-  .pj--lead .pj__t {
-    font-size: clamp(2.5rem, 0.9rem + 5.4vw, 7.25rem);
+  .slide__in {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    align-items: center;
+    min-height: 100svh;
+    padding-block: clamp(4rem, 10vh, 7rem);
   }
-  .pj__open {
+  .slide__text {
+    grid-column: 1 / span 5;
+    grid-row: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .slide__stage {
+    position: relative;
+    grid-column: 6 / -1;
+    grid-row: 1;
+    aspect-ratio: 1;
+    width: min(100%, 78svh);
+    justify-self: center;
+  }
+  .slide--right .slide__text {
+    grid-column: 8 / -1;
+  }
+  .slide--right .slide__stage {
+    grid-column: 1 / span 7;
+  }
+  .slide__no {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .slide__n {
+    color: var(--tint);
+  }
+  .slide__cat {
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--rule-strong);
+  }
+  .slide__title {
+    margin-top: 1.25rem;
+    font-size: clamp(3rem, 0.8rem + 5.6vw, 7.5rem);
+    font-stretch: 76%;
+    font-weight: 650;
+    line-height: 0.86;
+    letter-spacing: -0.035em;
+  }
+  .slide__title a {
     text-decoration: none;
-    outline: none;
+    background: linear-gradient(var(--tint), var(--tint)) 0 100% / 0 0.06em no-repeat;
+    transition: background-size var(--dur-3) var(--ease);
   }
-  /* The whole line is the link. */
-  .pj__open::after {
-    content: '';
+  .slide__title a:hover {
+    background-size: 100% 0.06em;
+  }
+  .slide__kind {
+    margin-top: 1.1rem;
+    color: var(--tint);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .slide__sum {
+    margin-top: 0.9rem;
+    max-width: 32em;
+    font-size: clamp(1.02rem, 0.95rem + 0.25vw, 1.2rem);
+    line-height: 1.5;
+  }
+  .slide__meta {
+    margin-top: 1.25rem;
+  }
+  .slide__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+  }
+  .slide__motif {
     position: absolute;
-    inset: 0;
+    right: 0;
+    bottom: -0.5rem;
+    color: var(--fg-3);
   }
-  .pj__open:focus-visible::after {
-    outline: 2px solid var(--accent);
-    outline-offset: -2px;
+  /* A real capture: a large framed screen in front of the thread. */
+  .slide__shot {
+    position: absolute;
+    left: 8%;
+    right: -4%;
+    top: 22%;
+    transform: perspective(1400px) rotateY(-8deg) rotateX(3deg);
+    transform-origin: 30% 50%;
+    transition: transform 1.2s var(--ease);
   }
-  .pj__meta {
+  .slide--right .slide__shot {
+    left: -4%;
+    right: 8%;
+    transform: perspective(1400px) rotateY(8deg) rotateX(3deg);
+  }
+  .slide__shot img {
+    width: 100%;
+    border-radius: 6px;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 40px 90px -30px rgb(0 0 0 / 0.85),
+      0 0 120px -40px var(--tint);
+  }
+  .slide__shot figcaption {
+    margin-top: 0.75rem;
+  }
+  .slide__stage:hover .slide__shot {
+    transform: perspective(1400px) rotateY(-3deg) rotateX(1deg) translateY(-0.5rem);
+  }
+
+  /* ---------- Rail: where am I among the projects (desktop) ---------- */
+  .rail {
+    position: fixed;
+    right: max(1rem, calc(var(--g) * 0.5));
+    top: 50%;
+    z-index: 20;
+    transform: translateY(-50%);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity var(--dur-2),
+      visibility 0s var(--dur-2);
+  }
+  :global(.in-gallery) .rail {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--dur-2);
+  }
+  .rail ol {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    text-align: right;
-    font-size: 0.875rem;
-    line-height: 1.4;
+    gap: 0.15rem;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .toc:has(.pj__row:hover) .pj__t {
-      color: var(--dim);
-    }
-    .toc .pj__row:hover .pj__t {
-      color: var(--fg);
-      font-style: italic;
-      transform: translateX(0.12em);
-    }
+  .rail a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    min-height: 2rem;
+    text-decoration: none;
+    font-size: 0.8rem;
+    color: var(--fg-2);
+  }
+  .rail__name {
+    opacity: 0;
+    transform: translateX(0.5rem);
+    transition:
+      opacity var(--dur-2) var(--ease),
+      transform var(--dur-2) var(--ease);
+    white-space: nowrap;
+  }
+  .rail:hover .rail__name,
+  .rail a:focus-visible .rail__name,
+  .rail a[aria-current='true'] .rail__name {
+    opacity: 1;
+    transform: none;
+  }
+  .rail a[aria-current='true'] {
+    color: var(--fg);
+  }
+  .rail__dot {
+    order: 2;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--tint);
+    transition:
+      transform var(--dur-2) var(--ease),
+      background var(--dur-2);
+  }
+  .rail a[aria-current='true'] .rail__dot {
+    background: var(--tint);
+    transform: scale(1.5);
   }
 
   /* ---------- The article (dialog) ---------- */
@@ -290,28 +551,22 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     overflow-y: auto;
     overscroll-behavior: contain;
   }
-  /* No veil: the article grows out of its line over the page, which stays visible until covered. */
   .feat::backdrop {
     background: transparent;
   }
-  /* Without JavaScript the article is printed under its line. */
   :global(html:not(.js)) .feat {
     position: static;
     display: block;
     height: auto;
     overflow: visible;
     background: none;
-    padding-bottom: 3rem;
+    padding-bottom: 4rem;
   }
   :global(html:not(.js)) .feat__bar,
   :global(html:not(.js)) .feat__next,
-  :global(html:not(.js)) .feat__title {
+  :global(html:not(.js)) .feat__head {
     display: none;
   }
-  :global(html:not(.js)) .feat__in {
-    padding: 0;
-  }
-
   .feat__bar {
     position: sticky;
     top: 0;
@@ -322,7 +577,7 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     gap: 1rem;
     min-height: var(--header-h);
     padding-inline: var(--g);
-    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--rule);
@@ -335,8 +590,8 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    min-height: 2.5rem;
-    padding: 0 1rem;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
     border: 1px solid var(--rule-strong);
     border-radius: 99px;
     font-size: 0.875rem;
@@ -351,62 +606,65 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     color: var(--bg);
     border-color: var(--fg);
   }
-
   .feat__in {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gap);
-    padding-top: clamp(2.5rem, 7vh, 6rem);
+    padding-top: clamp(2rem, 6vh, 5rem);
     padding-bottom: clamp(3rem, 8vh, 6rem);
   }
   .feat__head {
     grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    background:
+      radial-gradient(60% 80% at 75% 50%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 70%),
+      var(--bg-2);
+    border-radius: 8px;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    overflow: hidden;
   }
-  .feat__stand {
-    grid-column: 1 / span 8;
+  .feat__headtext {
+    grid-column: 1 / span 7;
   }
   .feat__title {
     margin-top: 1rem;
-    font-size: clamp(3rem, 0.8rem + 8vw, 10rem);
-    letter-spacing: -0.04em;
+    font-size: clamp(3rem, 0.8rem + 6.5vw, 8.5rem);
+    font-stretch: 76%;
+    font-weight: 650;
+    line-height: 0.86;
   }
   .feat__stand {
     max-width: 30em;
-    margin-top: clamp(1.5rem, 3vh, 2.5rem);
-    font-family: var(--serif);
-    font-weight: 300;
-    font-size: clamp(1.3rem, 1rem + 1vw, 2rem);
-    line-height: 1.28;
-    letter-spacing: -0.01em;
+    margin-top: 1.5rem;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem);
+    line-height: 1.4;
   }
-  .feat__shot,
-  .feat__plate {
+  .feat__motif {
+    position: relative;
+    grid-column: 8 / -1;
+    aspect-ratio: 1;
+  }
+  .feat__motif :global(.stage-svg) {
+    opacity: 1 !important;
+  }
+  .feat__shot {
     grid-column: 1 / -1;
-    margin-top: clamp(2.5rem, 6vh, 4.5rem);
-  }
-  .feat__plate :global(.plate) {
-    aspect-ratio: 16 / 11;
-    background: var(--bg-2);
-  }
-  /* Without a capture, the summary and the plate share the first screen. */
-  .feat__stand--side {
-    grid-column: 1 / span 5;
-    align-self: start;
-  }
-  .feat__stand--side + .feat__plate {
-    grid-column: 6 / -1;
-    margin-top: clamp(1.5rem, 3vh, 2.5rem);
+    margin-top: var(--gap);
   }
   .feat__frame {
-    background: var(--bg-2);
-    padding: clamp(0.75rem, 3vw, 3.5rem);
     display: grid;
     place-items: center;
+    padding: clamp(0.75rem, 3vw, 3.5rem);
+    background: var(--bg-2);
+    border-radius: 8px;
   }
   .feat__frame img {
     width: 100%;
     max-width: 72rem;
-    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.5);
+    border-radius: 4px;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.7);
   }
   figcaption.label {
     margin-top: 0.75rem;
@@ -428,10 +686,9 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     margin-bottom: 0.9rem;
   }
   .feat__sec p {
-    max-width: 34em;
-    font-family: var(--serif);
-    font-size: clamp(1.1rem, 1rem + 0.3vw, 1.3rem);
-    line-height: 1.55;
+    max-width: 36em;
+    font-size: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+    line-height: 1.6;
   }
   .feat__sec p + p {
     margin-top: 1em;
@@ -444,37 +701,41 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     counter-increment: c;
     display: grid;
     grid-template-columns: 2.75rem 1fr;
-    padding-block: 0.85rem;
+    padding-block: 0.9rem;
     border-bottom: 1px solid var(--rule);
   }
   .feat__list li::before {
     content: counter(c, decimal-leading-zero);
-    font-family: var(--serif);
-    font-style: italic;
+    font-family: var(--display);
+    font-weight: 600;
     color: var(--tint);
   }
   .feat__list--plain li::before {
     content: '—';
-    font-style: normal;
   }
   .feat__facts {
     grid-column: 9 / span 4;
   }
   .feat__facts dl > div {
-    padding-block: 0.8rem;
+    padding-block: 0.85rem;
     border-top: 1px solid var(--rule);
   }
   .feat__facts dd {
-    margin-top: 0.3rem;
+    margin-top: 0.35rem;
+  }
+  .feat__facts .chips {
+    margin-top: 0.2rem;
   }
   .feat__ext {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
   }
-  .feat__facts :global(.feat__mini) {
+  .feat__note {
     margin-top: 1.5rem;
-    background: var(--bg-2);
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--fg-3);
   }
   .feat__gallery {
     grid-column: 1 / -1;
@@ -485,7 +746,7 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
   }
   .feat__gallery img {
     width: 100%;
-    background: var(--bg-2);
+    border-radius: 4px;
   }
   .feat__next {
     grid-column: 1 / -1;
@@ -501,34 +762,27 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
     justify-content: space-between;
     gap: 1rem;
     margin-top: 0.75rem;
-    font-size: clamp(2.2rem, 1rem + 4.4vw, 5.5rem);
-    transition: font-style 0s;
+    font-size: clamp(2.4rem, 1rem + 5vw, 6.5rem);
+    font-weight: 650;
+    font-stretch: 76%;
+    transition: color var(--dur-2);
   }
   .feat__next:hover .feat__next-t {
-    font-style: italic;
+    color: var(--tint);
   }
   .feat__next .arrow {
-    width: 0.5em;
-    height: 0.5em;
+    width: 0.45em;
+    height: 0.45em;
   }
-
-  /* Opening: the article rises into place (the clip from the line is set by the script). */
   :global(.motion) .feat[open] .feat__in > * {
     animation: feat-in 1s var(--ease) both;
-    animation-delay: calc(180ms + var(--k, 0) * 70ms);
+    animation-delay: calc(180ms + var(--k, 0) * 80ms);
   }
-  .feat__head {
-    --k: 0;
-  }
-  .feat__stand {
+  .feat__shot {
     --k: 1;
   }
-  .feat__shot,
-  .feat__plate {
-    --k: 2;
-  }
   .feat__body {
-    --k: 3;
+    --k: 2;
   }
   @keyframes feat-in {
     from {
@@ -536,54 +790,110 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
       transform: translateY(2rem);
     }
   }
-
-  @media (max-width: 63.99rem) {
-    .pj__row {
-      grid-template-columns: 2.75rem minmax(0, 1fr);
-    }
-    .pj__meta {
-      grid-column: 2;
-      align-items: flex-start;
-      text-align: left;
-      margin-top: 0.4rem;
-    }
-    .feat__text,
-    .feat__facts,
-    .feat__stand,
-    .feat__stand--side,
-    .feat__stand--side + .feat__plate {
-      grid-column: 1 / -1;
-    }
-    .feat__plate :global(.plate) {
-      aspect-ratio: 16 / 10;
-    }
-    .feat__facts {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--gap);
-      align-items: start;
-    }
-    .feat__facts :global(.feat__mini) {
-      margin-top: 0;
+  :global(.motion) .feat[open] .feat__motif path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: feat-draw 2.2s var(--ease) forwards 0.35s;
+  }
+  @keyframes feat-draw {
+    to {
+      stroke-dashoffset: 0;
     }
   }
+
+  /* ---------- Tablet ---------- */
+  @media (max-width: 63.99rem) {
+    .projects__title {
+      grid-column: 1 / -1;
+    }
+    .projects__lede {
+      grid-column: 1 / span 9;
+      margin-top: 1.5rem;
+    }
+    .rail {
+      display: none;
+    }
+    .slide__in,
+    .slide--right .slide__in {
+      align-content: center;
+      row-gap: 1.5rem;
+      min-height: 0;
+      padding-block: clamp(4rem, 9vh, 6rem);
+    }
+    .slide__stage,
+    .slide--right .slide__stage {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      width: min(100%, 34rem);
+    }
+    .slide__text,
+    .slide--right .slide__text {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      max-width: 40rem;
+    }
+    .feat__headtext,
+    .feat__text,
+    .feat__facts {
+      grid-column: 1 / -1;
+    }
+    .feat__motif {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      width: min(100%, 22rem);
+      justify-self: center;
+    }
+  }
+  /* Landscape tablets and short laptops: the scene keeps its two columns. */
+  @media (max-width: 63.99rem) and (orientation: landscape) and (min-width: 48rem) {
+    .slide__in,
+    .slide--right .slide__in {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+    .slide__stage {
+      grid-column: 7 / -1;
+      grid-row: 1;
+    }
+    .slide__text {
+      grid-column: 1 / span 6;
+      grid-row: 1;
+    }
+  }
+
+  /* ---------- Phones ---------- */
   @media (max-width: 47.99rem) {
-    .pj__row {
-      grid-template-columns: 2rem minmax(0, 1fr);
-      align-items: baseline;
+    .projects__head {
+      padding-top: 5rem;
     }
-    .pj__t,
-    .pj--lead .pj__t {
-      font-size: clamp(2rem, 1rem + 5.6vw, 2.6rem);
-      line-height: 1;
+    .projects__lede {
+      grid-column: 1 / -1;
     }
-    .pj--lead .pj__t {
-      font-size: clamp(2.3rem, 1rem + 7.4vw, 3.1rem);
+    .projects__index {
+      margin-top: 1.75rem;
     }
-    .pj__meta {
-      font-size: 0.8125rem;
+    .slide__in,
+    .slide--right .slide__in {
+      padding-block: 3rem 3.5rem;
+      row-gap: 1rem;
     }
-    /* The article's controls sit at the bottom of the screen, under the thumb. */
+    .slide__stage,
+    .slide--right .slide__stage {
+      width: 100%;
+    }
+    .slide__shot,
+    .slide--right .slide__shot {
+      left: 0;
+      right: 0;
+      top: 18%;
+      transform: none;
+    }
+    .slide__title {
+      font-size: clamp(2.8rem, 1rem + 9vw, 3.8rem);
+    }
+    .slide__cta .btn {
+      flex: 1;
+      justify-content: center;
+    }
     .feat__bar {
       position: fixed;
       top: auto;
@@ -596,7 +906,6 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
       min-height: 4rem;
     }
     .feat__btn {
-      min-height: 2.75rem;
       min-width: 2.75rem;
       justify-content: center;
       padding: 0 0.9rem;
@@ -609,19 +918,8 @@ const shortKind = (p: ProjectEntry) => p.kind?.split('·')[0]?.trim();
       clip: rect(0 0 0 0);
     }
     .feat__in {
-      padding-top: 2rem;
+      padding-top: 1rem;
       padding-bottom: 7rem;
-    }
-    .feat__plate :global(.plate) {
-      aspect-ratio: 1 / 0.92;
-    }
-    .feat__facts {
-      grid-template-columns: 1fr;
-    }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .pj__t {
-      transition: none;
     }
   }
 </style>

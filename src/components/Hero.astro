@@ -1,104 +1,167 @@
 ---
-// Introduction: what Clément does, in one sentence set large; who he is, underneath. The first
-// row of the projects shows at the bottom of the first screen on larger displays.
+// Act 1 — the introduction: who Clément is, beside the tangle of six threads (one per project).
+// The text is the page; the tangle is drawn as SVG by the server, then by WebGL when it can.
 import Arrow from './Arrow.astro';
+import ThreadSvg from './ThreadSvg.astro';
 import type { ExperienceEntry } from '../lib/content';
-import { emphasis } from '../lib/format';
 import type { Profile } from '../lib/schemas';
 
 interface Props {
   profile: Profile;
   experiences: ExperienceEntry[];
-  count: number;
+  colors: string[];
 }
-const { profile, experiences, count } = Astro.props;
+const { profile, experiences, colors } = Astro.props;
 const current = experiences.find((e) => !e.end);
-const statement = emphasis(profile.statement ?? profile.headline);
+const [first, ...rest] = profile.name.split(' ');
 ---
 
-<section class="hero" aria-labelledby="hero-title">
+<section class="hero" aria-labelledby="hero-title" data-scene="hero" data-glow="#4b2a17">
   <div class="hero__in wrap">
-    <p class="hero__top label">
-      <span>{profile.location}</span>
-      {current && <span class="hero__now">Aujourd'hui — {current.organisation}</span>}
-    </p>
+    <div class="hero__stage" data-stage>
+      <ThreadSvg kind="hero" colors={colors} />
+    </div>
 
-    <p class="hero__stmt display"><span class="hero__mask"><span set:html={statement} /></span></p>
-
-    <div class="hero__foot grid">
-      <h1 id="hero-title" class="hero__id">
-        {profile.name}
-        <span>{profile.jobTitle}</span>
+    <div class="hero__text">
+      <p class="hero__kicker label">
+        <span>{profile.location}</span>
+        {current && <span>{current.organisation}</span>}
+      </p>
+      <h1 id="hero-title" class="hero__name">
+        <span class="hero__first display">{first}</span>
+        <span class="hero__last display">{rest.join(' ')}</span>
+        <span class="hero__role">{profile.jobTitle}</span>
       </h1>
       <p class="hero__lead">{profile.headline}</p>
-      <a class="hero__go" href="#projets">
-        <span>{count} projets</span>
-        <Arrow dir="down" />
-      </a>
+      <div class="hero__cta">
+        <a class="btn btn--fill" href="#projets">Explorer les projets <Arrow dir="down" /></a>
+        <a class="btn" href="#contact">Me contacter</a>
+      </div>
     </div>
+
+    <p class="hero__foot label" aria-hidden="true">
+      <span><span class="act__n">01</span> Découverte</span>
+      <span class="hero__hint"><span class="hero__hint-fine">Passez sur les fils pour les démêler</span><span class="hero__hint-touch">Touchez les fils pour les démêler</span> — faites défiler</span>
+    </p>
   </div>
 </section>
 
 <style>
   .hero__in {
-    display: flex;
-    flex-direction: column;
-    min-height: max(34rem, calc(100svh - 8.5rem));
-    padding-top: calc(var(--header-h) + clamp(1rem, 3vh, 2.5rem));
-    padding-bottom: clamp(1.5rem, 4vh, 3rem);
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    align-items: center;
+    min-height: max(38rem, 100svh);
+    padding-top: calc(var(--header-h) + 1rem);
+    padding-bottom: 4.5rem;
   }
-  .hero__top {
+  .hero__stage {
+    position: relative;
+    grid-column: 5 / -1;
+    grid-row: 1;
+    aspect-ratio: 2 / 1.24;
+    width: 100%;
+  }
+  .hero__text {
+    position: relative;
+    grid-column: 1 / span 6;
+    grid-row: 1;
+    z-index: 1;
+  }
+  .hero__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+  }
+  .hero__kicker span + span::before {
+    content: '';
+    display: inline-block;
+    width: 1.5rem;
+    height: 1px;
+    margin-right: 1rem;
+    vertical-align: middle;
+    background: var(--rule-strong);
+  }
+  .hero__name {
+    margin-top: 1.5rem;
+  }
+  .hero__first,
+  .hero__last {
+    display: block;
+    font-size: clamp(3.6rem, 1rem + 9vw, 11.5rem);
+    font-weight: 650;
+    font-stretch: 76%;
+    letter-spacing: -0.035em;
+    line-height: 0.84;
+  }
+  .hero__last {
+    padding-left: 0.42em;
+  }
+  .hero__role {
+    display: block;
+    margin-top: 1.4rem;
+    font-family: var(--display);
+    font-size: clamp(1.25rem, 0.9rem + 1vw, 1.9rem);
+    font-weight: 400;
+    font-stretch: 92%;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--fg);
+  }
+  .hero__lead {
+    max-width: 30em;
+    margin-top: 1rem;
+    color: var(--fg-2);
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .hero__foot {
+    position: absolute;
+    left: max(var(--g), env(safe-area-inset-left));
+    right: var(--g);
+    bottom: 1.5rem;
     display: flex;
     justify-content: space-between;
     gap: 1rem;
   }
-  .hero__now {
-    text-align: right;
+
+  .hero__hint-touch {
+    display: none;
   }
-  .hero__stmt {
-    margin-top: auto;
-    padding-top: clamp(3rem, 10vh, 8rem);
-    font-size: clamp(3.1rem, 0.6rem + 9.6vw, 12.5rem);
-    max-width: 13ch;
-    text-wrap: balance;
-  }
-  .hero__mask {
-    display: block;
-    padding-bottom: 0.08em;
-    margin-bottom: -0.08em;
-    overflow: clip;
-  }
-  .hero__mask > span {
-    display: block;
-  }
-  :global(.motion) .hero__mask > span {
-    animation: hero-rise 1.3s var(--ease) both 0.1s;
-  }
-  /* The emphasised word comes into focus: what the sentence says, once. */
-  :global(.motion) .hero__stmt :global(em) {
-    display: inline-block;
-    animation: hero-focus 1.6s var(--ease) both 0.7s;
-  }
-  @keyframes hero-focus {
-    from {
-      filter: blur(0.12em);
-      opacity: 0.35;
+  @media (hover: none) {
+    .hero__hint-fine {
+      display: none;
     }
+    .hero__hint-touch {
+      display: inline;
+    }
+  }
+  /* Arrival: the name rises, the rest follows. Only transforms and opacity, after the first paint. */
+  :global(.motion) .hero__first,
+  :global(.motion) .hero__last {
+    animation: hero-rise 1.2s var(--ease) both;
+  }
+  :global(.motion) .hero__last {
+    animation-delay: 0.08s;
+  }
+  :global(.motion) .hero__kicker,
+  :global(.motion) .hero__role,
+  :global(.motion) .hero__lead,
+  :global(.motion) .hero__cta,
+  :global(.motion) .hero__foot {
+    animation: hero-fade 1s var(--ease) both 0.45s;
   }
   @keyframes hero-rise {
     from {
-      transform: translateY(105%);
+      transform: translateY(0.35em);
     }
-  }
-  .hero__foot {
-    margin-top: clamp(2rem, 6vh, 4.5rem);
-    padding-top: 1rem;
-    border-top: 1px solid var(--rule);
-    align-items: start;
-    row-gap: 1.25rem;
-  }
-  :global(.motion) .hero__foot {
-    animation: hero-fade 1s var(--ease) both 0.55s;
   }
   @keyframes hero-fade {
     from {
@@ -106,93 +169,52 @@ const statement = emphasis(profile.statement ?? profile.headline);
       transform: translateY(0.75rem);
     }
   }
-  .hero__id {
-    grid-column: 1 / span 4;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.35;
-  }
-  .hero__id span {
-    display: block;
-    font-weight: 400;
-    color: var(--fg-2);
-  }
-  .hero__lead {
-    grid-column: 5 / span 5;
-    color: var(--fg-2);
-    max-width: 34em;
-  }
-  .hero__go {
-    grid-column: 11 / span 2;
-    justify-self: end;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding-bottom: 0.2rem;
-    border-bottom: 1px solid var(--rule-strong);
-    text-decoration: none;
-    white-space: nowrap;
-    transition: border-color var(--dur-1);
-  }
-  .hero__go:hover {
-    border-color: currentColor;
-  }
-  .hero__go .arrow {
-    transition: transform var(--dur-2) var(--ease);
-  }
-  .hero__go:hover .arrow {
-    transform: rotate(90deg) translateX(0.2em) !important;
-  }
 
-  /* Tall tablets in portrait: a shorter opening, so the index of projects shows on the first screen. */
-  @media (min-width: 48rem) and (orientation: portrait) {
-    .hero__in {
-      min-height: min(calc(100svh - 8.5rem), 46rem);
-    }
-  }
   @media (max-width: 63.99rem) {
-    .hero__stmt {
-      font-size: clamp(3.1rem, 0.4rem + 11vw, 7.5rem);
-      max-width: 12ch;
+    .hero__in {
+      align-content: center;
+      row-gap: 1rem;
     }
-    .hero__id {
-      grid-column: 1 / span 5;
-    }
-    .hero__lead {
-      grid-column: 6 / -1;
-    }
-    .hero__go {
+    .hero__stage {
       grid-column: 1 / -1;
-      justify-self: start;
+      grid-row: 1;
+      margin-inline: calc(var(--g) * -1);
+      width: auto;
+      aspect-ratio: 2 / 1.15;
+    }
+    .hero__text {
+      grid-column: 1 / -1;
+      grid-row: 2;
     }
   }
   @media (max-width: 47.99rem) {
     .hero__in {
-      min-height: max(30rem, calc(100svh - 3rem));
+      min-height: max(34rem, calc(100svh - var(--bar-h)));
+      padding-bottom: 2rem;
+      align-content: start;
+      padding-top: calc(var(--header-h) + 0.5rem);
     }
-    .hero__top {
-      flex-direction: column;
-      gap: 0.2rem;
+    .hero__stage {
+      aspect-ratio: 2 / 1.35;
     }
-    .hero__now {
-      text-align: left;
+    .hero__name {
+      margin-top: 1rem;
     }
-    .hero__stmt {
-      font-size: clamp(2.9rem, 0.4rem + 12.4vw, 5rem);
-      line-height: 0.95;
+    .hero__first,
+    .hero__last {
+      font-size: clamp(3.4rem, 0.5rem + 15vw, 5.6rem);
     }
-    .hero__id,
-    .hero__lead {
-      grid-column: 1 / -1;
+    .hero__cta {
+      margin-top: 1.5rem;
     }
-  }
-  @media (max-height: 36rem) and (max-width: 47.99rem) {
-    .hero__stmt {
-      padding-top: 1.5rem;
-      font-size: 2.6rem;
+    .hero__cta .btn {
+      flex: 1;
+      justify-content: center;
+      min-height: 2.9rem;
+      padding-inline: 1rem;
     }
     .hero__foot {
-      margin-top: 1.25rem;
+      display: none;
     }
   }
 </style>

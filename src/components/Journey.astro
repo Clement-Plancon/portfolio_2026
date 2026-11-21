@@ -1,31 +1,49 @@
 ---
+// Act 3 — expertise, first half: the positions, told as chapters (today, alongside, before) rather than
+// as a timeline. Behind them the threads lie straight, side by side: the loom.
+import Arrow from './Arrow.astro';
+import ThreadSvg from './ThreadSvg.astro';
 import type { ExperienceEntry } from '../lib/content';
 import { formatPeriod } from '../lib/format';
-import Arrow from './Arrow.astro';
 
 interface Props {
   experiences: ExperienceEntry[];
+  colors: string[];
 }
-const { experiences } = Astro.props;
+const { experiences, colors } = Astro.props;
+// Chapter of a position: the first one without an end is today, the others without an end run alongside.
+let seenCurrent = false;
+const chapters = experiences.map((e) => {
+  if (!e.end) {
+    const label = seenCurrent ? 'En parallèle' : "Aujourd'hui";
+    seenCurrent = true;
+    return label;
+  }
+  return 'Avant';
+});
 ---
 
-<section class="journey section" id="parcours" aria-labelledby="journey-title">
+<section class="journey" id="parcours" aria-labelledby="journey-title" data-scene="warp" data-glow="#2a2116">
   <div class="wrap">
-    <header class="sec-head">
-      <h2 id="journey-title">Parcours</h2>
-      <p class="label">{experiences.length} postes</p>
-    </header>
+    <p class="act label"><span><span class="act__n">03</span> Expertise</span></p>
+    <div class="journey__head">
+      <h2 id="journey-title" class="journey__title display">Parcours</h2>
+      <div class="journey__loom" data-stage>
+        <ThreadSvg kind="warp" colors={colors} />
+      </div>
+    </div>
 
     <ol role="list" class="xp">
       {
         experiences.map((e, i) => (
-          <li class="xp__item grid" data-reveal style={`--d:${i % 3}`}>
-            <p class="xp__when label">
-              {formatPeriod(e.start, e.end, !e.end)}
-              {e.location && <span>{e.location}</span>}
+          <li class="xp__item" data-reveal style={`--d:${i % 3};--c:${colors[i % colors.length]}`}>
+            <p class="xp__chapter">
+              <span class="xp__chap display">{chapters[i]}</span>
+              <span class="label">{formatPeriod(e.start, e.end, !e.end)}</span>
+              {e.location && <span class="label xp__loc">{e.location}</span>}
             </p>
             <div class="xp__who">
-              <h3 class="xp__role serif">{e.role}</h3>
+              <h3 class="xp__role display">{e.role}</h3>
               <p class="xp__org">
                 {e.url ? (
                   <a class="link" href={e.url} rel="noopener">
@@ -46,7 +64,13 @@ const { experiences } = Astro.props;
                   ))}
                 </ul>
               )}
-              {e.skills.length > 0 && <p class="xp__skills label">{e.skills.join(' · ')}</p>}
+              {e.skills.length > 0 && (
+                <ul role="list" class="chips xp__skills" aria-label="Outils">
+                  {e.skills.map((s) => (
+                    <li>{s}</li>
+                  ))}
+                </ul>
+              )}
             </div>
           </li>
         ))
@@ -56,34 +80,83 @@ const { experiences } = Astro.props;
 </section>
 
 <style>
-  .xp__item {
-    padding-block: clamp(1.75rem, 3vw, 2.75rem);
-    border-bottom: 1px solid var(--rule);
-    row-gap: 1rem;
+  .journey {
+    padding-top: clamp(7rem, 16vh, 12rem);
   }
-  .xp__when {
-    grid-column: 1 / span 2;
+  .journey__head {
+    position: relative;
+    margin-top: 2rem;
+  }
+  .journey__title {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(4rem, 1rem + 11vw, 13rem);
+    font-stretch: 75%;
+    font-weight: 650;
+    line-height: 0.8;
+  }
+  /* The loom: the threads run across the screen behind the title. */
+  .journey__loom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: clamp(8rem, 22vw, 18rem);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .xp {
+    margin-top: clamp(3rem, 8vh, 5rem);
+  }
+  .xp__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gap);
+    row-gap: 1.25rem;
+    padding-block: clamp(2rem, 4vw, 3.25rem);
+    border-top: 1px solid var(--rule);
+  }
+  /* each chapter carries the colour of a thread */
+  .xp__item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -1px;
+    width: clamp(3rem, 8vw, 7rem);
+    height: 2px;
+    background: var(--c);
+  }
+  .xp__chapter {
+    grid-column: 1 / span 3;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.35rem;
+  }
+  .xp__chap {
+    font-size: clamp(1.5rem, 1rem + 1.2vw, 2.2rem);
+    font-weight: 500;
+    font-stretch: 85%;
+    color: color-mix(in srgb, var(--c) 62%, #fff); /* text: the dye, lightened to AA contrast */
+    margin-bottom: 0.4rem;
   }
   .xp__who {
-    grid-column: 3 / span 5;
+    grid-column: 4 / span 4;
   }
   .xp__role {
-    font-weight: 300;
-    font-size: clamp(1.6rem, 1rem + 1.6vw, 2.6rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.7rem, 1rem + 1.8vw, 2.9rem);
+    font-weight: 600;
+    font-stretch: 80%;
+    line-height: 0.98;
   }
   .xp__org {
-    margin-top: 0.75rem;
+    margin-top: 0.9rem;
   }
   .xp__org .arrow {
     width: 0.7em;
   }
   .xp__what {
-    grid-column: 8 / span 5;
+    grid-column: 8 / -1;
   }
   .xp__sum {
     font-size: 1.0625rem;
@@ -96,41 +169,41 @@ const { experiences } = Astro.props;
   .xp__list li {
     position: relative;
     padding-left: 1.1rem;
-    margin-top: 0.4rem;
+    margin-top: 0.45rem;
   }
   .xp__list li::before {
     content: '';
     position: absolute;
     left: 0;
     top: 0.75em;
-    width: 0.5rem;
-    border-top: 1px solid var(--rule-strong);
+    width: 0.55rem;
+    border-top: 1px solid var(--c);
   }
   .xp__skills {
     margin-top: 1.25rem;
-    letter-spacing: 0.06em;
   }
   @media (max-width: 63.99rem) {
-    .xp__when {
+    .xp__chapter {
       grid-column: 1 / -1;
       flex-direction: row;
-      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.4rem 1rem;
+    }
+    .xp__chap {
+      margin-bottom: 0;
     }
     .xp__who {
-      grid-column: 1 / span 6;
+      grid-column: 1 / span 5;
     }
     .xp__what {
-      grid-column: 7 / -1;
+      grid-column: 6 / -1;
     }
   }
   @media (max-width: 47.99rem) {
     .xp__who,
     .xp__what {
       grid-column: 1 / -1;
-    }
-    .xp__when {
-      flex-direction: column;
-      gap: 0.2rem;
     }
   }
 </style>

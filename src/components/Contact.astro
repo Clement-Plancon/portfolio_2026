@@ -1,40 +1,66 @@
 ---
+// Act 5 — contact. The six threads come in from the left, gather, and go on as one under the address.
 import type { Profile } from '../lib/schemas';
 import Arrow from './Arrow.astro';
+import ThreadSvg from './ThreadSvg.astro';
 
 interface Props {
   profile: Profile;
   cvUrl?: string;
+  colors: string[];
 }
-const { profile } = Astro.props;
+const { profile, colors } = Astro.props;
 // A CV from the media library is resolved by the page (published file, or private file in the preview).
 const cv = profile.cv ? (profile.cv.startsWith('files/') ? Astro.props.cvUrl : profile.cv) : undefined;
 const [user, domain] = profile.email.split('@');
+const github = profile.socials.find((s) => /github/i.test(s.label));
+const linkedin = profile.socials.find((s) => /linkedin/i.test(s.label));
+const others = profile.socials.filter((s) => s !== github && s !== linkedin);
 ---
 
-<section class="contact section" id="contact" aria-labelledby="contact-title">
-  <div class="wrap">
-    <header class="sec-head">
-      <h2 id="contact-title">Contact</h2>
-      <p class="label">{profile.location} · réponse par e-mail</p>
-    </header>
+<section class="contact" id="contact" aria-labelledby="contact-title" data-scene="gather" data-glow="#5a2e17">
+  <div class="contact__in wrap">
+    <p class="act label"><span><span class="act__n">05</span> Contact</span></p>
+    <h2 id="contact-title" class="contact__title display">Tirons le fil ensemble.</h2>
+    <p class="contact__lead">Un projet, une équipe à renforcer, une question technique : écrivez-moi, je réponds par e-mail. {profile.location}.</p>
 
-    <p class="contact__lead lede" data-reveal>Un projet, une opportunité, une question technique&#8239;? <em>Écrivez-moi.</em></p>
-
-    <a class="contact__mail display" href={`mailto:${profile.email}`} data-reveal>
-      <span>{user}</span><wbr /><span>@{domain}</span>
-    </a>
+    <div class="contact__mailbox">
+      <a class="contact__mail display" href={`mailto:${profile.email}`}>
+        <span>{user}</span><wbr /><span>@{domain}</span>
+      </a>
+      <div class="contact__stage" data-stage>
+        <ThreadSvg kind="gather" colors={colors} class="contact__svg" />
+      </div>
+    </div>
 
     <div class="contact__row">
       <div class="contact__copy">
-        <button class="contact__btn" type="button" data-copy={profile.email} hidden>Copier l'adresse</button>
-        <span class="contact__status label" role="status"></span>
+        <button class="btn btn--fill" type="button" data-copy={profile.email} hidden>Copier l'adresse</button>
+        <span class="contact__status label" role="status" data-copy-status></span>
       </div>
       <ul role="list" class="contact__links">
         {
-          profile.socials.map((s) => (
+          github && (
             <li>
-              <a class="link" href={s.url} rel="me noopener">
+              <a class="btn" href={github.url} rel="me noopener">
+                {github.label} <Arrow dir="out" />
+              </a>
+            </li>
+          )
+        }
+        {
+          linkedin && (
+            <li>
+              <a class="btn" href={linkedin.url} rel="me noopener">
+                {linkedin.label} <Arrow dir="out" />
+              </a>
+            </li>
+          )
+        }
+        {
+          others.map((s) => (
+            <li>
+              <a class="btn" href={s.url} rel="me noopener">
                 {s.label} <Arrow dir="out" />
               </a>
             </li>
@@ -43,7 +69,7 @@ const [user, domain] = profile.email.split('@');
         {
           cv && (
             <li>
-              <a class="link" href={cv}>
+              <a class="btn" href={cv}>
                 CV (PDF)
               </a>
             </li>
@@ -55,71 +81,105 @@ const [user, domain] = profile.email.split('@');
 </section>
 
 <style>
+  /* the fan of threads runs past the screen: clipped, never scrolled */
+  .contact {
+    overflow-x: clip;
+  }
+  .contact__in {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: max(36rem, 100svh);
+    padding-top: clamp(6rem, 14vh, 10rem);
+    padding-bottom: 4rem;
+  }
+  .contact__title {
+    margin-top: 2rem;
+    max-width: 12ch;
+    font-size: clamp(3rem, 1rem + 6.4vw, 8.5rem);
+    font-stretch: 76%;
+    font-weight: 650;
+    line-height: 0.86;
+  }
   .contact__lead {
-    margin-top: clamp(2.5rem, 5vw, 4.5rem);
-    max-width: 18em;
+    max-width: 34em;
+    margin-top: 1.5rem;
+    color: var(--fg-2);
+    font-size: 1.0625rem;
+  }
+  .contact__mailbox {
+    position: relative;
+    margin-top: clamp(2.5rem, 6vh, 4rem);
+    align-self: flex-start;
+    max-width: 100%;
   }
   .contact__mail {
+    position: relative;
+    z-index: 1;
     display: inline-block;
-    margin-top: clamp(2rem, 5vw, 4rem);
-    font-size: clamp(2.4rem, 0.4rem + 7.4vw, 9.5rem);
-    font-style: italic;
-    letter-spacing: -0.035em;
-    line-height: 1;
-    color: var(--accent);
+    font-size: clamp(1.9rem, 0.6rem + 5.4vw, 6.4rem);
+    font-weight: 500;
+    font-stretch: 82%;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
     text-decoration: none;
     overflow-wrap: anywhere;
-    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-    padding-bottom: 0.08em;
-    transition: background-size var(--dur-3) var(--ease);
+    transition: color var(--dur-2);
   }
   .contact__mail:hover {
-    background-size: 100% 1px;
+    color: var(--accent);
   }
   .contact__mail span {
     white-space: nowrap;
+  }
+  /* the single thread runs under the address; the six come from the left of it */
+  .contact__stage {
+    position: relative;
+    height: 2px;
+    margin-top: 0.6rem;
+    pointer-events: none;
+  }
+  .contact__stage :global(.contact__svg) {
+    width: 242.86%;
+    height: auto;
+    aspect-ratio: 3.4 / 1.2;
+    inset: 50% auto auto 0;
+    transform: translateY(-50%);
   }
   .contact__row {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 1.25rem 2rem;
-    margin-top: clamp(2rem, 4vw, 3.5rem);
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--rule);
+    gap: 1rem 2rem;
+    margin-top: clamp(2.5rem, 6vh, 4rem);
   }
   .contact__copy {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-  .contact__btn {
-    min-height: 2.75rem;
-    padding: 0 1.25rem;
-    border: 1px solid var(--rule-strong);
-    border-radius: 99px;
-    font-size: 0.9rem;
-    transition:
-      background var(--dur-1),
-      color var(--dur-1);
-  }
-  .contact__btn:hover {
-    background: var(--fg);
-    color: var(--bg);
-  }
   .contact__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 2rem;
-  }
-  .contact__links a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    min-height: 2.75rem;
+    gap: 0.6rem;
   }
   .contact__links .arrow {
-    width: 0.7em;
+    width: 0.75em;
+  }
+  @media (max-width: 47.99rem) {
+    .contact__in {
+      min-height: max(34rem, calc(100svh - var(--bar-h)));
+    }
+    .contact__links,
+    .contact__links li,
+    .contact__copy {
+      width: 100%;
+    }
+    .contact__links .btn,
+    .contact__copy .btn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 </style>
