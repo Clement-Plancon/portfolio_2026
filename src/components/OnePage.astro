@@ -12,6 +12,7 @@ import Base from '../layouts/Base.astro';
 import type { MediaResolver } from '../lib/media';
 import type { SiteData } from '../lib/snapshot';
 import { personLd, profilePageLd, projectsLd } from '../lib/structured-data';
+import { TINTS } from '../lib/tints';
 
 interface Props {
   data: SiteData;
@@ -23,6 +24,8 @@ const { data, media, preview = false } = Astro.props;
 const { profile, seo, projects, experiences, skills } = data;
 const page = seo.pages.home;
 const share = media(page.ogImage ?? seo.defaultOgImage);
+// One thread per project, dyed in its tint.
+const colors = projects.map((p) => TINTS[p.cover.color].thread);
 ---
 
 <Base
@@ -43,12 +46,12 @@ const share = media(page.ogImage ?? seo.defaultOgImage);
       </p>
     )
   }
-  <Hero profile={profile} experiences={experiences} count={projects.length} />
+  <Hero profile={profile} experiences={experiences} colors={colors} />
   <Projects projects={projects} media={media} />
-  <About profile={profile} media={media} />
-  <Journey experiences={experiences} />
-  <Skills skills={skills} />
-  <Contact profile={profile} cvUrl={profile.cv?.startsWith('files/') ? media(profile.cv)?.src : undefined} />
+  <Journey experiences={experiences} colors={colors} />
+  <Skills skills={skills} colors={colors} />
+  <About profile={profile} media={media} colors={colors} />
+  <Contact profile={profile} colors={colors} cvUrl={profile.cv?.startsWith('files/') ? media(profile.cv)?.src : undefined} />
 </Base>
 
 <style>

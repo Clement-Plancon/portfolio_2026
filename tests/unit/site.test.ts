@@ -2,7 +2,7 @@
 // pages, the contrast of the project tints, and the grouping of technologies on the plates.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { plateLayers } from '../../src/lib/plate';
+import { MOTIFS, motif, motifOf, tangle } from '../../src/lib/threads';
 import { BACKGROUNDS, TINTS } from '../../src/lib/tints';
 
 const redirects = [...readFileSync('netlify.toml', 'utf8').matchAll(/from = "([^"]+)"\s+to = "([^"]+)"\s+status = (\d+)/g)].map(([, from, to, status]) => ({ from, to, status: Number(status) }));
@@ -47,14 +47,27 @@ describe('project tints', () => {
   });
 });
 
-describe('plates', () => {
-  it('groups the technologies of a project in layers, interface first, without losing any', () => {
-    const techs = ['Flutter', 'Dart', 'Firebase', 'Google Vision AI', 'Node.js', 'Quelque chose'];
-    const layers = plateLayers(techs);
-    expect(layers.map((l) => l.name)).toEqual(['Interface', 'Serveur', 'Données', 'Services & IA', 'Autres']);
-    expect(layers.flatMap((l) => l.items).sort()).toEqual([...techs].sort());
+describe('threads', () => {
+  it('each motif is a regular thread of the requested number of points', () => {
+    for (const m of MOTIFS) {
+      const pts = motif(m, 200, 1.5);
+      expect(pts).toHaveLength(200);
+      expect(pts.flat().every(Number.isFinite)).toBe(true);
+      // evenly spaced: no step is more than twice the mean step
+      const steps = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1], p[2] - pts[i][2]));
+      const mean = steps.reduce((a, b) => a + b, 0) / steps.length;
+      expect(Math.max(...steps)).toBeLessThan(mean * 2);
+    }
   });
-  it('draws nothing for a project without technologies', () => {
-    expect(plateLayers([])).toEqual([]);
+  it('the published projects keep their motifs; a new project gets the default; a chosen motif wins', () => {
+    expect(motifOf('datametre')).toBe('barres');
+    expect(motifOf('un-nouveau-projet')).toBe('noeud');
+    expect(motifOf('datametre', 'onde')).toBe('onde');
+    expect(motifOf('datametre', 'inconnu')).toBe('barres');
+  });
+  it('the tangle has open ends, left and right', () => {
+    const t = tangle(0, 6, 200);
+    expect(t[0][0]).toBeLessThan(-2);
+    expect(t[199][0]).toBeGreaterThan(2);
   });
 });

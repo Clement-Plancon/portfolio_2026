@@ -1,4 +1,5 @@
 import { COVER_COLORS } from '../../lib/schemas';
+import { MOTIF_LABELS, MOTIFS } from '../../lib/threads';
 import { TINTS } from '../../lib/tints';
 import type { Entry } from '../api';
 import { FormActions, ImageField, LinkList, Select, StringList, TagInput, TextArea, TextInput, Thumb, Toggle } from '../ui';
@@ -10,7 +11,7 @@ export function ProjectList() {
     <CollectionList
       type="project"
       title="Projets"
-      lead="L'ordre ci-dessous est celui du sommaire des projets sur le site. L'étoile met un projet en avant : son titre est composé plus grand."
+      lead="L'ordre ci-dessous est celui des projets sur le site (et de leurs fils). L'étoile marque un projet comme mis en avant ; la présentation actuelle donne la même place à chaque projet."
       base="projets"
       newLabel="Nouveau projet"
       reorderable
@@ -47,7 +48,7 @@ type ProjectForm = {
   results: string[];
   technologies: string[];
   links: { label: string; url: string }[];
-  cover: { color: (typeof COVER_COLORS)[number]; image?: { src: string; alt: string; caption?: string } };
+  cover: { color: (typeof COVER_COLORS)[number]; image?: { src: string; alt: string; caption?: string }; motif?: (typeof MOTIFS)[number] };
   gallery: { src: string; alt: string; caption?: string }[];
   featured: boolean;
   visible: boolean;
@@ -118,15 +119,22 @@ export function ProjectEditor({ id }: { id: string }) {
         />
         <div class="toggles">
           <Toggle label="Visible sur le site" hint="Masqué : visible seulement dans l'aperçu." checked={f.visible} onChange={(v) => set('visible', v)} />
-          <Toggle label="Mis en avant" hint="Le titre du projet est composé plus grand dans le sommaire." checked={f.featured} onChange={(v) => set('featured', v)} />
+          <Toggle label="Mis en avant" hint="Conservé dans le contenu ; sans effet sur la présentation actuelle." checked={f.featured} onChange={(v) => set('featured', v)} />
         </div>
       </section>
 
       <section class="panel" aria-labelledby="p-couverture">
         <h2 id="p-couverture">Présentation</h2>
-        <p class="hint">Chaque projet s'ouvre en article. Sa planche dessine ses technologies en couches ; une capture réelle, si vous en ajoutez une, est montrée en grand et posée en haut de la planche. La teinte colore le numéro et les repères du projet.</p>
+        <p class="hint">Sur le site, chaque projet est un fil teint de sa couleur, qui dessine un motif : un signe abstrait de son domaine (jamais une image de l'application). Une capture réelle, si vous en ajoutez une, est montrée en grand devant le motif et dans l'article.</p>
+        <Select
+          label="Motif du fil"
+          hint="« Automatique » garde le motif par défaut du projet."
+          value={f.cover.motif ?? ''}
+          options={[{ value: '', label: 'Automatique' }, ...MOTIFS.map((m) => ({ value: m, label: MOTIF_LABELS[m] }))]}
+          onChange={(v) => set('cover', { ...f.cover, motif: (v || undefined) as ProjectForm['cover']['motif'] })}
+        />
         <fieldset class="swatches">
-          <legend>Teinte</legend>
+          <legend>Teinte du fil</legend>
           {COVER_COLORS.map((c) => (
             <label class="swatch-option">
               <input type="radio" name="cover-color" value={c} checked={f.cover.color === c} onChange={() => set('cover', { ...f.cover, color: c })} />

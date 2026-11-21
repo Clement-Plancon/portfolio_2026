@@ -30,14 +30,14 @@ Nombre de projets, expériences et médias ; date de la dernière publication ; 
 
 **Liste**
 - L'ordre de la liste est celui du site. Glissez une ligne (souris) ou utilisez les flèches ↑ ↓, puis **Enregistrer l'ordre**.
-- ★ : **mettre en avant** : le titre du projet est composé plus grand dans le sommaire des projets.
+- ★ : **mettre en avant** (conservé dans le contenu ; la présentation actuelle donne la même place à chaque projet).
 - 👁 : afficher / masquer sur le site. Un projet masqué reste visible dans l'aperçu.
 - ⧉ : dupliquer (la copie est créée masquée).
 - 🗑 : supprimer (confirmation demandée).
 
 **Fiche projet**
 - *L'essentiel* : titre, adresse du projet (générée depuis le titre ; le projet s'ouvre à l'adresse `clementplancon.fr/#projet-…`), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
-- *Présentation* : chaque projet est une ligne du sommaire qui s'ouvre en article. L'article montre la **planche** du projet : ses technologies dessinées en couches (interface, serveur, données…). Si vous avez une **capture réelle**, ajoutez-la : elle est montrée en grand en tête de l'article, posée en haut de la planche, et sert d'aperçu au survol. Sans capture, rien n'est inventé : la planche porte le nom du projet. La *teinte* (vermillon, vert sapin, ardoise, ocre, prune, sable) colore le numéro et les repères du projet ; les six teintes sont vérifiées pour le contraste.
+- *Présentation* : sur le site, chaque projet est un fil teint de sa *teinte* (vermillon, vert sapin, ardoise, ocre, prune, sable), qui dessine un *motif* : un signe abstrait de son domaine (feuille, courbe et seuil, arborescence, spirale, onde, barres, nœud). « Automatique » garde le motif par défaut. Si vous avez une **capture réelle**, ajoutez-la : elle est montrée en grand devant le motif et en tête de l'article. Sans capture, rien n'est inventé.
 - *Article* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
 - *Images de l'article* : galerie avec texte alternatif et légende.
 
@@ -49,7 +49,7 @@ Intitulé, organisation (et organisation de rattachement, ex. ministère), dates
 
 ## Profil et compétences
 
-- **Profil** : nom, titre professionnel, phrase d'accroche, composée en très grand en haut de la page (un mot entre astérisques est mis en valeur : `Je rends *lisible*…`), accroche, introduction et biographie de la section À propos (le dernier paragraphe de la biographie est mis en exergue), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail (affichés en quatre colonnes numérotées dans À propos).
+- **Profil** : nom, titre professionnel, phrase d'accroche (conservée dans le contenu et l'image de partage), accroche, introduction et biographie de la section À propos (le dernier paragraphe de la biographie est mis en exergue), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail (affichés en quatre colonnes numérotées dans À propos ; le dernier paragraphe de la biographie est mis en exergue au milieu des fils).
 - **Compétences** : groupes (nom, courte description, éléments), réordonnables.
 
 ## Médias

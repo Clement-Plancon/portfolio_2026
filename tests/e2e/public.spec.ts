@@ -7,7 +7,7 @@ const SECTIONS = [
   { id: 'projets', title: 'Projets' },
   { id: 'parcours', title: 'Parcours' },
   { id: 'competences', title: 'Compétences' },
-  { id: 'contact', title: 'Contact' },
+  { id: 'contact', title: 'Tirons le fil ensemble.' },
 ];
 const PROJECTS = ['bercy-vert', 'referentiel-indicateurs', 'saisines-cour-des-comptes', 'veille-strategique', 'safeping', 'datametre'];
 const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
@@ -43,10 +43,10 @@ for (const [width, height] of RESOLUTIONS) {
     });
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `overflow at ${width}px`).toBeLessThanOrEqual(0);
+    // The navigation is always on screen (at the bottom on phones).
     const nav = page.getByRole('navigation', { name: 'Sommaire' });
-    if (phone) await page.getByRole('button', { name: 'Sommaire' }).click();
-    await expect(nav.getByRole('link', { name: 'Projets', exact: true })).toBeVisible();
-    await nav.getByRole('link', { name: 'Projets', exact: true }).click();
+    await expect(nav.getByRole('link', { name: /Projets/ })).toBeInViewport();
+    await nav.getByRole('link', { name: /Projets/ }).click();
     await expect(page.getByRole('heading', { name: 'Projets', level: 2 })).toBeInViewport();
     // A project opens over the page, and its article fits the screen.
     await page.getByRole('link', { name: 'Datametre', exact: true }).click();
@@ -173,26 +173,39 @@ test('a link to #projet-… opens that project on arrival', async ({ page }) => 
   await expect(page.locator('#projet-datametre')).toBeInViewport();
 });
 
-test('desktop: hovering a line shows a preview of the project', async ({ page }) => {
+test('desktop: the rail tells which project is on screen, and goes to another one', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  // The preview hides while the page scrolls: wait for the scroll to settle before pointing.
-  await page.evaluate(() => document.getElementById('projets')!.scrollIntoView({ behavior: 'instant' }));
-  await page.waitForTimeout(200);
-  await page.locator('#projet-bercy-vert .pj__row').hover();
-  await expect(page.locator('.peek')).toHaveClass(/is-on/);
-  await expect(page.locator('.peek .plate')).toHaveCount(1);
+  await page.evaluate(() => document.getElementById('projet-veille-strategique')!.scrollIntoView({ behavior: 'instant' }));
+  const rail = page.getByRole('navigation', { name: 'Projets' });
+  await expect(rail).toBeVisible();
+  await expect(rail.getByRole('link', { name: /Veille Stratégique/ })).toHaveAttribute('aria-current', 'true');
+  await rail.getByRole('link', { name: /SafePing/ }).click();
+  await expect(page.locator('#projet-safeping h3')).toBeInViewport();
+  await expect(page.locator('[data-where]')).toContainText('SafePing');
 });
 
-test('reduced motion: nothing waits for an animation', async ({ page }) => {
+test('without WebGL the threads are drawn by the server, and the page is whole', async ({ page }) => {
+  await page.goto('/?nogl');
+  await page.waitForTimeout(500);
+  await expect(page.locator('html')).not.toHaveClass(/gl-on/);
+  await expect(page.locator('.hero [data-stage] svg path')).toHaveCount(6);
+  await expect(page.locator('#projet-datametre [data-stage] svg')).toBeVisible();
+  // the WebGL module is never loaded
+  const scripts = await page.evaluate(() => performance.getEntriesByType('resource').map((r) => r.name).filter((n) => n.includes('engine')));
+  expect(scripts).toEqual([]);
+});
+
+test('reduced motion: no WebGL scene, nothing waits for an animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
+  await page.waitForTimeout(800);
   await expect(page.locator('html')).not.toHaveClass(/motion/);
+  await expect(page.locator('html')).not.toHaveClass(/gl-on/);
   const hidden = await page.locator('[data-reveal]').evaluateAll((els) => els.filter((el) => getComputedStyle(el).opacity !== '1').length);
   expect(hidden).toBe(0);
   await page.getByRole('link', { name: 'Bercy Vert', exact: true }).click();
-  // The plate is drawn spread out at once.
-  expect(await page.locator('#detail-bercy-vert .plate').evaluate((el) => getComputedStyle(el).getPropertyValue('--spread').trim())).toBe('1');
+  await expect(page.locator('#detail-bercy-vert')).toBeVisible();
 });
 
 test('without JavaScript every detail is readable', async ({ browser }) => {
@@ -205,20 +218,20 @@ test('without JavaScript every detail is readable', async ({ browser }) => {
   await ctx.close();
 });
 
-test('phones: the table of contents unfolds, closes with Escape and after a choice', async ({ browser }) => {
+test('phones: the navigation sits at the bottom of the screen, within reach of the thumb', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   await page.goto('/');
-  const button = page.getByRole('button', { name: 'Sommaire' });
-  await button.click();
-  await expect(button).toHaveAttribute('aria-expanded', 'true');
-  await page.keyboard.press('Escape');
-  await expect(button).toHaveAttribute('aria-expanded', 'false');
-  await expect(button).toBeFocused();
-  await button.click();
-  await page.getByRole('navigation', { name: 'Sommaire' }).getByRole('link', { name: 'Contact' }).click();
-  await expect(button).toHaveAttribute('aria-expanded', 'false');
-  await expect(page.getByRole('heading', { name: 'Contact', level: 2 })).toBeInViewport();
+  const nav = page.getByRole('navigation', { name: 'Sommaire' });
+  const box = (await nav.boundingBox())!;
+  expect(box.y + box.height).toBeGreaterThan(844 - 2);
+  expect(box.y).toBeGreaterThan(844 * 0.8);
+  for (const link of await nav.getByRole('link').all()) {
+    const b = (await link.boundingBox())!;
+    expect(b.height).toBeGreaterThanOrEqual(44);
+  }
+  await nav.getByRole('link', { name: /Contact/ }).click();
+  await expect(page.getByRole('heading', { name: 'Tirons le fil ensemble.', level: 2 })).toBeInViewport();
   await ctx.close();
 });
 

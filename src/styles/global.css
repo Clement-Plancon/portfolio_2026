@@ -1,21 +1,16 @@
 /* ---------------------------------------------------------------
-   « Sommaire » — design system
-   An editorial one-page: a large serif (Newsreader) for what is said,
-   a quiet grotesque (Geist) for what organises it. Dark warm paper by
-   default, light paper when the system asks for it. One warm accent.
+   « Fils » — design system
+   The site is a dark, lit space where six threads (one per project,
+   dyed in its tint) are tangled, unravelled, drawn into motifs and
+   gathered again. HTML carries every word; the threads are drawn by
+   WebGL when it can (src/scripts/scene/), as SVG otherwise.
    See docs/art-direction.md.
    --------------------------------------------------------------- */
 @font-face {
-  font-family: 'Newsreader';
-  src: url('/fonts/newsreader.woff2') format('woff2-variations');
-  font-weight: 300 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Newsreader';
-  src: url('/fonts/newsreader-italic.woff2') format('woff2-variations');
-  font-weight: 300 500;
-  font-style: italic;
+  font-family: 'Bricolage';
+  src: url('/fonts/bricolage.woff2') format('woff2-variations');
+  font-weight: 300 700;
+  font-stretch: 75% 100%;
   font-display: swap;
 }
 @font-face {
@@ -27,43 +22,31 @@
 
 :root {
   color-scheme: dark;
-  --bg: #12110e;
-  --bg-2: #1a1814;
-  --bg-3: #25221c;
-  --fg: #ede7db;
-  --fg-2: #a59d8e;
-  --rule: rgb(237 231 219 / 0.14);
-  --rule-strong: rgb(237 231 219 / 0.32);
-  --accent: #d8c29a;
-  --dim: rgb(237 231 219 / 0.3);
+  --bg: #0f0e0d;
+  --bg-2: #171513;
+  --bg-3: #221f1b;
+  --fg: #f1ebe2;
+  --fg-2: #a89f92;
+  --fg-3: #8f877b;
+  --rule: rgb(241 235 226 / 0.12);
+  --rule-strong: rgb(241 235 226 / 0.28);
+  --accent: #ff8a5c; /* ember: calls to action, the one warm signal outside the project tints */
+  --on-accent: #1a0e08;
 
-  --serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --display: 'Bricolage', 'Arial Narrow', ui-sans-serif, system-ui, sans-serif;
   --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --g: clamp(1rem, 0.45rem + 2.6vw, 3.25rem); /* page gutter */
-  --gap: clamp(0.75rem, 0.4rem + 1vw, 1.5rem); /* column gap */
-  --max: 110rem;
-  --header-h: 3.75rem;
+  --g: clamp(1rem, 0.4rem + 2.8vw, 3.5rem);
+  --gap: clamp(0.75rem, 0.4rem + 1vw, 1.5rem);
+  --max: 120rem;
+  --header-h: 4rem;
+  --bar-h: 0rem; /* height of the phone navigation bar */
 
-  --ease: cubic-bezier(0.22, 0.8, 0.12, 1); /* long, decelerating: things settle */
-  --ease-io: cubic-bezier(0.65, 0, 0.25, 1); /* both ways: the article opening */
+  --ease: cubic-bezier(0.22, 0.8, 0.12, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.25, 1);
   --dur-1: 180ms;
   --dur-2: 450ms;
-  --dur-3: 900ms;
-}
-@media (prefers-color-scheme: light) {
-  :root {
-    color-scheme: light;
-    --bg: #f2eee5;
-    --bg-2: #e9e4d9;
-    --bg-3: #ddd6c8;
-    --fg: #17150f;
-    --fg-2: #5d564a;
-    --rule: rgb(23 21 15 / 0.14);
-    --rule-strong: rgb(23 21 15 / 0.34);
-    --accent: #7a5622;
-    --dim: rgb(23 21 15 / 0.3);
-  }
+  --dur-3: 950ms;
 }
 
 *,
@@ -77,7 +60,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-h) + 1rem);
+  scroll-padding-top: var(--header-h);
   background: var(--bg);
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -120,7 +103,7 @@ h3,
 h4 {
   font-weight: inherit;
   font-size: inherit;
-  line-height: 1.1;
+  line-height: 1.05;
   text-wrap: balance;
 }
 p,
@@ -145,7 +128,7 @@ a {
 }
 ::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 
 .visually-hidden {
@@ -173,37 +156,87 @@ a {
   transform: none;
 }
 
+/* ---------- The scene behind the page ---------- */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease);
+}
+.gl-on .scene {
+  opacity: 1;
+}
+/* The server-drawn threads (SVG) show until WebGL takes over, and stay when it cannot. */
+.stage-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  transition: opacity 1s var(--ease);
+}
+.gl-on .stage-svg {
+  opacity: 0;
+}
+.motion:not(.gl-on) .stage-svg path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 2.6s var(--ease) forwards;
+  animation-delay: calc(var(--k, 0) * 90ms);
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* Without the scene, the light is painted by CSS: warm behind the introduction, the project's tint
+   behind each project. */
+html:not(.gl-on) .hero {
+  background: radial-gradient(55% 60% at 72% 48%, rgb(90 52 28 / 0.55), transparent 70%);
+}
+html:not(.gl-on) .slide {
+  background: radial-gradient(50% 55% at var(--glow-x, 70%) 50%, color-mix(in srgb, var(--tint) 16%, transparent), transparent 72%);
+}
+html:not(.gl-on) .slide--right {
+  --glow-x: 30%;
+}
+html:not(.gl-on) .contact {
+  background: radial-gradient(45% 50% at 80% 60%, rgb(110 52 22 / 0.4), transparent 70%);
+}
+main,
+.foot {
+  position: relative;
+  z-index: 1;
+}
+
 /* ---------- Type ---------- */
-.serif {
-  font-family: var(--serif);
-  font-optical-sizing: auto;
-}
 .display {
-  font-family: var(--serif);
-  font-weight: 300;
-  letter-spacing: -0.035em;
-  line-height: 0.92;
+  font-family: var(--display);
+  font-weight: 600;
+  font-stretch: 78%;
+  letter-spacing: -0.025em;
+  line-height: 0.9;
 }
-.display em,
-.lede em {
-  font-style: italic;
-  color: var(--accent);
-}
-/* Small capitals of the grotesque: labels, metadata, counters. */
 .label {
   font-family: var(--sans);
   font-size: 0.72rem;
   font-weight: 500;
   line-height: 1.4;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-variant-numeric: tabular-nums;
   color: var(--fg-2);
 }
 .lede {
-  font-family: var(--serif);
-  font-weight: 300;
-  font-size: clamp(1.75rem, 1rem + 2.6vw, 3.4rem);
+  font-family: var(--display);
+  font-weight: 400;
+  font-stretch: 88%;
+  font-size: clamp(1.6rem, 1rem + 2.2vw, 3.1rem);
   line-height: 1.08;
   letter-spacing: -0.02em;
 }
@@ -220,20 +253,68 @@ a {
 }
 .arrow {
   display: inline-block;
-  width: 0.8em;
-  height: 0.8em;
-  vertical-align: -0.05em;
+  width: 0.85em;
+  height: 0.85em;
+  vertical-align: -0.08em;
   flex: none;
 }
-
-/* A project's tint (src/lib/tints.ts), resolved for the current theme. */
+/* A project's tint (src/lib/tints.ts). */
 .tinted {
   --tint: var(--tint-d, var(--accent));
 }
-@media (prefers-color-scheme: light) {
-  .tinted {
-    --tint: var(--tint-l, var(--accent));
+
+/* Chips: technologies, tools. */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 1rem;
   }
+  .chips li {
+    padding: 0.22rem 0.7rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 99px;
+    font-size: 0.8125rem;
+    background: rgb(15 14 13 / 0.4);
+  }
+
+/* Buttons: one filled (the main action of a block), one outlined. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0 1.35rem;
+  border-radius: 99px;
+  border: 1px solid var(--rule-strong);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background var(--dur-1),
+    color var(--dur-1),
+    border-color var(--dur-1),
+    transform var(--dur-2) var(--ease);
+}
+.btn:hover {
+  border-color: var(--fg);
+}
+.btn--fill {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+.btn--fill:hover {
+  background: var(--tint, var(--accent));
+  border-color: var(--tint, var(--accent));
+  color: var(--on-accent);
+}
+.btn .arrow {
+  transition: transform var(--dur-2) var(--ease);
+}
+.btn:hover .arrow {
+  transform: translateX(0.2em);
 }
 
 /* ---------- Layout ---------- */
@@ -251,79 +332,46 @@ a {
 main > section {
   scroll-margin-top: var(--header-h);
 }
-.section {
-  padding-top: clamp(6rem, 3rem + 9vw, 12rem);
-}
-/* Section heading: a hairline, the section's name, a counter on the right. */
-.sec-head {
+/* An act opens with its number and name, and a line that leads into it. */
+.act {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--rule);
 }
-.sec-head h2 {
-  font-family: var(--sans);
-  font-size: clamp(1rem, 0.9rem + 0.3vw, 1.2rem);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+.act::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--rule-strong), transparent);
+}
+.act__n {
+  color: var(--accent);
 }
 
-/* ---------- Motion ----------
-   Elements marked [data-reveal] rise into place once, when they enter the viewport.
-   Only with JavaScript and without a reduced-motion preference (html.motion). */
+/* ---------- Motion ---------- */
 .motion [data-reveal] {
   opacity: 0;
-  transform: translateY(1.75rem);
+  transform: translateY(2rem);
   transition:
     opacity var(--dur-3) var(--ease),
     transform var(--dur-3) var(--ease);
-  transition-delay: calc(var(--d, 0) * 70ms);
+  transition-delay: calc(var(--d, 0) * 80ms);
 }
 .motion [data-reveal].is-in {
   opacity: 1;
   transform: none;
 }
 
-/* An open project article: the page behind does not scroll. */
 .has-dialog,
 .menu-open {
   overflow: hidden;
 }
 
-/* Preview of a project beside the pointer (created by src/scripts/site.ts, desktop only). */
-.peek {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 40;
-  width: clamp(20rem, 27vw, 30rem);
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  pointer-events: none;
-  background: var(--bg-2);
-  box-shadow: 0 24px 60px -24px rgb(0 0 0 / 0.55);
-  opacity: 0;
-  scale: 0.92;
-  transition:
-    opacity var(--dur-2) var(--ease),
-    scale var(--dur-3) var(--ease);
-}
-.peek.is-on {
-  opacity: 1;
-  scale: 1;
-}
-.peek > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top left;
-}
-.peek > .plate {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: auto;
+@media (max-width: 47.99rem) {
+  :root {
+    --bar-h: 4.25rem;
+    --header-h: 3.5rem;
+  }
 }
 
 @media print {
@@ -332,10 +380,11 @@ main > section {
     --bg: #fff;
     --fg: #000;
     --fg-2: #333;
-    --accent: #000;
   }
+  .scene,
   .top,
-  .peek,
+  .bar,
+  .rail,
   .skip-link {
     display: none !important;
   }

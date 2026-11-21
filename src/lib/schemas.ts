@@ -1,6 +1,7 @@
 // Content schemas, shared by the Astro build (validation of content files)
 // and the admin API (validation before anything is committed).
 import { z } from 'zod';
+import { MOTIFS } from './threads';
 
 export const slugSchema = z
   .string()
@@ -78,7 +79,12 @@ export const projectSchema = z.object({
   technologies: list(30, 60),
   links: z.array(linkSchema).max(10).default([]),
   cover: z
-    .object({ color: z.enum(COVER_COLORS).default('sapin'), image: imageSchema.optional() })
+    .object({
+      color: z.enum(COVER_COLORS).default('sapin'),
+      image: imageSchema.optional(),
+      /** The motif the project's thread draws (src/lib/threads.ts). Optional: published content without it keeps a default. */
+      motif: z.enum(MOTIFS).optional(),
+    })
     .default({ color: 'sapin' }),
   gallery: z.array(imageSchema).max(24).default([]),
   featured: z.boolean().default(false),

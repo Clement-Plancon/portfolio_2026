@@ -204,20 +204,21 @@ Seules les données publiées passent par une réponse cacheable. Le brouillon n
 
 ## Une seule page
 
-- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) : `Hero` (introduction, `h1`), `Projects` (`#projets`), `About` (`#a-propos`), `Journey` (`#parcours`), `Skills` (`#competences`), `Contact` (`#contact`). Les ancres sont stables.
-- **Projets** : chaque projet est un `<li id="projet-…">` (une ligne du sommaire, dont le titre est un vrai lien `#projet-…`) contenant son article `<dialog id="detail-…">`, **présent dans le HTML** (indexable ; sans JavaScript, l'article est imprimé sous sa ligne). Le script l'ouvre en dialogue modal (`showModal`), tient l'adresse à jour (`/#projet-…`, *Retour* le ferme) et rend le focus à la ligne à la fermeture.
+- `src/components/OnePage.astro` assemble les sections (pour `/` et pour l'aperçu) : `Hero` (introduction, `h1`), `Projects` (`#projets`), `Journey` (`#parcours`), `Skills` (`#competences`), `About` (`#a-propos`), `Contact` (`#contact`). Les ancres sont stables.
+- **Projets** : chaque projet est une scène `<article id="projet-…">` (son titre est un vrai lien `#projet-…`) contenant son article `<dialog id="detail-…">`, **présent dans le HTML** (indexable ; sans JavaScript, l'article est imprimé sous sa ligne). Le script l'ouvre en dialogue modal (`showModal`), tient l'adresse à jour (`/#projet-…`, *Retour* le ferme) et rend le focus à la ligne à la fermeture.
 - **Anciennes adresses** : `/projets/…`, `/parcours/`, `/a-propos/`, `/contact/`, `/articles/…` redirigent en 301 vers leur ancre (`netlify.toml`, testé dans `tests/unit/site.test.ts`).
 - **Routes** : `/` (SSR), `/media/…` et `/files/…` (médias publiés), `/404.html`, `/admin/` et `/admin/apercu/`, `/api/admin/*`, `sitemap-*.xml`, `robots.txt`. Aucune autre page publique.
 - **Données structurées** : `Person`, `ProfilePage`, et une `ItemList` de `CreativeWork` (un par projet, URL `/#projet-…`).
 
 ## Design system
 
-Direction « Sommaire » : voir [art-direction.md](art-direction.md) pour les choix et [interaction-system.md](interaction-system.md) pour le mouvement. En code :
+Direction « Fils » : voir [art-direction.md](art-direction.md) et [interaction-system.md](interaction-system.md). En code :
 
-- **Tokens** : `src/styles/global.css` (fonds `--bg`, `--bg-2`, `--bg-3`, textes `--fg`, `--fg-2`, filets `--rule`, accent `--accent` ; voix `.display`, `.lede`, `.label`). Thème sombre par défaut, thème clair dessiné, choisis par `prefers-color-scheme`.
-- **Polices** : Newsreader variable (graisse 300–500, taille optique 14–72) pour ce qui est dit ; Geist variable (réduite au latin, 25 Ko) pour ce qui organise. Auto-hébergées (`public/fonts/`). L'administration garde Newsreader et Instrument Sans.
-- **Teintes des projets** : `src/lib/tints.ts` (`cover.color` du contenu ; une valeur par thème, contraste AA testé dans `tests/unit/site.test.ts`).
-- **Planches** : `src/components/Plate.astro` dessine la pile d'un projet en couches (`src/lib/plate.ts` range ses technologies : interface, serveur, données, services & IA, infrastructure, démarche, autres). Dessin CSS 3D, unités de conteneur (`cqmin`) ; la capture réelle, s'il y en a une, est la feuille du dessus.
-- **Script** : `src/scripts/site.ts` (6,4 Ko, 2,6 Ko compressé) : sommaire mobile, section active, en-tête qui s'efface à la lecture, apparitions, articles des projets (dialogue, adresse, historique, précédent/suivant), aperçu au pointeur, copie de l'adresse. Sans lui, tout est lisible.
-- **Image de partage** : `scripts/generate-og.mjs` (la phrase d'accroche, le nom, l'index des projets), ou l'image choisie dans Référencement.
+- **Tokens** : `src/styles/global.css` (fond, texte, filets, braise ; voix `.display`, `.lede`, `.label` ; boutons, pastilles). Un seul thème, sombre.
+- **Polices** : Bricolage Grotesque (graisse 300–700, largeur 75–100 %, 67 Ko) et Geist (25 Ko), auto-hébergées.
+- **Fils** : `src/lib/threads.ts`, la géométrie partagée par le serveur et la scène (nœud, motifs, chaîne, rassemblement, chemin SVG compact). `cover.motif` (facultatif) choisit le motif d'un projet ; sans lui, les projets publiés gardent un motif par défaut.
+- **Teintes** : `src/lib/tints.ts` (`cover.color`), avec une teinture de fil et des teintes de texte au contraste AA testé.
+- **Rendu** : `ThreadSvg.astro` (SVG serveur) ; `src/scripts/scene/engine.ts` (WebGL2 : tubes extrudés dans le shader, reflet de soie, images clés attachées aux sections `[data-scene]` et à leur `[data-stage]`, dégradation).
+- **Script** : `src/scripts/site.ts` (repère de position, rail, articles des projets avec adresse et historique, apparitions, chargement différé de la scène, copie de l'adresse). Sans lui, tout est lisible.
+- **Image de partage** : `scripts/generate-og.mjs`, ou l'image choisie dans Référencement.
 - **Images** : une seule taille par image (celle envoyée, au plus 2400 px), avec largeur et hauteur ; l'ancienne génération de variantes au build (`astro:assets`) n'existe plus, puisque les médias ne sont plus dans le dépôt.

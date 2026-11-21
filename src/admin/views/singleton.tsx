@@ -68,7 +68,7 @@ export function ProfileView() {
           <TextInput label="Nom" required value={f.name} maxLength={80} error={e.name} onInput={(v) => set('name', v)} />
           <TextInput label="Titre professionnel" required value={f.jobTitle} maxLength={120} error={e.jobTitle} onInput={(v) => set('jobTitle', v)} />
         </div>
-        <TextInput label="Phrase d'accroche" hint="Une phrase courte, composée en très grand en haut de la page. Entourez un mot d'astérisques pour le mettre en valeur : Je rends *lisible*…" value={f.statement} maxLength={90} error={e.statement} onInput={(v) => set('statement', v.trim() ? v : undefined)} />
+        <TextInput label="Phrase d'accroche" hint="Une phrase courte, reprise dans l'image de partage. Entourez un mot d'astérisques pour le mettre en valeur : Je rends *lisible*…" value={f.statement} maxLength={90} error={e.statement} onInput={(v) => set('statement', v.trim() ? v : undefined)} />
         <TextArea label="Accroche" required value={f.headline} maxLength={200} rows={2} error={e.headline} onInput={(v) => set('headline', v)} />
         <TextArea label="Introduction" required hint="Deux phrases, en tête de la section À propos." value={f.intro} maxLength={600} rows={3} error={e.intro} onInput={(v) => set('intro', v)} />
         <TextArea label="Biographie (section À propos)" required hint="Une ligne vide entre deux paragraphes. Le dernier paragraphe est mis en exergue." value={f.bio} maxLength={6000} rows={10} error={e.bio} onInput={(v) => set('bio', v)} />
