@@ -181,11 +181,11 @@ export function CollectionList(p: ListProps) {
                   )}
                   {p.featured && (
                     <IconButton
-                      label={e.data.featured ? 'Retirer de la couverture' : 'Mettre sur la couverture'}
+                      label={e.data.featured ? 'Ne plus mettre en avant' : 'Mettre en avant'}
                       icon="star"
                       pressed={!!e.data.featured}
                       disabled={busy}
-                      onClick={() => patch(e, { featured: !e.data.featured }, `Mise en avant de ${e.id}`, e.data.featured ? 'Retiré de la couverture.' : 'Ajouté à la couverture.')}
+                      onClick={() => patch(e, { featured: !e.data.featured }, `Mise en avant de ${e.id}`, e.data.featured ? 'N’est plus mis en avant.' : 'Mis en avant.')}
                     />
                   )}
                   <IconButton

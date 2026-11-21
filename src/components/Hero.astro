@@ -1,0 +1,187 @@
+---
+// Introduction: what Clément does, in one sentence set large; who he is, underneath. The first
+// row of the projects shows at the bottom of the first screen on larger displays.
+import Arrow from './Arrow.astro';
+import type { ExperienceEntry } from '../lib/content';
+import { emphasis } from '../lib/format';
+import type { Profile } from '../lib/schemas';
+
+interface Props {
+  profile: Profile;
+  experiences: ExperienceEntry[];
+  count: number;
+}
+const { profile, experiences, count } = Astro.props;
+const current = experiences.find((e) => !e.end);
+const statement = emphasis(profile.statement ?? profile.headline);
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__in wrap">
+    <p class="hero__top label">
+      <span>{profile.location}</span>
+      {current && <span class="hero__now">Aujourd'hui — {current.organisation}</span>}
+    </p>
+
+    <p class="hero__stmt display"><span class="hero__mask"><span set:html={statement} /></span></p>
+
+    <div class="hero__foot grid">
+      <h1 id="hero-title" class="hero__id">
+        {profile.name}
+        <span>{profile.jobTitle}</span>
+      </h1>
+      <p class="hero__lead">{profile.headline}</p>
+      <a class="hero__go" href="#projets">
+        <span>{count} projets</span>
+        <Arrow dir="down" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero__in {
+    display: flex;
+    flex-direction: column;
+    min-height: max(34rem, calc(100svh - 8.5rem));
+    padding-top: calc(var(--header-h) + clamp(1rem, 3vh, 2.5rem));
+    padding-bottom: clamp(1.5rem, 4vh, 3rem);
+  }
+  .hero__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .hero__now {
+    text-align: right;
+  }
+  .hero__stmt {
+    margin-top: auto;
+    padding-top: clamp(3rem, 10vh, 8rem);
+    font-size: clamp(3.1rem, 0.6rem + 9.6vw, 12.5rem);
+    max-width: 13ch;
+    text-wrap: balance;
+  }
+  .hero__mask {
+    display: block;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+    overflow: clip;
+  }
+  .hero__mask > span {
+    display: block;
+  }
+  :global(.motion) .hero__mask > span {
+    animation: hero-rise 1.3s var(--ease) both 0.1s;
+  }
+  @keyframes hero-rise {
+    from {
+      transform: translateY(105%);
+    }
+  }
+  .hero__foot {
+    margin-top: clamp(2rem, 6vh, 4.5rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    align-items: start;
+    row-gap: 1.25rem;
+  }
+  :global(.motion) .hero__foot {
+    animation: hero-fade 1s var(--ease) both 0.55s;
+  }
+  @keyframes hero-fade {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+  }
+  .hero__id {
+    grid-column: 1 / span 4;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .hero__id span {
+    display: block;
+    font-weight: 400;
+    color: var(--fg-2);
+  }
+  .hero__lead {
+    grid-column: 5 / span 5;
+    color: var(--fg-2);
+    max-width: 34em;
+  }
+  .hero__go {
+    grid-column: 11 / span 2;
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid var(--rule-strong);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color var(--dur-1);
+  }
+  .hero__go:hover {
+    border-color: currentColor;
+  }
+  .hero__go .arrow {
+    transition: transform var(--dur-2) var(--ease);
+  }
+  .hero__go:hover .arrow {
+    transform: rotate(90deg) translateX(0.2em) !important;
+  }
+
+  /* Tall tablets in portrait: a shorter opening, so the index of projects shows on the first screen. */
+  @media (min-width: 48rem) and (orientation: portrait) {
+    .hero__in {
+      min-height: min(calc(100svh - 8.5rem), 46rem);
+    }
+  }
+  @media (max-width: 63.99rem) {
+    .hero__stmt {
+      font-size: clamp(3.1rem, 0.4rem + 11vw, 7.5rem);
+      max-width: 12ch;
+    }
+    .hero__id {
+      grid-column: 1 / span 5;
+    }
+    .hero__lead {
+      grid-column: 6 / -1;
+    }
+    .hero__go {
+      grid-column: 1 / -1;
+      justify-self: start;
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .hero__in {
+      min-height: max(30rem, calc(100svh - 3rem));
+    }
+    .hero__top {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .hero__now {
+      text-align: left;
+    }
+    .hero__stmt {
+      font-size: clamp(2.9rem, 0.4rem + 12.4vw, 5rem);
+      line-height: 0.95;
+    }
+    .hero__id,
+    .hero__lead {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-height: 36rem) and (max-width: 47.99rem) {
+    .hero__stmt {
+      padding-top: 1.5rem;
+      font-size: 2.6rem;
+    }
+    .hero__foot {
+      margin-top: 1.25rem;
+    }
+  }
+</style>

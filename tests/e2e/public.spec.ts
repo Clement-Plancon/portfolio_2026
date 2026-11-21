@@ -2,7 +2,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
-const WIDTHS = [320, 375, 390, 430, 768, 1024, 1440, 1920];
 const SECTIONS = [
   { id: 'a-propos', title: 'À propos' },
   { id: 'projets', title: 'Projets' },
@@ -16,13 +15,26 @@ const WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 const violations = async (page: Page) =>
   (await new AxeBuilder({ page }).withTags(WCAG).analyze()).violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target).join(' | ')}`);
 
-for (const width of WIDTHS) {
-  test(`no horizontal overflow, sections reachable at ${width}px`, async ({ browser }) => {
-    const mobile = width < 900;
-    const ctx = await browser.newContext({ viewport: { width, height: mobile ? 700 : 900 }, isMobile: width < 768, hasTouch: width < 1024 });
+const RESOLUTIONS = [
+  [320, 568],
+  [375, 667],
+  [390, 844],
+  [430, 932],
+  [768, 1024],
+  [820, 1180],
+  [1024, 768],
+  [1280, 800],
+  [1440, 900],
+  [1920, 1080],
+];
+
+for (const [width, height] of RESOLUTIONS) {
+  test(`no horizontal overflow, sections and projects reachable at ${width}×${height}`, async ({ browser }) => {
+    const phone = width < 768;
+    const ctx = await browser.newContext({ viewport: { width, height }, isMobile: phone, hasTouch: width < 1024 });
     const page = await ctx.newPage();
     await page.goto('/');
-    // Scroll through the whole page so every fold has opened.
+    // Scroll through the whole page so every element has risen into place.
     await page.evaluate(async () => {
       for (let y = 0; y < document.body.scrollHeight; y += innerHeight / 2) {
         scrollTo(0, y);
@@ -32,12 +44,18 @@ for (const width of WIDTHS) {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, `overflow at ${width}px`).toBeLessThanOrEqual(0);
     const nav = page.getByRole('navigation', { name: 'Sommaire' });
-    if (mobile) {
-      await page.getByRole('button', { name: 'Sommaire' }).click();
-    }
+    if (phone) await page.getByRole('button', { name: 'Sommaire' }).click();
     await expect(nav.getByRole('link', { name: 'Projets', exact: true })).toBeVisible();
     await nav.getByRole('link', { name: 'Projets', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Projets', level: 2 })).toBeInViewport();
+    // A project opens over the page, and its article fits the screen.
+    await page.getByRole('link', { name: 'Datametre', exact: true }).click();
+    const detail = page.locator('#detail-datametre');
+    await expect(detail).toBeVisible();
+    await expect(detail.getByRole('link', { name: /Voir le site/ })).toBeAttached();
+    expect(await detail.evaluate((d) => d.scrollWidth - d.clientWidth)).toBeLessThanOrEqual(0);
+    await detail.getByRole('button', { name: 'Fermer' }).click();
+    await expect(detail).toBeHidden();
     await ctx.close();
   });
 }
@@ -60,15 +78,17 @@ test('accessibility (axe, WCAG 2.1 AA), light and dark, with a project open', as
     await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
     await page.goto('/');
     expect(await violations(page)).toEqual([]);
-    await page.getByRole('button', { name: 'Datametre', exact: true }).click();
+    await page.getByRole('link', { name: 'Datametre', exact: true }).click();
+    await expect(page.locator('#detail-datametre')).toBeVisible();
     expect(await violations(page)).toEqual([]);
+    await page.keyboard.press('Escape');
   }
 });
 
 test('accessibility of the 404 page', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/une-page-qui-n-existe-pas/');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Ce pli');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText("Cette page n'existe pas");
   expect(await violations(page)).toEqual([]);
 });
 
@@ -107,55 +127,72 @@ test('every project and its details are in the HTML sent by the server, and noth
   expect(html).not.toContain('Priorisation');
 });
 
-test('a project unfolds and folds back with the keyboard, and its address follows', async ({ page }) => {
+test('a project opens with the keyboard, its address follows, previous/next and Escape work', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  const toggle = page.getByRole('button', { name: 'Référentiel Indicateurs', exact: true });
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  await toggle.focus();
-  await page.keyboard.press('Enter');
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(page).toHaveURL(/#projet-referentiel-indicateurs$/);
+  const link = page.getByRole('link', { name: 'Référentiel Indicateurs', exact: true });
   const detail = page.locator('#detail-referentiel-indicateurs');
+  await expect(detail).toBeHidden();
+  await link.focus();
+  await page.keyboard.press('Enter');
+  await expect(detail).toBeVisible();
+  await expect(page).toHaveURL(/#projet-referentiel-indicateurs$/);
   await expect(detail.getByText('Gestion des droits et des périmètres utilisateurs')).toBeVisible();
-  // One project at a time; "next" opens the following one.
-  await detail.getByRole('button', { name: /Volet suivant/ }).click();
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-  const saisines = page.getByRole('button', { name: 'Saisines de la Cour des comptes', exact: true });
-  await expect(saisines).toHaveAttribute('aria-expanded', 'true');
-  const next = page.locator('#detail-saisines-cour-des-comptes');
-  await next.getByRole('button', { name: 'Replier' }).click();
-  await expect(saisines).toHaveAttribute('aria-expanded', 'false');
-  await expect(saisines).toBeFocused();
-  // A folded detail is out of the tab order.
-  expect(await next.locator('.flap__in').evaluate((el) => (el as HTMLElement).inert)).toBe(true);
+  // Focus moves into the article (a modal dialog): the page behind is out of reach.
+  await expect(detail.getByRole('button', { name: 'Fermer' })).toBeFocused();
+  expect(await detail.evaluate((d) => (d as HTMLDialogElement).open && d.matches(':modal'))).toBe(true);
+  // One project at a time; "next" opens the following one and updates the address.
+  await detail.getByRole('link', { name: /Projet suivant : Saisines/ }).click();
+  const saisines = page.locator('#detail-saisines-cour-des-comptes');
+  await expect(saisines).toBeVisible();
+  await expect(detail).toBeHidden();
+  await expect(page).toHaveURL(/#projet-saisines-cour-des-comptes$/);
+  // Escape closes it and gives the focus back to its line in the list.
+  await page.keyboard.press('Escape');
+  await expect(saisines).toBeHidden();
+  await expect(page.getByRole('link', { name: 'Saisines de la Cour des comptes', exact: true })).toBeFocused();
+});
+
+test('Back closes an open project', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'SafePing', exact: true }).click();
+  await expect(page.locator('#detail-safeping')).toBeVisible();
+  await page.goBack();
+  await expect(page.locator('#detail-safeping')).toBeHidden();
+  await expect(page).not.toHaveURL(/#projet-/);
 });
 
 test('a link to #projet-… opens that project on arrival', async ({ page }) => {
   await page.goto('/#projet-datametre');
-  await expect(page.getByRole('button', { name: 'Datametre', exact: true })).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('#detail-datametre').getByRole('link', { name: /Voir le site/ })).toBeVisible();
+  const detail = page.locator('#detail-datametre');
+  await expect(detail).toBeVisible();
+  await expect(detail.getByRole('link', { name: /Voir le site/ })).toBeVisible();
+  await expect(detail.getByRole('img', { name: /Datametre/ })).toBeVisible();
+  // Closing lands on the project's line.
+  await detail.getByRole('button', { name: 'Fermer' }).click();
   await expect(page.locator('#projet-datametre')).toBeInViewport();
 });
 
-test('cover: the strip of projects unfolds with the scroll, and its leaves open their project', async ({ page }) => {
+test('desktop: hovering a line shows a preview of the project', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/');
-  const angle = () => page.locator('[data-scrub]').evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue('--a')));
-  expect(await angle()).toBeGreaterThan(40);
-  await page.evaluate(() => scrollTo(0, 600));
-  await expect.poll(angle).toBeLessThan(5);
-  await page.locator('[data-scrub] a[href="#projet-safeping"]').click();
-  await expect(page.getByRole('button', { name: 'SafePing', exact: true })).toHaveAttribute('aria-expanded', 'true');
+  // The preview hides while the page scrolls: wait for the scroll to settle before pointing.
+  await page.evaluate(() => document.getElementById('projets')!.scrollIntoView({ behavior: 'instant' }));
+  await page.waitForTimeout(200);
+  await page.locator('#projet-bercy-vert .pj__row').hover();
+  await expect(page.locator('.peek')).toHaveClass(/is-on/);
+  await expect(page.locator('.peek .plate')).toHaveCount(1);
 });
 
-test('reduced motion: the sheet is already unfolded', async ({ page }) => {
+test('reduced motion: nothing waits for an animation', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator('html')).not.toHaveClass(/motion/);
-  expect(await page.locator('[data-scrub]').evaluate((el) => parseFloat(getComputedStyle(el).getPropertyValue('--a')))).toBe(0);
-  const transforms = await page.locator('.panel, .pane').evaluateAll((els) => els.map((el) => getComputedStyle(el).transform));
-  expect(transforms.every((t) => t === 'none')).toBe(true);
+  const hidden = await page.locator('[data-reveal]').evaluateAll((els) => els.filter((el) => getComputedStyle(el).opacity !== '1').length);
+  expect(hidden).toBe(0);
+  await page.getByRole('link', { name: 'Bercy Vert', exact: true }).click();
+  // The plate is drawn spread out at once.
+  expect(await page.locator('#detail-bercy-vert .plate').evaluate((el) => getComputedStyle(el).getPropertyValue('--spread').trim())).toBe('1');
 });
 
 test('without JavaScript every detail is readable', async ({ browser }) => {
@@ -163,6 +200,7 @@ test('without JavaScript every detail is readable', async ({ browser }) => {
   const page = await ctx.newPage();
   await page.goto('/');
   await expect(page.locator('#detail-bercy-vert').getByText('Cadrage du projet et expression des besoins fonctionnels avec les parties prenantes')).toBeVisible();
+  await expect(page.locator('#detail-datametre').getByRole('link', { name: /Voir le site/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Projets', exact: true })).toBeVisible();
   await ctx.close();
 });

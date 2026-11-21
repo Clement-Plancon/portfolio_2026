@@ -29,12 +29,13 @@ const { nav = true, profile, ...seo } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <Seo {...seo} />
-    <link rel="preload" href="/fonts/mona-sans.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-64.png" sizes="64x64" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#f3f1ec" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f2eee5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#12110e" media="(prefers-color-scheme: dark)" />
     <meta name="author" content={profile.name} />
     <link rel="sitemap" href="/sitemap-index.xml" />
   </head>
@@ -46,7 +47,7 @@ const { nav = true, profile, ...seo } = Astro.props;
     </main>
     <Footer name={profile.name} location={profile.location} />
     <script>
-      import '../scripts/fold';
+      import '../scripts/site';
     </script>
   </body>
 </html>

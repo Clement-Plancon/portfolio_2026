@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prototype B — Sommaire</title>
+<script src="data.js"></script>
+<style>
+@font-face { font-family: 'News'; src: url(fonts/newsreader-var.woff2) format('woff2'); font-weight: 200 800; font-display: swap; }
+@font-face { font-family: 'News'; src: url(fonts/newsreader-var-italic.woff2) format('woff2'); font-weight: 200 800; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Geist'; src: url(fonts/geist.woff2) format('woff2'); font-weight: 100 900; font-display: swap; }
+:root { --bg: #13120f; --bg-2: #1c1a16; --fg: #ece6da; --fg-2: #9a9385; --rule: #ece6da22; --warm: #d9c39a;
+  --gut: clamp(16px, 3.4vw, 52px); --serif: 'News', Georgia, serif; --sans: 'Geist', system-ui, sans-serif; --ease: cubic-bezier(.22,.8,.12,1); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--fg); font: 400 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { overflow-x: clip; }
+a { color: inherit; }
+.cap { font: 500 .7rem/1.4 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-2); }
+.wrap { padding-inline: var(--gut); }
+.serif { font-family: var(--serif); font-optical-sizing: auto; }
+
+.hd { position: fixed; z-index: 20; inset: 0 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 18px var(--gut); mix-blend-mode: difference; color: #fff; }
+.hd a { text-decoration: none; }
+.hd nav { display: flex; gap: 26px; font-size: .88rem; }
+.hd .name { font-family: var(--serif); font-size: 1.15rem; font-style: italic; }
+.menu-btn { display: none; }
+
+.hero { min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: clamp(28px, 5vh, 56px); }
+.hero__stmt { font-family: var(--serif); font-weight: 300; font-size: clamp(3rem, 10.4vw, 12.5rem); line-height: .9; letter-spacing: -.035em; max-width: 12ch; }
+.hero__stmt em { font-style: italic; color: var(--warm); }
+.hero__foot { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; margin-top: clamp(32px, 6vh, 64px); padding-top: 16px; border-top: 1px solid var(--rule); align-items: start; }
+.hero h1 { grid-column: 1 / span 4; font: 500 1rem/1.35 var(--sans); }
+.hero h1 span { display: block; color: var(--fg-2); font-weight: 400; }
+.hero__lead { grid-column: 5 / span 5; color: var(--fg-2); max-width: 36em; }
+.hero__go { grid-column: 11 / span 2; justify-self: end; text-decoration: none; display: inline-flex; gap: 8px; align-items: center; border-bottom: 1px solid; padding-bottom: 2px; }
+
+.sec { padding-top: clamp(96px, 16vh, 180px); }
+.sec__h { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--rule); padding-bottom: 14px; }
+.sec__h h2 { font: 400 clamp(1.1rem, 1.4vw, 1.3rem)/1 var(--sans); letter-spacing: -.01em; }
+
+.toc { list-style: none; }
+.toc li { border-bottom: 1px solid var(--rule); }
+.toc button { all: unset; box-sizing: border-box; cursor: pointer; width: 100%; display: grid; grid-template-columns: 4em 1fr auto; align-items: center; gap: 20px; padding: clamp(14px, 2.2vh, 26px) 0; }
+.toc .t { font-family: var(--serif); font-weight: 300; font-size: clamp(2.2rem, 6.4vw, 7rem); line-height: .95; letter-spacing: -.035em; transition: transform .7s var(--ease), color .4s; }
+.toc .m { text-align: right; font-size: .88rem; color: var(--fg-2); }
+.toc .m b { display: block; color: var(--fg); font-weight: 500; }
+.toc button:focus-visible { outline: 2px solid var(--warm); outline-offset: 4px; }
+@media (hover: hover) { .toc:hover .t { color: #ece6da55; } .toc button:hover .t { color: var(--fg); transform: translateX(.18em); font-style: italic; } }
+
+.peek { position: fixed; z-index: 15; left: 0; top: 0; width: min(28vw, 400px); aspect-ratio: 4 / 3; pointer-events: none; opacity: 0; transform: translate(-50%, -50%) scale(.85); transition: opacity .35s, transform .5s var(--ease); border-radius: 4px; overflow: hidden; }
+.peek.on { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.cover { width: 100%; height: 100%; background: var(--fg); color: var(--bg); display: flex; flex-direction: column; justify-content: space-between; padding: 7%; }
+.cover b { font-family: var(--serif); font-weight: 400; font-size: clamp(1.6rem, 2.6vw, 2.6rem); line-height: .95; letter-spacing: -.03em; }
+.cover .cap { color: #13120f99; }
+.cover img, .peek img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+
+dialog.feat { inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; border: 0; background: var(--bg); color: var(--fg); overflow-y: auto; overscroll-behavior: contain; }
+dialog.feat::backdrop { background: #000a; }
+dialog.feat[open] { animation: up .7s var(--ease); }
+@keyframes up { from { transform: translateY(6vh); opacity: 0; } }
+.feat__bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 14px var(--gut); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+.feat__bar button { all: unset; cursor: pointer; padding: 8px 14px; border: 1px solid var(--rule); border-radius: 99px; font-size: .88rem; }
+.feat__bar button:focus-visible { outline: 2px solid var(--warm); }
+.feat__in { padding: clamp(40px, 8vh, 96px) var(--gut) 96px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+.feat h3 { grid-column: 1 / -1; font-family: var(--serif); font-weight: 300; font-size: clamp(2.8rem, 8.5vw, 9.5rem); line-height: .92; letter-spacing: -.04em; margin-top: 16px; }
+.feat .stand { grid-column: 1 / span 8; font-family: var(--serif); font-size: clamp(1.3rem, 2.2vw, 2rem); line-height: 1.25; font-weight: 350; margin-top: 32px; }
+.feat .media { grid-column: 1 / -1; margin-top: 48px; background: var(--bg-2); aspect-ratio: 16 / 8; display: grid; place-items: center; overflow: hidden; }
+.feat .media img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.feat .media .cover { aspect-ratio: auto; }
+.feat .body { grid-column: 1 / span 7; margin-top: 48px; }
+.feat .body p { font-family: var(--serif); font-size: 1.2rem; line-height: 1.55; max-width: 34em; }
+.feat .body ol { list-style: none; margin-top: 32px; counter-reset: c; }
+.feat .body li { counter-increment: c; display: grid; grid-template-columns: 3em 1fr; padding: 14px 0; border-top: 1px solid var(--rule); }
+.feat .body li::before { content: counter(c, decimal-leading-zero); font-family: var(--serif); font-style: italic; color: var(--warm); }
+.feat aside { grid-column: 9 / span 4; margin-top: 48px; }
+.feat aside div { padding: 12px 0; border-top: 1px solid var(--rule); }
+.feat aside dd { margin-top: 4px; }
+
+.bio { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; margin-top: 48px; }
+.bio .lede { grid-column: 1 / span 8; font-family: var(--serif); font-weight: 300; font-size: clamp(1.8rem, 3.6vw, 3.4rem); line-height: 1.08; letter-spacing: -.02em; }
+.bio .cols { grid-column: 5 / span 8; columns: 2; column-gap: 28px; color: var(--fg-2); margin-top: 24px; }
+.bio .cols p { break-inside: avoid; margin-bottom: 1em; }
+.princ { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 64px; }
+.princ div { border-top: 1px solid var(--rule); padding-top: 14px; }
+.princ i { font-family: var(--serif); color: var(--warm); font-size: 1.4rem; }
+.princ h3 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; line-height: 1.15; margin: 8px 0; }
+.princ p { color: var(--fg-2); font-size: .92rem; }
+.xp div.row { display: grid; grid-template-columns: 2fr 5fr 5fr; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--rule); }
+.xp b { font-family: var(--serif); font-weight: 400; font-size: 1.6rem; line-height: 1.1; display: block; }
+.xp span, .xp p { color: var(--fg-2); }
+.sk { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 20px; }
+.sk div { padding: 20px 0; border-bottom: 1px solid var(--rule); }
+.sk h3 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; }
+.sk p { color: var(--fg-2); }
+.contact { padding-block: clamp(120px, 20vh, 220px) 48px; text-align: center; }
+.contact a.mail { display: block; font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(2rem, 7vw, 8rem); letter-spacing: -.03em; line-height: 1; text-decoration: none; margin-top: 24px; overflow-wrap: anywhere; color: var(--warm); }
+.contact .row { display: flex; justify-content: center; gap: 28px; margin-top: 48px; }
+
+.js .rv { opacity: 0; transform: translateY(30px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.js .rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .js .rv { opacity: 1; transform: none; } dialog.feat[open] { animation: none; } }
+@media (max-width: 1023px) {
+  .hero h1 { grid-column: 1 / span 5; } .hero__lead { grid-column: 6 / -1; } .hero__go { display: none; }
+  .feat .body, .feat aside, .feat .stand { grid-column: 1 / -1; }
+  .bio .lede, .bio .cols { grid-column: 1 / -1; }
+  .princ { grid-template-columns: 1fr 1fr; } .sk { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  .hd nav { display: none; } .menu-btn { display: inline; all: unset; font-size: .9rem; padding: 6px 0; }
+  .hero__foot { grid-template-columns: 1fr; } .hero h1, .hero__lead { grid-column: 1; }
+  .toc button { grid-template-columns: 1fr; gap: 6px; } .toc .n { display: none; } .toc .m { text-align: left; }
+  .bio .cols { columns: 1; } .princ, .sk { grid-template-columns: 1fr; }
+  .xp div.row { grid-template-columns: 1fr; gap: 6px; }
+  .feat .media { aspect-ratio: 4 / 3; }
+}
+</style>
+</head>
+<body>
+<header class="hd"><a class="name" href="#">Clément Plançon</a><nav aria-label="Sommaire"><a href="#projets">Projets</a><a href="#profil">Profil</a><a href="#parcours">Parcours</a><a href="#contact">Contact</a></nav><button class="menu-btn">Menu</button></header>
+<main id="m"></main>
+<div class="peek" aria-hidden="true"></div>
+<dialog class="feat" aria-labelledby="feat-t"></dialog>
+<script>
+document.documentElement.classList.add('js');
+const D = window.DATA, P = D.profile;
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const yr = (p) => p?.period ? (p.period.end ? `${p.period.start}–${p.period.end}` : p.period.start) : p.status === 'en-cours' ? 'En cours' : 'Personnel';
+const IMG = { datametre: 'media/datametre-desktop.webp' };
+const cover = (p) => IMG[p.id] ? `<img src="${IMG[p.id]}" alt="">` : `<div class="cover"><span class="cap">${esc(p.kind)}</span><b>${esc(p.title)}</b><span class="cap">${p.technologies.map(esc).join(' · ')}</span></div>`;
+const pj = D.projects;
+document.getElementById('m').innerHTML = `
+<section class="hero wrap">
+  <p class="hero__stmt rv">${esc(P.statement).replace(/\*(.+?)\*/, '<em>$1</em>')}</p>
+  <div class="hero__foot rv"><h1>Clément Plançon<span>${esc(P.jobTitle)} — ${esc(P.location)}</span></h1><p class="hero__lead">${esc(P.headline)}</p><a class="hero__go" href="#projets">Projets ↓</a></div>
+</section>
+<section id="projets" class="sec wrap"><div class="sec__h"><h2>Projets choisis</h2><span class="cap">${pj.length} sujets</span></div>
+<ol class="toc">${pj.map((p, i) => `<li class="rv"><button data-i="${i}" aria-haspopup="dialog"><span class="n cap">${String(i + 1).padStart(2, '0')}</span><span class="t">${esc(p.title)}</span><span class="m"><b>${esc(p.kind?.split(' · ')[0])}</b>${yr(p)}</span></button></li>`).join('')}</ol></section>
+<section id="profil" class="sec wrap"><div class="sec__h"><h2>Profil</h2><span class="cap">${esc(P.location)}</span></div>
+  <div class="bio"><p class="lede rv">${esc(P.intro)}</p><div class="cols rv">${P.bio.split('\n\n').map((t) => `<p>${esc(t)}</p>`).join('')}</div></div>
+  <div class="princ">${P.principles.map((x, i) => `<div class="rv"><i>${['i', 'ii', 'iii', 'iv'][i]}.</i><h3>${esc(x.title)}</h3><p>${esc(x.text)}</p></div>`).join('')}</div>
+</section>
+<section id="parcours" class="sec wrap xp"><div class="sec__h"><h2>Parcours</h2><span class="cap">Depuis 2022</span></div>
+  ${D.experiences.map((e) => `<div class="row rv"><span class="cap">${e.start} — ${e.end ?? 'auj.'}</span><div><b>${esc(e.role)}</b><span>${esc(e.organisation)}</span></div><p>${esc(e.summary)}</p></div>`).join('')}
+</section>
+<section id="competences" class="sec wrap"><div class="sec__h"><h2>Compétences</h2><span class="cap">${D.skills.groups.length} domaines</span></div>
+  <div class="sk">${D.skills.groups.map((g) => `<div class="rv"><h3>${esc(g.name)}</h3><p>${g.items.map(esc).join(', ')}</p></div>`).join('')}</div>
+</section>
+<section id="contact" class="contact wrap"><span class="cap">Écrire</span><a class="mail" href="mailto:${P.email}">${P.email.replace('@', '<wbr>@')}</a><div class="row cap">${P.socials.map((s) => `<a href="${esc(s.url)}">${esc(s.label)}</a>`).join('')}</div></section>`;
+
+const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+
+// Cursor preview
+const peek = document.querySelector('.peek');
+let x = 0, y = 0, cx = 0, cy = 0;
+if (matchMedia('(hover: hover)').matches) {
+  addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; });
+  (function loop() { cx += (x - cx) * .14; cy += (y - cy) * .14; peek.style.left = cx + 'px'; peek.style.top = cy + 'px'; requestAnimationFrame(loop); })();
+  document.querySelectorAll('.toc button').forEach((b) => {
+    b.addEventListener('pointerenter', () => { peek.innerHTML = cover(pj[b.dataset.i]); peek.classList.add('on'); });
+    b.addEventListener('pointerleave', () => peek.classList.remove('on'));
+  });
+}
+// Feature dialog
+const dlg = document.querySelector('dialog.feat');
+const open = (i) => {
+  const p = pj[i];
+  dlg.innerHTML = `<div class="feat__bar"><span class="cap">${String(i + 1).padStart(2, '0')} / ${String(pj.length).padStart(2, '0')}</span><div style="display:flex;gap:8px"><button data-go="${(i + pj.length - 1) % pj.length}">← Précédent</button><button data-go="${(i + 1) % pj.length}">Suivant →</button><button data-close>Fermer</button></div></div>
+  <article class="feat__in"><span class="cap" style="grid-column:1/-1">${esc(p.kind)}</span><h3 id="feat-t">${esc(p.title)}</h3><p class="stand">${esc(p.summary)}</p>
+  <div class="media">${cover(p)}</div>
+  <div class="body">${(p.context ?? '').split('\n\n').map((t) => `<p>${esc(t)}</p>`).join('')}<ol>${p.contributions.map((c) => `<li>${esc(c)}</li>`).join('')}</ol></div>
+  <aside><dl><div><dt class="cap">Cadre</dt><dd>${esc(p.organisation)}</dd></div><div><dt class="cap">Période</dt><dd>${yr(p)}</dd></div><div><dt class="cap">Technologies</dt><dd>${p.technologies.map(esc).join(', ')}</dd></div>${p.links.map((l) => `<div><dt class="cap">Lien</dt><dd><a href="${esc(l.url)}">${esc(l.label)} ↗</a></dd></div>`).join('')}</dl></aside></article>`;
+  if (!dlg.open) dlg.showModal(); dlg.scrollTop = 0; dlg.querySelector('[data-close]').focus();
+};
+document.querySelectorAll('.toc button').forEach((b) => b.addEventListener('click', () => open(+b.dataset.i)));
+dlg.addEventListener('click', (e) => { const t = e.target.closest('button'); if (!t) return; if (t.dataset.close !== undefined) dlg.close(); else if (t.dataset.go) open(+t.dataset.go); });
+if (location.hash === '#open') open(5);
+</script>
+</body>
+</html>

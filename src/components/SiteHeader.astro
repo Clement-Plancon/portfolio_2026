@@ -5,35 +5,39 @@ interface Props {
 }
 const { name, nav } = Astro.props;
 
+// Projects come first: they are what most visitors came for.
 const SECTIONS = [
-  { id: 'a-propos', label: 'À propos' },
   { id: 'projets', label: 'Projets' },
+  { id: 'a-propos', label: 'À propos' },
   { id: 'parcours', label: 'Parcours' },
   { id: 'competences', label: 'Compétences' },
   { id: 'contact', label: 'Contact' },
 ];
 ---
 
-<header class="top">
+<header class="top" data-top>
   <div class="top__bar wrap">
     <a class="top__name" href="/#top">{name}</a>
     {
       nav && (
         <>
-          <button class="top__menu label" type="button" aria-expanded="false" aria-controls="sommaire" hidden>
-            Sommaire
-            <span class="top__menu-fold" aria-hidden="true" />
+          <button class="top__menu" type="button" aria-expanded="false" aria-controls="sommaire" hidden>
+            <span>Sommaire</span>
+            <span class="top__burger" aria-hidden="true" />
           </button>
           <nav class="top__nav" id="sommaire" aria-label="Sommaire">
-            <ul role="list">
-              {SECTIONS.map((s) => (
-                <li>
+            <ol role="list">
+              {SECTIONS.map((s, i) => (
+                <li style={`--d:${i}`}>
                   <a href={`/#${s.id}`} data-nav={s.id}>
+                    <span class="top__num" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                     {s.label}
                   </a>
                 </li>
               ))}
-            </ul>
+            </ol>
           </nav>
         </>
       )
@@ -46,11 +50,28 @@ const SECTIONS = [
     position: fixed;
     inset: 0 0 auto;
     z-index: 50;
-    background: color-mix(in srgb, var(--paper) 94%, transparent);
-    box-shadow: 0 1px 0 var(--crease);
-    backdrop-filter: blur(6px);
+    transition:
+      transform var(--dur-2) var(--ease),
+      box-shadow var(--dur-2);
+  }
+  /* The frosted background is a layer of its own: a filter on the header itself would trap the
+     phone sheet (position: fixed) inside the header's box. */
+  .top::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  }
+  :global(.is-scrolled) .top {
+    box-shadow: 0 1px 0 var(--rule);
+  }
+  :global(.header-hidden) .top {
+    transform: translateY(-100%);
   }
   .top__bar {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -58,124 +79,154 @@ const SECTIONS = [
     min-height: var(--header-h);
   }
   .top__name {
-    font-stretch: 82%;
-    font-weight: 780;
-    font-size: 1.125rem;
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 400;
     letter-spacing: -0.01em;
     text-decoration: none;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
   }
-  .top__nav ul {
+  .top__nav ol {
     display: flex;
-    gap: clamp(1rem, 2vw, 1.75rem);
+    gap: clamp(1rem, 0.2rem + 1.6vw, 2.25rem);
   }
   .top__nav a {
-    position: relative;
-    display: inline-block;
-    padding: 0.5rem 0;
-    font-size: 0.9375rem;
-    font-weight: 560;
-    font-stretch: 108%;
+    display: inline-flex;
+    padding-block: 0.5rem;
+    font-size: 0.9rem;
     text-decoration: none;
+    color: var(--fg-2);
+    transition: color var(--dur-1);
+    position: relative;
   }
-  /* The active section: a small dog-eared corner, the page that is open. */
-  .top__nav a::after {
+  .top__nav a:hover,
+  .top__nav a[aria-current='true'] {
+    color: var(--fg);
+  }
+  .top__nav a[aria-current='true']::after {
     content: '';
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 0.2rem;
-    height: 2px;
+    bottom: 0.25rem;
+    height: 1px;
     background: currentColor;
-    transform: scaleX(0);
-    transform-origin: 0 50%;
-    transition: transform var(--dur-2) var(--ease);
   }
-  .top__nav a:hover::after,
-  .top__nav a[aria-current='true']::after {
-    transform: scaleX(1);
-  }
-  .top__nav a[aria-current='true']::before {
-    content: '';
-    position: absolute;
-    right: -0.6rem;
-    top: 0.45rem;
-    border: 4px solid transparent;
-    border-top-color: var(--signal);
-    border-right-color: var(--signal);
-  }
-
+  .top__num,
   .top__menu {
     display: none;
-    min-height: 2.75rem;
-    padding: 0 0.25rem;
-  }
-  /* A corner that folds down while the table of contents is open. */
-  .top__menu-fold {
-    width: 0.7rem;
-    height: 0.7rem;
-    margin-left: 0.6rem;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: translateY(-0.15rem) rotate(45deg);
-    transition: transform var(--dur-2) var(--ease);
-  }
-  .top__menu[aria-expanded='true'] .top__menu-fold {
-    transform: translateY(0.2rem) rotate(225deg);
   }
 
-  /* Small screens: the table of contents unfolds from the header, like a flap. */
-  @media (max-width: 56.24rem) {
-    :global(html.js) .top__menu {
+  /* Phones: a « Sommaire » button opens the table of contents as a sheet; the entries sit low,
+     within reach of the thumb. */
+  @media (max-width: 47.99rem) {
+    .top__menu:not([hidden]) {
+      position: relative;
+      z-index: 2;
       display: inline-flex;
       align-items: center;
+      gap: 0.6rem;
+      min-height: 2.75rem;
+      padding-inline: 0.25rem;
+      font-size: 0.9rem;
     }
-    :global(html.js) .top__nav {
+    .top__burger {
+      position: relative;
+      width: 1.1rem;
+      height: 0.6rem;
+      border-block: 1px solid currentColor;
+      transition: transform var(--dur-2) var(--ease);
+    }
+    .top__menu[aria-expanded='true'] .top__burger {
+      border-color: transparent;
+    }
+    .top__menu[aria-expanded='true'] .top__burger::before,
+    .top__menu[aria-expanded='true'] .top__burger::after {
+      content: '';
       position: absolute;
-      inset: 100% 0 auto;
-      background: var(--paper);
-      box-shadow: 0 1px 0 var(--crease), 0 30px 40px -30px rgb(0 0 0 / 0.35);
-      transform-origin: 50% 0;
-      transform: perspective(900px) rotateX(-92deg);
+      left: 0;
+      right: 0;
+      top: 50%;
+      border-top: 1px solid currentColor;
+      transform: rotate(45deg);
+    }
+    .top__menu[aria-expanded='true'] .top__burger::after {
+      transform: rotate(-45deg);
+    }
+    /* Without JavaScript the button stays hidden and the list is a plain row of links under the name. */
+    :global(.js) .top__nav {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100dvh;
+      padding: calc(var(--header-h) + 2rem) var(--g) max(2.5rem, env(safe-area-inset-bottom));
+      background: var(--bg);
       visibility: hidden;
+      opacity: 0;
       transition:
-        transform var(--dur-2) var(--ease-fold),
-        visibility 0s linear var(--dur-2);
+        opacity var(--dur-2) var(--ease),
+        visibility 0s var(--dur-2);
     }
-    :global(html.js) .top__nav.is-open {
-      transform: none;
+    :global(.js) .top__nav.is-open {
       visibility: visible;
-      transition:
-        transform var(--dur-2) var(--ease-fold),
-        visibility 0s;
+      opacity: 1;
+      transition: opacity var(--dur-2) var(--ease);
     }
-    :global(html.js) .top__nav ul {
+    :global(.js) .top__nav ol {
       flex-direction: column;
       gap: 0;
-      padding: 0.5rem var(--g) 1.25rem;
+      border-top: 1px solid var(--rule);
     }
-    :global(html.js) .top__nav a {
-      display: block;
-      padding: 0.85rem 0;
-      font-stretch: 78%;
-      font-weight: 800;
-      font-size: 2.1rem;
-      line-height: 1;
-      border-bottom: 1px solid var(--crease);
+    :global(.js) .top__nav li {
+      border-bottom: 1px solid var(--rule);
     }
-    :global(html.js) .top__nav a::after,
-    :global(html.js) .top__nav a::before {
+    :global(.js) .top__nav a {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      padding-block: 0.85rem;
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(2rem, 1rem + 6vw, 2.75rem);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--fg);
+    }
+    :global(.js) .top__nav a::after {
       display: none;
     }
-    /* Without JavaScript the links simply wrap under the name. */
+    :global(.js) .top__num {
+      display: inline;
+      font-family: var(--sans);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--fg-2);
+      min-width: 1.6rem;
+    }
+    :global(.motion) .top__nav li {
+      transform: translateY(1rem);
+      opacity: 0;
+      transition:
+        transform var(--dur-3) var(--ease),
+        opacity var(--dur-2);
+    }
+    :global(.motion) .top__nav.is-open li {
+      transform: none;
+      opacity: 1;
+      transition-delay: calc(80ms + var(--d) * 45ms);
+    }
     :global(html:not(.js)) .top__bar {
       flex-wrap: wrap;
-      padding-block: 0.5rem;
+      row-gap: 0;
     }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .top__nav,
-    .top__nav a::after {
-      transition: none !important;
+    :global(html:not(.js)) .top__nav ol {
+      flex-wrap: wrap;
+      column-gap: 1rem;
     }
   }
 </style>
