@@ -1,5 +1,5 @@
 import { COVER_COLORS } from '../../lib/schemas';
-import { STOCKS } from '../../lib/stocks';
+import { TINTS } from '../../lib/tints';
 import type { Entry } from '../api';
 import { FormActions, ImageField, LinkList, Select, StringList, TagInput, TextArea, TextInput, Thumb, Toggle } from '../ui';
 import { CollectionList, useEntryEditor } from './collection';
@@ -10,7 +10,7 @@ export function ProjectList() {
     <CollectionList
       type="project"
       title="Projets"
-      lead="L'ordre ci-dessous est celui du site. L'étoile place un projet sur la couverture (l'accordéon en haut de la page)."
+      lead="L'ordre ci-dessous est celui du sommaire des projets sur le site. L'étoile met un projet en avant : son titre est composé plus grand."
       base="projets"
       newLabel="Nouveau projet"
       reorderable
@@ -23,7 +23,7 @@ export function ProjectList() {
           thumb: d.cover?.image ? (
             <Thumb src={d.cover.image.src} size="sm" />
           ) : (
-            <span class="swatch" style={{ background: STOCKS[(d.cover?.color ?? 'sapin') as keyof typeof STOCKS].paper }} aria-hidden="true" />
+            <span class="swatch" style={{ background: TINTS[(d.cover?.color ?? 'sapin') as keyof typeof TINTS].dark }} aria-hidden="true" />
           ),
         };
       }}
@@ -96,7 +96,7 @@ export function ProjectEditor({ id }: { id: string }) {
         <h2 id="p-essentiel">L'essentiel</h2>
         <TextInput label="Titre" required value={f.title} maxLength={120} error={e.title} onInput={(v) => set('title', v)} />
         <SlugField prefix="/#projet-" value={ed.slug} onInput={ed.setSlug} error={e.slug} isNew={ed.isNew} />
-        <TextArea label="Résumé" required hint="Deux phrases : ce que c'est et pour qui. Affiché sur le volet du projet." value={f.summary} maxLength={320} rows={3} error={e.summary} onInput={(v) => set('summary', v)} />
+        <TextArea label="Résumé" required hint="Deux phrases : ce que c'est et pour qui. Affiché en chapeau de l'article du projet." value={f.summary} maxLength={320} rows={3} error={e.summary} onInput={(v) => set('summary', v)} />
         <div class="grid-2">
           <TextInput label="Nature du projet" hint="Ex. : Application web · Tableau de bord" value={f.kind} maxLength={80} onInput={(v) => set('kind', opt(v))} />
           <Select label="Catégorie" value={f.category} options={[{ value: 'pro', label: 'Professionnel' }, { value: 'perso', label: 'Personnel' }]} onChange={(v) => set('category', v)} />
@@ -118,20 +118,20 @@ export function ProjectEditor({ id }: { id: string }) {
         />
         <div class="toggles">
           <Toggle label="Visible sur le site" hint="Masqué : visible seulement dans l'aperçu." checked={f.visible} onChange={(v) => set('visible', v)} />
-          <Toggle label="Sur la couverture" hint="Le volet figure dans l'accordéon en haut de la page." checked={f.featured} onChange={(v) => set('featured', v)} />
+          <Toggle label="Mis en avant" hint="Le titre du projet est composé plus grand dans le sommaire." checked={f.featured} onChange={(v) => set('featured', v)} />
         </div>
       </section>
 
       <section class="panel" aria-labelledby="p-couverture">
-        <h2 id="p-couverture">Papier</h2>
-        <p class="hint">Sur le site, chaque projet est un volet de papier coloré qui se déplie pour montrer le détail. Une capture réelle, si vous en ajoutez une, est imprimée sur le volet ; sinon le volet reste typographique.</p>
+        <h2 id="p-couverture">Présentation</h2>
+        <p class="hint">Chaque projet s'ouvre en article. Sa planche dessine ses technologies en couches ; une capture réelle, si vous en ajoutez une, est montrée en grand et posée en haut de la planche. La teinte colore le numéro et les repères du projet.</p>
         <fieldset class="swatches">
-          <legend>Couleur du papier</legend>
+          <legend>Teinte</legend>
           {COVER_COLORS.map((c) => (
             <label class="swatch-option">
               <input type="radio" name="cover-color" value={c} checked={f.cover.color === c} onChange={() => set('cover', { ...f.cover, color: c })} />
-              <span class="swatch" style={{ background: STOCKS[c].paper }} aria-hidden="true" />
-              {STOCKS[c].label}
+              <span class="swatch" style={{ background: TINTS[c].dark }} aria-hidden="true" />
+              {TINTS[c].label}
             </label>
           ))}
         </fieldset>
@@ -139,7 +139,7 @@ export function ProjectEditor({ id }: { id: string }) {
       </section>
 
       <section class="panel" aria-labelledby="p-detail">
-        <h2 id="p-detail">Détail déplié</h2>
+        <h2 id="p-detail">Article</h2>
         <p class="hint">Tous ces champs sont facultatifs : une section vide n'apparaît pas. Laissez une ligne vide entre deux paragraphes.</p>
         <TextArea label="Contexte" value={f.context} maxLength={4000} rows={5} onInput={(v) => set('context', opt(v))} />
         <TextArea label="Problème" value={f.problem} maxLength={4000} rows={4} onInput={(v) => set('problem', opt(v))} />
@@ -152,7 +152,7 @@ export function ProjectEditor({ id }: { id: string }) {
       </section>
 
       <section class="panel" aria-labelledby="p-images">
-        <h2 id="p-images">Images du détail</h2>
+        <h2 id="p-images">Images de l'article</h2>
         {f.gallery.map((g, i) => (
           <div class="gallery-item" key={`${g.src}-${i}`}>
             <ImageField

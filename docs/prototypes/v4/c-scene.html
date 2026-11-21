@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prototype C — Scène</title>
+<script src="data.js"></script>
+<style>
+@font-face { font-family: 'Mona'; src: url(fonts/mona-sans.woff2) format('woff2'); font-weight: 200 900; font-stretch: 75% 125%; font-display: swap; }
+:root { --bg: #f6f5f1; --ink: #0d0d0c; --ink-2: #6b6963; --rule: #0d0d0c1f; --stage: #dcd9d1; --gut: clamp(16px, 2.6vw, 40px); --ease: cubic-bezier(.2,.75,.1,1); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color: var(--ink); font: 400 16px/1.5 'Mona', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+body { overflow-x: clip; }
+a { color: inherit; }
+.sm { font-size: .78rem; letter-spacing: .01em; font-stretch: 110%; font-weight: 500; text-transform: uppercase; }
+.wrap { padding-inline: var(--gut); }
+
+.top { position: fixed; z-index: 30; inset: 0 0 auto; height: 60px; display: flex; align-items: center; justify-content: space-between; padding-inline: var(--gut); }
+.top .logo { font-weight: 800; font-stretch: 125%; letter-spacing: -.02em; text-decoration: none; opacity: var(--logo, 0); transition: opacity .3s; }
+.top nav { display: flex; gap: 4px; background: var(--ink); color: var(--bg); border-radius: 99px; padding: 4px; }
+.top nav a { text-decoration: none; padding: 7px 14px; border-radius: 99px; font-size: .86rem; font-weight: 500; }
+.top nav a[aria-current] { background: var(--bg); color: var(--ink); }
+
+.hero { height: 100svh; display: flex; flex-direction: column; justify-content: space-between; padding-top: 80px; padding-bottom: var(--gut); position: relative; }
+.hero h1 { font-weight: 900; font-stretch: var(--w, 125%); line-height: .8; letter-spacing: -.045em; font-size: var(--fs, 15vw); white-space: nowrap; transform-origin: left top; }
+.hero h1 small { display: block; font-size: max(.16em, 1rem); font-weight: 500; font-stretch: 100%; letter-spacing: -.01em; margin-top: .4em; line-height: 1.2; }
+.hero__row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid var(--ink); padding-top: 14px; }
+.hero__row p { font-size: .95rem; }
+.hero__row p:first-child { grid-column: span 2; font-size: clamp(1.1rem, 1.6vw, 1.45rem); line-height: 1.25; font-weight: 500; letter-spacing: -.01em; }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; }
+.stage { position: sticky; top: 0; height: 100svh; padding: 76px var(--gut) var(--gut); }
+.stage__in { position: relative; height: 100%; background: var(--stage); border-radius: 6px; overflow: hidden; }
+.shot { position: absolute; inset: 0; clip-path: inset(100% 0 0 0); transition: clip-path 1s var(--ease); display: flex; flex-direction: column; justify-content: space-between; padding: clamp(20px, 3vw, 40px); }
+.shot.on { clip-path: inset(0 0 0 0); z-index: 2; }
+.shot.was { clip-path: inset(0 0 0 0); z-index: 1; }
+.shot .num { font-size: clamp(8rem, 22vw, 20rem); font-weight: 900; font-stretch: 75%; line-height: .75; letter-spacing: -.06em; }
+.shot ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+.shot li { border: 1px solid currentColor; border-radius: 99px; padding: 4px 12px; font-size: .85rem; }
+.shot--img { padding: 0; background: #fff; }
+.shot--img img { width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.shot--img .tag { position: absolute; left: 16px; bottom: 16px; background: var(--ink); color: var(--bg); padding: 6px 10px; border-radius: 4px; }
+.shot:nth-child(odd):not(.shot--img) { background: #1b1b19; color: var(--bg); }
+.shot:nth-child(even):not(.shot--img) { background: #c9c5ba; }
+
+.steps { padding-right: var(--gut); }
+.step { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 96px 0 96px clamp(8px, 2vw, 32px); border-bottom: 1px solid var(--rule); }
+.step .sm { color: var(--ink-2); }
+.step h3 { font-size: clamp(2.4rem, 4.6vw, 4.6rem); font-weight: 800; font-stretch: 112%; line-height: .92; letter-spacing: -.045em; margin: 16px 0 24px; text-wrap: balance; }
+.step p.sum { font-size: 1.15rem; line-height: 1.45; max-width: 30em; }
+.step ul { list-style: none; margin-top: 28px; max-width: 34em; }
+.step li { padding: 10px 0; border-top: 1px solid var(--rule); font-size: .95rem; display: flex; gap: 12px; }
+.step li::before { content: '→'; color: var(--ink-2); }
+.step .fig { display: none; }
+
+.blk { padding-block: clamp(96px, 16vh, 180px) 0; }
+.blk h2 { font-size: clamp(3rem, 9vw, 10rem); font-weight: 900; font-stretch: 75%; letter-spacing: -.05em; line-height: .8; border-bottom: 1px solid var(--ink); padding-bottom: 16px; }
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+.about .lede { font-size: clamp(1.5rem, 2.6vw, 2.4rem); line-height: 1.12; font-weight: 600; letter-spacing: -.03em; }
+.about .txt p { color: var(--ink-2); margin-bottom: 1em; }
+.xp .row { display: grid; grid-template-columns: 1fr 2fr 2fr; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--rule); }
+.xp b { font-size: 1.35rem; font-weight: 700; font-stretch: 105%; letter-spacing: -.02em; line-height: 1.1; display: block; }
+.xp p, .xp span { color: var(--ink-2); }
+.sk { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 32px; }
+.sk div { background: #ebe9e2; border-radius: 6px; padding: 20px; }
+.sk h3 { font-weight: 700; font-stretch: 110%; }
+.sk p { color: var(--ink-2); font-size: .92rem; margin-top: 6px; }
+.contact { margin-top: clamp(96px, 16vh, 180px); background: var(--ink); color: var(--bg); padding: clamp(64px, 12vh, 120px) var(--gut) 40px; }
+.contact a.mail { display: block; font-size: clamp(2rem, 6.6vw, 7.6rem); font-weight: 900; font-stretch: 75%; letter-spacing: -.04em; line-height: .9; text-decoration: none; overflow-wrap: anywhere; margin-top: 20px; }
+.contact .row { display: flex; gap: 24px; margin-top: 48px; }
+
+@media (max-width: 1023px) {
+  .split { grid-template-columns: 1fr; } .stage { display: none; }
+  .steps { padding-inline: var(--gut); }
+  .step { min-height: 0; padding: 72px 0; }
+  .step .fig { display: block; position: relative; aspect-ratio: 4 / 3; border-radius: 6px; overflow: hidden; margin-bottom: 28px; }
+  .step .fig .shot { clip-path: none; }
+  .about { grid-template-columns: 1fr; } .sk { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  .top nav { position: fixed; bottom: max(12px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); }
+  .hero__row { grid-template-columns: 1fr; } .hero__row p:first-child { grid-column: auto; }
+  .xp .row { grid-template-columns: 1fr; gap: 4px; } .sk { grid-template-columns: 1fr; }
+  .contact { padding-bottom: 100px; }
+}
+@media (prefers-reduced-motion: reduce) { .shot { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top"><a class="logo" href="#">C—P</a><nav aria-label="Sommaire"><a href="#projets">Projets</a><a href="#profil">Profil</a><a href="#parcours">Parcours</a><a href="#contact">Contact</a></nav></header>
+<main id="m"></main>
+<script>
+const D = window.DATA, P = D.profile;
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const yr = (p) => p?.period ? (p.period.end ? `${p.period.start}–${p.period.end}` : p.period.start) : p.status === 'en-cours' ? 'En cours' : 'Personnel';
+const IMG = { datametre: 'media/datametre-desktop.webp' };
+const pj = D.projects;
+const shot = (p, i) => IMG[p.id] ? `<div class="shot shot--img"><img src="${IMG[p.id]}" alt=""><span class="tag sm">Capture réelle</span></div>`
+  : `<div class="shot"><span class="sm">${esc(p.kind)}</span><span class="num">${String(i + 1).padStart(2, '0')}</span><ul>${p.technologies.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+document.getElementById('m').innerHTML = `
+<section class="hero wrap"><h1>Clément Plançon<small>${esc(P.jobTitle)}</small></h1>
+  <div class="hero__row"><p>${esc(P.headline)}</p><p class="sm">${esc(P.location)}<br>Ministère de l’Intérieur</p><p><a href="#projets">Voir les ${pj.length} projets ↓</a></p></div></section>
+<section id="projets" class="split">
+  <div class="stage" aria-hidden="true"><div class="stage__in">${pj.map(shot).join('')}</div></div>
+  <div class="steps">${pj.map((p, i) => `<article class="step" id="projet-${p.id}" data-i="${i}"><div class="fig" aria-hidden="true">${shot(p, i)}</div><span class="sm">${String(i + 1).padStart(2, '0')} — ${esc(p.organisation)} — ${yr(p)}</span><h3>${esc(p.title)}</h3><p class="sum">${esc(p.summary)}</p><ul>${p.contributions.slice(0, 4).map((c) => `<li>${esc(c)}</li>`).join('')}</ul></article>`).join('')}</div>
+</section>
+<section id="profil" class="blk wrap"><h2>Profil</h2><div class="about"><p class="lede">${esc(P.intro)}</p><div class="txt">${P.bio.split('\n\n').map((t) => `<p>${esc(t)}</p>`).join('')}</div></div></section>
+<section id="parcours" class="blk wrap xp"><h2>Parcours</h2>${D.experiences.map((e) => `<div class="row"><span class="sm">${e.start} — ${e.end ?? 'auj.'}</span><div><b>${esc(e.role)}</b><span>${esc(e.organisation)}</span></div><p>${esc(e.summary)}</p></div>`).join('')}
+<div class="sk">${D.skills.groups.map((g) => `<div><h3>${esc(g.name)}</h3><p>${g.items.map(esc).join(', ')}</p></div>`).join('')}</div></section>
+<section id="contact" class="contact"><span class="sm">Contact</span><a class="mail" href="mailto:${P.email}">${P.email.replace('@', '<wbr>@')}</a><div class="row sm">${P.socials.map((s) => `<a href="${esc(s.url)}">${esc(s.label)} ↗</a>`).join('')}</div></section>`;
+
+// Fit the name to the width, then let it condense into the header as you scroll.
+const h1 = document.querySelector('.hero h1');
+const fit = () => { h1.style.setProperty('--fs', '100px'); const w = h1.scrollWidth; h1.style.setProperty('--fs', (100 * (innerWidth - 2 * parseFloat(getComputedStyle(document.querySelector('.hero')).paddingLeft)) / w) + 'px'); };
+fit(); addEventListener('resize', fit);
+addEventListener('scroll', () => { const k = Math.min(1, scrollY / innerHeight); h1.style.transform = `scale(${1 - k * .25})`; h1.style.opacity = 1 - k * 1.2; document.documentElement.style.setProperty('--logo', k > .8 ? 1 : 0); }, { passive: true });
+const shots = [...document.querySelectorAll('.stage .shot')];
+let cur = -1;
+const set = (i) => { if (i === cur) return; shots.forEach((s, j) => { s.classList.toggle('was', j === cur); s.classList.toggle('on', j === i); }); cur = i; };
+set(0);
+const so = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && set(+e.target.dataset.i)), { rootMargin: '-50% 0px -50% 0px' });
+document.querySelectorAll('.step').forEach((s) => so.observe(s));
+const links = [...document.querySelectorAll('.top nav a')];
+const no = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) links.forEach((a) => a.toggleAttribute('aria-current', a.hash === '#' + e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
+['projets', 'profil', 'parcours', 'contact'].forEach((id) => no.observe(document.getElementById(id)));
+</script>
+</body>
+</html>

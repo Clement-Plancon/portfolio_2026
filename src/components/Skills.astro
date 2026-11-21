@@ -9,86 +9,68 @@ const { skills } = Astro.props;
 
 <section class="skills section" id="competences" aria-labelledby="skills-title">
   <div class="wrap">
-    <header class="sec-head" data-fold>
-      <h2 id="skills-title" class="display">Compétences</h2>
-      <p>Au dos du dépliant : ce avec quoi je travaille, regroupé par usage plutôt qu'en catalogue.</p>
+    <header class="sec-head">
+      <h2 id="skills-title">Compétences</h2>
+      <p class="label">{skills.groups.length} domaines</p>
     </header>
-    <div class="back">
+    <ul role="list" class="sk">
       {
         skills.groups.map((g, i) => (
-          <section class="group" aria-labelledby={`skill-${i}`}>
-            <h3 id={`skill-${i}`} class="group__name">
-              {g.name}
-            </h3>
-            {g.description && <p class="group__desc">{g.description}</p>}
-            <ul role="list" class="group__items">
-              {g.items.map((it) => (
-                <li>{it}</li>
+          <li class="sk__g" data-reveal style={`--d:${i % 3}`}>
+            <h3 class="sk__name serif">{g.name}</h3>
+            {g.description && <p class="sk__desc muted">{g.description}</p>}
+            <ul role="list" class="sk__items">
+              {g.items.map((s) => (
+                <li>{s}</li>
               ))}
             </ul>
-          </section>
+          </li>
         ))
       }
-    </div>
+    </ul>
   </div>
 </section>
 
 <style>
-  /* The back of the leaflet: six columns of fine print between creases. */
-  .back {
+  .sk {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-top: 1px solid var(--crease);
+    column-gap: var(--gap);
   }
-  .group {
-    padding: 1.5rem clamp(1rem, 2vw, 1.75rem) 2rem 0;
-    border-bottom: 1px solid var(--crease);
+  .sk__g {
+    padding-block: 1.5rem 2rem;
+    border-bottom: 1px solid var(--rule);
   }
-  .group:not(:nth-child(3n + 1)) {
-    padding-left: clamp(1rem, 2vw, 1.75rem);
-    border-left: 1px solid var(--crease);
-  }
-  .group__name {
-    font-stretch: 78%;
-    font-weight: 800;
-    font-size: clamp(1.6rem, 1.1rem + 1.3vw, 2.25rem);
-    line-height: 0.95;
+  .sk__name {
+    font-weight: 300;
+    font-size: clamp(1.5rem, 1.1rem + 1vw, 2.1rem);
     letter-spacing: -0.02em;
   }
-  .group__desc {
-    margin-top: 0.6rem;
-    color: var(--ink-2);
+  .sk__desc {
+    margin-top: 0.4rem;
     font-size: 0.9375rem;
+    max-width: 26em;
   }
-  .group__items {
+  .sk__items {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 1rem;
-    margin-top: 1rem;
-    font-weight: 600;
-    font-stretch: 110%;
-    font-size: 0.9375rem;
+    gap: 0.4rem;
+    margin-top: 1.1rem;
   }
-  @media (max-width: 64rem) {
-    .back {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    .group:not(:nth-child(3n + 1)) {
-      padding-left: 0;
-      border-left: 0;
-    }
-    .group:nth-child(2n) {
-      padding-left: clamp(1rem, 2vw, 1.75rem);
-      border-left: 1px solid var(--crease);
+  .sk__items li {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--rule-strong);
+    border-radius: 99px;
+    font-size: 0.8125rem;
+  }
+  @media (max-width: 63.99rem) {
+    .sk {
+      grid-template-columns: 1fr 1fr;
     }
   }
   @media (max-width: 47.99rem) {
-    .back {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .group:nth-child(2n) {
-      padding-left: 0;
-      border-left: 0;
+    .sk {
+      grid-template-columns: 1fr;
     }
   }
 </style>

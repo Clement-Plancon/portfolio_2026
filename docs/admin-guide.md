@@ -30,26 +30,26 @@ Nombre de projets, expériences et médias ; date de la dernière publication ; 
 
 **Liste**
 - L'ordre de la liste est celui du site. Glissez une ligne (souris) ou utilisez les flèches ↑ ↓, puis **Enregistrer l'ordre**.
-- ★ : mettre le projet **sur la couverture** (la bande dépliée sous le nom, en haut du site). Sans aucun projet étoilé, tous les projets y figurent.
+- ★ : **mettre en avant** : le titre du projet est composé plus grand dans le sommaire des projets.
 - 👁 : afficher / masquer sur le site. Un projet masqué reste visible dans l'aperçu.
 - ⧉ : dupliquer (la copie est créée masquée).
 - 🗑 : supprimer (confirmation demandée).
 
 **Fiche projet**
 - *L'essentiel* : titre, adresse du projet (générée depuis le titre ; le projet s'ouvre à l'adresse `clementplancon.fr/#projet-…`), résumé, nature, catégorie, organisation, dates (`2023` ou `2023-04`), état.
-- *Papier* : chaque projet est un volet du dépliant, imprimé sur un papier de couleur (vermillon, vert sapin, ardoise, ocre, prune, sable). Ces six papiers sont vérifiés pour le contraste du texte. Si vous avez une **capture réelle** du projet, ajoutez-la : elle apparaît sur le volet et dans le détail. Sans capture, le volet reste un aplat de couleur : aucune image n'est inventée.
-- *Détail déplié* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
-- *Images du détail* : galerie avec texte alternatif et légende.
+- *Présentation* : chaque projet est une ligne du sommaire qui s'ouvre en article. L'article montre la **planche** du projet : ses technologies dessinées en couches (interface, serveur, données…). Si vous avez une **capture réelle**, ajoutez-la : elle est montrée en grand en tête de l'article, posée en haut de la planche, et sert d'aperçu au survol. Sans capture, rien n'est inventé : la planche porte le nom du projet. La *teinte* (vermillon, vert sapin, ardoise, ocre, prune, sable) colore le numéro et les repères du projet ; les six teintes sont vérifiées pour le contraste.
+- *Article* : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, liens. Tout est facultatif : une section vide n'apparaît pas. Séparez les paragraphes par une ligne vide.
+- *Images de l'article* : galerie avec texte alternatif et légende.
 
 Changer l'adresse d'un projet casse les liens existants vers l'ancienne adresse. Les anciennes pages `/projets/…` de la version précédente du site redirigent vers le projet ouvert dans la page unique.
 
 ## Expériences
 
-Intitulé, organisation (et organisation de rattachement, ex. ministère), dates, lieu, résumé, responsabilités, compétences. **Sans date de fin, le poste est affiché « En poste »** et repris sur la couverture du site.
+Intitulé, organisation (et organisation de rattachement, ex. ministère), dates, lieu, résumé, responsabilités, compétences. **Sans date de fin, le poste est affiché « aujourd'hui »** et repris en haut de la page (« Aujourd'hui — … »).
 
 ## Profil et compétences
 
-- **Profil** : nom, titre professionnel, phrase de la couverture (un mot entre astérisques est mis en valeur : `Je rends *lisible*…`), accroche, introduction et biographie de la section À propos (le dernier paragraphe de la biographie est mis en exergue), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail (affichés en accordéon de papier dans À propos).
+- **Profil** : nom, titre professionnel, phrase d'accroche, composée en très grand en haut de la page (un mot entre astérisques est mis en valeur : `Je rends *lisible*…`), accroche, introduction et biographie de la section À propos (le dernier paragraphe de la biographie est mis en exergue), e-mail et localisation publics, liens sociaux, CV (PDF envoyé dans la médiathèque), photo facultative, principes de travail (affichés en quatre colonnes numérotées dans À propos).
 - **Compétences** : groupes (nom, courte description, éléments), réordonnables.
 
 ## Médias

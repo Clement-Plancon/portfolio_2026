@@ -1,4 +1,6 @@
 ---
+import Arrow from './Arrow.astro';
+
 interface Props {
   name: string;
   location: string;
@@ -9,7 +11,9 @@ const year = new Date().getFullYear();
 
 <footer class="foot wrap">
   <p>© {year} {name} — {location}</p>
-  <p><a class="link" href="/#top">Revenir à la couverture ↑</a></p>
+  <p>
+    <a class="foot__top link" href="/#top">Revenir en haut <Arrow dir="up" /></a>
+  </p>
 </footer>
 
 <style>
@@ -18,8 +22,16 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.75rem 2rem;
-    padding-block: 2rem 2.5rem;
+    margin-top: clamp(5rem, 10vw, 9rem);
+    padding-block: 1.5rem max(2rem, env(safe-area-inset-bottom));
+    border-top: 1px solid var(--rule);
     font-size: 0.875rem;
-    color: var(--ink-2);
+    color: var(--fg-2);
+  }
+  .foot__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
   }
 </style>

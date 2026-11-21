@@ -2,7 +2,7 @@
 
 Portfolio de **Clément Plançon**, ingénieur logiciel et Tech Lead à Paris — avec son administration privée.
 
-- **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante : couverture, À propos, Projets, Parcours, Compétences, Contact. Direction artistique « Expliquer » (*explicare* : déplier) : la page est un dépliant dont chaque entrée et chaque détail est un pli, en CSS 3D. 4,5 Ko de JavaScript (1,9 Ko compressé), lisible sans, thème clair/sombre automatique.
+- **Site public** : une seule page (`/`), rendue à la demande par Astro (SSR sur Netlify) et gardée en cache par le CDN jusqu'à la publication suivante : introduction, Projets, À propos, Parcours, Compétences, Contact. Direction artistique « Sommaire » : une page éditoriale (Newsreader et Geist, papier sombre et chaud, thème clair dessiné), les projets en sommaire composé en grand ; chaque projet s'ouvre en article par-dessus la page, avec sa *planche* (ses technologies dessinées en couches) et ses captures réelles. 2,6 Ko de JavaScript compressé, lisible sans.
 - **Administration** (`/admin/`) : projets, expériences, profil, compétences, médias, référencement ; brouillon, aperçu privé, **publication immédiate** (sans build ni commit), sauvegarde et restauration.
 - **Contenus** : stockés dans **Netlify Blobs** (aucune base de données, aucun jeton GitHub). `src/content/` contient le contenu d'origine, copié dans Blobs à la première visite et plus lu ensuite.
 - **Hébergement** : Netlify (fonction SSR, CDN, Netlify Blobs). GitHub ne sert qu'au code source et aux déploiements techniques.
@@ -24,16 +24,16 @@ npm run dev
 | `npm run lint` | lint (Biome) |
 | `npm test` | tests unitaires et API (Vitest) |
 | `npm run admin:setup` | génère sur votre ordinateur le hachage du mot de passe et le secret de session à copier dans Netlify (Windows, macOS, Linux) |
-| `npm run test:e2e` | tests navigateur (Playwright) : 8 largeurs d'écran, accessibilité axe, SEO, clavier, sans JS, mouvement réduit, parcours admin |
+| `npm run test:e2e` | tests navigateur (Playwright) : 10 résolutions, accessibilité axe (clair et sombre), SEO, clavier, historique, sans JS, mouvement réduit, parcours admin. Si le Chromium de Playwright manque : `CHROMIUM_PATH=/chemin/vers/chromium npm run test:e2e` |
 
 ## Documentation
 
-- [docs/art-direction.md](docs/art-direction.md) — les trois concepts prototypés (`docs/prototypes/v3/`), le choix « Expliquer » et son système
-- [docs/interaction-system.md](docs/interaction-system.md) — plis, états (sans JS, mouvement réduit), clavier, mobile
-- [docs/captures/](docs/captures/) — captures des vues principales (desktop, mobile, sombre)
-- [docs/ux-review.md](docs/ux-review.md) — revue UX, corrections, limites
+- [docs/art-direction.md](docs/art-direction.md) — audit, recherche visuelle, les trois prototypes (`docs/prototypes/v4/`), leur critique, le choix « Sommaire » et son système
+- [docs/interaction-system.md](docs/interaction-system.md) — mouvements, états (sans JS, mouvement réduit), clavier, mobile et tablette
+- [docs/captures/](docs/captures/) — captures desktop, tablette et mobile, sombre et clair, et la version précédente (`avant-expliquer-*.jpg`)
+- [docs/ux-review.md](docs/ux-review.md) — revue visuelle, corrections, ce qui est testé et ce qui ne l'est pas
 - [docs/performance-review.md](docs/performance-review.md) — mesures Lighthouse et choix de performance
-- [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) — recherche de références
+- [docs/research/](docs/research/) — planches des références observées ; [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) : recherches des directions précédentes
 - [docs/architecture.md](docs/architecture.md) — architecture (SSR, Netlify Blobs), données, publication, cache, médias, sauvegarde, sécurité, design system
 - [docs/netlify-deployment.md](docs/netlify-deployment.md) — mise en ligne, Netlify Blobs, initialisation, cache, variables, retour arrière, vérifications
 - [docs/admin-guide.md](docs/admin-guide.md) — mode d'emploi de l'administration, changement de mot de passe, récupération d'accès, rotation des secrets
@@ -58,4 +58,4 @@ Détails : [docs/netlify-deployment.md](docs/netlify-deployment.md). Aucun secre
 
 ## Licences
 
-Polices Mona Sans, Newsreader et Instrument Sans : SIL Open Font License 1.1 (`public/fonts/`).
+Polices Newsreader, Geist, Instrument Sans et Mona Sans : SIL Open Font License 1.1 (`public/fonts/`).

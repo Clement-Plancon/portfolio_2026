@@ -56,7 +56,7 @@ export const seoSchema = z
   })
   .default({});
 
-/** Paper stock of the project's leaf (src/lib/stocks.ts). Names kept from earlier designs so content stays valid. */
+/** Tint of the project (src/lib/tints.ts). Names kept from earlier designs so content stays valid. */
 export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable'] as const;
 
 export const projectSchema = z.object({

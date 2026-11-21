@@ -1,10 +1,11 @@
-// Generates public/og-default.png (1200×630) in the art direction of the site: the name in Mona Sans,
-// and the folded strip of real project papers (colours from src/lib/stocks.ts, titles from the content).
-// Usage: npm run build && npx astro preview --port 4321, then `node scripts/generate-og.mjs` (Node ≥ 22.18).
+// Generates public/og-default.png (1200×630) in the art direction of the site (« Sommaire »): the
+// statement in Newsreader on the dark paper, the name and role in Geist, the project titles as an index.
+// Usage: serve the built site (`npx netlify serve --offline`, port 8888, or ORIGIN=…), then
+// `node scripts/generate-og.mjs` (Node ≥ 22.18). The page is loaded from that origin so the fonts load.
 import { readdirSync, readFileSync } from 'node:fs';
 import { chromium } from '@playwright/test';
-import { STOCKS } from '../src/lib/stocks.ts';
 
+const ORIGIN = process.env.ORIGIN ?? 'http://localhost:8888';
 const projects = readdirSync('src/content/projects')
   .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(readFileSync(`src/content/projects/${f}`, 'utf8')))
@@ -12,35 +13,30 @@ const projects = readdirSync('src/content/projects')
   .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 const profile = JSON.parse(readFileSync('src/content/profile.json', 'utf8'));
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-
-const leaves = projects
-  .map((p, i) => {
-    const s = STOCKS[p.cover?.color] ?? STOCKS.sable;
-    const tilt = i % 2 ? -1 : 1;
-    return `<div class="leaf" style="background:${s.paper};color:${s.ink};--t:${tilt}"><span>${esc(p.title)}</span></div>`;
-  })
-  .join('');
+const statement = esc(profile.statement ?? profile.headline).replace(/\*([^*]+)\*/g, '<em>$1</em>');
 
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face{font-family:M;src:url(/fonts/mona-sans.woff2);font-weight:200 900;font-stretch:75% 125%}
-html,body{margin:0;width:1200px;height:630px;background:#f3f1ec;color:#15140f;font-family:M}
-body{box-sizing:border-box;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
-h1{margin:0;font-stretch:75%;font-weight:840;font-size:150px;line-height:.84;letter-spacing:-.03em}
-.role{margin-top:22px;font-size:34px;font-weight:460}
-.lab{font-stretch:125%;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#4a4842}
-.strip{display:flex;height:150px;perspective:1400px}
-.leaf{flex:1;display:flex;align-items:flex-end;padding:16px;font-stretch:75%;font-weight:800;font-size:24px;line-height:1;
-  transform:rotateY(calc(var(--t) * 14deg));box-shadow:inset calc(var(--t) * 40px) 0 50px -30px rgba(0,0,0,.35)}
+@font-face{font-family:N;src:url(/fonts/newsreader.woff2);font-weight:300 500}
+@font-face{font-family:N;src:url(/fonts/newsreader-italic.woff2);font-style:italic}
+@font-face{font-family:G;src:url(/fonts/geist.woff2);font-weight:100 900}
+html,body{margin:0;width:1200px;height:630px;background:#12110e;color:#ede7db;font-family:G}
+body{box-sizing:border-box;padding:56px 64px;display:grid;grid-template-columns:1fr 330px;gap:40px}
+.l{display:flex;flex-direction:column;justify-content:space-between}
+.lab{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#a59d8e}
+h1{margin:0;font-family:N;font-weight:300;font-size:98px;line-height:.92;letter-spacing:-.035em}
+em{color:#d8c29a}
+.id{border-top:1px solid #ede7db24;padding-top:16px;font-size:22px}.id span{display:block;color:#a59d8e}
+ol{list-style:none;margin:0;padding:0;align-self:end;border-top:1px solid #ede7db24}
+li{font-family:N;font-weight:300;font-size:23px;padding:9px 0;border-bottom:1px solid #ede7db24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style></head><body>
-<div><div class="lab">Expliquer, du latin explicare : déplier</div>
-<h1 style="margin-top:20px">${esc(profile.name)}</h1><div class="role">${esc(profile.jobTitle)}</div></div>
-<div class="strip">${leaves}</div>
+<div class="l"><div class="lab">${esc(profile.location)} — clementplancon.fr</div><h1>${statement}</h1>
+<div class="id">${esc(profile.name)}<span>${esc(profile.jobTitle)}</span></div></div>
+<ol>${projects.map((p) => `<li>${esc(p.title)}</li>`).join('')}</ol>
 </body></html>`;
 
 const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
-// Same origin as the preview server so the fonts load.
-await page.goto('http://localhost:4321/robots.txt');
+await page.goto(`${ORIGIN}/robots.txt`);
 await page.setContent(html, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
 await page.screenshot({ path: 'public/og-default.png' });

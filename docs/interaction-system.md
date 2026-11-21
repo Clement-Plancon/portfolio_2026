@@ -1,42 +1,49 @@
-# Système d'interaction
+# Système d'interaction — « Sommaire »
 
-Tout part d'une règle : **le contenu est déjà là, déplié**. Le HTML envoyé par le serveur contient chaque section et chaque détail de projet, ouverts. Le script (`src/scripts/fold.ts`, 4,5 Ko) replie d'abord ce qui doit l'être, puis anime les dépliages. S'il ne se charge pas, rien ne manque.
+Principe : le mouvement **accompagne une action ou une arrivée**, jamais l'inverse. Rien n'attend une animation pour être lisible ; le défilement reste celui du navigateur.
+
+## Temps et courbes
+
+| Jeton | Valeur | Usage |
+|---|---|---|
+| `--ease` | `cubic-bezier(0.22, 0.8, 0.12, 1)` | les éléments qui se posent (décélération longue) |
+| `--ease-io` / script | `cubic-bezier(0.65, 0, 0.25, 1)` | l'article qui s'ouvre et se referme (accélère puis freine) |
+| `--dur-1` / `--dur-2` / `--dur-3` | 180 / 450 / 900 ms | survol / apparition des menus / entrée des blocs |
+
+## Les mouvements, un par un
+
+| Où | Ce qui se passe | Pourquoi |
+|---|---|---|
+| Arrivée | La phrase d'accroche monte de sous sa ligne (masque, 1,3 s), puis le mot en italique passe du flou au net (1,6 s, départ à 0,7 s). Le nom et l'accroche apparaissent ensuite. Seule la *transformation* est animée : le texte est peint aussitôt, sans attendre l'animation pour le LCP. | « Je rends *lisible*… » : le mot fait ce qu'il dit, une seule fois. |
+| Défilement | Les lignes du sommaire, les postes, les compétences et les principes montent de 28 px en s'affichant, une fois, avec un léger décalage entre voisins. | Donner un rythme à la lecture sans effet de « page qui se monte ». |
+| En-tête | Il s'efface quand on lit vers le bas et revient dès qu'on remonte (ou qu'il reçoit le focus). La section en cours est soulignée. | Rendre l'écran au contenu, surtout sur téléphone, sans perdre la navigation. |
+| Sommaire, survol (pointeur fin) | Les autres titres s'atténuent, le titre survolé passe en italique et glisse de 0,12 em. L'aperçu (planche ou capture) suit le pointeur avec un amorti, au-delà de la fin du titre. Il disparaît au défilement. | Montrer le projet avant de l'ouvrir. Aucune information n'est réservée au survol. |
+| Ouverture d'un projet | L'article grandit **depuis la ligne** jusqu'au plein écran (découpe `clip-path`, 760 ms), puis son contenu monte. La planche écarte ses couches après 420 ms. | La continuité : on voit d'où vient l'article et où il retournera. |
+| Fermeture | L'article se rétracte dans sa ligne (560 ms) ; la ligne est d'abord ramenée à l'écran si on a navigué avec précédent / suivant. | Retrouver sa place dans la liste. |
+| Précédent / suivant | Le nouvel article remplace le précédent sans retour à la liste ; la page derrière suit (la ligne du projet courant est mise au centre). | Parcourir tous les projets sans se perdre. |
+| Sommaire mobile | Une feuille plein écran, les entrées en bas (au pouce), qui montent l'une après l'autre (45 ms d'écart). | Accessible d'une main. |
 
 ## États
 
-| Situation | Rendu |
-|---|---|
-| Sans JavaScript | Tout est à plat. Les six détails de projets sont ouverts, en une colonne. Le menu mobile n'est pas replié (la navigation reste visible). |
-| `prefers-reduced-motion: reduce` | Tout est à plat dès l'arrivée, et la bande de couverture n'est pas pliée. Les détails s'ouvrent et se ferment sans animation. |
-| Mouvement autorisé | Les plis s'ouvrent une seule fois, à l'entrée dans l'écran (IntersectionObserver). La bande de couverture suit le défilement. |
-
-Les classes `html.js` et `html.motion` portent ces états. Aucun contenu n'est masqué par défaut dans le CSS.
-
-## Gestes
-
-| Élément | Geste | Détail |
-|---|---|---|
-| Titres de section | Basculent de −62° vers l'avant | Une fois, à l'entrée dans l'écran. |
-| Bande de couverture | Accordéon dont l'angle va de 70° à 0° sur la première moitié d'écran de défilement | Calcul en `requestAnimationFrame`, sans bloquer le défilement. Légère inclinaison sous un pointeur fin (souris), aucune au doigt. Chaque feuille ouvre son projet. La bande est décorative pour les lecteurs d'écran (`aria-hidden`, hors tabulation) : les mêmes projets sont accessibles dans la carte. |
-| Volets de projets | Pli d'entrée par colonne | Colonne 1 sur l'axe horizontal ; colonnes 2 et 3 comme une page, avec un décalage. En mobile, sur l'axe horizontal. |
-| Détail d'un projet | Se déplie sous sa rangée (hauteur de 0 à auto et rotation de −86° à 0°, 0,9 s) | Un seul ouvert à la fois. L'adresse devient `/#projet-…` (`history.replaceState`), donc un lien partagé ouvre ce projet. Fin du détail : « ↑ Replier » (rend le focus au volet) et « Volet suivant : … → ». |
-| Triptyque du parcours | Les volets latéraux s'ouvrent comme des portes (±68°) | En mobile, les trois volets se déplient l'un sous l'autre. |
-| Principes (À propos) | Accordéon de feuilles claires | Horizontal en desktop, vertical en mobile. |
-| Carte de contact | Le recto vermillon se retourne (−178° → 0°) et découvre le verso | Bouton « Copier l'adresse » avec message `role="status"`. |
-| Navigation | La section active est soulignée, avec un coin vermillon | En mobile, le bouton « Sommaire » déplie la navigation (−92° → 0°). Échap la ferme et rend le focus. |
+- **Sans JavaScript** : tous les articles sont imprimés sous leur ligne ; les liens `#projet-…` y mènent ; le menu est une rangée de liens.
+- **`prefers-reduced-motion: reduce`** : aucune classe `motion` ; rien ne monte, ne glisse ni ne se floute ; les planches sont dessinées déjà écartées ; l'article s'ouvre sans transition ; le défilement n'est pas lissé. Tout le reste (dialogue, adresse, précédent / suivant) fonctionne.
+- **Thèmes** : sombre par défaut, clair si le système le demande (`prefers-color-scheme`). Les deux sont dessinés et testés à l'axe.
 
 ## Clavier et lecteurs d'écran
 
-- Le titre de chaque volet est un `<button aria-expanded aria-controls>` dont le nom ne change pas à l'ouverture. La zone cliquable couvre tout le volet (pseudo-élément), mais un seul élément reçoit le focus.
-- Les détails fermés sont `inert` : ils sont hors tabulation et hors arbre d'accessibilité, tout en restant dans le HTML pour l'indexation.
-- Le lien d'évitement mène à `#contenu`. Les ancres de section sont stables : `#a-propos`, `#projets`, `#parcours`, `#competences`, `#contact`.
-- Dans la couverture, la phrase latine est balisée `lang="la"`.
+- Chaque titre du sommaire est un **lien réel** `#projet-…`. Entrée ouvre l'article : un `<dialog>` modal (`showModal`), le focus va sur « Fermer », la page derrière est inerte.
+- Échap ferme ; le focus revient sur la ligne du projet. Le bouton *Retour* du navigateur ferme aussi (l'ouverture ajoute une entrée d'historique ; précédent / suivant la remplacent).
+- Les flèches sont dessinées en SVG décoratif ; les boutons portent leurs mots (sur mobile, « Précédent » et « Suivant » restent dans le nom accessible : « Projet suivant : Saisines… »).
+- Toutes les cibles tactiles font au moins 44 px.
 
-## Mobile
+## Mobile et tablette
 
-Rien ne dépend du survol. Le coin corné des volets apparaît aussi au focus et à l'ouverture, et l'indication « Déplier / Replier » est toujours visible. Tous les accordéons deviennent verticaux sous 48 rem, parce qu'un pli horizontal sur 390 px rendrait les feuilles illisibles. Les boutons (déplier, replier, copier, sommaire) font au moins 44 px ; un volet entier est cliquable.
-
-## Durées
-
-- 0,9 s (`--dur-3`) pour les plis et l'ouverture d'un détail, 1,3 s pour les accordéons, avec une courbe `--ease-fold` (`cubic-bezier(.32,.72,0,1)`) qui ralentit fortement à la fin, comme du papier qui retombe.
-- 180 et 420 ms (`--dur-1`, `--dur-2`) pour les retours d'état (survol, focus, coin corné).
+- **Téléphone** :
+  - le sommaire des projets reste une liste : titre, nature, cadre et période, sans survol ;
+  - dans l'article, les commandes (précédent, suivant, fermer) sont **en bas de l'écran**, sous le pouce ;
+  - la planche est carrée.
+- **Tablette portrait** :
+  - l'introduction est raccourcie pour que les premiers projets apparaissent dès le premier écran ;
+  - la navigation complète tient dans l'en-tête (plus de bouton « Sommaire » dès 768 px) ;
+  - pas d'aperçu au survol, l'ouverture se fait au toucher.
+- **Tablette paysage (1024 × 768)** : la mise en page desktop, sans aperçu si l'écran est tactile seulement.
