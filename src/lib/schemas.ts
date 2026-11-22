@@ -66,9 +66,11 @@ export const seoSchema = z
   .default({});
 
 /** Colour of the project's poster (src/lib/poster.ts). Names kept from earlier designs so content stays valid. */
-export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable'] as const;
+export const COVER_COLORS = ['vermillon', 'sapin', 'ardoise', 'ocre', 'prune', 'sable', 'nuit', 'menthe', 'rose', 'bleu-france'] as const;
 /** Compositions of a poster without image (src/lib/poster.ts). */
-export const POSTER_LAYOUTS = ['numeral', 'titre', 'grille'] as const;
+export const POSTER_LAYOUTS = ['numeral', 'titre', 'grille', 'initiale', 'bandes', 'soleil', 'technos', 'dsfr'] as const;
+/** Side of the poster on the page; « auto » alternates. */
+export const COVER_VARIANTS = ['auto', 'texte-gauche', 'texte-droite', 'empile'] as const;
 /** Motifs of an earlier design: still accepted so that published content stays valid, no longer shown. */
 export const MOTIFS = ['feuille', 'courbe', 'arbre', 'spirale', 'onde', 'barres', 'noeud'] as const;
 
@@ -101,7 +103,7 @@ export const projectSchema = z.object({
       /** A short video instead of (or with) the image: muted, looped. The image, if any, is its poster. */
       video: z.object({ src: videoRefSchema, alt: text(300) }).optional(),
       /** Which side the poster takes on the page; "auto" alternates. */
-      variant: z.enum(['auto', 'texte-gauche', 'texte-droite']).optional(),
+      variant: z.enum(COVER_VARIANTS).optional(),
     })
     .default({ color: 'sapin' }),
   gallery: z.array(imageSchema).max(24).default([]),

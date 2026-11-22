@@ -28,15 +28,22 @@ const n = mark ?? String(index + 1).padStart(2, '0');
 const image = p.cover.image;
 const video = still ? undefined : p.cover.video;
 const hasMedia = !!(image || video);
-const layout = posterLayout(p.cover.poster, index, hasMedia);
+const chosen = posterLayout(p.cover.poster, index, hasMedia);
+// « Technologies » needs some technologies; without them it falls back to the number.
+const layout = chosen === 'technos' && !p.technologies.length ? 'numeral' : chosen;
+const dsfr = p.cover.poster === 'dsfr';
 const year = p.period?.start?.slice(0, 4) ?? (p.status === 'en-cours' ? 'En cours' : '');
 const kind = (p.kind ?? (p.category === 'pro' ? 'Projet professionnel' : 'Projet personnel')).split('·')[0].trim();
 const lines = titleFill(p.title);
 const cells = gridCells(p.id);
 const tech = p.technologies.slice(0, 3);
+const initial = [...p.title.normalize('NFD').replace(/[^\p{L}\p{N}]/gu, '')][0]?.toLocaleUpperCase('fr') ?? n;
+const techLines = p.technologies.slice(0, 4).map((t) => ({ text: t, size: lineSize(t.toLocaleUpperCase('fr'), 13, 90) }));
+const longest = p.title.split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), '');
+const status = p.status === 'en-cours' ? 'En cours' : p.status === 'termine' ? 'Terminé' : '';
 ---
 
-<div class:list={['poster', `poster--${layout}`, cls]} style={tintStyle(p.cover.color)} aria-hidden="true" data-layout={layout}>
+<div class:list={['poster', `poster--${layout}`, { 'poster--dsfr-frame': dsfr }, cls]} style={tintStyle(p.cover.color)} aria-hidden="true" data-layout={layout}>
   <div class="poster__in">
     <div class="poster__top">
       <span>{n}</span>
@@ -56,6 +63,44 @@ const tech = p.technologies.slice(0, 3);
       )
     }
     {layout === 'numeral' && <div class="poster__num">{n}</div>}
+    {layout === 'initiale' && <div class="poster__initial">{initial}</div>}
+    {
+      layout === 'bandes' && (
+        <div class="poster__bands">
+          <span class="poster__badge">{n}</span>
+        </div>
+      )
+    }
+    {
+      layout === 'soleil' && (
+        <div class="poster__sun">
+          <span>{n}</span>
+        </div>
+      )
+    }
+    {
+      layout === 'technos' && (
+        <ul class="poster__tech">
+          {techLines.map((t) => (
+            <li style={`--s:${t.size}`}>{t.text}</li>
+          ))}
+        </ul>
+      )
+    }
+    {
+      layout === 'dsfr' && (
+        <div class="poster__dsfr">
+          {status && <span class:list={['dsfr-badge', { 'dsfr-badge--done': p.status === 'termine' }]}>{status}</span>}
+          <p class="dsfr-title" style={`--s:${Math.min(10, lineSize(longest, 10, 84))}`}>{p.title}</p>
+          <span class="dsfr-rule" />
+          {p.organisation && <p class="dsfr-org">{p.organisation}</p>}
+          <ul class="dsfr-tags">
+            {p.technologies.slice(0, 6).map((t) => <li>{t}</li>)}
+          </ul>
+          <span class="dsfr-arrow">→</span>
+        </div>
+      )
+    }
     {
       layout === 'titre' && (
         <div class="poster__lines">
@@ -78,15 +123,19 @@ const tech = p.technologies.slice(0, 3);
     }
 
     {
-      layout !== 'titre' && (
+      layout !== 'titre' && layout !== 'dsfr' && (
         <p class="poster__title" style={`--s:${Math.min(11, lineSize(p.title.split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), ''), 11, 88))}`}>
           {p.title}
         </p>
       )
     }
-    <div class="poster__foot">
-      {tech.map((t) => <span>{t}</span>)}
-    </div>
+    {
+      layout !== 'dsfr' && (
+        <div class="poster__foot">
+          {tech.map((t) => <span>{t}</span>)}
+        </div>
+      )
+    }
   </div>
 </div>
 
@@ -266,5 +315,182 @@ const tech = p.technologies.slice(0, 3);
   .cell--bar {
     background: var(--p-alt);
     transform: rotate(var(--r)) scaleY(0.28);
+  }
+
+  /* The first letter of the title, cropped by the poster's edges. */
+  .poster__initial {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 118cqi;
+    font-weight: 900;
+    font-stretch: 125%;
+    line-height: 0.7;
+    color: var(--p-alt);
+    margin-inline: -8cqi;
+    overflow: hidden;
+  }
+
+  /* Oblique stripes in the two colours, the number in a tag on top. */
+  .poster__bands {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    margin-inline: -5cqi;
+    background: repeating-linear-gradient(-35deg, var(--p-alt) 0 7cqi, transparent 7cqi 12cqi, var(--p-ink) 12cqi 14cqi, transparent 14cqi 19cqi);
+  }
+  .poster__badge {
+    position: absolute;
+    left: 5cqi;
+    bottom: 5cqi;
+    padding: 1cqi 3cqi;
+    background: var(--p-bg);
+    font-size: 16cqi;
+    font-weight: 900;
+    font-stretch: 75%;
+    line-height: 1;
+  }
+
+  /* A large disc, the number in it. */
+  .poster__sun {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    place-items: center;
+  }
+  .poster__sun span {
+    width: min(82cqi, 100%);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--p-alt);
+    color: var(--p-bg);
+    font-size: 30cqi;
+    font-weight: 900;
+    font-stretch: 75%;
+    letter-spacing: -0.04em;
+  }
+
+  /* The technologies, one per line, each set to the width. */
+  .poster__tech {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2cqi;
+    overflow: hidden;
+  }
+  .poster__tech li {
+    font-size: calc(var(--s) * 1cqi);
+    font-weight: 900;
+    font-stretch: 110%;
+    line-height: 0.9;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .poster__tech li:nth-child(odd) {
+    color: var(--p-alt);
+  }
+
+  /* DSFR: a card in the style of the French State's design system (colours, grey surfaces, square
+     shapes, tags, the red line). Not its logo or its Marianne font, whose use is reserved to the State. */
+  .poster--dsfr,
+  .poster--dsfr-frame {
+    --dsfr-blue: #000091;
+    --dsfr-red: #e1000f;
+    --dsfr-grey: #f6f6f6;
+    --dsfr-text: #161616;
+    font-family: Marianne, Arial, Helvetica, sans-serif;
+  }
+  .poster--dsfr {
+    background: #ffffff;
+    color: var(--dsfr-text);
+  }
+  .poster--dsfr .poster__top,
+  .poster--dsfr-frame .poster__top {
+    margin: -5cqi -5cqi 0;
+    padding: 3.5cqi 5cqi;
+    background: var(--dsfr-blue);
+    color: #ffffff;
+    font-stretch: 100%;
+    letter-spacing: 0.02em;
+    box-shadow: inset 0 -1cqi 0 var(--dsfr-red);
+  }
+  .poster__dsfr {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3cqi;
+    margin: 0 -5cqi -5cqi;
+    padding: 6cqi 5cqi 5cqi;
+    background: var(--dsfr-grey);
+    border-bottom: 1.6cqi solid var(--dsfr-blue);
+    position: relative;
+  }
+  .dsfr-badge {
+    padding: 0.6cqi 2cqi;
+    background: #e8edff;
+    color: #0063cb;
+    font-size: 3.6cqi;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .dsfr-badge--done {
+    background: #b8fec9;
+    color: #18753c;
+  }
+  .dsfr-title {
+    font-size: calc(var(--s) * 1cqi);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--dsfr-blue);
+    overflow-wrap: anywhere;
+  }
+  .dsfr-rule {
+    width: 14cqi;
+    height: 1.2cqi;
+    background: var(--dsfr-red);
+  }
+  .dsfr-org {
+    font-size: 4.2cqi;
+    font-weight: 700;
+  }
+  .dsfr-tags {
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6cqi;
+    max-width: 82%;
+  }
+  .dsfr-tags li {
+    padding: 1cqi 2.6cqi;
+    border-radius: 99cqi;
+    background: #e3e3fd;
+    color: var(--dsfr-blue);
+    font-size: 3.6cqi;
+    white-space: nowrap;
+  }
+  .dsfr-arrow {
+    position: absolute;
+    right: 5cqi;
+    bottom: 5cqi;
+    width: 10cqi;
+    height: 10cqi;
+    display: grid;
+    place-items: center;
+    background: var(--dsfr-blue);
+    color: #ffffff;
+    font-size: 6cqi;
   }
 </style>
