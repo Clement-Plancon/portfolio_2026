@@ -38,6 +38,7 @@ npm run dev
 - [docs/research/](docs/research/) — planches des références observées ; [docs/creative-research.md](docs/creative-research.md) et [docs/design-research.md](docs/design-research.md) : recherches des directions précédentes
 - [docs/architecture.md](docs/architecture.md) — architecture (SSR, Netlify Blobs), données, publication, cache, médias, sauvegarde, sécurité, design system
 - [docs/netlify-deployment.md](docs/netlify-deployment.md) — mise en ligne, Netlify Blobs, initialisation, cache, variables, retour arrière, vérifications
+- [docs/incident-2026-11-22-blobs.md](docs/incident-2026-11-22-blobs.md) — panne Netlify Blobs du 22 novembre 2026 : cause, correction, diagnostic (journaux `storage_error`)
 - [docs/admin-guide.md](docs/admin-guide.md) — mode d'emploi de l'administration, changement de mot de passe, récupération d'accès, rotation des secrets
 
 ## Mise en place de l'administration (résumé)

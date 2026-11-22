@@ -6,6 +6,11 @@ import type { ContentStore, SaveChange } from './content-store';
 import { errorResponse, HttpError, json, readJson, SECURITY_HEADERS } from './http';
 import { checkSameOrigin, clearedCookie } from './session';
 import { contentTypeOf, isMediaRef, validateUpload } from './media';
+import { correlationId, logLine, redact, StorageError } from './storage-error';
+
+/** What the administrator sees when the storage fails: no technical detail, a reference to quote. */
+export const STORAGE_MESSAGE =
+  'Le stockage du contenu est momentanément indisponible. Rien n’a été modifié et aucune donnée n’est perdue ; réessayez dans un instant.';
 
 export interface HandlerDeps extends AuthDeps {
   cms: ContentStore;
@@ -75,7 +80,13 @@ export function createHandler(deps: HandlerDeps) {
         if (!deps.auth) throw notConfigured();
         checkSameOrigin(req, deps.siteOrigins);
         if (route === '/auth/logout') {
-          await deps.auth.logout(req);
+          try {
+            await deps.auth.logout(req);
+          } catch (e) {
+            // The browser forgets the session in any case; the server says it could not revoke it.
+            if (e instanceof StorageError) return withCookie(storageFailure(e, req, method, route), clearedCookie());
+            throw e;
+          }
           return withCookie(json({ loggedOut: true }), clearedCookie());
         }
         const body = await readJson(req, 4_000);
@@ -175,14 +186,43 @@ export function createHandler(deps: HandlerDeps) {
 
       throw new HttpError(404, 'not_found', 'Route inconnue.');
     } catch (e) {
+      if (e instanceof StorageError) return storageFailure(e, req, method, route);
       if (e instanceof HttpError) {
         if (e.status >= 500 || e.status === 429) log(`[cms] ${method} ${route} -> ${e.status} ${e.code}`);
         const res = errorResponse(e);
         // A refused or expired session also removes the cookie from the browser.
         return e.status === 401 && route !== '/auth/login' ? withCookie(res, clearedCookie()) : res;
       }
-      log(`[cms] ${method} ${route} -> unexpected ${(e as Error)?.name ?? 'error'}`);
-      return errorResponse(new HttpError(500, 'internal', 'Erreur inattendue du serveur.'));
+      const ref = correlationId(req);
+      log(`[cms] ${logLine({ event: 'unexpected', ref, route: `${method} ${route}`, type: (e as Error)?.name ?? typeof e, message: redact(String((e as Error)?.message ?? e)) })}`);
+      return withRef(errorResponse(new HttpError(500, 'internal', `Erreur inattendue du serveur. Référence : ${ref}.`)), ref);
     }
   };
+
+  /** 503 with a correlation id; the log line holds the technical details (redacted). */
+  function storageFailure(e: StorageError, req: Request, method: string, route: string): Response {
+    const ref = correlationId(req);
+    log(
+      `[cms] ${logLine({
+        event: 'storage_error',
+        ref,
+        route: `${method} ${route}`,
+        kind: e.kind,
+        type: e.causeName,
+        status: e.status,
+        op: e.op,
+        store: e.store,
+        blobsRequestId: e.blobsRequestId,
+        message: e.message,
+      })}`,
+    );
+    const res = json({ error: { code: 'storage_unavailable', message: `${STORAGE_MESSAGE} Référence : ${ref}.`, ref } }, 503);
+    res.headers.set('Retry-After', '5');
+    return withRef(res, ref);
+  }
 }
+
+const withRef = (res: Response, ref: string) => {
+  res.headers.set('X-Request-Ref', ref);
+  return res;
+};

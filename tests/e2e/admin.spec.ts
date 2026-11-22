@@ -196,3 +196,57 @@ test('screenshots', async ({ page }) => {
   await page.goto('/admin/#/medias');
   await page.screenshot({ path: `${process.env.SNAP_DIR}/admin-mobile.png` });
 });
+
+test('storage unavailable: the admin says so with a reference, keeps the form, and never shows « Enregistré »', async ({ page }) => {
+  const { StorageError } = await import('../../src/server/storage-error');
+  const gh = testCms({ seed: fsSeed });
+  const { auth, kv } = await testAuth();
+  let down = false;
+  // Every store fails like Netlify Blobs during the incident (401 on every call) while `down` is set.
+  for (const store of [gh.store, gh.files, kv] as unknown as Record<string, (...a: unknown[]) => Promise<unknown>>[]) {
+    for (const m of ['get', 'set', 'delete', 'list', 'getFile', 'putFile']) {
+      const orig = store[m];
+      if (typeof orig !== 'function') continue;
+      store[m] = async (...a: unknown[]) => {
+        if (down) throw new StorageError(m, 'cms', { name: 'BlobsInternalError', status: 401, message: 'Netlify Blobs has generated an internal error (401 status code)' });
+        return orig.apply(store, a);
+      };
+    }
+  }
+  const handle = createHandler({ cms: gh.cms, auth, purge: async () => true, log: () => {} });
+  await page.route('**/api/admin/**', async (route) => {
+    const r = route.request();
+    const res = await handle(new Request(r.url(), { method: r.method(), headers: await r.allHeaders(), body: ['GET', 'HEAD'].includes(r.method()) ? undefined : new Uint8Array(r.postDataBuffer() ?? []) }), { ip: '127.0.0.1' });
+    await route.fulfill({ status: res.status, headers: Object.fromEntries(res.headers), body: Buffer.from(await res.arrayBuffer()) });
+  });
+  await login(page);
+  await expect(page.getByRole('heading', { name: 'Bonjour' })).toBeVisible();
+  await page.goto('/admin/#/projets/bercy-vert');
+  const summary = page.getByLabel('Description courte');
+  await summary.fill('Texte saisi pendant la panne.');
+
+  down = true;
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await expect(page.getByText(/momentanément indisponible.*Référence : [A-Z0-9]{10,}/)).toBeVisible();
+  await expect(page.getByText('Enregistré. Les modifications sont dans le brouillon.')).toHaveCount(0);
+  await expect(page.locator('.form-actions__status')).not.toHaveText('Tout est enregistré');
+  await expect(summary).toHaveValue('Texte saisi pendant la panne.');
+
+  // the storage is back: nothing was written meanwhile, and the same form saves
+  down = false;
+  expect(await gh.read('draft', 'src/content/projects/bercy-vert.json')).toBeUndefined();
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await expect(page.getByText('Enregistré. Les modifications sont dans le brouillon.')).toBeVisible();
+  expect(await gh.read('draft', 'src/content/projects/bercy-vert.json')).toContain('Texte saisi pendant la panne.');
+
+  // opening the admin during an outage: an explanation, not « mot de passe » nor « non configurée »
+  down = true;
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Administration indisponible' })).toBeVisible();
+  await expect(page.getByRole('alert')).toContainText(/momentanément indisponible.*Référence/);
+  await expect(page.getByText(/n'est pas configurée/)).toHaveCount(0);
+  down = false;
+  await page.getByRole('button', { name: 'Réessayer' }).click();
+  // back on the same project, with the text saved before the outage
+  await expect(page.getByLabel('Description courte')).toHaveValue('Texte saisi pendant la panne.');
+});

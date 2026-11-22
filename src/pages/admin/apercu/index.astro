@@ -5,6 +5,7 @@ import { mediaResolver } from '../../../lib/media';
 import { toSiteData } from '../../../lib/snapshot';
 import { setPrivate } from '../../../server/public-cache';
 import { adminAuth, contentStore } from '../../../server/runtime';
+import { logLine, redact, StorageError } from '../../../server/storage-error';
 
 export const prerender = false;
 
@@ -21,7 +22,16 @@ try {
 }
 if (!allowed) return Astro.redirect('/admin/', 303);
 
-const { snap } = await contentStore().working();
+let snap;
+try {
+  ({ snap } = await contentStore().working());
+} catch (e) {
+  console.error(`[preview] ${logLine({ event: 'storage_error', type: (e as Error)?.name, message: e instanceof StorageError ? e.message : redact(String((e as Error)?.message ?? e)) })}`);
+  return new Response('Le stockage du contenu est momentanément indisponible. Réessayez dans un instant.', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'private, no-store', 'Retry-After': '5' },
+  });
+}
 const data = toSiteData(snap, { includeHidden: true });
 ---
 

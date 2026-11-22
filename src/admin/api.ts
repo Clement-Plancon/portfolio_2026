@@ -7,8 +7,14 @@ export class ApiError extends Error {
     public code: string,
     message: string,
     public details: { path: string; message: string }[] = [],
+    /** Correlation id of a server failure, to quote when reporting it (also in the server log). */
+    public ref?: string,
   ) {
     super(message);
+  }
+  /** The storage is momentarily unavailable: nothing was changed, retrying later is the answer. */
+  get storageDown() {
+    return this.code === 'storage_unavailable';
   }
 }
 
@@ -61,7 +67,7 @@ async function request<T>(method: string, path: string, body?: unknown, { quiet4
   } catch {
     throw new ApiError(0, 'network', 'Connexion impossible. Vérifiez votre réseau puis réessayez.');
   }
-  let data: { error?: { code: string; message: string; details?: { path: string; message: string }[] } } | null = null;
+  let data: { error?: { code: string; message: string; details?: { path: string; message: string }[]; ref?: string } } | null = null;
   try {
     data = await res.json();
   } catch {
@@ -70,7 +76,10 @@ async function request<T>(method: string, path: string, body?: unknown, { quiet4
   if (!res.ok) {
     const err = data?.error;
     if (res.status === 401 && !quiet401) onUnauthenticated?.();
-    throw new ApiError(res.status, err?.code ?? 'http', err?.message ?? `Erreur ${res.status}`, err?.details ?? []);
+    const ref = err?.ref ?? res.headers.get('x-request-ref') ?? undefined;
+    // A failure without a readable answer (a platform error page) is still never shown as a success.
+    const fallback = res.status >= 500 ? `Le serveur ne répond pas correctement (erreur ${res.status}). Rien n’a été enregistré ; réessayez dans un instant.` : `Erreur ${res.status}`;
+    throw new ApiError(res.status, err?.code ?? 'http', err?.message ?? fallback, err?.details ?? [], ref);
   }
   return data as T;
 }
