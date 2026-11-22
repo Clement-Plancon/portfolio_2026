@@ -1,0 +1,338 @@
+---
+// The DSFR poster: a project shown as a small page of the French State's design system, built from its
+// components (header, breadcrumb, badge, lead, primary button, tiles, footer) with its colour tokens and
+// proportions. Scoped here so the fr-* names never leak into the rest of the site. The State's logo
+// (bloc-marque) and the Marianne font are not used: they are reserved to State services.
+// Sized like every poster: in cqi of the poster's width, so it reads in large and in the strip.
+import type { ProjectEntry } from '../lib/snapshot';
+
+interface Props {
+  project: ProjectEntry;
+  n: string;
+  kind: string;
+  year: string;
+  /** The project has an image or a video: it fills the card picture, given as the slot. */
+  withMedia?: boolean;
+}
+const { project: p, n, kind, year, withMedia = false } = Astro.props;
+const status = p.status === 'en-cours' ? { label: 'En cours', cls: 'info' } : p.status === 'termine' ? { label: 'Terminé', cls: 'success' } : null;
+const service = p.category === 'pro' && p.organisation ? p.organisation : 'Projet personnel';
+const longest = p.title.split(/\s+/).reduce((a, b) => ([...b].length > [...a].length ? b : a), '');
+// the title fills the hero's width without cutting its longest word and keeps to about three lines
+// (Arial bold ≈ 0.62 em per letter)
+const em = 0.62;
+const titleSize = Math.round(Math.min(12, 84 / (Math.max(4, [...longest].length) * em), (3 * 84) / ([...p.title].length * em)) * 10) / 10;
+const tiles = p.technologies.slice(0, 4);
+---
+
+<div class:list={['d', { 'd--media': withMedia }]}>
+  <header class="fr-header">
+    <div class="fr-header__service">
+      <span class="fr-header__service-title">{service}</span>
+      <span class="fr-header__service-tagline">{kind}</span>
+    </div>
+    <span class="fr-btn--menu"><i></i><i></i><i></i></span>
+  </header>
+
+  <nav class="fr-breadcrumb">
+    <span>Accueil</span><span>Projets</span><span class="current">{n}</span>
+  </nav>
+
+  <section class="fr-hero">
+    {status && <p class={`fr-badge fr-badge--${status.cls}`}>{status.label}</p>}
+    <p class="fr-h1" style={`--s:${titleSize}`}>{p.title}</p>
+    <p class="fr-text--lead">{p.summary}</p>
+    <span class="fr-btn">Découvrir le projet <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.17 13 10.8 18.36l1.42 1.42L20 12l-7.78-7.78-1.42 1.42L16.17 11H4v2z" /></svg></span>
+  </section>
+
+  {
+    withMedia ? (
+      <div class="fr-card__img">
+        <slot />
+      </div>
+    ) : (
+      tiles.length > 0 && (
+        <ul class:list={['fr-tiles', { 'fr-tiles--one': tiles.length === 1 }]}>
+          {tiles.map((t) => (
+            <li class="fr-tile">
+              <span class="fr-tile__title">{t}</span>
+              <span class="fr-tile__detail">Technologie</span>
+            </li>
+          ))}
+        </ul>
+      )
+    )
+  }
+
+  <footer class="fr-footer">
+    <span>Projet n° {n}</span>
+    {year && <span>{year}</span>}
+  </footer>
+</div>
+
+<style>
+  /* DSFR tokens (v1): blue-france-sun-113, red-marianne-main-472, grey surfaces and borders. */
+  .d {
+    --blue: #000091;
+    --blue-975: #f5f5fe;
+    --blue-925: #e3e3fd;
+    --red: #e1000f;
+    --text: #161616;
+    --mention: #666666;
+    --border: #dddddd;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    color: var(--text);
+    font-family: Marianne, Arial, Helvetica, sans-serif;
+    text-align: left;
+  }
+
+  /* Header: service title and tagline, the menu button of the mobile header. */
+  .fr-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4cqi;
+    padding: 4.4cqi 5cqi;
+    background: #ffffff;
+    box-shadow: 0 1cqi 2cqi -1cqi rgb(0 0 18 / 0.16);
+    position: relative;
+    z-index: 1;
+  }
+  .fr-header__service {
+    display: grid;
+    gap: 0.8cqi;
+    min-width: 0;
+  }
+  .fr-header__service-title {
+    font-size: 5cqi;
+    font-weight: 700;
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fr-header__service-tagline {
+    font-size: 3.2cqi;
+    line-height: 1.2;
+    color: #3a3a3a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .fr-btn--menu {
+    flex: none;
+    width: 8cqi;
+    height: 8cqi;
+    display: grid;
+    align-content: center;
+    gap: 1cqi;
+    padding: 0 1.8cqi;
+    box-shadow: inset 0 0 0 0.3cqi var(--border);
+  }
+  .fr-btn--menu i {
+    height: 0.6cqi;
+    background: var(--blue);
+  }
+
+  /* Breadcrumb: grey links, the current page in the text colour. */
+  .fr-breadcrumb {
+    display: flex;
+    gap: 1.6cqi;
+    padding: 3.4cqi 5cqi 2.6cqi;
+    font-size: 2.8cqi;
+    color: var(--mention);
+  }
+  .fr-breadcrumb span:not(.current) {
+    text-decoration: underline;
+    text-underline-offset: 0.6cqi;
+  }
+  .fr-breadcrumb span + span::before {
+    content: '›';
+    margin-right: 1.6cqi;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .fr-breadcrumb .current {
+    color: var(--text);
+  }
+
+  /* Hero: the light blue band, badge, title, lead and primary button. */
+  .fr-hero {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* centred while it fits, never clipped at the top when it does not */
+    justify-content: safe center;
+    gap: 3cqi;
+    padding: 5cqi;
+    background: var(--blue-975);
+    overflow: hidden;
+  }
+  .fr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 1cqi;
+    padding: 0.4cqi 1.8cqi;
+    border-radius: 0.6cqi;
+    font-size: 2.8cqi;
+    font-weight: 700;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+  .fr-badge::before {
+    content: '';
+    width: 2.4cqi;
+    height: 2.4cqi;
+    border-radius: 50%;
+    border: 0.5cqi solid currentColor;
+  }
+  .fr-badge--info {
+    background: #e8edff;
+    color: #0063cb;
+  }
+  .fr-badge--success {
+    background: #b8fec9;
+    color: #18753c;
+  }
+  .fr-badge--success::before {
+    background: currentColor;
+  }
+  .fr-h1 {
+    font-size: calc(var(--s) * 1cqi);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    overflow-wrap: break-word;
+  }
+  /* the DSFR's red line under a page title */
+  .fr-h1::after {
+    content: '';
+    display: block;
+    width: 12cqi;
+    height: 1cqi;
+    margin-top: 3cqi;
+    background: var(--red);
+  }
+  .fr-text--lead {
+    font-size: 3.6cqi;
+    line-height: 1.45;
+    color: #3a3a3a;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .fr-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.6cqi;
+    padding: 1.8cqi 3.4cqi;
+    background: var(--blue);
+    color: #ffffff;
+    font-size: 3.2cqi;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .fr-btn svg {
+    width: 3.6cqi;
+    height: 3.6cqi;
+    fill: currentColor;
+  }
+
+  /* Tiles: white, grey border, the blue bottom line, the arrow of a link tile. */
+  .fr-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.4cqi;
+    margin: 0;
+    padding: 4cqi 5cqi 0;
+    list-style: none;
+  }
+  .fr-tiles--one {
+    grid-template-columns: 1fr;
+  }
+  .fr-tile {
+    position: relative;
+    display: grid;
+    gap: 0.6cqi;
+    padding: 2.6cqi 3cqi 3.6cqi;
+    background: #ffffff;
+    box-shadow:
+      inset 0 0 0 0.3cqi var(--border),
+      inset 0 -0.9cqi 0 0 var(--blue);
+    min-width: 0;
+  }
+  .fr-tile::after {
+    content: '→';
+    position: absolute;
+    right: 2.4cqi;
+    bottom: 2.4cqi;
+    font-size: 3.4cqi;
+    line-height: 1;
+    color: var(--blue);
+  }
+  .fr-tile__title {
+    font-size: 3.6cqi;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--blue);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 4cqi;
+  }
+  .fr-tile__detail {
+    font-size: 2.6cqi;
+    color: var(--mention);
+  }
+
+  /* With an image or video: it takes the card's picture, the hero stays compact. */
+  .d--media .fr-hero {
+    flex: none;
+    gap: 2.4cqi;
+    padding-block: 4cqi;
+  }
+  .d--media .fr-text--lead {
+    -webkit-line-clamp: 2;
+  }
+  .fr-card__img {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    margin: 4cqi 5cqi 0;
+    box-shadow: inset 0 -0.9cqi 0 0 var(--blue);
+    overflow: hidden;
+  }
+  .fr-card__img :global(.media) {
+    position: absolute;
+    inset: 0;
+  }
+  .fr-card__img :global(img),
+  .fr-card__img :global(video) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 0;
+  }
+
+  /* Footer: the blue rule on top, mentions in grey. */
+  .fr-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 3cqi;
+    margin-top: 4cqi;
+    padding: 3cqi 5cqi 4cqi;
+    box-shadow: inset 0 0.6cqi 0 0 var(--blue);
+    font-size: 2.8cqi;
+    color: var(--mention);
+  }
+</style>
