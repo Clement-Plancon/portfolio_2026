@@ -72,8 +72,9 @@ Un champ laissé vide garde une valeur par défaut, indiquée sous le champ (« 
 Tout le reste est dans **Paramètres avancés**, replié par défaut (il s'ouvre seul si l'un de ses champs a une erreur) :
 - **Informations** : adresse du projet (`/#projet-…`), nature, catégorie, organisation, dates, état.
 - **Présentation** :
-  - la composition de l'affiche sans image : numéro, titre ou grille de formes (automatique par défaut) ;
-  - la disposition (affiche à gauche ou à droite) et la couleur de l'affiche ;
+  - la composition de l'affiche sans image : numéro, titre, grille de formes, initiale, bandes, soleil, technologies ou DSFR. « Automatique » (par défaut) alterne numéro, titre et grille ;
+  - **DSFR** : pour les projets faits avec le Système de design de l'État. L'affiche devient une fiche bleu France sur fond gris, et le texte du projet prend le même style (titre bleu, trait rouge, boutons carrés), même quand le projet a une image. Le logo de l'État et la police Marianne ne sont pas utilisés : ils sont réservés aux services de l'État ;
+  - la disposition (affiche à gauche, à droite, ou au-dessus avec le texte centré dessous) et la couleur de l'affiche (dix couleurs, dont Bleu France) ;
   - l'image d'aperçu de la vidéo.
 - **Article** : contexte, problème, rôle, approche, contributions, résultats vérifiés, technologies, autres liens.
 - **Images de l'article**.

@@ -75,7 +75,7 @@ type ProjectForm = {
     video?: { src: string; alt: string };
     poster?: (typeof POSTER_LAYOUTS)[number];
     motif?: (typeof MOTIFS)[number];
-    variant?: 'auto' | 'texte-gauche' | 'texte-droite';
+    variant?: 'auto' | 'texte-gauche' | 'texte-droite' | 'empile';
   };
   gallery: { src: string; alt: string; caption?: string }[];
   featured: boolean;
@@ -202,7 +202,7 @@ export function ProjectEditor({ id }: { id: string }) {
           <div class="grid-2">
             <Select
               label="Composition de l'affiche"
-              hint="Utilisée quand le projet n'a ni image ni vidéo. « Automatique » varie d'un projet à l'autre."
+              hint="Utilisée quand le projet n'a ni image ni vidéo. « Automatique » alterne Numéro, Titre et Grille. DSFR présente aussi le texte du projet dans le style du Système de design de l'État, même avec une image."
               value={f.cover.poster ?? ''}
               options={[{ value: '', label: 'Automatique' }, ...POSTER_LAYOUTS.map((m) => ({ value: m, label: POSTER_LABELS[m] }))]}
               onChange={(v) => set('cover', { ...f.cover, poster: (v || undefined) as ProjectForm['cover']['poster'] })}
@@ -215,8 +215,9 @@ export function ProjectEditor({ id }: { id: string }) {
                 { value: 'auto', label: 'Automatique (alterne)' },
                 { value: 'texte-gauche', label: 'Affiche à droite' },
                 { value: 'texte-droite', label: 'Affiche à gauche' },
+                { value: 'empile', label: 'Affiche au-dessus, texte centré dessous' },
               ]}
-              onChange={(v) => set('cover', { ...f.cover, variant: v === 'auto' ? undefined : (v as 'texte-gauche' | 'texte-droite') })}
+              onChange={(v) => set('cover', { ...f.cover, variant: v === 'auto' ? undefined : (v as 'texte-gauche' | 'texte-droite' | 'empile') })}
             />
           </div>
           <fieldset class="swatches">

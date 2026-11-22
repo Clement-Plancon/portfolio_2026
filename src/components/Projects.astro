@@ -25,7 +25,8 @@ const { section, featured, others, othersTitle, media } = Astro.props;
 const all = [...featured, ...others];
 const pad = (n: number) => String(n).padStart(2, '0');
 const period = (p: ProjectEntry) => formatPeriod(p.period?.start, p.period?.end, p.status === 'en-cours') || (p.status === 'en-cours' ? 'En cours' : '');
-const side = (p: ProjectEntry, i: number) => (p.cover.variant === 'texte-gauche' ? 'right' : p.cover.variant === 'texte-droite' ? 'left' : i % 2 ? 'right' : 'left');
+const side = (p: ProjectEntry, i: number) =>
+  p.cover.variant === 'empile' ? 'stack' : p.cover.variant === 'texte-gauche' ? 'right' : p.cover.variant === 'texte-droite' ? 'left' : i % 2 ? 'right' : 'left';
 const longestWord = (t: string) => t.split(/\s+/).reduce((a, b) => ([...b].length > [...a].length ? b : a), '');
 const article = (p: ProjectEntry) => {
   const k = all.indexOf(p);
@@ -44,7 +45,7 @@ const kindOf = (p: ProjectEntry) => p.kind ?? (p.category === 'pro' ? 'Projet pr
 
   {
     featured.map((p, i) => (
-      <article class:list={['case', `case--${side(p, i)}`]} id={`projet-${p.id}`} style={`${tintStyle(p.cover.color)};--tilt:${tilt(p.id, 4)}deg`} aria-labelledby={`case-${p.id}`} data-project>
+      <article class:list={['case', `case--${side(p, i)}`, { 'case--dsfr': p.cover.poster === 'dsfr' }]} id={`projet-${p.id}`} style={`${tintStyle(p.cover.color)};--tilt:${tilt(p.id, 4)}deg`} aria-labelledby={`case-${p.id}`} data-project>
         <div class="case__in wrap">
           <a class="case__poster" href={`#projet-${p.id}`} aria-controls={`detail-${p.id}`} tabindex="-1" aria-hidden="true" data-open data-origin data-tilt>
             <Poster project={p} index={all.indexOf(p)} media={media} />
@@ -224,6 +225,93 @@ const kindOf = (p: ProjectEntry) => p.kind ?? (p.category === 'pro' ? 'Projet pr
     flex-wrap: wrap;
     gap: 0.6rem;
     margin-top: 1.75rem;
+  }
+
+  /* Stacked: the poster centred and wide, the text under it. */
+  .case--stack .case__in {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+  }
+  .case--stack .case__poster {
+    width: min(100%, 36rem);
+  }
+  .case--stack .case__text {
+    /* a size container gets no width from its content: give it the column */
+    width: 100%;
+    max-width: 52rem;
+  }
+  .case--stack .case__no,
+  .case--stack .case__cta {
+    justify-content: center;
+  }
+  .case--stack .case__sum {
+    margin-inline: auto;
+  }
+
+  /* DSFR: the project text as a card of the French State's design system (grey surface, blue title,
+     red line, square buttons). Its logo and Marianne font are not used: they are reserved to the State. */
+  .case--dsfr .case__text {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: #f6f6f6;
+    color: #161616;
+    border-bottom: 4px solid #000091;
+    font-family: Marianne, Arial, Helvetica, sans-serif;
+  }
+  .case--dsfr .case__no {
+    color: #3a3a3a;
+  }
+  .case--dsfr .case__n {
+    background: #000091;
+    color: #ffffff;
+    border-radius: 0;
+  }
+  .case--dsfr .case__title {
+    font-family: inherit;
+    font-stretch: 100%;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    color: #000091;
+    text-transform: none;
+  }
+  :global(.motion) .case--dsfr .case__title {
+    font-stretch: 100%;
+  }
+  .case--dsfr .case__title::after {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 4px;
+    margin-top: 1rem;
+    background: #e1000f;
+  }
+  .case--stack.case--dsfr .case__title::after {
+    margin-inline: auto;
+  }
+  .case--dsfr .case__title a {
+    background-image: linear-gradient(#000091, #000091);
+  }
+  .case--dsfr .case__meta {
+    color: #3a3a3a;
+  }
+  .case--dsfr .case__cta :global(.btn) {
+    border-radius: 0;
+    border: 1px solid #000091;
+    color: #000091;
+    background: #ffffff;
+  }
+  .case--dsfr .case__cta :global(.btn--fill) {
+    background: #000091;
+    color: #ffffff;
+  }
+  .case--dsfr .case__cta :global(.btn:hover) {
+    background: #e3e3fd;
+    color: #000091;
+  }
+  .case--dsfr .case__cta :global(.btn--fill:hover) {
+    background: #1212ff;
+    color: #ffffff;
   }
 
   /* ---------- The other projects: a strip of small posters ---------- */

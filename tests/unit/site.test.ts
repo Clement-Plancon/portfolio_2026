@@ -67,6 +67,11 @@ describe('posters', () => {
     expect([0, 1, 2].map((i) => posterLayout(undefined, i, false))).toEqual(['numeral', 'titre', 'grille']);
     expect(posterLayout('inconnu', 3, false)).toBe('numeral');
   });
+  it('the compositions added later are used only when chosen, so « Automatique » keeps its cycle', () => {
+    for (const l of ['initiale', 'bandes', 'soleil', 'technos', 'dsfr']) expect(posterLayout(l, 0, false)).toBe(l);
+    expect(Array.from({ length: 9 }, (_, i) => posterLayout(undefined, i, false))).not.toContain('dsfr');
+    expect(posterLayout('dsfr', 0, true)).toBe('media');
+  });
   it('a project keeps its shapes and tilt between renders', () => {
     expect(gridCells('datametre')).toEqual(gridCells('datametre'));
     expect(gridCells('datametre')).toHaveLength(12);

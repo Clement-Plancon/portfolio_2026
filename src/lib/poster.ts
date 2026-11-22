@@ -10,7 +10,15 @@ export const POSTER_LABELS: Record<(typeof POSTER_LAYOUTS)[number], string> = {
   numeral: 'Numéro — le numéro du projet en très grand',
   titre: 'Titre — le titre en capitales, sur toute la hauteur',
   grille: 'Grille — des formes géométriques en modules',
+  initiale: 'Initiale — la première lettre du titre, monumentale',
+  bandes: 'Bandes — des rayures obliques dans les deux couleurs',
+  soleil: 'Soleil — un grand disque et le numéro du projet',
+  technos: 'Technologies — les technologies du projet en grand',
+  dsfr: 'DSFR — une fiche dans le style du Système de design de l’État',
 };
+
+/** The compositions « Automatique » cycles through. The others are only used when chosen. */
+export const AUTO_LAYOUTS = ['numeral', 'titre', 'grille'] as const;
 
 /** A stable number in [0, 1) from a string, so a project keeps its composition and tilt between renders. */
 export function seed(id: string): number {
@@ -23,7 +31,7 @@ export function seed(id: string): number {
 export function posterLayout(chosen: string | undefined, index: number, hasMedia: boolean): PosterLayout {
   if (hasMedia) return 'media';
   if (chosen && (POSTER_LAYOUTS as readonly string[]).includes(chosen)) return chosen as PosterLayout;
-  return POSTER_LAYOUTS[index % POSTER_LAYOUTS.length];
+  return AUTO_LAYOUTS[index % AUTO_LAYOUTS.length];
 }
 
 /**
