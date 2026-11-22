@@ -5,6 +5,7 @@ import { netlifyDocStore, netlifyFileStore } from './blob-store';
 import { ContentStore } from './content-store';
 import { createHandler } from './handler';
 import { AdminAuth, parseAuthConfig } from './session';
+import { redact } from './storage-error';
 
 /** Cache tag of every public response built from content (the page and the media files). */
 export const PUBLIC_CACHE_TAG = 'cms-public';
@@ -14,7 +15,10 @@ let content: ContentStore | null = null;
 let auth: AdminAuth | null | undefined;
 let handler: ReturnType<typeof createHandler> | null = null;
 
-// Built on first use: Netlify Blobs reads its configuration from the request context.
+// These objects are kept for the life of the function instance (a warm instance serves many requests,
+// for hours). That is safe because they hold no Blobs credentials: netlifyDocStore/netlifyFileStore open
+// the store again for every operation, with the context Netlify gives to the CURRENT invocation. Never
+// call getStore() here, at module level or in a cached object: its token would outlive its invocation.
 export function contentStore(): ContentStore {
   content ??= new ContentStore({ docs: netlifyDocStore('cms'), files: netlifyFileStore('cms-media'), log });
   return content;
@@ -35,7 +39,7 @@ export async function purgePublic(): Promise<boolean> {
     return true;
   } catch (e) {
     // Outside Netlify (local development) there is no CDN cache to purge.
-    log(`[cms] cache purge failed: ${(e as Error).name}`);
+    log(`[cms] cache purge failed: ${(e as Error).name} ${redact(String((e as Error).message ?? ''))}`);
     return false;
   }
 }

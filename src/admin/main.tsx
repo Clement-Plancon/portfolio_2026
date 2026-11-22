@@ -45,7 +45,7 @@ function App() {
       setPhase({ kind: 'ready', email: s.user });
     } catch (e) {
       if (e instanceof ApiError && e.status === 401) return setPhase({ kind: 'login' });
-      setPhase({ kind: 'denied', message: e instanceof ApiError && e.status !== 503 ? e.message : authMessage(e) });
+      setPhase({ kind: 'denied', message: authMessage(e) });
     }
   };
 
@@ -55,13 +55,18 @@ function App() {
   }, []);
 
   const logout = async () => {
+    let notice = 'Vous êtes déconnecté.';
     try {
       await auth.logout();
-    } catch {
-      /* the cookie expires anyway; the screen must not stay open */
+    } catch (e) {
+      // The cookie is removed from this browser in any case; say so when the server could not confirm.
+      notice =
+        e instanceof ApiError && e.storageDown
+          ? `Déconnecté de ce navigateur. Le serveur n’a pas pu confirmer la fin de la session (stockage indisponible, référence ${e.ref ?? '—'}) : elle expirera d’elle-même.`
+          : 'Déconnecté de ce navigateur. Le serveur n’a pas confirmé la fin de la session : elle expirera d’elle-même.';
     } finally {
       setExpired(false);
-      setPhase({ kind: 'login', notice: 'Vous êtes déconnecté.' });
+      setPhase({ kind: 'login', notice });
     }
   };
 

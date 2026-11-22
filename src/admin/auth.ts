@@ -6,7 +6,9 @@ export function authMessage(e: unknown): string {
   if (e instanceof ApiError) {
     if (e.status === 429) return 'Trop de tentatives. Réessayez plus tard.';
     if (e.status === 401) return 'Connexion refusée. Vérifiez le mot de passe.';
-    if (e.status === 503) return "L'administration n'est pas configurée sur ce site. Voir docs/netlify-deployment.md.";
+    if (e.storageDown) return e.message;
+    if (e.status === 503 && e.code === 'not_configured') return "L'administration n'est pas configurée sur ce site. Voir docs/netlify-deployment.md.";
+    if (e.status >= 500) return e.message;
     if (e.status === 0) return e.message;
   }
   return 'Le service de connexion ne répond pas. Réessayez dans un instant.';

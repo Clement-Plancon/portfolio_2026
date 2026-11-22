@@ -12,6 +12,7 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { argon2Verify } from 'hash-wasm';
 import { HttpError } from './http';
+import { StorageError } from './storage-error';
 
 /* ---------- Shared store ---------- */
 
@@ -233,7 +234,10 @@ export class AdminAuth {
     const now = this.now();
     const sid = b64(randomBytes(32));
     const record: SessionRecord = { createdAt: now, lastSeen: now };
-    await this.opts.kv.set(`session/${sha256(sid)}`, record);
+    // The cookie is only handed out once the session is stored: otherwise the next request would be refused.
+    if (!(await this.opts.kv.set(`session/${sha256(sid)}`, record, { onlyIfNew: true }))) {
+      throw new StorageError('set', 'admin-auth', { name: 'UnconfirmedWrite', message: 'session write not confirmed' });
+    }
     const payload = `v1.${sid}.${now}`;
     return { cookie: sessionCookie(`${payload}.${this.sign(payload)}`, Math.floor(POLICY.absoluteMs / 1000)), expiresAt: now + POLICY.absoluteMs };
   }
@@ -264,12 +268,14 @@ export class AdminAuth {
 
   /** Ends the session carried by the request (if any). */
   async logout(req: Request) {
+    let s: { id: string };
     try {
-      const s = await this.verify(req);
-      await this.opts.kv.delete(s.id);
-    } catch {
-      /* already invalid: nothing to revoke */
+      s = await this.verify(req);
+    } catch (e) {
+      if (e instanceof HttpError) return; // already invalid: nothing to revoke
+      throw e; // storage failure: the caller must not claim the session was revoked
     }
+    await this.opts.kv.delete(s.id);
   }
 
   /** Revokes every open session (all devices). */

@@ -7,6 +7,7 @@ import { mediaResolver } from '../lib/media';
 import { toSiteData, type Snapshot } from '../lib/snapshot';
 import { setPublicCache } from '../server/public-cache';
 import { contentStore } from '../server/runtime';
+import { logLine, StorageError } from '../server/storage-error';
 
 export const prerender = false;
 
@@ -16,7 +17,8 @@ try {
   setPublicCache(Astro.response.headers);
 } catch (e) {
   // Blobs unreachable: show the repository content rather than an error page, and do not cache it.
-  console.error(`[site] published content unavailable, showing the repository version: ${(e as Error).name}`);
+  const err = e instanceof StorageError ? e : new StorageError('published', 'cms', e);
+  console.error(`[site] ${logLine({ event: 'storage_error', fallback: 'repository', kind: err.kind, type: err.causeName, status: err.status, store: err.store, message: err.message })}`);
   snap = seedSnapshot();
   Astro.response.headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
   Astro.response.headers.set('Netlify-CDN-Cache-Control', 'public, s-maxage=60');

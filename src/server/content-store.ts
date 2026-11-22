@@ -18,12 +18,16 @@ import type { SeedFile } from '../lib/seed';
 import { SNAPSHOT_FORMAT, type Snapshot, validateSnapshot } from '../lib/snapshot';
 import type { DocStore, FileStore } from './blob-store';
 import { HttpError } from './http';
+import { StorageError } from './storage-error';
 
 export type SaveChange =
   | { op: 'put'; type: ContentType; id?: string; data: unknown; baseSha: string | null }
   | { op: 'delete'; type: ContentType; id?: string; baseSha: string };
 
 export const HISTORY_KEEP = 20;
+/** A media file younger than this is never removed by the clean-up, referenced or not: it may belong to an
+ *  upload in progress in another tab (bytes are written before the draft that points to them). */
+export const MEDIA_GRACE_MS = 24 * 3600_000;
 const MAX_RETRIES = 6;
 const BACKUP_FORMAT = 'clementplancon-cms-backup';
 
@@ -37,6 +41,8 @@ export const differs = (a: Snapshot, b: Snapshot) =>
 
 const conflict = () => new HttpError(409, 'conflict', "Ce contenu a été modifié ailleurs depuis son ouverture. Rechargez-le avant d'enregistrer.");
 const busy = () => new HttpError(503, 'busy', 'Trop de modifications simultanées. Réessayez dans un instant.');
+/** An unconditional write that the store did not confirm: never report it as done. */
+const unconfirmed = (store: string, key: string) => new StorageError('set', store, { name: 'UnconfirmedWrite', message: `write of ${key.split('/')[0]} not confirmed` });
 
 export type SeedLoader = () => Promise<{ snapshot: Snapshot; files: SeedFile[] }>;
 
@@ -300,8 +306,8 @@ export class ContentStore {
     for (const f of Object.values(next.media)) {
       if (!(await this.o.files.getFile(f.sha))) throw new HttpError(409, 'missing_file', 'Un fichier de la médiathèque est introuvable : publication annulée.');
     }
-    // Keep the version being replaced (recovery), then switch atomically.
-    await this.o.docs.set(`history/${String(p.value.rev).padStart(8, '0')}`, p.value);
+    // Keep the version being replaced (recovery), then switch atomically. No copy, no publication.
+    if (!(await this.o.docs.set(`history/${String(p.value.rev).padStart(8, '0')}`, p.value))) throw unconfirmed('cms', 'history');
     if (!(await this.o.docs.set('published', next, { onlyIfMatch: p.etag }))) {
       throw new HttpError(409, 'conflict', 'Une autre publication vient d’avoir lieu. Rechargez puis publiez à nouveau.');
     }
@@ -332,9 +338,17 @@ export class ContentStore {
         const s = await this.o.docs.get<Snapshot>(key);
         for (const f of Object.values(s?.value.media ?? {})) used.add(f.sha);
       }
-      for (const key of await this.o.files.list('')) if (!used.has(key)) await this.o.files.delete(key);
+      const now = Date.now();
+      for (const key of await this.o.files.list('')) {
+        if (used.has(key)) continue;
+        // A file without a date was written before dates were recorded: it is old enough.
+        const at = await this.o.files.uploadedAt(key);
+        if (at !== null && now - at < MEDIA_GRACE_MS) continue;
+        await this.o.files.delete(key);
+      }
     } catch (e) {
-      this.log(`[cms] cleanup skipped: ${(e as Error).name}`);
+      const err = e instanceof StorageError ? e : new StorageError('cleanup', 'cms', e);
+      this.log(`[cms] cleanup skipped: ${err.causeName} ${err.status ?? ''} ${err.message}`);
     }
   }
 
@@ -389,7 +403,8 @@ export class ContentStore {
     if (expectedRev !== undefined && expectedRev !== String(current.rev)) {
       throw new HttpError(409, 'conflict', 'Le contenu a changé depuis le chargement de la page. Rechargez avant de restaurer.');
     }
-    await this.o.docs.set(`backups/${this.now().replace(/[:.]/g, '-')}-avant-restauration`, current);
+    // The copy of the current content must exist before anything is replaced.
+    if (!(await this.o.docs.set(`backups/${this.now().replace(/[:.]/g, '-')}-avant-restauration`, current))) throw unconfirmed('cms', 'backups');
     const restored = await this.updateDraft(() => ({ ...snap }));
     return { restored: true, rev: String(restored.rev), projects: Object.keys(restored.entries).filter((p) => p.includes('/projects/')).length, media: Object.keys(restored.media).length };
   }
