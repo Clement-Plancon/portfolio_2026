@@ -5,6 +5,7 @@
 // introduction, in large next to the project, and small in the strip of the other projects.
 // Decorative: the title and the summary are always written next to it, in the page.
 import Media from './Media.astro';
+import PosterDsfr from './PosterDsfr.astro';
 import type { MediaResolver } from '../lib/media';
 import { gridCells, lineSize, posterLayout, titleFill } from '../lib/poster';
 import type { ProjectEntry } from '../lib/snapshot';
@@ -39,11 +40,14 @@ const cells = gridCells(p.id);
 const tech = p.technologies.slice(0, 3);
 const initial = [...p.title.normalize('NFD').replace(/[^\p{L}\p{N}]/gu, '')][0]?.toLocaleUpperCase('fr') ?? n;
 const techLines = p.technologies.slice(0, 4).map((t) => ({ text: t, size: lineSize(t.toLocaleUpperCase('fr'), 13, 90) }));
-const longest = p.title.split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), '');
-const status = p.status === 'en-cours' ? 'En cours' : p.status === 'termine' ? 'Terminé' : '';
 ---
 
-<div class:list={['poster', `poster--${layout}`, { 'poster--dsfr-frame': dsfr }, cls]} style={tintStyle(p.cover.color)} aria-hidden="true" data-layout={layout}>
+<div class:list={['poster', `poster--${layout}`, { 'poster--dsfr': dsfr }, cls]} style={tintStyle(p.cover.color)} aria-hidden="true" data-layout={dsfr ? 'dsfr' : layout}>
+  {dsfr ? (
+    <PosterDsfr project={p} n={n} kind={kind} year={year} withMedia={hasMedia}>
+      {video ? <Media src={video.src} alt={video.alt} poster={image?.src} media={media} decorative /> : image && <Media src={image.src} alt={image.alt} media={media} eager={eager} decorative />}
+    </PosterDsfr>
+  ) : (
   <div class="poster__in">
     <div class="poster__top">
       <span>{n}</span>
@@ -88,20 +92,6 @@ const status = p.status === 'en-cours' ? 'En cours' : p.status === 'termine' ? '
       )
     }
     {
-      layout === 'dsfr' && (
-        <div class="poster__dsfr">
-          {status && <span class:list={['dsfr-badge', { 'dsfr-badge--done': p.status === 'termine' }]}>{status}</span>}
-          <p class="dsfr-title" style={`--s:${Math.min(10, lineSize(longest, 10, 84))}`}>{p.title}</p>
-          <span class="dsfr-rule" />
-          {p.organisation && <p class="dsfr-org">{p.organisation}</p>}
-          <ul class="dsfr-tags">
-            {p.technologies.slice(0, 6).map((t) => <li>{t}</li>)}
-          </ul>
-          <span class="dsfr-arrow">→</span>
-        </div>
-      )
-    }
-    {
       layout === 'titre' && (
         <div class="poster__lines">
           {lines.map((l) => (
@@ -123,20 +113,17 @@ const status = p.status === 'en-cours' ? 'En cours' : p.status === 'termine' ? '
     }
 
     {
-      layout !== 'titre' && layout !== 'dsfr' && (
+      layout !== 'titre' && (
         <p class="poster__title" style={`--s:${Math.min(11, lineSize(p.title.split(/\s+/).reduce((a, b) => (b.length > a.length ? b : a), ''), 11, 88))}`}>
           {p.title}
         </p>
       )
     }
-    {
-      layout !== 'dsfr' && (
-        <div class="poster__foot">
-          {tech.map((t) => <span>{t}</span>)}
-        </div>
-      )
-    }
+    <div class="poster__foot">
+      {tech.map((t) => <span>{t}</span>)}
+    </div>
   </div>
+  )}
 </div>
 
 <style>
@@ -399,98 +386,7 @@ const status = p.status === 'en-cours' ? 'En cours' : p.status === 'termine' ? '
     color: var(--p-alt);
   }
 
-  /* DSFR: a card in the style of the French State's design system (colours, grey surfaces, square
-     shapes, tags, the red line). Not its logo or its Marianne font, whose use is reserved to the State. */
-  .poster--dsfr,
-  .poster--dsfr-frame {
-    --dsfr-blue: #000091;
-    --dsfr-red: #e1000f;
-    --dsfr-grey: #f6f6f6;
-    --dsfr-text: #161616;
-    font-family: Marianne, Arial, Helvetica, sans-serif;
-  }
   .poster--dsfr {
     background: #ffffff;
-    color: var(--dsfr-text);
-  }
-  .poster--dsfr .poster__top,
-  .poster--dsfr-frame .poster__top {
-    margin: -5cqi -5cqi 0;
-    padding: 3.5cqi 5cqi;
-    background: var(--dsfr-blue);
-    color: #ffffff;
-    font-stretch: 100%;
-    letter-spacing: 0.02em;
-    box-shadow: inset 0 -1cqi 0 var(--dsfr-red);
-  }
-  .poster__dsfr {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 3cqi;
-    margin: 0 -5cqi -5cqi;
-    padding: 6cqi 5cqi 5cqi;
-    background: var(--dsfr-grey);
-    border-bottom: 1.6cqi solid var(--dsfr-blue);
-    position: relative;
-  }
-  .dsfr-badge {
-    padding: 0.6cqi 2cqi;
-    background: #e8edff;
-    color: #0063cb;
-    font-size: 3.6cqi;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  .dsfr-badge--done {
-    background: #b8fec9;
-    color: #18753c;
-  }
-  .dsfr-title {
-    font-size: calc(var(--s) * 1cqi);
-    font-weight: 700;
-    line-height: 1.05;
-    color: var(--dsfr-blue);
-    overflow-wrap: anywhere;
-  }
-  .dsfr-rule {
-    width: 14cqi;
-    height: 1.2cqi;
-    background: var(--dsfr-red);
-  }
-  .dsfr-org {
-    font-size: 4.2cqi;
-    font-weight: 700;
-  }
-  .dsfr-tags {
-    margin: auto 0 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.6cqi;
-    max-width: 82%;
-  }
-  .dsfr-tags li {
-    padding: 1cqi 2.6cqi;
-    border-radius: 99cqi;
-    background: #e3e3fd;
-    color: var(--dsfr-blue);
-    font-size: 3.6cqi;
-    white-space: nowrap;
-  }
-  .dsfr-arrow {
-    position: absolute;
-    right: 5cqi;
-    bottom: 5cqi;
-    width: 10cqi;
-    height: 10cqi;
-    display: grid;
-    place-items: center;
-    background: var(--dsfr-blue);
-    color: #ffffff;
-    font-size: 6cqi;
   }
 </style>
